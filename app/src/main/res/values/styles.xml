@@ -1,0 +1,82 @@
+<resources>
+    <!-- Login Screen -->
+    <style name="viewParent">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+    <style name="viewParent.headerText">
+        <item name="android:textColor">@color/contentTextColor</item>
+        <item name="android:textSize">@dimen/headerTextSize</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="viewParent.headerText.NoMode">
+        <item name="android:textColor">@color/darkTextColor</item>
+    </style>
+
+    <style name="parent">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <!-- edittext style -->
+    <style name="modifiedEditText" parent="parent">
+        <item name="android:textSize">@dimen/newsMoreTextSize</item>
+        <item name="android:backgroundTint">@color/primaryTextColor</item>
+    </style>
+    <!-- Button style -->
+    <style name="button" parent="viewParent">
+        <item name="android:textColor">@color/whiteTextColor</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">"sans-serif-medium"</item>
+        <item name="android:textSize">@dimen/normal_label_left_textsize</item>
+    </style>
+    <!-- Main Screen Navigation View Style -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <!-- Games Screen -->
+    <style name="quiz_left_label">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">@dimen/normal_label_left_padding</item>
+        <item name="android:textSize">@dimen/normal_label_left_textsize</item>
+        <item name="android:textColor">#000000</item>
+        <item name="android:fontFamily">"sans-serif-medium"</item>
+        <item name="android:focusable">true</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:importantForAccessibility">yes</item>
+    </style>
+    <style name="quiz_right_label">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">@dimen/normal_label_right_padding</item>
+        <item name="android:textSize">@dimen/normal_label_right_textsize</item>
+        <item name="android:textColor">#000000</item>
+        <item name="android:fontFamily">"sans-serif-medium"</item>
+        <item name="android:focusable">true</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:importantForAccessibility">yes</item>
+    </style>
+    <style name="iconstyle">
+        <item name="android:layout_width">@dimen/game_icon_size</item>
+        <item name="android:layout_height">@dimen/game_icon_size</item>
+        <item name="android:layout_marginStart">@dimen/game_icon_margin_start</item>
+        <item name="android:tint">#000000</item>
+        <item name="android:colorForeground">@drawable/button_background_blue</item>
+        <item name="android:importantForAccessibility">no</item>
+    </style>
+    <style name="CustomDialog" parent="@style/Theme.AppCompat.Light.Dialog">
+        <item name="android:windowNoTitle">false</item>
+        <item name="android:textSize">15dp</item>
+    </style>
+</resources>

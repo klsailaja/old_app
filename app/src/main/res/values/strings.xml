@@ -1,0 +1,138 @@
+<resources>
+    <!-- Main App -->
+    <string name="app_name">TeluguMovieQuiz</string>
+    <string name="base_url">http://192.168.1.4:8080</string>
+
+    <string name="quiz_screen_server_err">Server Error. Please try after some time</string>
+
+    <!-- Login screen options -->
+    <string name="login_email_hint">Email</string>
+    <string name="login_password_hint">Password</string>
+    <string name="login_screen_already_have_acc">Already \nhave an \nAccount?</string>
+    <string name="login_screen_forgot_password">Forgot Password?</string>
+    <string name="login_screen_new_user_register_now">New user? Register Now</string>
+    <string name="login_screen_login_text">Login</string>
+    <string name="user_login_fail_msg">Login not successful. Please use forgot password option if required</string>
+    <string name="user_login_success_msg">Login successful</string>
+
+    <!-- New user Screen -->
+    <string name="new_user_user_name">Name</string>
+    <string name="newuser_referal_code_hint">Referral Code. Can be empty too</string>
+    <string name="newuser_register_text">Register</string>
+    <string name="new_user_register_success">User successfully registered</string>
+    <string name="new_user_screen_intro">Here\'s\nyour first\nstep with \nus!</string>
+    <string name="new_user_already_registered">Already have an account?</string>
+
+    <!-- Navigation -->
+    <string name="menu_current_games">Current Games</string>
+    <string name="menu_enrolled_games">Enrolled Games</string>
+    <string name="menu_history_games">History Games</string>
+    <string name="menu_chat">Chat</string>
+    <string name="menu_referal">My Referrals</string>
+    <string name="menu_history">My Games</string>
+    <string name="menu_transactions">My Transactions</string>
+    <string name="menu_wallet">My Wallet</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="nav_header_title">Telugu Movie Quiz</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+
+    <!-- Action Bar -->
+    <string name="chat_msg">You have a new Chat Msg</string>
+
+    <!-- Show Games List Screen -->
+    <string name="dialog_close">Close</string>
+    <string name="leave_but_text">Leave Game</string>
+    <string name="speed_but_text">Network Speed</string>
+    <string name="starts_text">Starts At:</string>
+    <string name="starts_user_ct">Users:</string>
+    <string name="starts_user_ct_val">10</string>
+    <string name="timerInitialVal">0</string>
+    <string name="game_start_msg">Game starting soon \n Cannot Leave now</string>
+    <string name="fifty_fifty">50–50</string>
+    <string name="flip_question">Flip Question</string>
+    <string name="more_game_options">More Options</string>
+    <string name="game_join_success_msg">Successfully Joined Game</string>
+    <string name="game_join_fail_msg">Not Joined the Game</string>
+    <string name="game_cancellation_success_msg">Game cancelled as minimum users not present. Your ticket money reverted status : Success</string>
+    <string name="game_cancellation_fail_msg">Game cancelled as minimum users not present. Your ticket money reverted status : Fail will be credited in 1â€“2 days</string>
+    <string name="ques_initial_text">Your question appears here with 4 options. Time and Correct answers matter. Choose the right answer in first attempt. No Second chance and No Negative Marks.</string>
+    <string name="open_drawer">Open</string>
+    <string name="close_drawer">Close</string>
+    <string name="action_settings">appbar_settings</string>
+
+    <!-- List Item Card Layout -->
+    <string name="games_screen_game_id_label">GameId#:</string>
+    <string name="games_screen_game_id_default_val">-</string>
+    <string name="games_screen_prize_money_label1">Prize Money</string>
+    <string name="games_screen_prize_money_label2">Announce At:</string>
+    <string name="games_screen_prize_money_val">4:30 PM</string>
+    <string name="games_screen_starts_label">Starts At:</string>
+    <string name="games_screen_details_label">Game Details:</string>
+    <string name="games_screen_total_user_count">/ 10</string>
+    <string name="games_screen_per_ticket">/ Ticket</string>
+    <string name="game_join_button">Join Game</string>
+    <string name="game_scroll_nxt">Swipe Right</string>
+    <string name="game_card_day">Game Date</string>
+    <string name="game_card_time">Game Time</string>
+    <string name="game_card_users">Enrolled User Count</string>
+    <string name="game_card_rupee">Indian Rupee</string>
+
+    <!-- View Referals details -->
+    <string name="view_referals_name_heading">Name</string>
+    <string name="view_referals_logged_heading">Last Seen</string>
+
+    <string name="view_user_answers_Qno">Q.No#</string>
+    <string name="view_user_answers_correctness">Is Correct</string>
+    <string name="view_user_answers_timetaken">Time Taken</string>
+    <string name="view_user_answers_not_answered">Not Answered</string>
+    <string name="view_user_answers_correct">Correct</string>
+    <string name="view_user_answers_wrong">Wrong</string>
+    <string name="view_user_answers_wrong_time">Not Applicable</string>
+    <string name="view_user_correct_ques_summary">Correct Questions Ct:</string>
+    <string name="view_user_correct_ques_time_taken">Total Time:</string>
+    <string name="view_user_answers_title1">My Answers Summary: This view closes after 10 secs</string>
+    <string name="view_user_answers_title2">My Answers Summary</string>
+
+    <string name="view_prize_details_rank">Rank</string>
+    <string name="view_prize_details_amt">Prize Money</string>
+    <string name="view_prize_details_free_game_prize">No Prize Money for Free Game</string>
+
+    <string name="view_leadership_rank">Rank#</string>
+    <string name="view_leadership_correct_count">Correct Answers Ct</string>
+    <string name="view_leadership_time_taken">Total Time Taken</string>
+    <string name="view_leadership_username">Player Name</string>
+    <string name="view_leadership_amount">Amount Won</string>
+
+    <string name="test_user_name">ggraj.pec@gmail.com</string>
+    <string name="test_passwd">12345</string>
+    <!-- Referal View -->
+    <string name="myreferal_intro">This view shows the users registered with your referal code. When they play and win, you earn money</string>
+    <string name="myreferal_more_view_options">More View Options</string>
+    <string name="prev_data_set">Previous Set</string>
+    <string name="next_data_set">Next Set</string>
+    <string name="table_view_col1_xml">Col1</string>
+    <string name="table_view_col2_xml">Col2</string>
+    <string name="table_view_col3_xml">Col3</string>
+    <string name="table_view_col4_xml">Col4</string>
+    <string name="table_view_col5_xml">Col5</string>
+    <string name="table_view_col6_xml">Col6</string>
+    <string name="table_view_col7_xml">Col7</string>
+    <string name="table_view_col8_xml">Col8</string>
+    <string name="table_view_col1">S.No</string>
+    <string name="table_view_col2">Player Name</string>
+    <string name="table_view_col3">Last Seen On</string>
+
+    <!--Transactions View-->
+    <string name="transactionview_intro">This view shows all the money transactions done by you. Please use filter options</string>
+    <string name="transactionview_filter_but">Apply</string>
+    <string name="transactionview_col1">S.No</string>
+    <string name="transactionview_col2">O.B</string>
+    <string name="transactionview_col3">Acc Type</string>
+    <string name="transactionview_col4">Amount</string>
+    <string name="transactionview_col5">Date</string>
+    <string name="transactionview_col6">Result</string>
+    <string name="transactionview_col7">C.B</string>
+    <string name="transactionview_col8">Coments</string>
+</resources>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/tableInvoices"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="0dp"
+    android:stretchColumns="*"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_column="1"
+            android:background="@color/quesBG"
+            android:drawablePadding="5dp"
+            android:paddingEnd="10dp"
+            android:text="1000"
+            android:textColor="@color/colorPrimary"
+            android:textSize="25sp"
+            app:drawableLeftCompat="@drawable/ic_refer" />
+        <TextView
+            android:text="2000"
+            android:textSize="25sp"
+            android:background="@color/quesBG"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingEnd="10dp"
+            android:textColor="@color/colorPrimary"
+            android:drawablePadding="5dp"
+            android:layout_column="2"
+            app:drawableLeftCompat="@drawable/ic_win" />
+        <TextView
+            android:text="3000"
+            android:textSize="25sp"
+            android:background="@color/quesBG"
+            android:paddingEnd="10dp"
+            android:drawablePadding="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textColor="@color/colorPrimary"
+            android:layout_column="3"
+            app:drawableLeftCompat="@drawable/ic_wallet" />
+        <ImageView
+            android:src="@drawable/ic_chat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_column="4"
+            android:contentDescription="@string/chat_msg" />
+    </TableRow>
+</TableLayout>
