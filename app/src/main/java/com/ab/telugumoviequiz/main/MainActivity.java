@@ -38,7 +38,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        System.out.println("Hi");
         ActionBar mActionBar = getSupportActionBar();
         if (mActionBar != null) {
             LayoutInflater mInflater = LayoutInflater.from(this);
