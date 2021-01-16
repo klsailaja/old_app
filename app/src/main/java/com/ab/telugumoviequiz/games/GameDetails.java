@@ -1,6 +1,7 @@
 package com.ab.telugumoviequiz.games;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 public class GameDetails implements Serializable {
@@ -11,9 +12,25 @@ public class GameDetails implements Serializable {
 	private int maxCapacity = 10;
 	private long startTime;
 	private int gameType;
+	private String celebrityName;
 	private int status;
+	private int tempGameId;
 	private List<Question> gameQuestions;
 	private Question flipQuestion;
+	
+	public String getCelebrityName() {
+		return celebrityName;
+	}
+	public void setCelebrityName(String celebrityName) {
+		this.celebrityName = celebrityName;
+	}
+	
+	public int getTempGameId() {
+		return tempGameId;
+	}
+	public void setTempGameId(int tempGameId) {
+		this.tempGameId = tempGameId;
+	}
 	
 	public long getGameId() {
 		return gameId;
@@ -70,8 +87,7 @@ public class GameDetails implements Serializable {
 		this.flipQuestion = question;
 	}
 	
-	
 	public String toString() {
-		return getGameId() + "";
+		return getGameId() + ":" + new Date(startTime);
 	}
 }

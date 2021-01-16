@@ -58,26 +58,26 @@ public class Request {
                 PlayerSummary[].class, null);
         return getLeaderBoardTask;
     }
-    public static GetGamesTask<GameDetails[]> getFutureGames() {
-        String uri = baseUri + "/game/future";
+    public static GetGamesTask<GameDetails[]> getFutureGames(int gameType) {
+        String uri = baseUri + "/game/" + gameType + "/future";
         GetGamesTask<GameDetails[]> getFutureGames = new GetGamesTask<>(uri, GET_FUTURE_GAMES,
                 null, GameDetails[].class, null);
         return getFutureGames;
     }
-    public static GetTask<GameStatusHolder> getFutureGamesStatusTask() {
-        String uri = baseUri + "/game/status";
+    public static GetTask<GameStatusHolder> getFutureGamesStatusTask(int gameType) {
+        String uri = baseUri + "/game/" + gameType + "/allstatus";
         GetTask<GameStatusHolder> getFutureStatusTask = new GetTask<>(uri, GET_FUTURE_GAMES_STATUS, null,
                 GameStatusHolder.class, null);
         return getFutureStatusTask;
     }
-    public static GetTask<GameDetails[]> getEnrolledGames(long userProfileId) {
-        String uri = baseUri + "/game/enrolled/" + userProfileId;
+    public static GetTask<GameDetails[]> getEnrolledGames(int gameType, long userProfileId) {
+        String uri = baseUri + "/game/" + gameType + "/enrolled/" + userProfileId;
         GetTask<GameDetails[]> getFutureGames = new GetTask<>(uri, GET_ENROLLED_GAMES, null,
                 GameDetails[].class, null);
         return getFutureGames;
     }
-    public static GetTask<GameStatusHolder> getEnrolledGamesStatus(long userProfileId) {
-        String uri = baseUri + "/game/enrolled/" + userProfileId + "/status";
+    public static GetTask<GameStatusHolder> getEnrolledGamesStatus(int gameType, long userProfileId) {
+        String uri = baseUri + "/game/" + gameType + "/enrolled/" + userProfileId + "/status";
         GetTask<GameStatusHolder> getFutureStatusTask = new GetTask<>(uri, GET_ENROLLED_GAMES_STATUS, null,
                 GameStatusHolder.class, null);
         return getFutureStatusTask;

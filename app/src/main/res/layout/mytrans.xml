@@ -18,9 +18,10 @@
             android:layout_marginTop="3dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/transactionview_filter_but"
-            android:layout_gravity="center"
-            android:gravity="center"
+            android:id="@+id/filterAccType"
+            android:text="@string/myreferal_more_view_options"
+            android:layout_gravity="start"
+            android:gravity="start"
             style="@style/button"/>
         <androidx.recyclerview.widget.RecyclerView
             android:layout_marginTop="2dp"

@@ -14,14 +14,6 @@
             android:text="@string/myreferal_intro"
             android:id="@+id/myreferals_intro">
         </TextView>
-        <Button
-            android:layout_marginTop="3dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/myreferal_more_view_options"
-            android:layout_gravity="center"
-            android:gravity="center_vertical"
-            style="@style/button"/>
         <androidx.recyclerview.widget.RecyclerView
             android:layout_marginTop="2dp"
             android:id="@+id/recyclerView"

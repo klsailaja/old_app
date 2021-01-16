@@ -73,7 +73,7 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.MyViewHolder> 
         Date date = new Date(gd.getStartTime());
 
         stringBuffer.delete(0, stringBuffer.length());
-        stringBuffer.append(gd.getGameId());
+        stringBuffer.append(gd.getTempGameId());
         holder.gameIdView.setText(stringBuffer.toString());
 
         String timePattern = "hh:mm aaa";

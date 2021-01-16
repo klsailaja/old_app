@@ -1,15 +1,10 @@
 package com.ab.telugumoviequiz.games;
 
-import java.io.Serializable;
-
-public class Question implements Serializable {
+public class Question {
 	
 	private int questionNumber;
-	private String statement;
-	private String optionA;
-	private String optionB;
-	private String optionC;
-	private String optionD;
+	private long category;
+	private int timeLine;
 	private String nStatement;
 	private String nOptionA;
 	private String nOptionB;
@@ -19,6 +14,24 @@ public class Question implements Serializable {
 	private long questionStartTime;
 	private boolean isFlipUsed;
 	
+	public boolean isFlipUsed() { return isFlipUsed; }
+	
+	public void setFlipUsed(boolean isFlipUsed) { this.isFlipUsed = isFlipUsed; }
+	
+	public long getCategory() {
+		return category;
+	}
+	public void setCategory(long category) {
+		this.category = category;
+	}
+	
+	public int getTimeLine() {
+		return timeLine;
+	}
+	public void setTimeLine(int timeline) {
+		this.timeLine = timeline;
+	}
+	
 	public int getQuestionNumber() {
 		return questionNumber;
 	}
@@ -26,36 +39,6 @@ public class Question implements Serializable {
 		this.questionNumber = questionNumber;
 	}
 	
-	public String getStatement() {
-		return statement;
-	}
-	public void setStatement(String statement) {
-		this.statement = statement;
-	}
-	public String getOptionA() {
-		return optionA;
-	}
-	public void setOptionA(String optionA) {
-		this.optionA = optionA;
-	}
-	public String getOptionB() {
-		return optionB;
-	}
-	public void setOptionB(String optionB) {
-		this.optionB = optionB;
-	}
-	public String getOptionC() {
-		return optionC;
-	}
-	public void setOptionC(String optionC) {
-		this.optionC = optionC;
-	}
-	public String getOptionD() {
-		return optionD;
-	}
-	public void setOptionD(String optionD) {
-		this.optionD = optionD;
-	}
 	public String getnStatement() {
 		return nStatement;
 	}
@@ -98,6 +81,10 @@ public class Question implements Serializable {
 	public void setQuestionStartTime(long questionStartTime) {
 		this.questionStartTime = questionStartTime;
 	}
-	public boolean isFlipUsed() { return isFlipUsed; }
-	public void setFlipUsed(boolean isFlipUsed) { this.isFlipUsed = isFlipUsed; }
+	@Override
+	public String toString() {
+		return "Question [category=" + category + ", timeLine=" + timeLine + ", nStatement=" + nStatement
+				+ ", nOptionA=" + nOptionA + ", nOptionB=" + nOptionB + ", nOptionC=" + nOptionC + ", nOptionD="
+				+ nOptionD + ", correctOption=" + correctOption + "]";
+	}
 }

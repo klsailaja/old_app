@@ -134,8 +134,8 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
         System.out.println("In setBaseParams");
         switch (fragmentIndex) {
             case 1: {
-                getGamesTask = Request.getFutureGames();
-                getGamesStatusTask = Request.getFutureGamesStatusTask();
+                getGamesTask = Request.getFutureGames(1);
+                getGamesStatusTask = Request.getFutureGamesStatusTask(1);
                 break;
             }
             case 2: {
@@ -144,8 +144,8 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
                 if (userProfile != null) {
                     userProfileId = userProfile.getId();
                 }
-                getGamesTask = Request.getEnrolledGames(userProfileId);
-                getGamesStatusTask = Request.getEnrolledGamesStatus(userProfileId);
+                getGamesTask = Request.getEnrolledGames(2,userProfileId);
+                getGamesStatusTask = Request.getEnrolledGamesStatus(2, userProfileId);
                 break;
             }
         }
@@ -160,6 +160,12 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
     public void handleResponse(int reqId, boolean exceptionThrown, boolean isAPIException, final Object response, Object helperObject) {
         System.out.println("In handleResponse" + reqId);
         if((exceptionThrown) && (!isAPIException)) {
+            if (fetchTask != null) {
+                fetchTask.cancel(true);
+            }
+            if (pollerTask != null) {
+                pollerTask.cancel(true);
+            }
             Runnable run = () -> {
                 String error = (String) response;
                 Utils.showMessage("Error", error, getContext(), null);

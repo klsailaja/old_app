@@ -5,9 +5,11 @@ import android.app.AlertDialog;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.PopupMenu;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -23,18 +25,18 @@ import com.ab.telugumoviequiz.common.Scheduler;
 import com.ab.telugumoviequiz.common.UserDetails;
 import com.ab.telugumoviequiz.common.Utils;
 import com.ab.telugumoviequiz.main.UserProfile;
-import com.ab.telugumoviequiz.referals.ReferalDetails;
-import com.ab.telugumoviequiz.referals.ReferalViewAdapter;
-import com.ab.telugumoviequiz.referals.UserReferal;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TransactionsView extends BaseFragment implements View.OnClickListener, CallbackResponse {
+public class TransactionsView extends BaseFragment implements PopupMenu.OnMenuItemClickListener,
+        View.OnClickListener, CallbackResponse {
+
     private AlertDialog alertDialog;
-    private int rowCount = 0;
+    private int startPosOffset = 0;
     private ViewAdapter tableAdapter;
     private final List<MyTransaction> tableData = new ArrayList<>();
+    private int accountType = -1;
 
     private void handleListeners(View.OnClickListener listener) {
         View view = getView();
@@ -46,6 +48,9 @@ public class TransactionsView extends BaseFragment implements View.OnClickListen
 
         prevButton.setOnClickListener(listener);
         nextButton.setOnClickListener(listener);
+
+        Button filterAccType = view.findViewById(R.id.filterAccType);
+        filterAccType.setOnClickListener(listener);
     }
 
     private void fetchRecords() {
@@ -56,7 +61,7 @@ public class TransactionsView extends BaseFragment implements View.OnClickListen
         alertDialog.show();
 
         UserProfile userProfile = UserDetails.getInstance().getUserProfile();
-        GetTask<TransactionsHolder> request = Request.getUserTransactions(userProfile.getId(), rowCount, -1);
+        GetTask<TransactionsHolder> request = Request.getUserTransactions(userProfile.getId(), startPosOffset, accountType);
         request.setCallbackResponse(this);
         Scheduler.getInstance().submit(request);
     }
@@ -135,13 +140,40 @@ public class TransactionsView extends BaseFragment implements View.OnClickListen
     @Override
     public void onClick(View view) {
         int id = view.getId();
-        int maxRowCount = 10;
+        int maxRowCount = 5;
         if (id == R.id.myreferals_prev_but) {
-            rowCount = rowCount - maxRowCount;
+            startPosOffset = startPosOffset - maxRowCount;
+            fetchRecords();
         } else if (id == R.id.myreferals_next_but) {
-            rowCount = rowCount + maxRowCount;
+            startPosOffset = startPosOffset + maxRowCount;
+            fetchRecords();
+        } else if (id == R.id.filterAccType) {
+            CharSequence[] accTypes = getActivity().getResources().getTextArray(R.array.myreferal_acc_options);
+            PopupMenu popupMenu = new PopupMenu(getActivity(), view);
+            for (CharSequence s : accTypes) {
+                MenuItem item = popupMenu.getMenu().add(s);
+                item.setActionView(view);
+            }
+            popupMenu.setOnMenuItemClickListener(this);
+            popupMenu.show();
         }
+    }
+
+    @Override
+    public boolean onMenuItemClick (MenuItem item) {
+        Button filterBut = (Button) item.getActionView();
+        String text = (String) item.getTitle();
+        accountType = -1;
+        if (text.contains("Main")) {
+            accountType = 1;
+        } else if (text.contains("Win")) {
+            accountType = 2;
+        } else if (text.contains("Referral")) {
+            accountType = 3;
+        }
+        startPosOffset = 0;
         fetchRecords();
+        return true;
     }
 
     @Override
