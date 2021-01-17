@@ -30,11 +30,19 @@ public class ViewLeaderboard extends DialogFragment implements View.OnClickListe
     private final boolean isGameOver;
     private final List<PlayerSummary> list;
     private final Context context;
+    private boolean fromHistory;
 
     public ViewLeaderboard(Context context, boolean isGameOver, List<PlayerSummary> list) {
         this.context = context;
         this.isGameOver = isGameOver;
         this.list = list;
+    }
+
+    public ViewLeaderboard(Context context, boolean isGameOver, List<PlayerSummary> list, boolean fromHistory) {
+        this.context = context;
+        this.isGameOver = isGameOver;
+        this.list = list;
+        this.fromHistory = true;
     }
 
     @Override
@@ -45,8 +53,10 @@ public class ViewLeaderboard extends DialogFragment implements View.OnClickListe
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getDialog() != null) {
-            getDialog().setTitle("Closes automatically after 15 secs");
+        if (!fromHistory) {
+            if (getDialog() != null) {
+                getDialog().setTitle("Closes automatically after 15 secs");
+            }
         }
         View root = inflater.inflate(R.layout.user_answers, container, false);
         TableLayout tableLayout = root.findViewById(R.id.tableInvoices);
@@ -93,7 +103,7 @@ public class ViewLeaderboard extends DialogFragment implements View.OnClickListe
             tv.setLayoutParams(new
                     TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
                     TableRow.LayoutParams.WRAP_CONTENT));
-            tv.setGravity(Gravity.START);
+            tv.setGravity(Gravity.CENTER);
             //tv.setPadding(5, 15, 0, 15);
             if (i == -1) {
                 tv.setText(heading1);
@@ -122,7 +132,7 @@ public class ViewLeaderboard extends DialogFragment implements View.OnClickListe
                         TableRow.LayoutParams.MATCH_PARENT));
                 tv2.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
             }
-            tv2.setGravity(Gravity.START);
+            tv2.setGravity(Gravity.CENTER);
             //tv2.setPadding(5, 15, 0, 15);
             if (i == -1) {
                 tv2.setText(heading2);
@@ -150,7 +160,7 @@ public class ViewLeaderboard extends DialogFragment implements View.OnClickListe
                         TableRow.LayoutParams.MATCH_PARENT));
                 tv3.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
             }
-            tv3.setGravity(Gravity.START);
+            tv3.setGravity(Gravity.CENTER);
             //tv3.setPadding(5, 15, 0, 15);
             if (i == -1) {
                 tv3.setText(heading3);
@@ -183,7 +193,7 @@ public class ViewLeaderboard extends DialogFragment implements View.OnClickListe
                         TableRow.LayoutParams.MATCH_PARENT));
                 tv4.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
             }
-            tv4.setGravity(Gravity.START);
+            tv4.setGravity(Gravity.CENTER);
             //tv4.setPadding(5, 15, 0, 15);
             if (i == -1) {
                 tv4.setText(heading4);
@@ -214,7 +224,7 @@ public class ViewLeaderboard extends DialogFragment implements View.OnClickListe
                     tv5.setTextColor(Color.parseColor("#FF0000"));
                 }
             }
-            tv5.setGravity(Gravity.START);
+            tv5.setGravity(Gravity.CENTER);
             //tv5.setPadding(5, 15, 0, 15);
             if (i == -1) {
                 tv5.setText(heading5);

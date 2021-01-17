@@ -12,8 +12,7 @@ public class PlayerSummary {
 	public int getCorrectCount() {
 		return correctCount;
 	}
-	
-	public void setCurrentCount(int correctCount) {
+	public void setCorrectCount(int correctCount) {
 		this.correctCount = correctCount;
 	}
 	
@@ -23,24 +22,28 @@ public class PlayerSummary {
 	public void setUserProfileId(long userProfileId) {
 		this.userProfileId = userProfileId;
 	}
+
 	public String getUserName() {
 		return userName;
 	}
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
+
 	public int getRank() {
 		return rank;
 	}
 	public void setRank(int rank) {
 		this.rank = rank;
 	}
+
 	public long getTotalTime() {
 		return totalTime;
 	}
 	public void setTotalTime(long totalTime) {
 		this.totalTime = totalTime;
 	}
+
 	public int getAccountUsed() {
 		return accountUsed;
 	}
@@ -51,13 +54,8 @@ public class PlayerSummary {
 	public int getAmountWon() {
 		return amountWon;
 	}
-
 	public void setAmountWon(int amountWon) {
 		this.amountWon = amountWon;
-	}
-
-	public void setCorrectCount(int correctCount) {
-		this.correctCount = correctCount;
 	}
 
 	@Override

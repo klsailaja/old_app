@@ -20,6 +20,7 @@ import com.ab.telugumoviequiz.R;
 import com.ab.telugumoviequiz.common.Keys;
 import com.ab.telugumoviequiz.games.QuestionFragment;
 import com.ab.telugumoviequiz.games.ShowGames;
+import com.ab.telugumoviequiz.history.HistoryView;
 import com.ab.telugumoviequiz.referals.MyReferralsView;
 import com.ab.telugumoviequiz.transactions.TransactionsView;
 import com.google.android.material.navigation.NavigationView;
@@ -76,6 +77,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             launchView(Navigator.TRANSACTIONS_VIEW, params, false);
         } else if (id == R.id.nav_referals) {
             launchView(Navigator.REFERALS_VIEW, params, false);
+        } else if (id == R.id.nav_history_games) {
+            launchView(Navigator.HISTORY_VIEW, params, false);
         }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -129,6 +132,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             case Navigator.TRANSACTIONS_VIEW: {
                 fragment = new TransactionsView();
+                break;
+            }
+            case Navigator.HISTORY_VIEW: {
+                fragment = new HistoryView();
                 break;
             }
         }

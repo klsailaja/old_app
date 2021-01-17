@@ -20,9 +20,6 @@
             android:id="@+id/nav_referals"
             android:title="@string/menu_referal" />
         <item
-            android:id="@+id/nav_history"
-            android:title="@string/menu_history" />
-        <item
             android:id="@+id/nav_transactions"
             android:title="@string/menu_transactions" />
         <item

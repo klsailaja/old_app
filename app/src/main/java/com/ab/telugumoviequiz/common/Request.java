@@ -8,10 +8,10 @@ import com.ab.telugumoviequiz.games.GetGamesTask;
 import com.ab.telugumoviequiz.games.PlayerAnswer;
 import com.ab.telugumoviequiz.games.PlayerSummary;
 import com.ab.telugumoviequiz.games.PrizeDetail;
+import com.ab.telugumoviequiz.history.UserHistoryGameDetails;
 import com.ab.telugumoviequiz.main.LoginData;
 import com.ab.telugumoviequiz.main.UserProfile;
 import com.ab.telugumoviequiz.referals.ReferalDetails;
-import com.ab.telugumoviequiz.transactions.MyTransaction;
 import com.ab.telugumoviequiz.transactions.TransactionsHolder;
 
 public class Request {
@@ -30,6 +30,7 @@ public class Request {
     public static final int LEADER_BOARD = 107;
     public static final int USER_REFERALS_LIST = 110;
     public static final int USER_TRANSACTIONS = 111;
+    public static final int USER_HISTORY_GAMES = 112;
 
     public static final int SHOW_QUESTION = 1000;
     public static final int SHOW_USER_ANSWERS = 2000;
@@ -42,87 +43,81 @@ public class Request {
 
     public static GetTask<GameStatus> getSingleGameStatus(long gameId) {
         String uri = baseUri + "/game/" + gameId + "/status";
-        GetTask<GameStatus> getSingleGameStatusTask = new GetTask<>(uri, SINGLE_GAME_STATUS, null,
+        return new GetTask<>(uri, SINGLE_GAME_STATUS, null,
                 GameStatus.class, null);
-        return getSingleGameStatusTask;
     }
     public static GetTask<PrizeDetail[]> getPrizeDetails(long gameId) {
         String uri = baseUri + "/game/" + gameId + "/prize";
-        GetTask<PrizeDetail[]> getPrizeDetailsTask = new GetTask<>(uri, PRIZE_DETAILS, null,
+        return new GetTask<>(uri, PRIZE_DETAILS, null,
                 PrizeDetail[].class, null);
-        return getPrizeDetailsTask;
     }
     public static GetTask<PlayerSummary[]> getLeaderBoard(long gameId, int completedQNo) {
         String uri = baseUri + "/game/" + gameId + "/leaderboard/" + completedQNo;
-        GetTask<PlayerSummary[]> getLeaderBoardTask = new GetTask<>(uri, LEADER_BOARD, null,
+        return new GetTask<>(uri, LEADER_BOARD, null,
                 PlayerSummary[].class, null);
-        return getLeaderBoardTask;
     }
     public static GetGamesTask<GameDetails[]> getFutureGames(int gameType) {
         String uri = baseUri + "/game/" + gameType + "/future";
-        GetGamesTask<GameDetails[]> getFutureGames = new GetGamesTask<>(uri, GET_FUTURE_GAMES,
+        return new GetGamesTask<>(uri, GET_FUTURE_GAMES,
                 null, GameDetails[].class, null);
-        return getFutureGames;
     }
     public static GetTask<GameStatusHolder> getFutureGamesStatusTask(int gameType) {
         String uri = baseUri + "/game/" + gameType + "/allstatus";
-        GetTask<GameStatusHolder> getFutureStatusTask = new GetTask<>(uri, GET_FUTURE_GAMES_STATUS, null,
+        return new GetTask<>(uri, GET_FUTURE_GAMES_STATUS, null,
                 GameStatusHolder.class, null);
-        return getFutureStatusTask;
     }
     public static GetTask<GameDetails[]> getEnrolledGames(int gameType, long userProfileId) {
         String uri = baseUri + "/game/" + gameType + "/enrolled/" + userProfileId;
-        GetTask<GameDetails[]> getFutureGames = new GetTask<>(uri, GET_ENROLLED_GAMES, null,
+        return new GetTask<>(uri, GET_ENROLLED_GAMES, null,
                 GameDetails[].class, null);
-        return getFutureGames;
     }
     public static GetTask<GameStatusHolder> getEnrolledGamesStatus(int gameType, long userProfileId) {
         String uri = baseUri + "/game/" + gameType + "/enrolled/" + userProfileId + "/status";
-        GetTask<GameStatusHolder> getFutureStatusTask = new GetTask<>(uri, GET_ENROLLED_GAMES_STATUS, null,
+        return new GetTask<>(uri, GET_ENROLLED_GAMES_STATUS, null,
                 GameStatusHolder.class, null);
-        return getFutureStatusTask;
     }
 
     public static PostTask<GameOperation, Boolean> gameJoinTask(long gameId) {
         String uri = baseUri + "/game/" + gameId + "/join";
-        PostTask<GameOperation, Boolean> joinTask = new PostTask<>(uri, JOIN_GAME,
+        return new PostTask<>(uri, JOIN_GAME,
                 null, null, Boolean.class);
-        return joinTask;
     }
     public static PostTask<PlayerAnswer, String> submitAnswerTask(long gameId) {
         String uri = baseUri + "/game/" + gameId + "/submit";
-        PostTask<PlayerAnswer, String> submitAnswer = new PostTask<>(uri, SUBMIT_ANSWER_REQ,
+        return new PostTask<>(uri, SUBMIT_ANSWER_REQ,
                 null, null, String.class);
-        return submitAnswer;
     }
 
     /* Login Screen related */
     public static PostTask<LoginData, UserProfile> getLogin() {
         String uri = baseUri + "/user/login";
-        PostTask<LoginData, UserProfile> loginTask = new PostTask<>(uri, LOGIN_REQ,
+        return new PostTask<>(uri, LOGIN_REQ,
                 null, null, UserProfile.class);
-        return loginTask;
     }
     public static PostTask<UserProfile, UserProfile> getCreateUserProfile() {
         String uri = baseUri + "/user";
-        PostTask<UserProfile, UserProfile> createUserProfile = new PostTask<>(uri, CREATE_USER_PROFILE,
+        return new PostTask<>(uri, CREATE_USER_PROFILE,
                 null, null, UserProfile.class);
-        return createUserProfile;
     }
 
     /* My Referals related */
     public static GetTask<ReferalDetails> getUserReferalDetails(String referalCode, int startRowNo) {
         String uri = baseUri + "/user/mreferal/" + referalCode + "/" + startRowNo;
-        GetTask<ReferalDetails> getReferalsTask = new GetTask<>(uri, USER_REFERALS_LIST, null,
+        return new GetTask<>(uri, USER_REFERALS_LIST, null,
                 ReferalDetails.class, null);
-        return getReferalsTask;
     }
 
     /* Transaction Related */
     public static GetTask<TransactionsHolder> getUserTransactions(long userProfileId, int startRowNo, int accType) {
         String uri = baseUri + "/user/transaction/" + userProfileId + "/" + startRowNo + "/" + accType;
-        GetTask<TransactionsHolder> getTransactionsTask = new GetTask<>(uri, USER_TRANSACTIONS, null,
+        return new GetTask<>(uri, USER_TRANSACTIONS, null,
                 TransactionsHolder.class, null);
-        return getTransactionsTask;
+    }
+
+    /* User History Games Related */
+    public static GetTask<UserHistoryGameDetails> getUserHistoryGames(long userProfileId, int startRowNo) {
+        String uri = baseUri + "/game/past/" + userProfileId + "/" + startRowNo;
+        return new GetTask<>(uri, USER_HISTORY_GAMES, null,
+                UserHistoryGameDetails.class, null);
     }
 }

@@ -1,17 +1,16 @@
-package com.ab.telugumoviequiz.transactions;
+package com.ab.telugumoviequiz.history;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.PopupMenu;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,20 +23,21 @@ import com.ab.telugumoviequiz.common.Request;
 import com.ab.telugumoviequiz.common.Scheduler;
 import com.ab.telugumoviequiz.common.UserDetails;
 import com.ab.telugumoviequiz.common.Utils;
+import com.ab.telugumoviequiz.games.PlayerSummary;
+import com.ab.telugumoviequiz.games.ViewLeaderboard;
 import com.ab.telugumoviequiz.main.UserProfile;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.StringTokenizer;
 
-public class TransactionsView extends BaseFragment implements PopupMenu.OnMenuItemClickListener,
-        View.OnClickListener, CallbackResponse {
+public class HistoryView extends BaseFragment implements View.OnClickListener, CallbackResponse {
 
     private AlertDialog alertDialog;
     private int startPosOffset = 0;
     private ViewAdapter tableAdapter;
-    private final List<MyTransaction> tableData = new ArrayList<>();
-    private int accountType = -1;
+    private final List<GameResults> tableData = new ArrayList<>();
 
     private void handleListeners(View.OnClickListener listener) {
         View view = getView();
@@ -49,9 +49,6 @@ public class TransactionsView extends BaseFragment implements PopupMenu.OnMenuIt
 
         prevButton.setOnClickListener(listener);
         nextButton.setOnClickListener(listener);
-
-        Button filterAccType = view.findViewById(R.id.filterAccType);
-        filterAccType.setOnClickListener(listener);
     }
 
     private void fetchRecords() {
@@ -62,13 +59,12 @@ public class TransactionsView extends BaseFragment implements PopupMenu.OnMenuIt
         alertDialog.show();
 
         UserProfile userProfile = UserDetails.getInstance().getUserProfile();
-        GetTask<TransactionsHolder> request = Request.getUserTransactions(userProfile.getId(), startPosOffset, accountType);
+        GetTask<UserHistoryGameDetails> request = Request.getUserHistoryGames(userProfile.getId(), startPosOffset);
         request.setCallbackResponse(this);
         Scheduler.getInstance().submit(request);
     }
 
-    private void populateTable(TransactionsHolder details) {
-
+    private void populateTable(UserHistoryGameDetails details) {
         View view = getView();
         if (view == null) {
             return;
@@ -78,12 +74,11 @@ public class TransactionsView extends BaseFragment implements PopupMenu.OnMenuIt
 
         prevButton.setEnabled(details.isPrevEnabled());
         nextButton.setEnabled(details.isNextEnabled());
-        List<MyTransaction> list = details.getTransactionsList();
+        List<GameResults> list = details.getHistoryGames();
         tableData.clear();
         tableData.addAll(list);
         tableAdapter.notifyDataSetChanged();
     }
-
 
     @Override
     public void onCreate(Bundle bundle) {
@@ -97,24 +92,21 @@ public class TransactionsView extends BaseFragment implements PopupMenu.OnMenuIt
         int[] points = Utils.getScreenWidth(getContext());
         ViewAdapter.screenWidth = points[0];
 
-        String [] tableHeadings = new String[8];
+        String [] tableHeadings = new String[5];
         Resources resources = getResources();
-        tableHeadings[0] = resources.getString(R.string.transactionview_col1);
-        tableHeadings[1] = resources.getString(R.string.transactionview_col2);
-        tableHeadings[2] = resources.getString(R.string.transactionview_col3);
-        tableHeadings[3] = resources.getString(R.string.transactionview_col4);
-        tableHeadings[4] = resources.getString(R.string.transactionview_col5);
-        tableHeadings[5] = resources.getString(R.string.transactionview_col6);
-        tableHeadings[6] = resources.getString(R.string.transactionview_col7);
-        tableHeadings[7] = resources.getString(R.string.transactionview_col8);
+        tableHeadings[0] = resources.getString(R.string.history_games_col1);
+        tableHeadings[1] = resources.getString(R.string.history_games_col2);
+        tableHeadings[2] = resources.getString(R.string.history_games_col3);
+        tableHeadings[3] = resources.getString(R.string.history_games_col4);
+        tableHeadings[4] = resources.getString(R.string.history_games_col5);
 
-        View root = inflater.inflate(R.layout.mytrans, container, false);
+        View root = inflater.inflate(R.layout.myhistory, container, false);
         RecyclerView recyclerView = root.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(mLayoutManager);
-        tableAdapter = new ViewAdapter(tableData, tableHeadings);
+        tableAdapter = new ViewAdapter(tableData, tableHeadings, this);
         recyclerView.setAdapter(tableAdapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         return root;
@@ -141,40 +133,37 @@ public class TransactionsView extends BaseFragment implements PopupMenu.OnMenuIt
     @Override
     public void onClick(View view) {
         int id = view.getId();
-        int maxRowCount = 5;
+        int maxRowCount = 10;
         if (id == R.id.myreferals_prev_but) {
             startPosOffset = startPosOffset - maxRowCount;
             fetchRecords();
         } else if (id == R.id.myreferals_next_but) {
             startPosOffset = startPosOffset + maxRowCount;
             fetchRecords();
-        } else if (id == R.id.filterAccType) {
-            Resources resources = Objects.requireNonNull(getActivity()).getResources();
-            CharSequence[] accTypes = resources.getTextArray(R.array.myreferal_acc_options);
-            PopupMenu popupMenu = new PopupMenu(getActivity(), view);
-            for (CharSequence s : accTypes) {
-                MenuItem item = popupMenu.getMenu().add(s);
-                item.setActionView(view);
-            }
-            popupMenu.setOnMenuItemClickListener(this);
-            popupMenu.show();
-        }
-    }
+        } else if (id == R.id.col5) {
+            String winList = (String) view.getTag();
+            List<PlayerSummary> winnersList = new ArrayList<>(10);
+            StringTokenizer winnerTokenizer = new StringTokenizer(winList, ":");
+            while (winnerTokenizer.hasMoreTokens()) {
+                String token = winnerTokenizer.nextToken();
+                StringTokenizer localTokenizer = new StringTokenizer(token, ";");
 
-    @Override
-    public boolean onMenuItemClick (MenuItem item) {
-        String text = (String) item.getTitle();
-        accountType = -1;
-        if (text.contains("Main")) {
-            accountType = 1;
-        } else if (text.contains("Win")) {
-            accountType = 2;
-        } else if (text.contains("Referral")) {
-            accountType = 3;
+                PlayerSummary playerSummary = new PlayerSummary();
+
+                playerSummary.setUserName(localTokenizer.nextToken());
+                playerSummary.setRank(Integer.parseInt(localTokenizer.nextToken()));
+                playerSummary.setCorrectCount(Integer.parseInt(localTokenizer.nextToken()));
+                String totalTimeStr = localTokenizer.nextToken();
+                playerSummary.setTotalTime(Long.parseLong(totalTimeStr));
+                playerSummary.setAmountWon(Integer.parseInt(localTokenizer.nextToken()));
+
+                winnersList.add(playerSummary);
+            }
+
+            ViewLeaderboard viewLeaderboard = new ViewLeaderboard(getContext(), true, winnersList, true);
+            FragmentManager fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
+            viewLeaderboard.show(fragmentManager, "dialog");
         }
-        startPosOffset = 0;
-        fetchRecords();
-        return true;
     }
 
     @Override
@@ -193,12 +182,12 @@ public class TransactionsView extends BaseFragment implements PopupMenu.OnMenuIt
             showErrShowHomeScreen((String) response);
             return;
         }
-        if (reqId == Request.USER_TRANSACTIONS) {
+        if (reqId == Request.USER_HISTORY_GAMES) {
             if (isAPIException) {
                 showErrShowHomeScreen((String) response);
                 return;
             }
-            final TransactionsHolder result = (TransactionsHolder) response;
+            final UserHistoryGameDetails result = (UserHistoryGameDetails) response;
             run = () -> populateTable(result);
             if (activity != null) {
                 activity.runOnUiThread(run);
