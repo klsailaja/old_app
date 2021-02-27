@@ -12,17 +12,17 @@ public class GameDetails implements Serializable {
 	private int maxCapacity = 10;
 	private long startTime;
 	private int gameType;
-	private String celebrityName;
+	private String celabrityName;
 	private int status;
 	private int tempGameId;
 	private List<Question> gameQuestions;
 	private Question flipQuestion;
 	
-	public String getCelebrityName() {
-		return celebrityName;
+	public String getCelabrityName() {
+		return celabrityName;
 	}
-	public void setCelebrityName(String celebrityName) {
-		this.celebrityName = celebrityName;
+	public void setCelabrityName(String celabrityName) {
+		this.celabrityName = celabrityName;
 	}
 	
 	public int getTempGameId() {

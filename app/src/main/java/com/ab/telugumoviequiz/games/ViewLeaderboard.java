@@ -42,7 +42,7 @@ public class ViewLeaderboard extends DialogFragment implements View.OnClickListe
         this.context = context;
         this.isGameOver = isGameOver;
         this.list = list;
-        this.fromHistory = true;
+        this.fromHistory = fromHistory;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.ab.quiz.constants;
+package com.ab.telugumoviequiz.constants;
 
 public enum WithdrawReqState {
 	OPEN (1), CLOSED(2), CANCELLED(3);

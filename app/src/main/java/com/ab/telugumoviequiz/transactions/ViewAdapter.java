@@ -131,10 +131,10 @@ public class ViewAdapter extends RecyclerView.Adapter<ViewAdapter.MyViewHolder> 
             holder.accTypeView.setText(accTypeName);
 
             int signVal = -1;
-            if ((myTransaction.getTransactionType() == 1) || (myTransaction.getTransactionType() == 3)
+            if ((myTransaction.getTransactionType() == 1) || (myTransaction.getTransactionType() == 4)
                     || (myTransaction.getTransactionType() == 5)) {
                 signVal = 1; // +
-            } else if ((myTransaction.getTransactionType() == 2) || (myTransaction.getTransactionType() == 4)
+            } else if ((myTransaction.getTransactionType() == 2) || (myTransaction.getTransactionType() == 3)
                     || (myTransaction.getTransactionType() == 6)) {
                 signVal = -1; // -
             }

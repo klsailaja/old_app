@@ -49,7 +49,8 @@ public class Utils {
         return null;
     }
 
-    public static void showMessage(String title, String message, final Context context, final DialogAction dialogAction) {
+    public static void showMessage(String title, String message, final Context context,
+                                   final DialogAction dialogAction, int id, Object userObject) {
         final AlertDialog alertDialog = new AlertDialog.Builder(context).create();
         alertDialog.setTitle(title);
         alertDialog.setMessage(message);
@@ -58,10 +59,14 @@ public class Utils {
             alertDialog.dismiss();
             alertDialog.cancel();
             if (dialogAction != null) {
-                dialogAction.doAction();
+                dialogAction.doAction(id, userObject);
             }
         });
         alertDialog.show();
+    }
+
+    public static void showMessage(String title, String message, final Context context, final DialogAction dialogAction) {
+        showMessage(title, message, context, dialogAction, -1, null);
     }
 
     public static String getPasswordHash(String password) {

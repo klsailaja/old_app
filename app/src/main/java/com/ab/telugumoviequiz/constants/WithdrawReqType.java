@@ -1,4 +1,4 @@
-package com.ab.quiz.constants;
+package com.ab.telugumoviequiz.constants;
 
 public enum WithdrawReqType {
 	BY_PHONE (1), BY_BANK (2);
