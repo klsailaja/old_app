@@ -13,6 +13,8 @@ import com.ab.telugumoviequiz.main.LoginData;
 import com.ab.telugumoviequiz.main.UserProfile;
 import com.ab.telugumoviequiz.referals.ReferalDetails;
 import com.ab.telugumoviequiz.transactions.TransactionsHolder;
+import com.ab.telugumoviequiz.withdraw.GetReceiptTask;
+import com.ab.telugumoviequiz.withdraw.WithdrawRequestsHolder;
 
 public class Request {
     public static String baseUri = null;
@@ -31,6 +33,9 @@ public class Request {
     public static final int USER_REFERALS_LIST = 110;
     public static final int USER_TRANSACTIONS = 111;
     public static final int USER_HISTORY_GAMES = 112;
+    public static final int USER_WITHDRAW_LIST = 113;
+    public static final int WITHDRAW_CANCEL = 114;
+    public static final int WITHDRAW_RECEIPT = 115;
 
     public static final int SHOW_QUESTION = 1000;
     public static final int SHOW_USER_ANSWERS = 2000;
@@ -119,5 +124,22 @@ public class Request {
         String uri = baseUri + "/game/past/" + userProfileId + "/" + startRowNo;
         return new GetTask<>(uri, USER_HISTORY_GAMES, null,
                 UserHistoryGameDetails.class, null);
+    }
+
+    /* Withdraw Operations Related */
+    public static GetTask<WithdrawRequestsHolder> getWDReqs(long userProfileId, int startRowNo, int status) {
+        String uri = baseUri + "/wd/" + userProfileId + "/" + startRowNo + "/" + status;
+        return new GetTask<>(uri, USER_WITHDRAW_LIST, null,
+                WithdrawRequestsHolder.class, null);
+    }
+
+    public static GetTask<Boolean> getCancelReq(long userProfileId, String refId) {
+        String uri = baseUri + "/wd/cancel/" + userProfileId + "/" + refId;
+        return new GetTask<>(uri, WITHDRAW_CANCEL, null, Boolean.class, null);
+    }
+
+    public static GetTask<byte[]> getReceiptTask(long receiptId, int requestType) {
+        String uri = baseUri + "/wd/receipt/" + receiptId;
+        return new GetReceiptTask<>(uri, WITHDRAW_RECEIPT, null, byte[].class, null);
     }
 }

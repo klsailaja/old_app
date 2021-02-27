@@ -1,5 +1,5 @@
 package com.ab.telugumoviequiz.common;
 
 public interface DialogAction {
-    void doAction();
+    void doAction(int calledId, Object userObject);
 }
