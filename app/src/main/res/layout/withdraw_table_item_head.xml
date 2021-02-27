@@ -9,7 +9,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:gravity="center"
-        android:text="@string/table_view_col1_xml"
+        android:text="@string/wd_col1"
         android:textSize="15sp" />
     <TextView
         android:id="@+id/col2"
@@ -17,7 +17,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:gravity="center"
-        android:text="@string/table_view_col2_xml"
+        android:text="@string/wd_col2"
         android:textSize="15sp" />
 
     <TextView
@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
-        android:text="@string/table_view_col3_xml"
+        android:text="@string/wd_col3"
         android:textSize="15sp" />
     <TextView
         android:id="@+id/col4"
@@ -34,7 +34,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:gravity="center"
-        android:text="@string/table_view_col4_xml"
+        android:text="@string/wd_col4"
         android:textSize="15sp" />
     <TextView
         android:id="@+id/col5"
@@ -42,39 +42,22 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:gravity="center"
-        android:text="@string/table_view_col5_xml"
+        android:text="@string/wd_col5"
         android:textSize="15sp" />
-    <Button
+    <TextView
         android:id="@+id/col6"
         android:layout_width="1px"
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:gravity="center"
-        android:text="@string/table_view_col6_xml"
+        android:text="@string/wd_col6"
         android:textSize="15sp" />
-    <ImageButton
+    <TextView
         android:id="@+id/col7"
         android:layout_width="1px"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:scaleType="center"
-        android:src="@drawable/more_options"
-        android:contentDescription="@string/more_content" />
-    <TextView
-        android:id="@+id/col8"
-        android:layout_width="1px"
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:gravity="center"
-        android:text="@string/table_view_col5_xml"
-        android:textSize="15sp" />
-    <TextView
-        android:id="@+id/col9"
-        android:layout_width="1px"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:text="@string/table_view_col5_xml"
+        android:text="@string/wd_col7"
         android:textSize="15sp" />
  </LinearLayout>

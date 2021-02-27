@@ -1,4 +1,4 @@
-package com.ab.quiz.pojo;
+package com.ab.telugumoviequiz.withdraw;
 
 public class WithdrawReqByPhone {
 	private long id;

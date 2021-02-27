@@ -12,7 +12,7 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:text="@string/transactionview_intro"
-            android:id="@+id/myreferals_intro">
+            android:id="@+id/wd_intro">
         </TextView>
         <Button
             android:layout_marginTop="3dp"

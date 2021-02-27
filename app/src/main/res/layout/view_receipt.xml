@@ -8,13 +8,12 @@
         android:layout_above="@+id/user_answers_close_but"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <TableLayout
-            android:id="@+id/tableInvoices"
+        <ImageView
+            android:id="@+id/image"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="0dp"
-            android:stretchColumns="*">
-        </TableLayout>
+            android:layout_height="match_parent"
+            android:contentDescription="receipt"
+            android:scaleType="fitXY" />
     </ScrollView>
     <Button
         android:layout_width="wrap_content"

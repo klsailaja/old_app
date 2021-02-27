@@ -14,6 +14,9 @@
             android:id="@+id/nav_history_games"
             android:title="@string/menu_history_games" />
         <item
+            android:id="@+id/nav_withdraw_view"
+            android:title="@string/nav_withdraw_view" />
+        <item
             android:id="@+id/nav_chat"
             android:title="@string/menu_chat" />
         <item
