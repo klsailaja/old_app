@@ -1,5 +1,6 @@
 package com.ab.telugumoviequiz.common;
 
+import com.ab.telugumoviequiz.chat.Chat;
 import com.ab.telugumoviequiz.games.GameDetails;
 import com.ab.telugumoviequiz.games.GameOperation;
 import com.ab.telugumoviequiz.games.GameStatus;
@@ -36,6 +37,8 @@ public class Request {
     public static final int USER_WITHDRAW_LIST = 113;
     public static final int WITHDRAW_CANCEL = 114;
     public static final int WITHDRAW_RECEIPT = 115;
+    public static final int CHAT_BULK_FETCH = 120;
+    public static final int POST_CHAT_MSG = 121;
 
     public static final int SHOW_QUESTION = 1000;
     public static final int SHOW_USER_ANSWERS = 2000;
@@ -141,5 +144,11 @@ public class Request {
     public static GetTask<byte[]> getReceiptTask(long receiptId, int requestType) {
         String uri = baseUri + "/wd/receipt/" + receiptId;
         return new GetReceiptTask<>(uri, WITHDRAW_RECEIPT, null, byte[].class, null);
+    }
+
+    /* Chat feature related...*/
+    public static GetTask<Chat[]> getChatMessages(long statTime, long endTime) {
+        String uri = baseUri + "/chat/" + statTime + "/" + endTime;
+        return new GetTask<>(uri, CHAT_BULK_FETCH, null, Chat[].class, null);
     }
 }

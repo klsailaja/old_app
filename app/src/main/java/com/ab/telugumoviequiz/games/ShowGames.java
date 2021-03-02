@@ -131,7 +131,6 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
     }
 
     public void setBaseParams() {
-        System.out.println("In setBaseParams");
         switch (fragmentIndex) {
             case 1: {
                 getGamesTask = Request.getFutureGames(1);

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_marginTop="50dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TableLayout
+        android:layout_width="0dp"
+        android:layout_weight="0.40"
+        android:layout_height="match_parent"
+        android:stretchColumns="*"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
+        <TableRow android:padding="5dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/chat_invite_rate"
+                android:layout_column="1"
+                android:layout_span="1"
+                android:gravity="start"/>
+        </TableRow>
+        <TableRow android:padding="5dp">
+            <Spinner android:id="@+id/celeSpinner"
+                android:layout_width="wrap_content"
+                android:padding="2dp"
+                android:layout_column="1"
+                android:layout_height="wrap_content"/>
+            <Spinner android:id="@+id/rateSpinner"
+                android:layout_width="wrap_content"
+                android:layout_column="2"
+                android:padding="2dp"
+                android:layout_height="wrap_content"/>
+        </TableRow>
+        <TableRow android:padding="5dp">
+            <Spinner android:id="@+id/timeSpinner"
+                android:layout_width="wrap_content"
+                android:padding="5dp"
+                android:layout_column="1"
+                android:layout_height="wrap_content"/>
+            <Spinner android:id="@+id/gameIdSpinner"
+                android:layout_width="wrap_content"
+                android:layout_column="2"
+                android:padding="5dp"
+                android:layout_height="wrap_content"/>
+        </TableRow>
+        <TableRow android:padding="5dp">
+            <Button android:id="@+id/inviteBut"
+                android:layout_width="wrap_content"
+                android:padding="2dp"
+                android:layout_column="1"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_span="2"
+                android:layout_height="wrap_content"/>
+        </TableRow>
+        <TableRow
+            android:layout_width="match_parent"
+            android:background="@color/black"
+            android:layout_height="1dp">
+        </TableRow>
+        <TableRow android:padding="5dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/chat_reply_msg"
+                android:layout_column="1"
+                android:layout_span="1"
+                android:gravity="start"/>
+        </TableRow>
+        <TableRow android:padding="5dp">
+            <Spinner android:id="@+id/celeSpinnerReply"
+                android:layout_width="wrap_content"
+                android:padding="2dp"
+                android:layout_column="1"
+                android:layout_height="wrap_content"/>
+            <Spinner android:id="@+id/gameIdSpinnerReply"
+                android:layout_width="wrap_content"
+                android:layout_column="2"
+                android:padding="2dp"
+                android:layout_height="wrap_content"/>
+        </TableRow>
+        <TableRow android:padding="5dp">
+            <Button android:id="@+id/replyBut"
+                android:layout_width="wrap_content"
+                android:padding="2dp"
+                android:layout_column="1"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_span="2"
+                android:layout_height="wrap_content"/>
+        </TableRow>
+        <TableRow
+            android:layout_width="match_parent"
+            android:background="@color/black"
+            android:layout_height="1dp">
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="fill"
+                android:layout_span="2"/>
+        </TableRow>
+        <TableRow>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_span="2"/>
+        </TableRow>
+    </TableLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_marginTop="2dp"
+        android:id="@+id/recyclerView"
+        android:layout_width="0dp"
+        android:layout_weight="0.60"
+        android:layout_height="wrap_content"/>
+</LinearLayout>

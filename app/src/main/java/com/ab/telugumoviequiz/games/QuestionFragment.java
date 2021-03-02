@@ -78,6 +78,7 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
         buttonsView[2] = root.findViewById(R.id.optionC);
         buttonsView[3] = root.findViewById(R.id.optionD);
 
+        // Dangerous code....
         //Snackbar snackbar = Snackbar.make(timerView, successMsg, Snackbar.LENGTH_SHORT);
         //snackbar.show();
 

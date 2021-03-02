@@ -29,7 +29,7 @@ public class Scheduler {
 		scheduler.schedule(run, delay, timeUnit);
 	}
 	
-	public ScheduledFuture submitRepeatedTask(Runnable run, long initialDelay, long delay, TimeUnit unit) {
+	public ScheduledFuture<?> submitRepeatedTask(Runnable run, long initialDelay, long delay, TimeUnit unit) {
 		return scheduler.scheduleWithFixedDelay(run, initialDelay, delay, unit);
 	}
 	

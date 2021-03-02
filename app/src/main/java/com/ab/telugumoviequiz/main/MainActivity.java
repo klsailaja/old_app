@@ -17,6 +17,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.ab.telugumoviequiz.R;
+import com.ab.telugumoviequiz.chat.ChatView;
 import com.ab.telugumoviequiz.common.Keys;
 import com.ab.telugumoviequiz.games.QuestionFragment;
 import com.ab.telugumoviequiz.games.ShowGames;
@@ -82,6 +83,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             launchView(Navigator.HISTORY_VIEW, params, false);
         } else if (id == R.id.nav_withdraw_view) {
             launchView(Navigator.WITHDRAW_REQ_VIEW, params, false);
+        } else if (id == R.id.nav_chat) {
+            launchView(Navigator.CHAT_VIEW, params, false);
         }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -143,6 +146,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             case Navigator.WITHDRAW_REQ_VIEW: {
                 fragment = new WithdrawReqsView();
+                break;
+            } case Navigator.CHAT_VIEW: {
+                fragment = new ChatView();
                 break;
             }
         }

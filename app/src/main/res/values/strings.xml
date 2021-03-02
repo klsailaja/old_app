@@ -175,4 +175,20 @@
     </string-array>
     <string name="more_content">More options</string>
     <string name="wd_placed_success">Successfully Placed a Withdraw Request. Money will be credited in 2 to 3 days</string>
+
+    <!-- Chat Window -->
+    <string name="chat_invite_msg">Form an invite Msg</string>
+    <string name="chat_invite_rate">Rate:</string>
+    <string name="chat_invite_time">Game Time:</string>
+    <string name="chat_invite_game_id">Game Id:</string>
+    <string name="chat_invite_go">Form Message</string>
+    <string name="chat_reply_msg">Form a reply Msg</string>
+    <string name="chat_reply_preset">Your Msg</string>
+    <string-array name="chat_reply_preset_msgs">
+        <item>I am joining</item>
+        <item>Ok</item>
+    </string-array>
+
+
+
 </resources>
