@@ -15,7 +15,7 @@ public class ShowHomeScreen implements DialogAction {
     @Override
     public void doAction(int id, Object userObj) {
         if (mainActivity instanceof MainActivity) {
-            ((MainActivity) mainActivity).launchView(Navigator.MIXED_GAMES_VIEW, null, false);
+            ((MainActivity) mainActivity).launchView(Navigator.CURRENT_GAMES, null, false);
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.ab.telugumoviequiz.games;
 
+import android.app.Activity;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -128,6 +129,7 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
     }
 
     public void setBaseParams() {
+        System.out.println("fragmentIndex :" + fragmentIndex);
         switch (fragmentIndex) {
             case 1: {
                 getGamesTask = Request.getFutureGames(1);
@@ -169,6 +171,7 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
 
     @Override
     public void handleResponse(int reqId, boolean exceptionThrown, boolean isAPIException, final Object response, Object helperObject) {
+        System.out.println("show games In handleResponse" + reqId + ":" + exceptionThrown + ":" + isAPIException + ":" + response);
         if((exceptionThrown) && (!isAPIException)) {
             if (fetchTask != null) {
                 fetchTask.cancel(true);
@@ -207,12 +210,17 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
             case Request.GET_ENROLLED_GAMES:
             case Request.GET_FUTURE_GAMES: {
                 List<GameDetails> result = Arrays.asList((GameDetails[]) response);
+                System.out.println("result.size ()" + result.size());
                 lock.writeLock().lock();
                 gameDetailsList.clear();
                 gameDetailsList.addAll(result);
                 lock.writeLock().unlock();
                 Runnable run = () -> mAdapter.notifyDataSetChanged();
-                Objects.requireNonNull(getActivity()).runOnUiThread(run);
+                Activity parentAct = getActivity();
+                if (parentAct != null) {
+                    System.out.println("Model change...");
+                    parentAct.runOnUiThread(run);
+                }
                 break;
             }
             case Request.GET_FUTURE_GAMES_STATUS:

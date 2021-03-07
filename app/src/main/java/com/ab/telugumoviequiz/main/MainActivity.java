@@ -18,8 +18,8 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.ab.telugumoviequiz.R;
 import com.ab.telugumoviequiz.chat.ChatView;
-import com.ab.telugumoviequiz.common.Keys;
 import com.ab.telugumoviequiz.games.QuestionFragment;
+import com.ab.telugumoviequiz.games.SelectGameTypeView;
 import com.ab.telugumoviequiz.games.ShowGames;
 import com.ab.telugumoviequiz.history.HistoryView;
 import com.ab.telugumoviequiz.referals.MyReferralsView;
@@ -70,22 +70,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
         Bundle params = new Bundle();
         if (id == R.id.nav_current_games) {
-            params.putInt(Keys.GAMES_VIEW_GAME_TYPE, 1);
-            launchView(Navigator.MIXED_GAMES_VIEW, params, false);
+            launchView(Navigator.CURRENT_GAMES, params, false);
         } else if (id == R.id.nav_enrolled_games) {
-            params.putInt(Keys.GAMES_VIEW_GAME_TYPE, 2);
-            launchView(Navigator.MIXED_ENROLLED_GAMES_VIEW, params, false);
-        } else if (id == R.id.nav_transactions) {
-            launchView(Navigator.TRANSACTIONS_VIEW, params, false);
-        } else if (id == R.id.nav_referals) {
-            launchView(Navigator.REFERALS_VIEW, params, false);
+            launchView(Navigator.ENROLLED_GAMES, params, false);
         } else if (id == R.id.nav_history_games) {
             launchView(Navigator.HISTORY_VIEW, params, false);
-        } else if (id == R.id.nav_withdraw_view) {
+        }
+        else if (id == R.id.nav_transactions) {
+            launchView(Navigator.TRANSACTIONS_VIEW, params, false);
+        } else if (id == R.id.nav_referals) {
+            launchView(Navigator.REFERRALS_VIEW, params, false);
+        }  else if (id == R.id.nav_withdraw_view) {
             launchView(Navigator.WITHDRAW_REQ_VIEW, params, false);
         } else if (id == R.id.nav_chat) {
             launchView(Navigator.CHAT_VIEW, params, false);
         }
+
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -123,8 +123,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Fragment getFragment(String viewId) {
         Fragment fragment = null;
         switch (viewId) {
+            case Navigator.MIXED_GAMES_VIEW:
             case Navigator.MIXED_ENROLLED_GAMES_VIEW:
-            case Navigator.MIXED_GAMES_VIEW: {
+            case Navigator.CELEBRITY_GAMES_VIEW:
+            case Navigator.CELEBRITY_ENROLLED_GAMES_VIEW: {
                 fragment = new ShowGames();
                 break;
             }
@@ -132,7 +134,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 fragment = new QuestionFragment();
                 break;
             }
-            case Navigator.REFERALS_VIEW: {
+            case Navigator.CURRENT_GAMES: {
+                fragment = new SelectGameTypeView(SelectGameTypeView.FUTURE_GAMES);
+                break;
+            }
+            case Navigator.ENROLLED_GAMES: {
+                fragment = new SelectGameTypeView(SelectGameTypeView.ENROLLED_GAMES);
+                break;
+            }
+            case Navigator.REFERRALS_VIEW: {
                 fragment = new MyReferralsView();
                 break;
             }

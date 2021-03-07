@@ -24,6 +24,7 @@ public class Request {
     public static final int GET_ENROLLED_GAMES = 201;
     public static final int GET_FUTURE_GAMES_STATUS = 202;
     public static final int GET_ENROLLED_GAMES_STATUS = 203;
+    public static final int GET_CELEBRITY_NAME = 204;
     public static final int CREATE_USER_PROFILE = 100;
     public static final int LOGIN_REQ = 101;
     public static final int SUBMIT_ANSWER_REQ = 102;
@@ -51,6 +52,12 @@ public class Request {
     public static final int LOCK_TIME_OVER = 3000;
 
     /* Games related Tasks */
+    public static GetTask<String> getCelebrityNameTask() {
+        String uri = baseUri + "/game/celebrity";
+        return new GetTask<>(uri, GET_CELEBRITY_NAME, null,
+                String.class, null);
+    }
+
 
     public static GetTask<GameStatus> getSingleGameStatus(long gameId) {
         String uri = baseUri + "/game/" + gameId + "/status";
