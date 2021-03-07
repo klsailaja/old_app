@@ -56,7 +56,6 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
 
     @Override
     public void onCreate(Bundle bundle) {
-        System.out.println("In onCreate");
         super.onCreate(bundle);
         int index = 1;
         if (getArguments() != null) {
@@ -69,7 +68,6 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
     public View onCreateView(
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        System.out.println("In onCreateView");
         View root = inflater.inflate(R.layout.list_games_view, container, false);
         RecyclerView recyclerView = root.findViewById(R.id.recyclerView);
         mAdapter = new GameAdapter(gameDetailsList);
@@ -120,7 +118,6 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
 
     @Override
     public void onStop() {
-        System.out.println("In onStop");
         super.onStop();
         if (fetchTask != null) {
             fetchTask.cancel(true);
@@ -138,6 +135,21 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
                 break;
             }
             case 2: {
+                getGamesTask = Request.getFutureGames(2);
+                getGamesStatusTask = Request.getFutureGamesStatusTask(2);
+                break;
+            }
+            case 3: {
+                UserProfile userProfile = UserDetails.getInstance().getUserProfile();
+                long userProfileId = -1;
+                if (userProfile != null) {
+                    userProfileId = userProfile.getId();
+                }
+                getGamesTask = Request.getEnrolledGames(1,userProfileId);
+                getGamesStatusTask = Request.getEnrolledGamesStatus(1, userProfileId);
+                break;
+            }
+            case 4: {
                 UserProfile userProfile = UserDetails.getInstance().getUserProfile();
                 long userProfileId = -1;
                 if (userProfile != null) {
@@ -157,7 +169,6 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
 
     @Override
     public void handleResponse(int reqId, boolean exceptionThrown, boolean isAPIException, final Object response, Object helperObject) {
-        System.out.println("In handleResponse" + reqId);
         if((exceptionThrown) && (!isAPIException)) {
             if (fetchTask != null) {
                 fetchTask.cancel(true);

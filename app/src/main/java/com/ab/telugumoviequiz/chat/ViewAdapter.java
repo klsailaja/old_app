@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.telugumoviequiz.R;
@@ -19,6 +20,7 @@ public class ViewAdapter extends RecyclerView.Adapter<ViewAdapter.MyViewHolder> 
     private static final int MSG_TYPE_RIGHT = 1;
     private static final int MSG_TYPE_HEADING = 2;
     private final List<Chat> msgs;
+    static int screenWidth;
 
     public ViewAdapter(List<Chat> msgs) {
         this.msgs = msgs;
@@ -26,12 +28,14 @@ public class ViewAdapter extends RecyclerView.Adapter<ViewAdapter.MyViewHolder> 
 
     static class MyViewHolder extends RecyclerView.ViewHolder {
         TextView userNameView, msgView, timeView;
+        CardView cardView;
 
         MyViewHolder(View view) {
             super(view);
             userNameView = view.findViewById(R.id.chat_name_txt);
             msgView = view.findViewById(R.id.chat_msg_txt);
             timeView = view.findViewById(R.id.chat_time_txt);
+            cardView = view.findViewById(R.id.gameCardEntry);
         }
     }
 

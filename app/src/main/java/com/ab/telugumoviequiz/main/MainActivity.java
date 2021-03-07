@@ -71,10 +71,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Bundle params = new Bundle();
         if (id == R.id.nav_current_games) {
             params.putInt(Keys.GAMES_VIEW_GAME_TYPE, 1);
-            launchView(Navigator.PUBLIC_GAMES_VIEW, params, false);
+            launchView(Navigator.MIXED_GAMES_VIEW, params, false);
         } else if (id == R.id.nav_enrolled_games) {
             params.putInt(Keys.GAMES_VIEW_GAME_TYPE, 2);
-            launchView(Navigator.ENROLLED_GAMES_VIEW, params, false);
+            launchView(Navigator.MIXED_ENROLLED_GAMES_VIEW, params, false);
         } else if (id == R.id.nav_transactions) {
             launchView(Navigator.TRANSACTIONS_VIEW, params, false);
         } else if (id == R.id.nav_referals) {
@@ -123,8 +123,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Fragment getFragment(String viewId) {
         Fragment fragment = null;
         switch (viewId) {
-            case Navigator.ENROLLED_GAMES_VIEW:
-            case Navigator.PUBLIC_GAMES_VIEW: {
+            case Navigator.MIXED_ENROLLED_GAMES_VIEW:
+            case Navigator.MIXED_GAMES_VIEW: {
                 fragment = new ShowGames();
                 break;
             }

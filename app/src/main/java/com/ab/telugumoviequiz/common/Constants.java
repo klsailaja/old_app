@@ -23,5 +23,5 @@ public class Constants {
     public static final long CHAT_MAX_DURATION_IN_MINS = 30;
     public static final long CHAT_MAX_DURATION_IN_MILLIS = CHAT_MAX_DURATION_IN_MINS * 60 * 1000;
 
-    public static final int TEST_MODE = 1;
+    public static final int TEST_MODE = 0;
 }

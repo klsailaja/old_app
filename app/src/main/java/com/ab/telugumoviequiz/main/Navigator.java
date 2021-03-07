@@ -3,8 +3,10 @@ package com.ab.telugumoviequiz.main;
 import android.os.Bundle;
 
 public interface Navigator {
-    String PUBLIC_GAMES_VIEW = "PublicGamesView1";
-    String ENROLLED_GAMES_VIEW = "PublicGamesView2";
+    String MIXED_GAMES_VIEW = "MixedGamesView";
+    String MIXED_ENROLLED_GAMES_VIEW = "MixedEnrolledGamesView";
+    String CELEBRITY_GAMES_VIEW = "CelebrityGamesView";
+    String CELEBRITY_ENROLLED_GAMES_VIEW = "CelebrityEnrolledGames";
     String HOME_VIEW = "HomeView";
     String PROFILE_VIEW = "ProfileView";
     String CHAT_VIEW = "ChatView";
