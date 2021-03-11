@@ -53,7 +53,6 @@ public class SelectGameTypeAdapter extends RecyclerView.Adapter<SelectGameTypeAd
     @Override
     public void onBindViewHolder(SelectGameTypeAdapter.MyViewHolder holder, int position) {
         GameTypeModel model = data.get(position);
-        System.out.println(model);
         holder.gameTypeBut.setText(model.getGameTypeName());
         holder.celebrityNameTxt.setText(model.getCelebrityName());
         holder.gameTypeBut.setOnClickListener(listener);

@@ -1,6 +1,8 @@
 package com.ab.telugumoviequiz.games;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -22,14 +25,19 @@ import com.ab.telugumoviequiz.R;
 import com.ab.telugumoviequiz.common.BaseFragment;
 import com.ab.telugumoviequiz.common.CallbackResponse;
 import com.ab.telugumoviequiz.common.Constants;
+import com.ab.telugumoviequiz.common.DialogAction;
 import com.ab.telugumoviequiz.common.GetTask;
+import com.ab.telugumoviequiz.common.Keys;
 import com.ab.telugumoviequiz.common.PostTask;
 import com.ab.telugumoviequiz.common.Request;
 import com.ab.telugumoviequiz.common.Scheduler;
 import com.ab.telugumoviequiz.common.UITask;
 import com.ab.telugumoviequiz.common.UserDetails;
 import com.ab.telugumoviequiz.common.Utils;
+import com.ab.telugumoviequiz.constants.UserMoneyAccountType;
+import com.ab.telugumoviequiz.main.MainActivity;
 import com.ab.telugumoviequiz.main.Navigator;
+import com.ab.telugumoviequiz.money.FetchUserMoneyTask;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.text.SimpleDateFormat;
@@ -41,7 +49,7 @@ import java.util.Objects;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-public class QuestionFragment extends BaseFragment implements View.OnClickListener, CallbackResponse {
+public class QuestionFragment extends BaseFragment implements View.OnClickListener, CallbackResponse, DialogAction {
     private GameDetails gameDetails;
     private ProgressBar progressBar;
     private TextView timerView;
@@ -96,19 +104,19 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
     }
 
     @Override
-    public void onActivityCreated (Bundle savedInstanceState) {
+    public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
     }
 
 
     @Override
-    public void onStart(){
+    public void onStart() {
         super.onStart();
 
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
     }
 
@@ -130,19 +138,42 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
 
 
     @Override
-    public void onPause(){
+    public void onPause() {
         super.onPause();
     }
 
     @Override
-    public void onStop(){
+    public void onStop() {
         super.onStop();
+    }
+
+    @Override
+    public void doAction(int calledId, Object userObject) {
+        System.out.println("Hasini called" + calledId);
+        if (calledId == 10) {
+            System.out.println("Hasini called");
+            GameDetails leaveGameDetails = (GameDetails) userObject;
+            PostTask<GameOperation, Boolean> joinTask = Request.gameUnjoinTask(leaveGameDetails.getGameId());
+            joinTask.setCallbackResponse(this);
+
+            GameOperation gm = new GameOperation();
+            gm.setUserProfileId(UserDetails.getInstance().getUserProfile().getId());
+            gm.setUserAccountType(UserMoneyAccountType.LOADED_MONEY.getId());
+
+            joinTask.setPostObject(gm);
+            joinTask.setHelperObject(leaveGameDetails);
+            Scheduler.getInstance().submit(joinTask);
+        }
     }
 
     @SuppressLint({"SetTextI18n", "NonConstantResourceId"})
     @Override
     public void onClick(View v){
         int id = v.getId();
+        if (id == R.id.game_starts_leave_but) {
+            Utils.showMessage("Confirm?", "Are you sure to quit?", getContext(), this, 10, gameDetails);
+            return;
+        }
         final Integer currentQuesPos = (Integer) v.getTag();
         if (currentQuesPos == null) {
             return;
@@ -347,6 +378,56 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
                 Scheduler.getInstance().submit(leaderBoardReq);
                 break;
             }
+            case Request.SHOW_WINNERS: {
+                final AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+                alertDialog.setTitle("View Winners");
+                alertDialog.setMessage("GAME OVER");
+                alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "View Winners", (dialogInterface, i) -> {
+                    alertDialog.hide();
+                    alertDialog.dismiss();
+                    alertDialog.cancel();
+
+                    Question question = (Question) helperObject;
+                    int completedQuestionNumber = question.getQuestionNumber();
+                    GetTask<PlayerSummary[]> leaderBoardReq = Request.getLeaderBoard(gameDetails.getGameId(), completedQuestionNumber);
+                    leaderBoardReq.setCallbackResponse(this);
+                    leaderBoardReq.setHelperObject(helperObject);
+                    Scheduler.getInstance().submit(leaderBoardReq);
+                });
+                alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Close", (dialogInterface, i) -> {
+                    alertDialog.hide();
+                    alertDialog.dismiss();
+                    alertDialog.cancel();
+                });
+
+                Runnable run = () -> alertDialog.show();
+                Objects.requireNonNull(getActivity()).runOnUiThread(run);
+                break;
+            }
+            case Request.UNJOIN_GAME: {
+                String errosMsg = "";
+                if (isAPIException) {
+                    errosMsg = (String) response;
+                    System.out.println("error is " + errosMsg);
+                    Utils.showMessage("Error", errosMsg, getContext(), null);
+                    return;
+                } else {
+                    Boolean result = (Boolean) response;
+                    if (result) {
+                        errosMsg = "Leaving game was successful";
+                    } else {
+                        errosMsg = "Leaving game was unsuccessful";
+                    }
+
+                    Activity activity = getActivity();
+                    if (activity instanceof MainActivity) {
+                        Bundle params = new Bundle();
+                        params.putString(Keys.LEAVE_ACTION_RESULT, errosMsg);
+                        ((MainActivity)activity).launchView(Navigator.CURRENT_GAMES, params, false);
+                    }
+                }
+                break;
+            }
         }
     }
 
@@ -512,6 +593,12 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
     private void showLeaderBoardView(final boolean isGameOver) {
         Runnable run = () -> {
             closeAllViews();
+            if (isGameOver) {
+                Activity activity = getActivity();
+                if (activity instanceof MainActivity) {
+                    ((MainActivity) activity).launchView(Navigator.CURRENT_GAMES, new Bundle(), false);
+                }
+            }
             viewLeaderboard = new ViewLeaderboard(getContext(), isGameOver, gameLeaderBoardDetails);
             FragmentManager fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
             viewLeaderboard.show(fragmentManager, "dialog");
@@ -614,7 +701,9 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
         List<Question> gameQuestions = gameDetails.getGameQuestions();
         long questionStartTime;
         long actualStartTime;
-        for (Question question : gameQuestions) {
+        int maxQuestionsCount = gameQuestions.size();
+        for (int index = 0; index <= (maxQuestionsCount - 2); index++) {
+            Question question = gameQuestions.get(index);
             questionStartTime = question.getQuestionStartTime();
 
             actualStartTime = questionStartTime - System.currentTimeMillis() - Constants.SCHEDULER_OFFSET_IN_MILLIS;
@@ -629,6 +718,23 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
             UITask showLeaderBoardTask = new UITask(Request.SHOW_LEADER_BOARD, this, question);
             scheduler.submit(showLeaderBoardTask, actualStartTime, TimeUnit.MILLISECONDS);
         }
+        Question question = gameQuestions.get(maxQuestionsCount - 1);
+        questionStartTime = question.getQuestionStartTime();
+
+        actualStartTime = questionStartTime - System.currentTimeMillis() - Constants.SCHEDULER_OFFSET_IN_MILLIS;
+        UITask setQuestionTask = new UITask(Request.SHOW_QUESTION, this, question);
+        scheduler.submit(setQuestionTask, actualStartTime, TimeUnit.MILLISECONDS);
+
+        actualStartTime = questionStartTime + Constants.USER_ANSWERS_VIEW_START_TIME_IN_MILLIS - System.currentTimeMillis();
+        UITask showUserAnswersTask = new UITask(Request.SHOW_USER_ANSWERS, this, question);
+        scheduler.submit(showUserAnswersTask, actualStartTime, TimeUnit.MILLISECONDS);
+
+        actualStartTime = questionStartTime + Constants.LEADERBOARD_VIEW_START_TIME_IN_MILLIS - System.currentTimeMillis();
+        UITask showLeaderBoardTask = new UITask(Request.SHOW_WINNERS, this, question);
+        scheduler.submit(showLeaderBoardTask, actualStartTime, TimeUnit.MILLISECONDS);
+
+        actualStartTime = questionStartTime + Constants.SCHEDULE_USER_MONEY_FETCH - System.currentTimeMillis();
+        scheduler.submit(new FetchUserMoneyTask((MainActivity) getActivity()), actualStartTime, TimeUnit.MILLISECONDS);
     }
 
     private boolean handleKnownErrors(final String errMsg) {
@@ -684,6 +790,7 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
                 if (!revertStatus) {
                     userMsg = resources.getString(R.string.game_cancellation_fail_msg);
                 }
+                ((MainActivity)getActivity()).fetchUpdateMoney();
             }
         }
         final String finalUsrMsg = userMsg;

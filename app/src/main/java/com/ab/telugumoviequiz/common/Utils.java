@@ -62,6 +62,11 @@ public class Utils {
                 dialogAction.doAction(id, userObject);
             }
         });
+        alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", (dialogInterface, i) -> {
+            alertDialog.hide();
+            alertDialog.dismiss();
+            alertDialog.cancel();
+        });
         alertDialog.show();
     }
 

@@ -1,10 +1,12 @@
 package com.ab.telugumoviequiz.main;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -18,6 +20,12 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.ab.telugumoviequiz.R;
 import com.ab.telugumoviequiz.chat.ChatView;
+import com.ab.telugumoviequiz.common.CallbackResponse;
+import com.ab.telugumoviequiz.common.GetTask;
+import com.ab.telugumoviequiz.common.Request;
+import com.ab.telugumoviequiz.common.Scheduler;
+import com.ab.telugumoviequiz.common.UserDetails;
+import com.ab.telugumoviequiz.common.Utils;
 import com.ab.telugumoviequiz.games.QuestionFragment;
 import com.ab.telugumoviequiz.games.SelectGameTypeView;
 import com.ab.telugumoviequiz.games.ShowGames;
@@ -29,10 +37,19 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, Navigator, View.OnClickListener {
+public class MainActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener, Navigator, View.OnClickListener, CallbackResponse {
 
     public View activityView = null;
     private final Bundle appParams = new Bundle();
+
+    public void fetchUpdateMoney() {
+        UserProfile userProfile = UserDetails.getInstance().getUserProfile();
+        GetTask<UserMoney> fetchMoney = Request.getMoneyTask(userProfile.getId());
+        fetchMoney.setCallbackResponse(this);
+        Scheduler.getInstance().submit(fetchMoney);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
         String successMsg = getIntent().getStringExtra("msg");
         Snackbar.make(activityView, successMsg, Snackbar.LENGTH_SHORT).show();
+        fetchUpdateMoney();
     }
 
     public void onClick(View view) {
@@ -163,5 +181,58 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         }
         return fragment;
+    }
+
+    public boolean handleServerError(boolean exceptionThrown, boolean isAPIException, final Object response) {
+        if ((exceptionThrown) && (!isAPIException)) {
+            showErr("Check your Internet Connectivity");
+            return true;
+        }
+        return false;
+    }
+
+    public boolean handleAPIError(boolean isAPIException, final Object response) {
+        if (isAPIException) {
+            showErr("Server Problem. Please retry after some time." + (String)response);
+            return true;
+        }
+        return false;
+    }
+
+    public void showErr(final String errMsg) {
+        final Activity parentActvity = this;
+        Runnable run = () -> Utils.showMessage("Error", errMsg, getApplicationContext(), null);
+        if (parentActvity != null) {
+            parentActvity.runOnUiThread(run);
+        }
+    }
+
+    @Override
+    public void handleResponse(int reqId, boolean exceptionThrown, boolean isAPIException, Object response, Object userObject) {
+        boolean isHandled = handleServerError(exceptionThrown, isAPIException, response);
+        if (isHandled) {
+            return;
+        }
+        isHandled = handleAPIError(isAPIException, response);
+        if (isHandled) {
+            return;
+        }
+
+        if (reqId == Request.GET_USER_MONEY) {
+            UserMoney userMoney = (UserMoney) response;
+            UserDetails.getInstance().setUserMoney(userMoney);
+            Runnable run = () -> {
+                ActionBar mActionBar = getSupportActionBar();
+                View view = mActionBar.getCustomView();
+                TextView referMoney = view.findViewById(R.id.main_refer_money);
+                TextView winMoney = view.findViewById(R.id.main_win_money);
+                TextView mainMoney = view.findViewById(R.id.main_main_money);
+
+                referMoney.setText(String.valueOf(userMoney.getReferalAmount()));
+                winMoney.setText(String.valueOf(userMoney.getWinningAmount()));
+                mainMoney.setText(String.valueOf(userMoney.getLoadedAmount()));
+            };
+            this.runOnUiThread(run);
+        }
     }
 }

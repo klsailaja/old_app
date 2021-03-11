@@ -152,7 +152,7 @@ public class MyReferralsView extends BaseFragment implements View.OnClickListene
             showErrShowHomeScreen((String) response);
             return;
         }
-        if (reqId == Request.USER_REFERALS_LIST) {
+        if (reqId == Request.USER_REFERRALS_LIST) {
             if (isAPIException) {
                 showErrShowHomeScreen((String) response);
                 return;

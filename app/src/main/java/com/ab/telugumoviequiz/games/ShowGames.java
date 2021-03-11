@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,7 +24,9 @@ import com.ab.telugumoviequiz.common.Scheduler;
 import com.ab.telugumoviequiz.common.UserDetails;
 import com.ab.telugumoviequiz.common.Utils;
 import com.ab.telugumoviequiz.constants.UserMoneyAccountType;
+import com.ab.telugumoviequiz.main.MainActivity;
 import com.ab.telugumoviequiz.main.Navigator;
+import com.ab.telugumoviequiz.main.UserMoney;
 import com.ab.telugumoviequiz.main.UserProfile;
 
 import java.util.ArrayList;
@@ -90,14 +93,24 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
             int pos = Integer.parseInt(tagName);
             GameDetails quesGameDetails = gameDetailsList.get(pos);
 
-            PostTask<GameOperation, Boolean> joinTask = Request.gameJoinTask(quesGameDetails.getGameId());
-            joinTask.setCallbackResponse(this);
-            GameOperation gm = new GameOperation();
-            gm.setUserProfileId(UserDetails.getInstance().getUserProfile().getId());
-            gm.setUserAccountType(UserMoneyAccountType.findById(1).getId());
-            joinTask.setPostObject(gm);
-            joinTask.setHelperObject(quesGameDetails);
-            Scheduler.getInstance().submit(joinTask);
+            int tktRate = quesGameDetails.getTicketRate();
+            if (tktRate == 0) {
+                PostTask<GameOperation, Boolean> joinTask = Request.gameJoinTask(quesGameDetails.getGameId());
+                joinTask.setCallbackResponse(this);
+
+                GameOperation gm = new GameOperation();
+                gm.setUserProfileId(UserDetails.getInstance().getUserProfile().getId());
+                gm.setUserAccountType(UserMoneyAccountType.LOADED_MONEY.getId());
+                joinTask.setPostObject(gm);
+                joinTask.setHelperObject(quesGameDetails);
+                Scheduler.getInstance().submit(joinTask);
+            } else {
+                long userProfileId = UserDetails.getInstance().getUserProfile().getId();
+                GetTask<String> enrolledStatus = Request.getEnrolledStatus(quesGameDetails.getGameId(), userProfileId);
+                enrolledStatus.setCallbackResponse(this);
+                enrolledStatus.setHelperObject(quesGameDetails);
+                Scheduler.getInstance().submit(enrolledStatus);
+            }
         }
     }
 
@@ -129,7 +142,6 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
     }
 
     public void setBaseParams() {
-        System.out.println("fragmentIndex :" + fragmentIndex);
         switch (fragmentIndex) {
             case 1: {
                 getGamesTask = Request.getFutureGames(1);
@@ -171,7 +183,6 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
 
     @Override
     public void handleResponse(int reqId, boolean exceptionThrown, boolean isAPIException, final Object response, Object helperObject) {
-        System.out.println("show games In handleResponse" + reqId + ":" + exceptionThrown + ":" + isAPIException + ":" + response);
         if((exceptionThrown) && (!isAPIException)) {
             if (fetchTask != null) {
                 fetchTask.cancel(true);
@@ -204,13 +215,17 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
                 Resources resources = getResources();
                 String joinMsg = resources.getString(R.string.game_join_success_msg);
                 params.putString("msg", joinMsg);
-                ((Navigator)getActivity()).launchView(Navigator.QUESTION_VIEW, params, false);
+                ((Navigator) Objects.requireNonNull(getActivity())).launchView(Navigator.QUESTION_VIEW, params, false);
+
+                Activity activity = getActivity();
+                if (activity instanceof MainActivity) {
+                    ((MainActivity) activity).fetchUpdateMoney();
+                }
                 break;
             }
             case Request.GET_ENROLLED_GAMES:
             case Request.GET_FUTURE_GAMES: {
                 List<GameDetails> result = Arrays.asList((GameDetails[]) response);
-                System.out.println("result.size ()" + result.size());
                 lock.writeLock().lock();
                 gameDetailsList.clear();
                 gameDetailsList.addAll(result);
@@ -218,7 +233,6 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
                 Runnable run = () -> mAdapter.notifyDataSetChanged();
                 Activity parentAct = getActivity();
                 if (parentAct != null) {
-                    System.out.println("Model change...");
                     parentAct.runOnUiThread(run);
                 }
                 break;
@@ -237,6 +251,7 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
                 lock.writeLock().lock();
                 for (GameDetails gameDetails : gameDetailsList) {
                     Long gameId = gameDetails.getGameId();
+                    int userViewingGameId = gameDetails.getTempGameId();
                     GameStatus gameStatus = statusHashMap.get(gameId);
                     if (gameStatus == null) {
                         continue;
@@ -248,9 +263,9 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
                             continue;
                         }
                         if (revertStatus) {
-                            gameCancelMsg = "GameId#" + gameId + " Cancelled. Ticket Money credited successfully";
+                            gameCancelMsg = "GameId#" + userViewingGameId + " Cancelled. Ticket Money credited successfully";
                         } else {
-                            gameCancelMsg = "GameId#" + gameId + " Cancelled. Ticket Money could not be credited";
+                            gameCancelMsg = "GameId#" + userViewingGameId + " Cancelled. Ticket Money could not be credited";
                         }
                     }
                     gameDetails.setCurrentCount(gameStatus.getCurrentCount());
@@ -259,10 +274,62 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
                 if (gameCancelMsg == null) {
                     return;
                 }
+                ((MainActivity) Objects.requireNonNull(getActivity())).fetchUpdateMoney();
                 final String finalGameCancelMsg = gameCancelMsg;
                 Runnable run = () -> Utils.showMessage("Info", finalGameCancelMsg, getContext(), null);
                 if (getActivity() != null) {
                     getActivity().runOnUiThread(run);
+                }
+                break;
+            }
+            case Request.GAME_ENROLLED_STATUS: {
+                if (isAPIException) {
+                    Runnable run = () -> {
+                        String error = (String) response;
+                        Utils.showMessage("Error", error, getContext(), null);
+                    };
+                    Objects.requireNonNull(getActivity()).runOnUiThread(run);
+                    return;
+                }
+                Boolean isEnrolled = ((Boolean) response);
+                if (isEnrolled) {
+                    return;
+                }
+                GameDetails quesGameDetails = (GameDetails) helperObject;
+                int tktRate = quesGameDetails.getTicketRate();
+
+                UserMoney userMoney = UserDetails.getInstance().getUserMoney();
+
+                final List<PayGameModel> modelList = new ArrayList<>();
+                PayGameModel referralMoney = new PayGameModel();
+                referralMoney.setAccountName("Referral Money");
+                referralMoney.setAccountBalance(String.valueOf(userMoney.getReferalAmount()));
+                referralMoney.setAccountNumber(UserMoneyAccountType.findById(3).getId());
+                referralMoney.setValid(userMoney.getReferalAmount() >= tktRate);
+                modelList.add(referralMoney);
+
+                PayGameModel winningMoney = new PayGameModel();
+                winningMoney.setAccountName("Winning Money");
+                winningMoney.setAccountBalance(String.valueOf(userMoney.getWinningAmount()));
+                winningMoney.setAccountNumber(UserMoneyAccountType.findById(2).getId());
+                winningMoney.setValid(userMoney.getWinningAmount() >= tktRate);
+                modelList.add(winningMoney);
+
+                PayGameModel mainMoney = new PayGameModel();
+                mainMoney.setAccountName("Main Money");
+                mainMoney.setAccountBalance(String.valueOf(userMoney.getLoadedAmount()));
+                mainMoney.setAccountNumber(UserMoneyAccountType.findById(1).getId());
+                mainMoney.setValid(userMoney.getLoadedAmount() >= tktRate);
+                modelList.add(mainMoney);
+
+                Runnable run = () -> {
+                    PayGameDialog payOptions = new PayGameDialog(modelList, this, quesGameDetails);
+                    FragmentManager fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
+                    payOptions.show(fragmentManager, "dialog");
+                };
+                Activity activity = getActivity();
+                if (activity != null) {
+                    activity.runOnUiThread(run);
                 }
                 break;
             }

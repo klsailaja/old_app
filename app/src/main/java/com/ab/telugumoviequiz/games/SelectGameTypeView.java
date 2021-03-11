@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -54,6 +55,11 @@ public class SelectGameTypeView extends BaseFragment implements View.OnClickList
         GetTask<GameDetails[]> getGamesTask = Request.getFutureGames(2);
         getGamesTask.setCallbackResponse(this);
         Scheduler.getInstance().submit(getGamesTask);
+        Bundle args = getArguments();
+        String msg = args.getString(Keys.LEAVE_ACTION_RESULT);
+        if (msg != null) {
+            Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+        }
         return root;
     }
 
@@ -100,7 +106,7 @@ public class SelectGameTypeView extends BaseFragment implements View.OnClickList
             return;
         }
         if (reqId == Request.GET_FUTURE_GAMES) {
-            List<GameDetails> futureGames = Arrays.asList((GameDetails[]) response);
+            GameDetails[] futureGames = (GameDetails[]) response;
             long currentTime = System.currentTimeMillis();
             String currentCategory = null;
             for (GameDetails gd: futureGames) {

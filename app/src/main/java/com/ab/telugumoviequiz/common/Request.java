@@ -12,6 +12,7 @@ import com.ab.telugumoviequiz.games.PlayerSummary;
 import com.ab.telugumoviequiz.games.PrizeDetail;
 import com.ab.telugumoviequiz.history.UserHistoryGameDetails;
 import com.ab.telugumoviequiz.main.LoginData;
+import com.ab.telugumoviequiz.main.UserMoney;
 import com.ab.telugumoviequiz.main.UserProfile;
 import com.ab.telugumoviequiz.referals.ReferalDetails;
 import com.ab.telugumoviequiz.transactions.TransactionsHolder;
@@ -33,7 +34,7 @@ public class Request {
     public static final int PRIZE_DETAILS = 105;
     public static final int JOIN_GAME = 106;
     public static final int LEADER_BOARD = 107;
-    public static final int USER_REFERALS_LIST = 110;
+    public static final int USER_REFERRALS_LIST = 110;
     public static final int USER_TRANSACTIONS = 111;
     public static final int USER_HISTORY_GAMES = 112;
     public static final int USER_WITHDRAW_LIST = 113;
@@ -43,6 +44,8 @@ public class Request {
     public static final int POST_CHAT_MSG = 121;
     public static final int CHAT_BASIC_GAME_DETAILS_MIX_SET = 122;
     public static final int CHAT_BASIC_GAME_DETAILS_CELEBRITY_SET = 123;
+    public static final int GET_USER_MONEY = 130;
+    public static final int GAME_ENROLLED_STATUS = 131;
 
     public static final int SHOW_QUESTION = 1000;
     public static final int SHOW_USER_ANSWERS = 2000;
@@ -100,6 +103,19 @@ public class Request {
         return new PostTask<>(uri, JOIN_GAME,
                 null, null, Boolean.class);
     }
+
+    public static PostTask<GameOperation, Boolean> gameUnjoinTask(long gameId) {
+        String uri = baseUri + "/game/" + gameId + "/unjoin";
+        return new PostTask<>(uri, UNJOIN_GAME,
+                null, null, Boolean.class);
+    }
+
+    // This API tells whether the given user id is enrolled in the given gameId.
+    public static GetTask<String> getEnrolledStatus(long gameId, long userProfileId) {
+        String uri = baseUri + "/game/" + gameId + "/" + userProfileId + "/enrolledstatus";
+        return new GetTask<>(uri, GAME_ENROLLED_STATUS, null,
+                String.class, null);
+    }
     public static PostTask<PlayerAnswer, String> submitAnswerTask(long gameId) {
         String uri = baseUri + "/game/" + gameId + "/submit";
         return new PostTask<>(uri, SUBMIT_ANSWER_REQ,
@@ -121,7 +137,7 @@ public class Request {
     /* My Referals related */
     public static GetTask<ReferalDetails> getUserReferalDetails(String referalCode, int startRowNo) {
         String uri = baseUri + "/user/mreferal/" + referalCode + "/" + startRowNo;
-        return new GetTask<>(uri, USER_REFERALS_LIST, null,
+        return new GetTask<>(uri, USER_REFERRALS_LIST, null,
                 ReferalDetails.class, null);
     }
 
@@ -176,4 +192,12 @@ public class Request {
         return new PostTask<>(uri, POST_CHAT_MSG,
                 null, null, Boolean.class);
     }
+
+    // Money related...
+    public static GetTask<UserMoney> getMoneyTask(long userProfileId) {
+        String uri = baseUri + "/money/" + userProfileId;
+        return new GetTask<>(uri, GET_USER_MONEY, null,
+                UserMoney.class, null);
+    }
+
 }
