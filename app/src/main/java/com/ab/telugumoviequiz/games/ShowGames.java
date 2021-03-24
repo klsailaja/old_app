@@ -291,7 +291,8 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
                     Objects.requireNonNull(getActivity()).runOnUiThread(run);
                     return;
                 }
-                Boolean isEnrolled = ((Boolean) response);
+                String isEnrolledStr = ((String) response);
+                Boolean isEnrolled = Boolean.valueOf(isEnrolledStr);
                 if (isEnrolled) {
                     return;
                 }

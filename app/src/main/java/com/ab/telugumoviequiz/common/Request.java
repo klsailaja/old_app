@@ -53,6 +53,16 @@ public class Request {
     public static final int SHOW_READY_MSG = 2002;
     public static final int SHOW_WINNERS = 2003;
     public static final int LOCK_TIME_OVER = 3000;
+    public static final int WIN_WD_MSGS = 4000;
+    public static final int WIN_WD_SHOW_MSG = 4001;
+
+
+    public static GetTask<String[]> getWinWdMessages(long userProfileId) {
+        String uri = baseUri + "/wd/messages/" + userProfileId;
+        return new GetTask<>(uri, WIN_WD_MSGS, null,
+                String[].class, null);
+    }
+
 
     /* Games related Tasks */
     public static GetTask<String> getCelebrityNameTask() {

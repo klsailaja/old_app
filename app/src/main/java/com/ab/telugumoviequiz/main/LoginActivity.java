@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.ab.telugumoviequiz.R;
 import com.ab.telugumoviequiz.common.CallbackResponse;
+import com.ab.telugumoviequiz.common.MessageListener;
 import com.ab.telugumoviequiz.common.NotifyTextChanged;
 import com.ab.telugumoviequiz.common.PATextWatcher;
 import com.ab.telugumoviequiz.common.PostTask;
@@ -20,8 +21,12 @@ import com.ab.telugumoviequiz.common.Request;
 import com.ab.telugumoviequiz.common.Scheduler;
 import com.ab.telugumoviequiz.common.UserDetails;
 import com.ab.telugumoviequiz.common.Utils;
+import com.ab.telugumoviequiz.common.WinMsgHandler;
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener, NotifyTextChanged, CallbackResponse {
+import java.util.List;
+
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener, NotifyTextChanged,
+        CallbackResponse, MessageListener {
     private PATextWatcher mailTextWatcher, passwordTextWatcher;
 
     @Override
@@ -44,6 +49,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         super.onResume();
         handleListeners(this);
         handleTextWatchers(true);
+        WinMsgHandler.getInstance().setListener(this);
+        WinMsgHandler.getInstance().start();
     }
 
     @Override
@@ -80,6 +87,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             loginReq.setPostObject(loginData);
             Scheduler.getInstance().submit(loginReq);
         }
+    }
+
+    @Override
+    public void passData(int reqId, List<String> data) {
+        String msg = data.get(0);
+        Runnable run = () -> {
+            TextView winMsgBar = findViewById(R.id.winMsgs);
+            winMsgBar.setText(msg);
+        };
+        this.runOnUiThread(run);
     }
 
     @Override
@@ -224,4 +241,3 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         return true;
     }
 }
-

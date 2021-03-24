@@ -424,6 +424,7 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
                         Bundle params = new Bundle();
                         params.putString(Keys.LEAVE_ACTION_RESULT, errosMsg);
                         ((MainActivity)activity).launchView(Navigator.CURRENT_GAMES, params, false);
+                        ((MainActivity)activity).fetchUpdateMoney();
                     }
                 }
                 break;

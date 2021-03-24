@@ -22,10 +22,12 @@ import com.ab.telugumoviequiz.R;
 import com.ab.telugumoviequiz.chat.ChatView;
 import com.ab.telugumoviequiz.common.CallbackResponse;
 import com.ab.telugumoviequiz.common.GetTask;
+import com.ab.telugumoviequiz.common.MessageListener;
 import com.ab.telugumoviequiz.common.Request;
 import com.ab.telugumoviequiz.common.Scheduler;
 import com.ab.telugumoviequiz.common.UserDetails;
 import com.ab.telugumoviequiz.common.Utils;
+import com.ab.telugumoviequiz.common.WinMsgHandler;
 import com.ab.telugumoviequiz.games.QuestionFragment;
 import com.ab.telugumoviequiz.games.SelectGameTypeView;
 import com.ab.telugumoviequiz.games.ShowGames;
@@ -36,12 +38,16 @@ import com.ab.telugumoviequiz.withdraw.WithdrawReqsView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.List;
+
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, Navigator, View.OnClickListener, CallbackResponse {
+        implements NavigationView.OnNavigationItemSelectedListener, Navigator,
+        View.OnClickListener, CallbackResponse, MessageListener {
 
     public View activityView = null;
     private final Bundle appParams = new Bundle();
+    private boolean stopped = false;
 
     public void fetchUpdateMoney() {
         UserProfile userProfile = UserDetails.getInstance().getUserProfile();
@@ -79,6 +85,9 @@ public class MainActivity extends AppCompatActivity
         String successMsg = getIntent().getStringExtra("msg");
         Snackbar.make(activityView, successMsg, Snackbar.LENGTH_SHORT).show();
         fetchUpdateMoney();
+        WinMsgHandler.getInstance().setListener(this);
+        UserProfile userProfile = UserDetails.getInstance().getUserProfile();
+        WinMsgHandler.getInstance().setUserProfileId(userProfile.getId());
     }
 
     public void onClick(View view) {
@@ -149,6 +158,7 @@ public class MainActivity extends AppCompatActivity
                 break;
             }
             case Navigator.QUESTION_VIEW: {
+                stopped = true;
                 fragment = new QuestionFragment();
                 break;
             }
@@ -181,6 +191,19 @@ public class MainActivity extends AppCompatActivity
             }
         }
         return fragment;
+    }
+
+    @Override
+    public void passData(int reqId, List<String> data) {
+        String msg = data.get(0);
+        Runnable run = () -> {
+            TextView winMsgBar = findViewById(R.id.winMsgs);
+            if (winMsgBar == null) {
+                return;
+            }
+            winMsgBar.setText(msg);
+        };
+        this.runOnUiThread(run);
     }
 
     public boolean handleServerError(boolean exceptionThrown, boolean isAPIException, final Object response) {
