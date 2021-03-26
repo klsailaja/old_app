@@ -11,6 +11,7 @@ import androidx.appcompat.app.AlertDialog;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Locale;
 
 public class Utils {
     private static final String EMPTY_MESSAGE = "Value is empty for : %s";
@@ -35,11 +36,10 @@ public class Utils {
                 return null;
             }
         }
-        if ((minLen != -1) && (str.length() < minLen)) {
-            return String.format(MIN_LENGTH, minLen, componentName);
-        }
+        if ((minLen != -1) && (str.length() < minLen))
+            return String.format((Locale) null, MIN_LENGTH, minLen, componentName);
         if ((maxLen != -1) && (str.length() > maxLen)) {
-            return String.format(MAX_LENGTH, maxLen, componentName);
+            return String.format((Locale) null, MAX_LENGTH, maxLen, componentName);
         }
         if (onlyNumerics) {
             if (!TextUtils.isDigitsOnly(str)) {

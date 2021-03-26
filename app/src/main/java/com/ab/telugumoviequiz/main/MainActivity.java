@@ -137,11 +137,9 @@ public class MainActivity extends AppCompatActivity
             fragment = getFragment(viewName);
         }
         if (fragment == null) {
-            System.out.println("No Fragment");
             return;
         }
         fragment.setArguments(params);
-        System.out.println("Replace " + viewName);
         final FragmentTransaction ft = mgr.beginTransaction();
         ft.replace(R.id.content, fragment, viewName);
         ft.commit();
