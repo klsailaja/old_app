@@ -1,12 +1,12 @@
 package com.ab.telugumoviequiz.main;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -34,6 +34,7 @@ import com.ab.telugumoviequiz.games.ShowGames;
 import com.ab.telugumoviequiz.history.HistoryView;
 import com.ab.telugumoviequiz.referals.MyReferralsView;
 import com.ab.telugumoviequiz.transactions.TransactionsView;
+import com.ab.telugumoviequiz.userprofile.UpdateUserProfile;
 import com.ab.telugumoviequiz.withdraw.WithdrawReqsView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -111,8 +112,9 @@ public class MainActivity extends AppCompatActivity
             launchView(Navigator.WITHDRAW_REQ_VIEW, params, false);
         } else if (id == R.id.nav_chat) {
             launchView(Navigator.CHAT_VIEW, params, false);
+        } else if (id == R.id.nav_user_profile) {
+            launchView(Navigator.PROFILE_VIEW, params, false);
         }
-
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -187,6 +189,10 @@ public class MainActivity extends AppCompatActivity
                 fragment = new ChatView();
                 break;
             }
+            case Navigator.PROFILE_VIEW: {
+                fragment = new UpdateUserProfile();
+                break;
+            }
         }
         return fragment;
     }
@@ -206,26 +212,38 @@ public class MainActivity extends AppCompatActivity
 
     public boolean handleServerError(boolean exceptionThrown, boolean isAPIException, final Object response) {
         if ((exceptionThrown) && (!isAPIException)) {
-            showErr("Check your Internet Connectivity");
+            showErr((String)response);
             return true;
         }
         return false;
     }
 
-    public boolean handleAPIError(boolean isAPIException, final Object response) {
+    public boolean handleAPIError(boolean isAPIException, final Object response, int errorType, View view) {
         if (isAPIException) {
-            showErr("Server Problem. Please retry after some time." + (String)response);
+            String errorMsg = (String) response;
+            if (errorType == 1) {
+                showErr(errorMsg);
+            } else if (errorType == 2) {
+                showErrorAsToast(errorMsg);
+            } else {
+                showErrorAsSnackBar(errorMsg, view);
+            }
             return true;
         }
         return false;
     }
 
     public void showErr(final String errMsg) {
-        final Activity parentActvity = this;
-        Runnable run = () -> Utils.showMessage("Error", errMsg, getApplicationContext(), null);
-        if (parentActvity != null) {
-            parentActvity.runOnUiThread(run);
-        }
+        Runnable run = () -> Utils.showMessage("Error", errMsg, MainActivity.this, null);
+        this.runOnUiThread(run);
+    }
+    public void showErrorAsToast(final String errMsg) {
+        Runnable run = () -> Toast.makeText(MainActivity.this, errMsg, Toast.LENGTH_LONG).show();
+        this.runOnUiThread(run);
+    }
+    public void showErrorAsSnackBar(final String errMsg, View view) {
+        Runnable run = () -> Snackbar.make(view, errMsg, Snackbar.LENGTH_LONG).show();
+        this.runOnUiThread(run);
     }
 
     @Override
@@ -234,7 +252,7 @@ public class MainActivity extends AppCompatActivity
         if (isHandled) {
             return;
         }
-        isHandled = handleAPIError(isAPIException, response);
+        isHandled = handleAPIError(isAPIException, response, 1, null);
         if (isHandled) {
             return;
         }
@@ -245,6 +263,9 @@ public class MainActivity extends AppCompatActivity
             Runnable run = () -> {
                 ActionBar mActionBar = getSupportActionBar();
                 View view = mActionBar.getCustomView();
+                if (view == null) {
+                    return;
+                }
                 TextView referMoney = view.findViewById(R.id.main_refer_money);
                 TextView winMoney = view.findViewById(R.id.main_win_money);
                 TextView mainMoney = view.findViewById(R.id.main_main_money);

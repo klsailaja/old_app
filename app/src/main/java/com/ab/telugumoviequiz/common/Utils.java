@@ -7,7 +7,7 @@ import android.text.TextUtils;
 import android.view.Display;
 import android.view.WindowManager;
 
-import androidx.appcompat.app.AlertDialog;
+import android.app.AlertDialog;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -128,5 +128,13 @@ public class Utils {
         points[0] = screenWidth;
         points[1] = screenHeight;
         return points;
+    }
+
+    public static AlertDialog getProgressDialog(Context context) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+        alertDialogBuilder.setTitle("Information");
+        alertDialogBuilder.setMessage("Loading. Please Wait!").setCancelable(false);
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        return alertDialog;
     }
 }

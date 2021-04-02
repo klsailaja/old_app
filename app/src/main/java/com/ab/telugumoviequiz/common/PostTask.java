@@ -1,5 +1,11 @@
 package com.ab.telugumoviequiz.common;
 
+import android.app.Activity;
+
+import android.app.AlertDialog;
+
+import com.ab.telugumoviequiz.main.MainActivity;
+
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -22,6 +28,8 @@ public class PostTask<T,R> implements Runnable {
     private T postObject;
     private final Class<R> classType;
     private Object helperObject;
+    private MainActivity activity;
+    private AlertDialog alertDialog;
 
     public PostTask(String reqUri, int reqId, CallbackResponse callbackResponse, T postObject, Class<R> classType) {
         this.reqUri = reqUri;
@@ -29,6 +37,10 @@ public class PostTask<T,R> implements Runnable {
         this.callbackResponse = callbackResponse;
         this.postObject = postObject;
         this.classType = classType;
+    }
+
+    public void setActivity(MainActivity activity) {
+        this.activity = activity;
     }
 
     public int getRequestId() {
@@ -86,15 +98,35 @@ public class PostTask<T,R> implements Runnable {
         return restTemplate;
     }
     public void run() {
+        if (activity != null) {
+            Runnable run = () -> {
+                alertDialog = Utils.getProgressDialog(activity);
+                alertDialog.show();
+            };
+            activity.runOnUiThread(run);
+        }
         try {
             RestTemplate restTemplate = getRestTemplate();
             ResponseEntity<R> responseEntity = restTemplate.exchange(getReqUri(), HttpMethod.POST, getHttpEntity(null),
                     classType);
             Object result = responseEntity.getBody();
+            if (activity != null) {
+                Runnable run = () -> {
+                    alertDialog.dismiss();
+                };
+                activity.runOnUiThread(run);
+            }
             getCallbackResponse().handleResponse(getRequestId(), false, false, result, getHelperObject());
+
         } catch (Exception ex) {
+            if (activity != null) {
+                Runnable run = () -> {
+                    alertDialog.dismiss();
+                };
+                activity.runOnUiThread(run);
+            }
             ex.printStackTrace();
-            String errMessage = "Please check your internet connectivity and retry";
+            String errMessage = "Check your internet connectivity and retry";
             boolean isAPIException = false;
             if (ex instanceof HttpClientErrorException) {
                 HttpClientErrorException clientExp = (HttpClientErrorException) ex;

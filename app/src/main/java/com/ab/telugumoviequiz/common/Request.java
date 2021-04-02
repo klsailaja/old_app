@@ -55,6 +55,7 @@ public class Request {
     public static final int LOCK_TIME_OVER = 3000;
     public static final int WIN_WD_MSGS = 4000;
     public static final int WIN_WD_SHOW_MSG = 4001;
+    public static final int UPDATE_USER_PROFILE = 4010;
 
 
     public static GetTask<String[]> getWinWdMessages(long userProfileId) {
@@ -141,6 +142,11 @@ public class Request {
     public static PostTask<UserProfile, UserProfile> getCreateUserProfile() {
         String uri = baseUri + "/user";
         return new PostTask<>(uri, CREATE_USER_PROFILE,
+                null, null, UserProfile.class);
+    }
+    public static PostTask<UserProfile, UserProfile> getUpdateUserProfile() {
+        String uri = baseUri + "/update";
+        return new PostTask<>(uri, UPDATE_USER_PROFILE,
                 null, null, UserProfile.class);
     }
 

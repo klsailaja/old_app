@@ -15,6 +15,16 @@
     <string name="user_login_fail_msg">Login not successful. Please use forgot password option if required</string>
     <string name="user_login_success_msg">Login successful</string>
 
+    <!-- Update User Profile options -->
+    <string name="user_profile_email">E-Mail cannot be updated</string>
+    <string name="user_profile_code">My Referal Code cannot be updated</string>
+    <string name="user_profile_boss_name">My Boss Name cannot be updated</string>
+    <string name="user_profile_boss_code">My Boss Code Name cannot be updated</string>
+    <string name="user_profile_name">Your Name</string>
+    <string name="user_profile_n_p">New Password</string>
+    <string name="user_profile_con_p">Confirm Password</string>
+    <string name="user_profile_update_but">Update</string>
+
     <!-- New user Screen -->
     <string name="new_user_user_name">Name</string>
     <string name="newuser_referal_code_hint">Referral Code. Can be empty too</string>
@@ -33,6 +43,7 @@
     <string name="menu_transactions">My Transactions</string>
     <string name="nav_withdraw_view">Withdraw Money</string>
     <string name="menu_wallet">My Wallet</string>
+    <string name="menu_user_profile">My Profile</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_desc">Navigation header</string>

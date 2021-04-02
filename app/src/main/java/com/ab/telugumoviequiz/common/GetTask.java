@@ -22,6 +22,7 @@ public class GetTask<T> implements Runnable {
     private int reqTimeOut = 5 * 1000;
     private final Class<T> classType;
 
+
     public GetTask(String reqUri, int reqId, CallbackResponse callbackResponse, Class<T> classType, Object helperObject) {
         this.reqUri = reqUri;
         this.requestId = reqId;
