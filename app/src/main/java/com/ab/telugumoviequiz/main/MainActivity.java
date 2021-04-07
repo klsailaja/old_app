@@ -21,10 +21,12 @@ import androidx.fragment.app.FragmentTransaction;
 import com.ab.telugumoviequiz.R;
 import com.ab.telugumoviequiz.chat.ChatView;
 import com.ab.telugumoviequiz.common.CallbackResponse;
+import com.ab.telugumoviequiz.common.DialogAction;
 import com.ab.telugumoviequiz.common.GetTask;
 import com.ab.telugumoviequiz.common.MessageListener;
 import com.ab.telugumoviequiz.common.Request;
 import com.ab.telugumoviequiz.common.Scheduler;
+import com.ab.telugumoviequiz.common.SwitchScreen;
 import com.ab.telugumoviequiz.common.UserDetails;
 import com.ab.telugumoviequiz.common.Utils;
 import com.ab.telugumoviequiz.common.WinMsgHandler;
@@ -224,9 +226,9 @@ public class MainActivity extends AppCompatActivity
             if (errorType == 1) {
                 showErr(errorMsg);
             } else if (errorType == 2) {
-                showErrorAsToast(errorMsg);
+                //showErrorAsToast(errorMsg);
             } else {
-                showErrorAsSnackBar(errorMsg, view);
+                //showErrorAsSnackBar(errorMsg, view);
             }
             return true;
         }
@@ -237,12 +239,49 @@ public class MainActivity extends AppCompatActivity
         Runnable run = () -> Utils.showMessage("Error", errMsg, MainActivity.this, null);
         this.runOnUiThread(run);
     }
-    public void showErrorAsToast(final String errMsg) {
+    public void displayErrorAsToast(final String errMsg) {
         Runnable run = () -> Toast.makeText(MainActivity.this, errMsg, Toast.LENGTH_LONG).show();
         this.runOnUiThread(run);
     }
-    public void showErrorAsSnackBar(final String errMsg, View view) {
+    public void displayErrorAsSnackBar(final String errMsg, View view) {
         Runnable run = () -> Snackbar.make(view, errMsg, Snackbar.LENGTH_LONG).show();
+        this.runOnUiThread(run);
+    }
+
+    public boolean handleServerErrorLatest(boolean exceptionThrown, boolean isAPIException, final Object response) {
+        if ((exceptionThrown) && (!isAPIException)) {
+            displayError((String)response, new SwitchScreen(this));
+            return true;
+        }
+        return false;
+    }
+
+    public boolean handleAPIErrorLatest(boolean isAPIException, final Object response, int errorType,
+                                        View view, DialogAction dialogAction) {
+        if (isAPIException) {
+            String errorMsg = (String) response;
+            if (errorType == 1) {
+                displayError(errorMsg, dialogAction);
+            } else if (errorType == 2) {
+                displayErrorAsToast(errorMsg);
+            } else {
+                displayErrorAsSnackBar(errorMsg, view);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public void displayInfo(String infoMsg, DialogAction dialogAction) {
+        displayMsg("Information", infoMsg, dialogAction);
+    }
+
+    public void displayError(String errMsg, DialogAction dialogAction) {
+        displayMsg("Error", errMsg, dialogAction);
+    }
+
+    public void displayMsg(final String title, final String msg, DialogAction dialogAction) {
+        Runnable run = () -> Utils.showMessage(title, msg, MainActivity.this, dialogAction);
         this.runOnUiThread(run);
     }
 

@@ -6,7 +6,7 @@ import com.ab.telugumoviequiz.main.MainActivity;
 import com.ab.telugumoviequiz.main.Navigator;
 
 public class ShowHomeScreen implements DialogAction {
-    private Activity mainActivity;
+    private final Activity mainActivity;
 
     public ShowHomeScreen(Activity mainActivity) {
         this.mainActivity = mainActivity;

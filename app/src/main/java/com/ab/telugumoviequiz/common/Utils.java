@@ -62,11 +62,11 @@ public class Utils {
                 dialogAction.doAction(id, userObject);
             }
         });
-        alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", (dialogInterface, i) -> {
+        /*alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", (dialogInterface, i) -> {
             alertDialog.hide();
             alertDialog.dismiss();
             alertDialog.cancel();
-        });
+        });*/
         alertDialog.show();
     }
 
@@ -130,11 +130,10 @@ public class Utils {
         return points;
     }
 
-    public static AlertDialog getProgressDialog(Context context) {
+    public static AlertDialog getProgressDialog(Context context, String waitingMessage) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder.setTitle("Information");
-        alertDialogBuilder.setMessage("Loading. Please Wait!").setCancelable(false);
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        return alertDialog;
+        alertDialogBuilder.setMessage(waitingMessage).setCancelable(false);
+        return alertDialogBuilder.create();
     }
 }

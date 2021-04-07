@@ -28,8 +28,9 @@ public class PostTask<T,R> implements Runnable {
     private T postObject;
     private final Class<R> classType;
     private Object helperObject;
-    private MainActivity activity;
+    private Activity activity;
     private AlertDialog alertDialog;
+    private String waitingMessage;
 
     public PostTask(String reqUri, int reqId, CallbackResponse callbackResponse, T postObject, Class<R> classType) {
         this.reqUri = reqUri;
@@ -39,8 +40,9 @@ public class PostTask<T,R> implements Runnable {
         this.classType = classType;
     }
 
-    public void setActivity(MainActivity activity) {
+    public void setActivity(Activity activity, String waitingMessage) {
         this.activity = activity;
+        this.waitingMessage = waitingMessage;
     }
 
     public int getRequestId() {
@@ -100,7 +102,7 @@ public class PostTask<T,R> implements Runnable {
     public void run() {
         if (activity != null) {
             Runnable run = () -> {
-                alertDialog = Utils.getProgressDialog(activity);
+                alertDialog = Utils.getProgressDialog(activity, waitingMessage);
                 alertDialog.show();
             };
             activity.runOnUiThread(run);

@@ -69,15 +69,6 @@
                 android:textColor="@color/primaryTextColor"
                 android:gravity="center"
                 android:text="@string/login_screen_login_text" />
-            <ProgressBar
-                android:indeterminate="false"
-                android:indeterminateOnly="true"
-                android:visibility="gone"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:id="@+id/login_screen_progressbar"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content" />
             <TextView
                 android:id="@+id/viewNewUserBut"
                 style="@style/parent"

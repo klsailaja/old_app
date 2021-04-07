@@ -6,7 +6,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -78,14 +77,25 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 return;
             }
             Button loginButton = findViewById(R.id.loginBut);
-            ProgressBar loginProgressBar = findViewById(R.id.login_screen_progressbar);
             loginButton.setVisibility(View.GONE);
-            loginProgressBar.setVisibility(View.VISIBLE);
             // Send password check validation to server..
             PostTask<LoginData,UserProfile> loginReq = Request.getLogin();
             loginReq.setCallbackResponse(this);
             loginReq.setPostObject(loginData);
+            loginReq.setActivity(LoginActivity.this, "Processing. Please Wait!");
             Scheduler.getInstance().submit(loginReq);
+        } else if (viewId == R.id.forgotPasswordBut) {
+            boolean result = validateMailId();
+            if (!result) {
+                return;
+            }
+            LoginData loginData = formEntity();
+
+            PostTask<LoginData, UserProfile> forgotPassword = Request.getForgotPassword();
+            forgotPassword.setCallbackResponse(this);
+            forgotPassword.setPostObject(loginData);
+            forgotPassword.setActivity(LoginActivity.this, "Processing. Please Wait!");
+            Scheduler.getInstance().submit(forgotPassword);
         }
     }
 
@@ -103,9 +113,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void handleResponse(int reqId, boolean exceptionThrown, boolean isAPIException, final Object response, Object helperObj) {
         Runnable enableButtons = () -> {
             Button loginButton = findViewById(R.id.loginBut);
-            ProgressBar loginProgressBar = findViewById(R.id.login_screen_progressbar);
             loginButton.setVisibility(View.VISIBLE);
-            loginProgressBar.setVisibility(View.GONE);
         };
         this.runOnUiThread(enableButtons);
 
@@ -140,6 +148,27 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     finish();
                 };
                 runOnUiThread(loginRun);
+            } else {
+                final String successMsg  = msg;
+                Runnable run = () -> Utils.showMessage("Error", successMsg, LoginActivity.this, null);
+                runOnUiThread(run);
+            }
+        } else if (reqId == Request.FORGOT_PASSWORD) {
+            if (isAPIException) {
+                Runnable run = () -> {
+                    String error = (String) response;
+                    Utils.showMessage("Error", error, LoginActivity.this, null);
+                };
+                runOnUiThread(run);
+                return;
+            }
+            UserProfile userProfile = (UserProfile) response;
+            if ((userProfile != null) && (userProfile.getId() > 0)) {
+                UserDetails.getInstance().setUserProfile(userProfile);
+                Resources resources = getResources();
+                final String successMsg  = resources.getString(R.string.user_forgot_passwd_success_msg);
+                Runnable run = () -> Utils.showMessage("Information", successMsg, LoginActivity.this, null);
+                runOnUiThread(run);
             }
         }
     }
@@ -208,6 +237,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         TextView viewNewUserScreen = findViewById(R.id.viewNewUserBut);
         viewNewUserScreen.setOnClickListener(listener);
+
+        TextView forgotPassword = findViewById(R.id.forgotPasswordBut);
+        forgotPassword.setOnClickListener(listener);
     }
 
     private boolean validatePasswd() {

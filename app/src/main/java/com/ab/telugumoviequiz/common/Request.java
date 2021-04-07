@@ -56,6 +56,7 @@ public class Request {
     public static final int WIN_WD_MSGS = 4000;
     public static final int WIN_WD_SHOW_MSG = 4001;
     public static final int UPDATE_USER_PROFILE = 4010;
+    public static final int FORGOT_PASSWORD = 4011;
 
 
     public static GetTask<String[]> getWinWdMessages(long userProfileId) {
@@ -147,6 +148,11 @@ public class Request {
     public static PostTask<UserProfile, UserProfile> getUpdateUserProfile() {
         String uri = baseUri + "/update";
         return new PostTask<>(uri, UPDATE_USER_PROFILE,
+                null, null, UserProfile.class);
+    }
+    public static PostTask<LoginData, UserProfile> getForgotPassword() {
+        String uri = baseUri + "/forgot";
+        return new PostTask<>(uri, FORGOT_PASSWORD,
                 null, null, UserProfile.class);
     }
 

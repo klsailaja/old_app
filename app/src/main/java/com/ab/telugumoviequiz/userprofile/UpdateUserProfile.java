@@ -106,7 +106,7 @@ public class UpdateUserProfile extends BaseFragment implements View.OnClickListe
             PostTask<UserProfile, UserProfile> createUserReq = Request.getUpdateUserProfile();
             createUserReq.setCallbackResponse(this);
             createUserReq.setPostObject(userProfile);
-            createUserReq.setActivity((MainActivity) getActivity());
+            createUserReq.setActivity(getActivity(), "Processing. Please Wait!");
             Scheduler.getInstance().submit(createUserReq);
         }
     }
