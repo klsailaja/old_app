@@ -75,11 +75,16 @@ public class NewUserActivity extends AppCompatActivity
         } else if (viewId == id.registerButton) {
             UserProfile userProfile = getFromUI();
             if (userProfile == null) {
+                Utils.showMessage("Error", "Please correct the errors", NewUserActivity.this, null);
                 return;
             }
+            Button loginButton = findViewById(R.id.registerButton);
+            loginButton.setEnabled(false);
+
             PostTask<UserProfile, UserProfile> createUserReq = Request.getCreateUserProfile();
             createUserReq.setCallbackResponse(this);
             createUserReq.setPostObject(userProfile);
+            createUserReq.setActivity(NewUserActivity.this, "Processing. Please Wait!");
             Scheduler.getInstance().submit(createUserReq);
         }
     }
@@ -96,6 +101,12 @@ public class NewUserActivity extends AppCompatActivity
 
     @Override
     public void handleResponse(int reqId, boolean exceptionThrown, boolean isAPIException, final Object response, Object helperObj) {
+        Runnable enableButtons = () -> {
+            Button button = findViewById(id.registerButton);
+            button.setEnabled(true);
+        };
+        this.runOnUiThread(enableButtons);
+
         if((exceptionThrown) && (!isAPIException)) {
             Runnable run = () -> {
                 String error = (String) response;

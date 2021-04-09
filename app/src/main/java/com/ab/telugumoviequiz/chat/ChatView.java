@@ -27,7 +27,6 @@ import com.ab.telugumoviequiz.common.UserDetails;
 import com.ab.telugumoviequiz.common.Utils;
 import com.ab.telugumoviequiz.main.MainActivity;
 import com.ab.telugumoviequiz.main.Navigator;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -50,11 +49,6 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
     private List<String> mixGameTktRates, mixGameStartTimes, mixGameIds;
     private List<String> celebrityGameTktRates, celebrityGameStartTimes, celebrityGameIds;
     private boolean req1 = false, req2 = false;
-
-    @Override
-    public View getSnackBarComponent() {
-        return textView;
-    }
 
     private void fetchRecords() {
         long startTime;
@@ -332,13 +326,13 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
     public void handleResponse(int reqId, final boolean exceptionThrown, final boolean isAPIException,
                                final Object response, final Object userObject) {
 
-       if ((exceptionThrown) && (!isAPIException)) {
-            showErr((String) response);
-            return;
+       boolean isHandled = handleServerError(exceptionThrown, isAPIException, response);
+       if (isHandled) {
+           return;
        }
         if (reqId == Request.CHAT_BULK_FETCH) {
             if (isAPIException) {
-                showSnackBarMessage((String) response);
+
                 return;
             }
             endTimeFetched++;
@@ -364,7 +358,7 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
         }
         if ((reqId == Request.CHAT_BASIC_GAME_DETAILS_MIX_SET) || (reqId == Request.CHAT_BASIC_GAME_DETAILS_CELEBRITY_SET)) {
             if (isAPIException) {
-                showSnackBarMessage((String) response);
+                displayErrorAsSnackBar((String) response, textView);
                 return;
             }
             //showSnackBarMessage("Fetched Chat Messages successfully");
@@ -382,12 +376,12 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
             enableButtons(true);
         } else if (reqId == Request.POST_CHAT_MSG) {
             if (isAPIException) {
-                showSnackBarMessage((String) response);
+                displayErrorAsSnackBar((String) response, textView);
                 return;
             }
             Boolean result = (Boolean) response;
             if (result) {
-                showSnackBarMessage("Posted Chat message success");
+                displayErrorAsSnackBar("Posted Chat message success", textView);
                 fetchRecords();
             }
         }

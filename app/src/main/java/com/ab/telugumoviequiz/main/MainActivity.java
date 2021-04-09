@@ -20,6 +20,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.ab.telugumoviequiz.R;
 import com.ab.telugumoviequiz.chat.ChatView;
+import com.ab.telugumoviequiz.common.BaseFragment;
 import com.ab.telugumoviequiz.common.CallbackResponse;
 import com.ab.telugumoviequiz.common.DialogAction;
 import com.ab.telugumoviequiz.common.GetTask;
@@ -87,10 +88,14 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         String successMsg = getIntent().getStringExtra("msg");
         Snackbar.make(activityView, successMsg, Snackbar.LENGTH_SHORT).show();
+
         fetchUpdateMoney();
+
         WinMsgHandler.getInstance().setListener(this);
         UserProfile userProfile = UserDetails.getInstance().getUserProfile();
         WinMsgHandler.getInstance().setUserProfileId(userProfile.getId());
+
+        launchView(Navigator.CURRENT_GAMES, new Bundle(), false);
     }
 
     public void onClick(View view) {
@@ -150,12 +155,13 @@ public class MainActivity extends AppCompatActivity
     }
 
     private Fragment getFragment(String viewId) {
-        Fragment fragment = null;
+        BaseFragment fragment = null;
         switch (viewId) {
             case Navigator.MIXED_GAMES_VIEW:
             case Navigator.MIXED_ENROLLED_GAMES_VIEW:
             case Navigator.CELEBRITY_GAMES_VIEW:
             case Navigator.CELEBRITY_ENROLLED_GAMES_VIEW: {
+                stopped = false;
                 fragment = new ShowGames();
                 break;
             }
@@ -165,36 +171,49 @@ public class MainActivity extends AppCompatActivity
                 break;
             }
             case Navigator.CURRENT_GAMES: {
+                stopped = false;
                 fragment = new SelectGameTypeView(SelectGameTypeView.FUTURE_GAMES);
                 break;
             }
             case Navigator.ENROLLED_GAMES: {
+                stopped = false;
                 fragment = new SelectGameTypeView(SelectGameTypeView.ENROLLED_GAMES);
                 break;
             }
             case Navigator.REFERRALS_VIEW: {
+                stopped = true;
                 fragment = new MyReferralsView();
                 break;
             }
             case Navigator.TRANSACTIONS_VIEW: {
+                stopped = true;
                 fragment = new TransactionsView();
                 break;
             }
             case Navigator.HISTORY_VIEW: {
+                stopped = false;
                 fragment = new HistoryView();
                 break;
             }
             case Navigator.WITHDRAW_REQ_VIEW: {
+                stopped = true;
                 fragment = new WithdrawReqsView();
                 break;
             } case Navigator.CHAT_VIEW: {
+                stopped = true;
                 fragment = new ChatView();
                 break;
             }
             case Navigator.PROFILE_VIEW: {
+                stopped = true;
                 fragment = new UpdateUserProfile();
                 break;
             }
+        }
+        if (stopped) {
+            WinMsgHandler.getInstance().setListener(null);
+        } else {
+            WinMsgHandler.getInstance().setListener(fragment);
         }
         return fragment;
     }
@@ -212,43 +231,8 @@ public class MainActivity extends AppCompatActivity
         this.runOnUiThread(run);
     }
 
+
     public boolean handleServerError(boolean exceptionThrown, boolean isAPIException, final Object response) {
-        if ((exceptionThrown) && (!isAPIException)) {
-            showErr((String)response);
-            return true;
-        }
-        return false;
-    }
-
-    public boolean handleAPIError(boolean isAPIException, final Object response, int errorType, View view) {
-        if (isAPIException) {
-            String errorMsg = (String) response;
-            if (errorType == 1) {
-                showErr(errorMsg);
-            } else if (errorType == 2) {
-                //showErrorAsToast(errorMsg);
-            } else {
-                //showErrorAsSnackBar(errorMsg, view);
-            }
-            return true;
-        }
-        return false;
-    }
-
-    public void showErr(final String errMsg) {
-        Runnable run = () -> Utils.showMessage("Error", errMsg, MainActivity.this, null);
-        this.runOnUiThread(run);
-    }
-    public void displayErrorAsToast(final String errMsg) {
-        Runnable run = () -> Toast.makeText(MainActivity.this, errMsg, Toast.LENGTH_LONG).show();
-        this.runOnUiThread(run);
-    }
-    public void displayErrorAsSnackBar(final String errMsg, View view) {
-        Runnable run = () -> Snackbar.make(view, errMsg, Snackbar.LENGTH_LONG).show();
-        this.runOnUiThread(run);
-    }
-
-    public boolean handleServerErrorLatest(boolean exceptionThrown, boolean isAPIException, final Object response) {
         if ((exceptionThrown) && (!isAPIException)) {
             displayError((String)response, new SwitchScreen(this));
             return true;
@@ -256,8 +240,8 @@ public class MainActivity extends AppCompatActivity
         return false;
     }
 
-    public boolean handleAPIErrorLatest(boolean isAPIException, final Object response, int errorType,
-                                        View view, DialogAction dialogAction) {
+    public boolean handleAPIError(boolean isAPIException, final Object response, int errorType,
+                                  View view, DialogAction dialogAction) {
         if (isAPIException) {
             String errorMsg = (String) response;
             if (errorType == 1) {
@@ -285,13 +269,22 @@ public class MainActivity extends AppCompatActivity
         this.runOnUiThread(run);
     }
 
+    public void displayErrorAsToast(final String errMsg) {
+        Runnable run = () -> Toast.makeText(MainActivity.this, errMsg, Toast.LENGTH_LONG).show();
+        this.runOnUiThread(run);
+    }
+    public void displayErrorAsSnackBar(final String errMsg, View view) {
+        Runnable run = () -> Snackbar.make(view, errMsg, Snackbar.LENGTH_LONG).show();
+        this.runOnUiThread(run);
+    }
+
     @Override
     public void handleResponse(int reqId, boolean exceptionThrown, boolean isAPIException, Object response, Object userObject) {
         boolean isHandled = handleServerError(exceptionThrown, isAPIException, response);
         if (isHandled) {
             return;
         }
-        isHandled = handleAPIError(isAPIException, response, 1, null);
+        isHandled = handleAPIError(isAPIException, response, 2, null, null);
         if (isHandled) {
             return;
         }

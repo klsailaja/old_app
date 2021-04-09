@@ -1,7 +1,7 @@
 <resources>
     <!-- Login Screen related-->
     <dimen name="login_screen_top_to_intro_text">20dp</dimen>
-    <dimen name="newsMoreTextSize">20sp</dimen>
+    <dimen name="newsMoreTextSize">17sp</dimen>
     <dimen name="loginViewsMargin">20dp</dimen>
     <dimen name="statusBarMargin">25dp</dimen>
 

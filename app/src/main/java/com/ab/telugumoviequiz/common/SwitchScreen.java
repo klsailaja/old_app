@@ -19,15 +19,8 @@ public class SwitchScreen implements DialogAction {
 
     @Override
     public void doAction(int id, Object userObj) {
-        if (id == LOGIN_PAGE) {
-            Intent intent = new Intent(mainActivity, LoginActivity.class);
-            mainActivity.startActivity(intent);
-            mainActivity.finish();
-            return;
-        }
-        if (mainActivity instanceof MainActivity) {
-            ((MainActivity) mainActivity).launchView(Navigator.CURRENT_GAMES, null, false);
-        }
+        Intent intent = new Intent(mainActivity, LoginActivity.class);
+        mainActivity.startActivity(intent);
+        mainActivity.finish();
     }
-
 }

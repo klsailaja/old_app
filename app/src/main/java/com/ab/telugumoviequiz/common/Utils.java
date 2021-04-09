@@ -16,7 +16,7 @@ import java.util.Locale;
 public class Utils {
     private static final String EMPTY_MESSAGE = "Value is empty for : %s";
     private static final String MAX_LENGTH = "Value exceeds %d for : %s";
-    private static final String MIN_LENGTH = "Min length is %d for : %s";
+    private static final String MIN_LENGTH = "Minimum length is %d for : %s";
     private static final String ONLY_NUMERICS = "Ony numeric values allowed for : %s";
 
     public static int screenWidth;
@@ -105,12 +105,28 @@ public class Utils {
         StringBuilder stringBuilder = new StringBuilder();
 
         if (includeMinutes) {
-            stringBuilder.append(minutes);
+            String str = String.valueOf(minutes);
+            if (str.length() == 1) {
+                str = "0" + str;
+            }
+            stringBuilder.append(str);
             stringBuilder.append(" m: ");
         }
+        String str = String.valueOf(seconds);
+        if (str.length() == 1) {
+            str = "0" + str;
+        }
+        stringBuilder.append(str);
         stringBuilder.append(seconds);
         stringBuilder.append(" s: ");
-        stringBuilder.append(timeTaken);
+
+        str = String.valueOf(timeTaken);
+        if (str.length() == 1) {
+            str = "00" + str;
+        } else if (str.length() == 2) {
+            str = "0" + str;
+        }
+        stringBuilder.append(str);
         stringBuilder.append(" ms ");
         return stringBuilder.toString();
     }
@@ -132,7 +148,7 @@ public class Utils {
 
     public static AlertDialog getProgressDialog(Context context, String waitingMessage) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-        alertDialogBuilder.setTitle("Information");
+        //alertDialogBuilder.setTitle("Information");
         alertDialogBuilder.setMessage(waitingMessage).setCancelable(false);
         return alertDialogBuilder.create();
     }

@@ -1,5 +1,6 @@
 package com.ab.telugumoviequiz.games;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -23,6 +24,8 @@ import androidx.fragment.app.DialogFragment;
 import com.ab.telugumoviequiz.R;
 import com.ab.telugumoviequiz.common.UserDetails;
 import com.ab.telugumoviequiz.common.Utils;
+import com.ab.telugumoviequiz.main.MainActivity;
+import com.ab.telugumoviequiz.main.Navigator;
 
 import java.util.List;
 
@@ -30,12 +33,14 @@ public class ViewLeaderboard extends DialogFragment implements View.OnClickListe
     private final boolean isGameOver;
     private final List<PlayerSummary> list;
     private final Context context;
+    private Activity parentActivity;
     private boolean fromHistory;
 
-    public ViewLeaderboard(Context context, boolean isGameOver, List<PlayerSummary> list) {
+    public ViewLeaderboard(Context context, boolean isGameOver, List<PlayerSummary> list, Activity parentActivity) {
         this.context = context;
         this.isGameOver = isGameOver;
         this.list = list;
+        this.parentActivity = parentActivity;
     }
 
     public ViewLeaderboard(Context context, boolean isGameOver, List<PlayerSummary> list, boolean fromHistory) {
@@ -309,6 +314,13 @@ public class ViewLeaderboard extends DialogFragment implements View.OnClickListe
     @Override
     public void onClick(View view) {
         dismiss();
+        if (isGameOver) {
+            if (!fromHistory) {
+                if (parentActivity instanceof MainActivity) {
+                    ((MainActivity)parentActivity).launchView(Navigator.CURRENT_GAMES, new Bundle(), false);
+                }
+            }
+        }
     }
 
     @Override

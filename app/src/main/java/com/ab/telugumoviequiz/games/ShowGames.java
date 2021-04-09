@@ -21,8 +21,8 @@ import com.ab.telugumoviequiz.common.Keys;
 import com.ab.telugumoviequiz.common.PostTask;
 import com.ab.telugumoviequiz.common.Request;
 import com.ab.telugumoviequiz.common.Scheduler;
+import com.ab.telugumoviequiz.common.ShowHomeScreen;
 import com.ab.telugumoviequiz.common.UserDetails;
-import com.ab.telugumoviequiz.common.Utils;
 import com.ab.telugumoviequiz.constants.UserMoneyAccountType;
 import com.ab.telugumoviequiz.main.MainActivity;
 import com.ab.telugumoviequiz.main.Navigator;
@@ -183,30 +183,21 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
 
     @Override
     public void handleResponse(int reqId, boolean exceptionThrown, boolean isAPIException, final Object response, Object helperObject) {
-        if((exceptionThrown) && (!isAPIException)) {
+        boolean isHandled = handleServerError(exceptionThrown, isAPIException, response);
+        if (isHandled) {
             if (fetchTask != null) {
                 fetchTask.cancel(true);
             }
             if (pollerTask != null) {
                 pollerTask.cancel(true);
             }
-            Runnable run = () -> {
-                String error = (String) response;
-                Utils.showMessage("Error", error, getContext(), null);
-            };
-            Objects.requireNonNull(getActivity()).runOnUiThread(run);
             return;
         }
-
         String gameCancelMsg = null;
         switch (reqId) {
             case Request.JOIN_GAME: {
                 if (isAPIException) {
-                    Runnable run = () -> {
-                        String error = (String) response;
-                        Utils.showMessage("Error", error, getContext(), null);
-                    };
-                    Objects.requireNonNull(getActivity()).runOnUiThread(run);
+                    handleAPIError(isAPIException, response, 1, null, null);
                     return;
                 }
 
@@ -226,6 +217,10 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
             case Request.GET_ENROLLED_GAMES:
             case Request.GET_FUTURE_GAMES: {
                 List<GameDetails> result = Arrays.asList((GameDetails[]) response);
+                if (result.size() == 0) {
+                    displayInfo("Not enrolled for any games", new ShowHomeScreen(getActivity()));
+                    return;
+                }
                 lock.writeLock().lock();
                 gameDetailsList.clear();
                 gameDetailsList.addAll(result);
@@ -274,25 +269,20 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
                 if (gameCancelMsg == null) {
                     return;
                 }
-                ((MainActivity) Objects.requireNonNull(getActivity())).fetchUpdateMoney();
-                final String finalGameCancelMsg = gameCancelMsg;
-                Runnable run = () -> Utils.showMessage("Info", finalGameCancelMsg, getContext(), null);
-                if (getActivity() != null) {
-                    getActivity().runOnUiThread(run);
+                Activity parentActivity = getActivity();
+                if (parentActivity instanceof MainActivity) {
+                    ((MainActivity) parentActivity).fetchUpdateMoney();
                 }
+                displayInfo(gameCancelMsg, new ShowHomeScreen(parentActivity));
                 break;
             }
             case Request.GAME_ENROLLED_STATUS: {
                 if (isAPIException) {
-                    Runnable run = () -> {
-                        String error = (String) response;
-                        Utils.showMessage("Error", error, getContext(), null);
-                    };
-                    Objects.requireNonNull(getActivity()).runOnUiThread(run);
+                    handleAPIError(isAPIException, response, 1, null, null);
                     return;
                 }
                 String isEnrolledStr = ((String) response);
-                Boolean isEnrolled = Boolean.valueOf(isEnrolledStr);
+                boolean isEnrolled = Boolean.parseBoolean(isEnrolledStr);
                 if (isEnrolled) {
                     return;
                 }

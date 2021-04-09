@@ -20,7 +20,6 @@ import com.ab.telugumoviequiz.common.Request;
 import com.ab.telugumoviequiz.common.Scheduler;
 import com.ab.telugumoviequiz.common.UserDetails;
 import com.ab.telugumoviequiz.common.Utils;
-import com.ab.telugumoviequiz.main.MainActivity;
 import com.ab.telugumoviequiz.main.UserProfile;
 
 public class UpdateUserProfile extends BaseFragment implements View.OnClickListener, CallbackResponse, NotifyTextChanged {
@@ -91,11 +90,8 @@ public class UpdateUserProfile extends BaseFragment implements View.OnClickListe
             String str1 = newPasswdTextView.getText().toString().trim();
             String str2 = confirmPasswdTextView.getText().toString().trim();
             if (!str1.equals(str2)) {
-                MainActivity activity = (MainActivity) getActivity();
-                if (activity != null) {
-                    activity.showErr("New Password and Confirm Password are not same. Please check");
-                    return;
-                }
+                displayError("New Password and Confirm Password are not same. Please check", null);
+                return;
             }
             UserProfile userProfile = new UserProfile();
             TextView userNameTextView = view1.findViewById(R.id.profileName);
@@ -114,15 +110,11 @@ public class UpdateUserProfile extends BaseFragment implements View.OnClickListe
     @Override
     public void handleResponse(int reqId, boolean exceptionThrown, boolean isAPIException, final Object response,
                                Object helperObject) {
-        MainActivity mainActivity = (MainActivity) getActivity();
-        if (mainActivity == null) {
-            return;
-        }
-        boolean errorHandled = mainActivity.handleServerError(exceptionThrown, isAPIException, response);
+        boolean errorHandled = handleServerError(exceptionThrown, isAPIException, response);
         if (errorHandled) {
             return;
         }
-        boolean isApiErrorHandled = mainActivity.handleAPIError(isAPIException, response, 1, null);
+        boolean isApiErrorHandled = handleAPIError(isAPIException, response, 1, null, null);
         if (isApiErrorHandled) {
             return;
         }

@@ -2,58 +2,99 @@ package com.ab.telugumoviequiz.common;
 
 import android.app.Activity;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
-import com.google.android.material.snackbar.Snackbar;
+import com.ab.telugumoviequiz.main.MainActivity;
 
-public abstract class BaseFragment extends Fragment {
+import java.util.List;
+
+public abstract class BaseFragment extends Fragment implements MessageListener {
 
     public BaseFragment() {
     }
 
     public boolean handleServerError(boolean exceptionThrown, boolean isAPIException, final Object response) {
-        if ((exceptionThrown) && (!isAPIException)) {
-            showErr("Check your Internet Connectivity");
-            return true;
+        Activity parentActivity = getActivity();
+        if (parentActivity instanceof MainActivity) {
+            MainActivity mainActivity = (MainActivity) parentActivity;
+            return mainActivity.handleServerError(exceptionThrown, isAPIException, response);
         }
         return false;
     }
 
-    public boolean handleAPIError(boolean isAPIException, final Object response) {
-        if (isAPIException) {
-            showErr("Server Problem. Please retry after some time." + (String)response);
-            return true;
+    public boolean handleAPIError(boolean isAPIException, final Object response, int errorType,
+                                  View view, DialogAction dialogAction) {
+        Activity parentActivity = getActivity();
+        if (parentActivity instanceof MainActivity) {
+            MainActivity mainActivity = (MainActivity) parentActivity;
+            return mainActivity.handleAPIError(isAPIException, response, errorType, view, dialogAction);
         }
         return false;
+    }
+
+    public void displayInfo(String infoMsg, DialogAction dialogAction) {
+        Activity parentActivity = getActivity();
+        if (parentActivity instanceof MainActivity) {
+            MainActivity mainActivity = (MainActivity) parentActivity;
+            mainActivity.displayInfo(infoMsg, dialogAction);
+        }
+    }
+
+    public void displayError(String errMsg, DialogAction dialogAction) {
+        Activity parentActivity = getActivity();
+        if (parentActivity instanceof MainActivity) {
+            MainActivity mainActivity = (MainActivity) parentActivity;
+            mainActivity.displayError(errMsg, dialogAction);
+        }
+    }
+
+    public void displayMsg(final String title, final String msg, DialogAction dialogAction) {
+        Activity parentActivity = getActivity();
+        if (parentActivity instanceof MainActivity) {
+            MainActivity mainActivity = (MainActivity) parentActivity;
+            mainActivity.displayMsg(title, msg, dialogAction);
+        }
+    }
+
+    public void displayErrorAsToast(final String errMsg) {
+        Activity parentActivity = getActivity();
+        if (parentActivity instanceof MainActivity) {
+            MainActivity mainActivity = (MainActivity) parentActivity;
+            mainActivity.displayErrorAsToast(errMsg);
+        }
+    }
+    public void displayErrorAsSnackBar(final String errMsg, View view) {
+        Activity parentActivity = getActivity();
+        if (parentActivity instanceof MainActivity) {
+            MainActivity mainActivity = (MainActivity) parentActivity;
+            mainActivity.displayErrorAsSnackBar(errMsg, view);
+        }
     }
 
     public void showErrShowHomeScreen(final String errMsg) {
         final Activity parentActvity = getActivity();
-        Runnable run = () -> Utils.showMessage("Error", errMsg, getContext(), new ShowHomeScreen(parentActvity));
-        if (parentActvity != null) {
-            parentActvity.runOnUiThread(run);
-        }
+        displayError(errMsg, new ShowHomeScreen(parentActvity));
     }
 
-    public void showErr(final String errMsg) {
-        final Activity parentActvity = getActivity();
-        Runnable run = () -> Utils.showMessage("Error", errMsg, getContext(), null);
-        if (parentActvity != null) {
-            parentActvity.runOnUiThread(run);
-        }
-    }
-
-    public void showSnackBarMessage(final String msg) {
-        final Activity parentActivity = getActivity();
-        Runnable run = () -> { Snackbar snackbar = Snackbar.make(getSnackBarComponent(), msg, Snackbar.LENGTH_SHORT);
-            snackbar.show(); };
+    @Override
+    public void passData(int reqId, List<String> data) {
+        String msg = data.get(0);
+        Runnable run = () -> {
+            TextView statusBar = getStatusBar();
+            if (statusBar == null) {
+                return;
+            }
+            statusBar.setText(msg);
+        };
+        Activity parentActivity = getActivity();
         if (parentActivity != null) {
             parentActivity.runOnUiThread(run);
         }
     }
 
-    public View getSnackBarComponent() {
+    public TextView getStatusBar() {
         return null;
     }
 }

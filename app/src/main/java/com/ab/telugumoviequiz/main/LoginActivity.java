@@ -77,7 +77,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 return;
             }
             Button loginButton = findViewById(R.id.loginBut);
-            loginButton.setVisibility(View.GONE);
+            loginButton.setEnabled(false);
             // Send password check validation to server..
             PostTask<LoginData,UserProfile> loginReq = Request.getLogin();
             loginReq.setCallbackResponse(this);
@@ -113,7 +113,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void handleResponse(int reqId, boolean exceptionThrown, boolean isAPIException, final Object response, Object helperObj) {
         Runnable enableButtons = () -> {
             Button loginButton = findViewById(R.id.loginBut);
-            loginButton.setVisibility(View.VISIBLE);
+            loginButton.setEnabled(true);
         };
         this.runOnUiThread(enableButtons);
 
@@ -132,7 +132,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     Utils.showMessage("Error", error, LoginActivity.this, null);
                 };
                 runOnUiThread(run);
+                return;
             }
+
             UserProfile userProfile = (UserProfile) response;
             Resources resources = getResources();
             String msg = resources.getString(R.string.user_login_fail_msg);

@@ -38,7 +38,6 @@ import com.ab.telugumoviequiz.constants.UserMoneyAccountType;
 import com.ab.telugumoviequiz.main.MainActivity;
 import com.ab.telugumoviequiz.main.Navigator;
 import com.ab.telugumoviequiz.money.FetchUserMoneyTask;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -77,6 +76,7 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
             gameDetails = (GameDetails) bundle.getSerializable("gd");
             successMsg = bundle.getString("sm");
         }
+
         timerView = root.findViewById(R.id.timerView);
         progressBar = root.findViewById(R.id.timerProgress);
         questionView = root.findViewById(R.id.questionView);
@@ -325,18 +325,19 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
     @SuppressLint("SetTextI18n")
     @Override
     public void handleResponse(int reqId, boolean exceptionThrown, boolean isAPIException, final Object response, final Object helperObject) {
-       if ((exceptionThrown) && (!isAPIException)) {
-           String error = (String) response;
-           showErrShowHomeScreen(error);
-           return;
+        boolean isHandled = handleServerError(exceptionThrown, isAPIException, response);
+        if (isHandled) {
+            return;
         }
         switch (reqId) {
             case Request.PRIZE_DETAILS: {
-                if (!isAPIException) {
-                    List<PrizeDetail> result = Arrays.asList((PrizeDetail[]) response);
-                    gamePrizeDetails.clear();
-                    gamePrizeDetails.addAll(result);
+                if (isAPIException) {
+                    handleAPIError(isAPIException, response, 1, null, null);
+                    return;
                 }
+                List<PrizeDetail> result = Arrays.asList((PrizeDetail[]) response);
+                gamePrizeDetails.clear();
+                gamePrizeDetails.addAll(result);
                 break;
             }
             case Request.SINGLE_GAME_STATUS: {
@@ -400,15 +401,14 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
                     alertDialog.cancel();
                 });
 
-                Runnable run = () -> alertDialog.show();
+                Runnable run = alertDialog::show;
                 Objects.requireNonNull(getActivity()).runOnUiThread(run);
                 break;
             }
             case Request.UNJOIN_GAME: {
-                String errosMsg = "";
+                String errosMsg;
                 if (isAPIException) {
                     errosMsg = (String) response;
-                    System.out.println("error is " + errosMsg);
                     Utils.showMessage("Error", errosMsg, getContext(), null);
                     return;
                 } else {
@@ -429,6 +429,8 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
                 }
                 break;
             }
+            default:
+                throw new IllegalStateException("Unexpected value: " + reqId);
         }
     }
 
@@ -600,7 +602,7 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
                     ((MainActivity) activity).launchView(Navigator.CURRENT_GAMES, new Bundle(), false);
                 }
             }
-            viewLeaderboard = new ViewLeaderboard(getContext(), isGameOver, gameLeaderBoardDetails);
+            viewLeaderboard = new ViewLeaderboard(getContext(), isGameOver, gameLeaderBoardDetails, getActivity());
             FragmentManager fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
             viewLeaderboard.show(fragmentManager, "dialog");
         };
@@ -748,21 +750,14 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
     }
 
     private void handleGameStatus(boolean isAPIExceptionThrown, Object response) {
-        if (isAPIExceptionThrown) {
+        boolean isHandled = handleAPIError(isAPIExceptionThrown, response, 1, null, null);
+        if (isHandled) {
             if (gameStatusPollerHandle != null) {
                 gameStatusPollerHandle.cancel(true);
             }
-            final String errMsg = (String) response;
-            boolean isHandled = handleKnownErrors(errMsg);
-            if (isHandled) {
-                return;
-            }
-            Resources resources = getResources();
-            final String userMsg = resources.getString(R.string.quiz_screen_server_err);
-            Runnable run = () -> showErrShowHomeScreen(userMsg);
-            Objects.requireNonNull(getActivity()).runOnUiThread(run);
             return;
         }
+
         final GameStatus result = (GameStatus) response;
         if ((result.getGameStatus() == 2) || (result.getGameStatus() == -1)) {
             if (gameStatusPollerHandle != null) {
