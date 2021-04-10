@@ -6,8 +6,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -111,6 +113,11 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
                 enrolledStatus.setHelperObject(quesGameDetails);
                 Scheduler.getInstance().submit(enrolledStatus);
             }
+        } else if (R.id.celebritySchedule == viewId) {
+            GetTask<CelebrityFullDetails> celebrityFullDetailsGetTask = Request.getCelebrityScheduleTask();
+            celebrityFullDetailsGetTask.setCallbackResponse(this);
+            celebrityFullDetailsGetTask.setActivity(getActivity(), "Processing.Please Wait!");
+            Scheduler.getInstance().submit(celebrityFullDetailsGetTask);
         }
     }
 
@@ -123,11 +130,13 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
     @Override
     public void onResume() {
         super.onResume();
+        enableCelebrityButton(true);
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        enableCelebrityButton(false);
     }
 
     @Override
@@ -196,8 +205,8 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
         String gameCancelMsg = null;
         switch (reqId) {
             case Request.JOIN_GAME: {
-                if (isAPIException) {
-                    handleAPIError(isAPIException, response, 1, null, null);
+                isHandled = handleAPIError(isAPIException, response, 1, null, null);
+                if (isHandled) {
                     return;
                 }
 
@@ -323,6 +332,44 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
                     activity.runOnUiThread(run);
                 }
                 break;
+            }
+            case Request.CELEBRITY_SCHEDULE_DETAIS: {
+                CelebrityFullDetails celebrityFullDetails = (CelebrityFullDetails) response;
+                System.out.println(celebrityFullDetails.getMasterNames().size());
+                System.out.println(celebrityFullDetails.getNamesList().size());
+                Runnable run = () -> {
+                    ViewCelebritySchedule viewCelebritySchedule = new ViewCelebritySchedule(getContext(), celebrityFullDetails);
+                    FragmentManager fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
+                    viewCelebritySchedule.show(fragmentManager, "dialog");
+                };
+                Activity activity = getActivity();
+                if (activity != null) {
+                    activity.runOnUiThread(run);
+                }
+                break;
+            }
+        }
+    }
+    private void enableCelebrityButton(boolean enable) {
+        if ((fragmentIndex == 2) || (fragmentIndex == 4)) {
+            Activity activity = getActivity();
+            if (activity instanceof MainActivity) {
+                ActionBar mActionBar = ((MainActivity) getActivity()).getSupportActionBar();
+                if (mActionBar != null) {
+                    View view = mActionBar.getCustomView();
+                    if (view != null) {
+                        System.out.println("Visible");
+                        ImageView viewCelebritySchedules = view.findViewById(R.id.celebritySchedule);
+                        if (enable) {
+                            viewCelebritySchedules.setVisibility(View.VISIBLE);
+                            viewCelebritySchedules.setOnClickListener(this);
+                        } else {
+                            viewCelebritySchedules.setVisibility(View.GONE);
+                            viewCelebritySchedules.setOnClickListener(null);
+                        }
+
+                    }
+                }
             }
         }
     }

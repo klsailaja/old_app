@@ -209,4 +209,11 @@
     <string name="chat_send_but">Send Msg</string>
     <string name="chat_dialog_close">Ok</string>
     <string name="chat_intro_text">These values are valid only for some time as time is running</string>
+
+    <!-- View Celebrity Schedule -->
+    <string name="col1">Game Time#</string>
+    <string name="col2">Celebrities List</string>
+    <string name="celebrity_name">Celebrity Name</string>
+    <string name="showNextTimeSlot">Show Next ComingUp Game Time</string>
+
 </resources>

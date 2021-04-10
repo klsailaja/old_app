@@ -2,6 +2,7 @@ package com.ab.telugumoviequiz.common;
 
 import com.ab.telugumoviequiz.chat.Chat;
 import com.ab.telugumoviequiz.chat.ChatGameDetails;
+import com.ab.telugumoviequiz.games.CelebrityFullDetails;
 import com.ab.telugumoviequiz.games.GameDetails;
 import com.ab.telugumoviequiz.games.GameOperation;
 import com.ab.telugumoviequiz.games.GameStatus;
@@ -57,6 +58,7 @@ public class Request {
     public static final int WIN_WD_SHOW_MSG = 4001;
     public static final int UPDATE_USER_PROFILE = 4010;
     public static final int FORGOT_PASSWORD = 4011;
+    public static final int CELEBRITY_SCHEDULE_DETAIS = 4020;
 
 
     public static GetTask<String[]> getWinWdMessages(long userProfileId) {
@@ -67,6 +69,11 @@ public class Request {
 
 
     /* Games related Tasks */
+    public static GetTask<CelebrityFullDetails> getCelebrityScheduleTask() {
+        String uri = baseUri + "/game/celebrityschedule";
+        return new GetTask<>(uri, CELEBRITY_SCHEDULE_DETAIS, null,
+                CelebrityFullDetails.class, null);
+    }
     public static GetTask<String> getCelebrityNameTask() {
         String uri = baseUri + "/game/celebrity";
         return new GetTask<>(uri, GET_CELEBRITY_NAME, null,
