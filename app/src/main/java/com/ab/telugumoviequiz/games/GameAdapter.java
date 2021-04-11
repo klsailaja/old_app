@@ -97,6 +97,10 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.MyViewHolder> 
         }
         holder.costView.setText(stringBuffer.toString());
         holder.joinButton.setTag(String.valueOf(position));
+        if (gd.getGameType() == 2) {
+            String joinTxt = "Join " + gd.getCelebrityName() + " Special";
+            holder.joinButton.setText(joinTxt);
+        }
     }
     @Override
     public int getItemCount() {

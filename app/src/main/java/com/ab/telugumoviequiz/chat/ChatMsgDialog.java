@@ -23,10 +23,10 @@ import java.util.List;
 
 public class ChatMsgDialog extends DialogFragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
-    private int messageType = 1;
+    private final int messageType;
     public static int REQUEST = 1;
     public static int REPLY = 2;
-    public static int MIXED_GAME_TYPE = 0;
+    //public static int MIXED_GAME_TYPE = 0;
     public static int CELEBRITY_GAME_TYPE = 1;
     private List<String> mixGameTktRates, mixGameStartTimes, mixGameIds;
     private List<String> celebrityGameTktRates, celebrityGameStartTimes, celebrityGameIds;

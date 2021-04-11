@@ -227,7 +227,11 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.chatSendBut) {
-            TextView chatBox = getView().findViewById(R.id.chatSendMsgTxt);
+            View parentView = getView();
+            if (parentView == null) {
+                return;
+            }
+            TextView chatBox = parentView.findViewById(R.id.chatSendMsgTxt);
             String chatMsg = chatBox.getText().toString().trim();
             if (chatMsg.length() == 0) {
                 return;
@@ -331,8 +335,8 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
            return;
        }
         if (reqId == Request.CHAT_BULK_FETCH) {
-            if (isAPIException) {
-
+            isHandled = handleAPIError(isAPIException, response, 1, null, null);
+            if (isHandled) {
                 return;
             }
             endTimeFetched++;
@@ -357,11 +361,10 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
 
         }
         if ((reqId == Request.CHAT_BASIC_GAME_DETAILS_MIX_SET) || (reqId == Request.CHAT_BASIC_GAME_DETAILS_CELEBRITY_SET)) {
-            if (isAPIException) {
-                displayErrorAsSnackBar((String) response, textView);
+            isHandled = handleAPIError(isAPIException, response, 2, textView, null);
+            if (isHandled) {
                 return;
             }
-            //showSnackBarMessage("Fetched Chat Messages successfully");
             if (reqId == Request.CHAT_BASIC_GAME_DETAILS_MIX_SET) {
                 req1 = true;
                 final ChatGameDetails[] result = (ChatGameDetails[]) response;
