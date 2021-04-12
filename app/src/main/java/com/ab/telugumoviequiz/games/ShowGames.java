@@ -50,8 +50,6 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
 
     private final List<GameDetails> gameDetailsList = new ArrayList<>();
     private GameAdapter mAdapter;
-    private GetTask<GameDetails[]> getGamesTask;
-    private GetTask<GameStatusHolder> getGamesStatusTask;
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
     private ScheduledFuture<?> fetchTask = null;
     private ScheduledFuture<?> pollerTask = null;
@@ -151,6 +149,8 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
     }
 
     public void setBaseParams() {
+        GetTask<GameDetails[]> getGamesTask;
+        GetTask<GameStatusHolder> getGamesStatusTask;
         switch (fragmentIndex) {
             case 1: {
                 getGamesTask = Request.getFutureGames(1);
@@ -182,6 +182,8 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
                 getGamesStatusTask = Request.getEnrolledGamesStatus(2, userProfileId);
                 break;
             }
+            default:
+                throw new IllegalStateException("Unexpected value: " + fragmentIndex);
         }
         getGamesTask.setCallbackResponse(this);
         getGamesStatusTask.setCallbackResponse(this);
@@ -286,8 +288,8 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
                 break;
             }
             case Request.GAME_ENROLLED_STATUS: {
-                if (isAPIException) {
-                    handleAPIError(isAPIException, response, 1, null, null);
+                isHandled = handleAPIError(isAPIException, response, 1, null, null);
+                if (isHandled) {
                     return;
                 }
                 String isEnrolledStr = ((String) response);
@@ -311,6 +313,7 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
                 PayGameModel winningMoney = new PayGameModel();
                 winningMoney.setAccountName("Winning Money");
                 winningMoney.setAccountBalance(String.valueOf(userMoney.getWinningAmount()));
+                assert UserMoneyAccountType.findById(2) != null;
                 winningMoney.setAccountNumber(UserMoneyAccountType.findById(2).getId());
                 winningMoney.setValid(userMoney.getWinningAmount() >= tktRate);
                 modelList.add(winningMoney);
@@ -318,6 +321,7 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
                 PayGameModel mainMoney = new PayGameModel();
                 mainMoney.setAccountName("Main Money");
                 mainMoney.setAccountBalance(String.valueOf(userMoney.getLoadedAmount()));
+                assert UserMoneyAccountType.findById(1) != null;
                 mainMoney.setAccountNumber(UserMoneyAccountType.findById(1).getId());
                 mainMoney.setValid(userMoney.getLoadedAmount() >= tktRate);
                 modelList.add(mainMoney);
@@ -358,7 +362,6 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
                 if (mActionBar != null) {
                     View view = mActionBar.getCustomView();
                     if (view != null) {
-                        System.out.println("Visible");
                         ImageView viewCelebritySchedules = view.findViewById(R.id.celebritySchedule);
                         if (enable) {
                             viewCelebritySchedules.setVisibility(View.VISIBLE);

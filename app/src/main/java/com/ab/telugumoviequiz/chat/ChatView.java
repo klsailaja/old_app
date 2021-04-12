@@ -47,8 +47,10 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
     private ScheduledFuture<?> chatFetchTask = null;
     private View textView;
     private List<String> mixGameTktRates, mixGameStartTimes, mixGameIds;
-    private List<String> celebrityGameTktRates, celebrityGameStartTimes, celebrityGameIds;
+    private List<String> specialCelebrityNames, specialGameStartTimes, specialGameIds;
+    private List<Long> mixGameActualStartTimes, specialActualStartTimes;
     private boolean req1 = false, req2 = false;
+    private int counter = 0;
 
     private void fetchRecords() {
         long startTime;
@@ -82,6 +84,11 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
     public void run() {
         try {
             fetchRecords();
+            counter++;
+            if (counter >= 62) {
+                counter = 0;
+                new GameBasicFetcher().run();
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -89,8 +96,11 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
 
     @Override
     public void itemsSelected(int messageType, int gameType, String gameRate, String gameTime, String gameId) {
-        String ReqTemplate = "Anyone coming for Rs.<RATE> at <TIME> with GameId:<ID> in <TYPE>";
-        String ResponseTemplate = "Im joining for Rs.<RATE> at <TIME> with GameId:<ID> in <TYPE>";
+        String ResponseTemplate = "Im joining for Rs.<RATE> game at <TIME> with GameId:<ID> in <TYPE>";
+        String ReqTemplate = "Anyone coming for Rs.<RATE> game at <TIME> with GameId:<ID> in <TYPE>";
+        if (messageType == 2) {
+            ReqTemplate = "Anyone coming for <RATE> game at <TIME> with GameId:<ID> in <TYPE>";
+        }
         int pos = gameRate.indexOf(":");
         if (pos > -1) {
             gameRate = gameRate.substring(pos + 1).trim();
@@ -120,7 +130,7 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
         chatBox.setText(chatMsg);
         Button sendBut = getView().findViewById(R.id.chatSendBut);
         sendBut.setEnabled(true);
-        sendBut.setTag(gameId);
+        sendBut.setTag(gameTime);
     }
 
     @Override
@@ -144,16 +154,19 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
         mixGameTktRates = new ArrayList<>(5);
         mixGameStartTimes = new ArrayList<>(5);
         mixGameIds = new ArrayList<>(5);
-        celebrityGameTktRates = new ArrayList<>(5);
-        celebrityGameStartTimes = new ArrayList<>(5);
-        celebrityGameIds = new ArrayList<>(5);
+        mixGameActualStartTimes = new ArrayList<>(5);
+
+        specialCelebrityNames = new ArrayList<>(5);
+        specialGameStartTimes = new ArrayList<>(5);
+        specialGameIds = new ArrayList<>(5);
+        specialActualStartTimes = new ArrayList<>(5);
 
         mixGameTktRates.add("No Data");
         mixGameStartTimes.add("No Data");
         mixGameIds.add("No Data");
-        celebrityGameTktRates.add("No Data");
-        celebrityGameStartTimes.add("No Data");
-        celebrityGameIds.add("No Data");
+        specialCelebrityNames.add("No Data");
+        specialGameStartTimes.add("No Data");
+        specialGameIds.add("No Data");
     }
 
     public View onCreateView(
@@ -180,9 +193,8 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
         chatAdapter.notifyDataSetChanged();
 
         if (Constants.TEST_MODE == 0) {
-            fetchRecords();
-            chatFetchTask = Scheduler.getInstance().submitRepeatedTask(this, 0, 10, TimeUnit.SECONDS);
             new GameBasicFetcher().run();
+            chatFetchTask = Scheduler.getInstance().submitRepeatedTask(this, 0, 10, TimeUnit.SECONDS);
         }
         Button sendBut = root.findViewById(R.id.chatSendBut);
         sendBut.setEnabled(false);
@@ -240,18 +252,31 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
                 chatMsg = chatMsg.substring(0, 100);
             }
 
-            String selectedGameId = (String) view.getTag();
+            String selectedGameTime = (String) view.getTag();
+            System.out.println("selectedGameTime :" + selectedGameTime);
             long gameStartTime = -1;
-            int position;
-            if (mixGameIds.contains(selectedGameId)) {
-                position = mixGameIds.indexOf(selectedGameId);
-                gameStartTime = Long.parseLong(mixGameStartTimes.get(position));
+            int timeIndex;
+            int index = -1;
+            for (String str : mixGameStartTimes) {
+                index++;
+                if (str.contains(selectedGameTime)) {
+                    timeIndex = index;
+                    gameStartTime = mixGameActualStartTimes.get(timeIndex);
+                    break;
+                }
             }
-            if (celebrityGameIds.contains(selectedGameId)) {
-                position = celebrityGameIds.indexOf(selectedGameId);
-                gameStartTime = Long.parseLong(celebrityGameIds.get(position));
+            if (gameStartTime == -1) {
+                index = -1;
+                for (String str : specialGameStartTimes) {
+                    index++;
+                    if (str.contains(selectedGameTime)) {
+                        timeIndex = index;
+                        gameStartTime = specialActualStartTimes.get(timeIndex);
+                        break;
+                    }
+                }
             }
-            System.out.println("gameStartTime :" + gameStartTime);
+            System.out.println(new Date(gameStartTime) + ":" + gameStartTime);
 
             Chat newChatMsg = new Chat();
             newChatMsg.setSenderUserId(UserDetails.getInstance().getUserProfile().getId());
@@ -265,7 +290,8 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
             postChatMsgTask.setPostObject(newChatMsg);
             Scheduler.getInstance().submit(postChatMsgTask);
 
-            new GameBasicFetcher().run();
+            chatBox.setText("");
+            view.setEnabled(false);
             return;
         }
         if ((view.getId() == R.id.chat_invite_but) || (view.getId() == R.id.chat_repy_but)) {
@@ -279,7 +305,7 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
 
             ChatMsgDialog chatMsgDialog = new ChatMsgDialog(messageType);
             chatMsgDialog.setMixTypeData(mixGameTktRates, mixGameStartTimes, mixGameIds);
-            chatMsgDialog.setCelebrityTypeData(celebrityGameTktRates, celebrityGameStartTimes, celebrityGameIds);
+            chatMsgDialog.setCelebrityTypeData(specialCelebrityNames, specialGameStartTimes, specialGameIds);
             chatMsgDialog.setChatListener(this);
             FragmentManager fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
             chatMsgDialog.show(fragmentManager, "dialog");
@@ -339,7 +365,7 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
             if (isHandled) {
                 return;
             }
-            endTimeFetched++;
+            ++endTimeFetched;
 
             final Chat[] result = (Chat[]) response;
             List<Chat> newEntries = Arrays.asList(result);
@@ -369,12 +395,12 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
                 req1 = true;
                 final ChatGameDetails[] result = (ChatGameDetails[]) response;
                 List<ChatGameDetails> newEntries = Arrays.asList(result);
-                fillValues(mixGameTktRates, mixGameStartTimes, mixGameIds, newEntries);
+                fillValues(mixGameTktRates, mixGameStartTimes, mixGameIds, mixGameActualStartTimes, newEntries);
             } else {
                 req2 = true;
                 final ChatGameDetails[] result = (ChatGameDetails[]) response;
                 List<ChatGameDetails> newEntries = Arrays.asList(result);
-                fillValues(celebrityGameTktRates, celebrityGameStartTimes, celebrityGameIds, newEntries);
+                fillValues(specialCelebrityNames, specialGameStartTimes, specialGameIds, specialActualStartTimes, newEntries);
             }
             enableButtons(true);
         } else if (reqId == Request.POST_CHAT_MSG) {
@@ -405,15 +431,24 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
        }
     }
 
-    private void fillValues(List<String> rates, List<String> gameTimes, List<String> gameIds,
+    private void fillValues(List<String> rates, List<String> gameTimes, List<String> gameIds, List<Long> actualLongGameStartTimes,
                             List<ChatGameDetails> basicGameDetails) {
         rates.clear();
         gameTimes.clear();
         gameIds.clear();
+        actualLongGameStartTimes.clear();
 
         for (ChatGameDetails gd: basicGameDetails) {
-            String value = String.valueOf(gd.getTicketRate());
-            value = "Game Rate : " + value;
+            if (gd.getCurrentCount() == 10) {
+                continue;
+            }
+            String value;
+            if (gd.getGameType() == 2) {
+                value = "Celebrity Name : " + gd.getCelebrityName();
+            } else {
+                value = "Game Rate : " + gd.getTicketRate();
+            }
+
             if (!rates.contains(value)) {
                 rates.add(value);
             }
@@ -421,14 +456,20 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
             if (!gameTimes.contains(value)) {
                 gameTimes.add(value);
             }
+            if (!actualLongGameStartTimes.contains(gd.getGameTimeInMillis())) {
+                actualLongGameStartTimes.add(gd.getGameTimeInMillis());
+            }
             value = "Game Id : " + gd.getTempGameId();
             gameIds.add(value);
         }
+        System.out.println(gameTimes);
+        System.out.println(actualLongGameStartTimes);
     }
 
     private class GameBasicFetcher implements Runnable {
         @Override
         public void run() {
+            System.out.println("Request sent ..");
             GetTask<ChatGameDetails[]> request1 = Request.getMixedGameChatBasicGameDetails(1);
             request1.setCallbackResponse(ChatView.this);
             Scheduler.getInstance().submit(request1);

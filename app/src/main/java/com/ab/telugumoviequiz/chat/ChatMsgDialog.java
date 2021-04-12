@@ -141,9 +141,9 @@ public class ChatMsgDialog extends DialogFragment implements View.OnClickListene
         // Sets the height and the width of the DialogFragment
         super.onResume();
         int[] points = Utils.getScreenWidth(getContext());
-        int width = (points[0] * 3) /4;
-        //int height = ConstraintLayout.LayoutParams.WRAP_CONTENT;
-        int height = (points[1] * 3/ 4);
+        int width = (points[0] * 3) / 4;
+        //int width = ConstraintLayout.LayoutParams.WRAP_CONTENT;
+        int height = (points[1] * 3) / 4;
         Dialog dialog = getDialog();
         if (dialog != null) {
             Window window = dialog.getWindow();

@@ -32,7 +32,7 @@
                 android:text="I am joining for GameId: 1000"
                 android:id="@+id/chat_msg_txt"
                 android:textSize="14sp"
-                android:padding="1dp"
+                android:padding="3dp"
                 android:layout_gravity="start"
                 android:gravity="start"
                 android:textColor="@color/whiteTextColor" />
