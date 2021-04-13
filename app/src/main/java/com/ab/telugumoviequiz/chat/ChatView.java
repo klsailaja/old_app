@@ -198,6 +198,10 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
         }
         Button sendBut = root.findViewById(R.id.chatSendBut);
         sendBut.setEnabled(false);
+        sendBut = root.findViewById(R.id.chat_invite_but);
+        sendBut.setEnabled(false);
+        sendBut = root.findViewById(R.id.chat_repy_but);
+        sendBut.setEnabled(false);
         return root;
     }
 
@@ -462,8 +466,6 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
             value = "Game Id : " + gd.getTempGameId();
             gameIds.add(value);
         }
-        System.out.println(gameTimes);
-        System.out.println(actualLongGameStartTimes);
     }
 
     private class GameBasicFetcher implements Runnable {

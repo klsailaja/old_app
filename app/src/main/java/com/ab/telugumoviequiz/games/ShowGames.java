@@ -20,6 +20,7 @@ import com.ab.telugumoviequiz.common.BaseFragment;
 import com.ab.telugumoviequiz.common.CallbackResponse;
 import com.ab.telugumoviequiz.common.GetTask;
 import com.ab.telugumoviequiz.common.Keys;
+import com.ab.telugumoviequiz.common.MessageListener;
 import com.ab.telugumoviequiz.common.PostTask;
 import com.ab.telugumoviequiz.common.Request;
 import com.ab.telugumoviequiz.common.Scheduler;
@@ -45,14 +46,16 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class ShowGames extends BaseFragment implements CallbackResponse, View.OnClickListener  {
+public class ShowGames extends BaseFragment implements CallbackResponse, View.OnClickListener, MessageListener {
     private int fragmentIndex = -1;
 
     private final List<GameDetails> gameDetailsList = new ArrayList<>();
+    private final List<GameDetails> adapterList = new ArrayList<>();
     private GameAdapter mAdapter;
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
     private ScheduledFuture<?> fetchTask = null;
     private ScheduledFuture<?> pollerTask = null;
+    private String searchKey, searchValue;
 
     public ShowGames() {
         super();
@@ -74,7 +77,7 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
             Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.list_games_view, container, false);
         RecyclerView recyclerView = root.findViewById(R.id.recyclerView);
-        mAdapter = new GameAdapter(gameDetailsList);
+        mAdapter = new GameAdapter(adapterList);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         mLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         recyclerView.setLayoutManager(mLayoutManager);
@@ -116,9 +119,91 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
             celebrityFullDetailsGetTask.setCallbackResponse(this);
             celebrityFullDetailsGetTask.setActivity(getActivity(), "Processing.Please Wait!");
             Scheduler.getInstance().submit(celebrityFullDetailsGetTask);
+        } else if (R.id.search == viewId) {
+            int gameMode = 2;
+            if ((fragmentIndex == 1) || (fragmentIndex == 3)) {
+                gameMode = 1;
+            }
+            List<String> searchGameIds = new ArrayList<>();
+            List<String> celebrityNames = new ArrayList<>();
+            lock.readLock().lock();
+            for (GameDetails gameDetails : gameDetailsList) {
+                searchGameIds.add(String.valueOf(gameDetails.getTempGameId()));
+                if (gameMode == 2) {
+                    celebrityNames.add(gameDetails.getCelebrityName());
+                }
+            }
+            lock.readLock().unlock();
+
+            SearchGamesDialog searchGamesDialog = new SearchGamesDialog(gameMode);
+            searchGamesDialog.setData(searchGameIds, celebrityNames);
+            searchGamesDialog.setListener(this);
+            FragmentManager fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
+            searchGamesDialog.show(fragmentManager, "dialog");
         }
     }
 
+    private void applyFilterCriteria(int from) {
+        List<GameDetails> filterSet = new ArrayList<>();
+        if (searchKey == null) {
+            filterSet = gameDetailsList;
+            adapterList.clear();
+            adapterList.addAll(filterSet);
+            Runnable run = () -> mAdapter.notifyDataSetChanged();
+            Activity parentActivity = getActivity();
+            if (parentActivity != null) {
+                parentActivity.runOnUiThread(run);
+            }
+            return;
+        }
+        int searchType = 1;
+        if (searchKey.equals("Celebrity Name")) {
+            searchType = 2;
+        }
+        lock.readLock().lock();
+        for (GameDetails gameDetails : gameDetailsList) {
+            if (searchType == 1) {
+                if (String.valueOf(gameDetails.getTempGameId()).equals(searchValue)) {
+                    filterSet.add(gameDetails);
+                }
+            } else if (searchType == 2) {
+                if (searchValue.equals(gameDetails.getCelebrityName())) {
+                    filterSet.add(gameDetails);
+                }
+            }
+        }
+        if (filterSet.size() == 0) {
+            if (from == 1) {
+                // From search window
+                displayInfo("No Data Found. Please Check", null);
+                return;
+            } else if (from == 2) {
+                filterSet = gameDetailsList;
+                displayInfo("Searched Game(s) not valid now", null);
+            }
+        }
+        lock.readLock().unlock();
+        adapterList.clear();
+        adapterList.addAll(filterSet);
+        Runnable run = () -> mAdapter.notifyDataSetChanged();
+        Activity parentActivity = getActivity();
+        if (parentActivity != null) {
+            parentActivity.runOnUiThread(run);
+        }
+    }
+
+    @Override
+    public void passData(int id, List<String> data) {
+        if (id == 1) {
+            // Search operation...
+            searchKey = data.get(0).trim();
+            searchValue = data.get(1).trim();
+        } else if (id == 2) {
+            searchKey = null;
+            searchValue = null;
+        }
+        applyFilterCriteria(1);
+    }
 
     @Override
     public void onStart() {
@@ -189,7 +274,7 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
         getGamesStatusTask.setCallbackResponse(this);
 
         fetchTask = Scheduler.getInstance().submitRepeatedTask(getGamesTask, 0, 5, TimeUnit.MINUTES);
-        pollerTask = Scheduler.getInstance().submitRepeatedTask(getGamesStatusTask, 10, 10, TimeUnit.SECONDS);
+        pollerTask = Scheduler.getInstance().submitRepeatedTask(getGamesStatusTask, 10, 15, TimeUnit.SECONDS);
     }
 
     @Override
@@ -204,7 +289,6 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
             }
             return;
         }
-        String gameCancelMsg = null;
         switch (reqId) {
             case Request.JOIN_GAME: {
                 isHandled = handleAPIError(isAPIException, response, 1, null, null);
@@ -232,19 +316,17 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
                     displayInfo("Not enrolled for any games", new ShowHomeScreen(getActivity()));
                     return;
                 }
+
                 lock.writeLock().lock();
                 gameDetailsList.clear();
                 gameDetailsList.addAll(result);
                 lock.writeLock().unlock();
-                Runnable run = () -> mAdapter.notifyDataSetChanged();
-                Activity parentAct = getActivity();
-                if (parentAct != null) {
-                    parentAct.runOnUiThread(run);
-                }
+                applyFilterCriteria(2);
                 break;
             }
             case Request.GET_FUTURE_GAMES_STATUS:
             case Request.GET_ENROLLED_GAMES_STATUS: {
+                String gameCancelMsg = null;
                 GameStatusHolder result = (GameStatusHolder) response;
                 HashMap<Long, GameStatus> statusHashMap = result.getVal();
 
@@ -277,12 +359,17 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
                     gameDetails.setCurrentCount(gameStatus.getCurrentCount());
                 }
                 lock.writeLock().unlock();
-                if (gameCancelMsg == null) {
-                    return;
+                int from = 2;
+                if (gameCancelMsg != null) {
+                    from = 3;
                 }
+                applyFilterCriteria(from);
                 Activity parentActivity = getActivity();
                 if (parentActivity instanceof MainActivity) {
                     ((MainActivity) parentActivity).fetchUpdateMoney();
+                }
+                if (gameCancelMsg == null) {
+                    return;
                 }
                 displayInfo(gameCancelMsg, new ShowHomeScreen(parentActivity));
                 break;
@@ -339,8 +426,6 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
             }
             case Request.CELEBRITY_SCHEDULE_DETAIS: {
                 CelebrityFullDetails celebrityFullDetails = (CelebrityFullDetails) response;
-                System.out.println(celebrityFullDetails.getMasterNames().size());
-                System.out.println(celebrityFullDetails.getNamesList().size());
                 Runnable run = () -> {
                     ViewCelebritySchedule viewCelebritySchedule = new ViewCelebritySchedule(getContext(), celebrityFullDetails);
                     FragmentManager fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
@@ -355,13 +440,21 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
         }
     }
     private void enableCelebrityButton(boolean enable) {
-        if ((fragmentIndex == 2) || (fragmentIndex == 4)) {
-            Activity activity = getActivity();
-            if (activity instanceof MainActivity) {
-                ActionBar mActionBar = ((MainActivity) getActivity()).getSupportActionBar();
-                if (mActionBar != null) {
-                    View view = mActionBar.getCustomView();
-                    if (view != null) {
+        Activity activity = getActivity();
+        if (activity instanceof MainActivity) {
+            ActionBar mActionBar = ((MainActivity) getActivity()).getSupportActionBar();
+            if (mActionBar != null) {
+                View view = mActionBar.getCustomView();
+                if (view != null) {
+                    ImageView searchButton = view.findViewById(R.id.search);
+                    if (enable) {
+                        searchButton.setVisibility(View.VISIBLE);
+                        searchButton.setOnClickListener(this);
+                    } else {
+                        searchButton.setVisibility(View.GONE);
+                        searchButton.setOnClickListener(null);
+                    }
+                    if ((fragmentIndex == 2) || (fragmentIndex == 4)) {
                         ImageView viewCelebritySchedules = view.findViewById(R.id.celebritySchedule);
                         if (enable) {
                             viewCelebritySchedules.setVisibility(View.VISIBLE);
@@ -370,7 +463,6 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
                             viewCelebritySchedules.setVisibility(View.GONE);
                             viewCelebritySchedules.setOnClickListener(null);
                         }
-
                     }
                 }
             }

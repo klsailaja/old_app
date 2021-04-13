@@ -216,4 +216,13 @@
     <string name="celebrity_name">Celebrity Name</string>
     <string name="showNextTimeSlot">Show Next ComingUp Game Time</string>
 
+    <!-- Search Dialog-->
+    <string-array name="search_options">
+        <item>Game Id</item>
+        <item>Celebrity Name</item>
+    </string-array>
+    <string name="search_intro_text">Search by:</string>
+    <string name="search_txt">Search</string>
+    <string name="clear_txt">Show All</string>
+    <string name="close_but">Close</string>
 </resources>
