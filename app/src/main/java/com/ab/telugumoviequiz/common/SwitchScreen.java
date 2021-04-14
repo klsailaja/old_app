@@ -8,9 +8,6 @@ import com.ab.telugumoviequiz.main.MainActivity;
 import com.ab.telugumoviequiz.main.Navigator;
 
 public class SwitchScreen implements DialogAction {
-
-    public static final int LOGIN_PAGE = 1;
-    public static final int GAMES_PAGE = 2;
     private final Activity mainActivity;
 
     public SwitchScreen(Activity mainActivity) {

@@ -99,7 +99,7 @@ public class Utils {
             return null;
         }
         long minutes = (timeTaken / 1000) / 60;
-        long seconds = (timeTaken / 1000) % 60;
+        long seconds = (timeTaken / 1000);
         timeTaken = timeTaken - (minutes * 60 * 1000) - (seconds * 1000);
 
         StringBuilder stringBuilder = new StringBuilder();
@@ -116,7 +116,6 @@ public class Utils {
         if (str.length() == 1) {
             str = "0" + str;
         }
-        stringBuilder.append(str);
         stringBuilder.append(seconds);
         stringBuilder.append(" s: ");
 

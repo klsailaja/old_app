@@ -1,6 +1,7 @@
 package com.ab.telugumoviequiz.common;
 
 import android.app.Activity;
+import android.os.Bundle;
 
 import com.ab.telugumoviequiz.main.MainActivity;
 import com.ab.telugumoviequiz.main.Navigator;
@@ -15,7 +16,7 @@ public class ShowHomeScreen implements DialogAction {
     @Override
     public void doAction(int id, Object userObj) {
         if (mainActivity instanceof MainActivity) {
-            ((MainActivity) mainActivity).launchView(Navigator.CURRENT_GAMES, null, false);
+            ((MainActivity) mainActivity).launchView(Navigator.CURRENT_GAMES, new Bundle(), false);
         }
     }
 }

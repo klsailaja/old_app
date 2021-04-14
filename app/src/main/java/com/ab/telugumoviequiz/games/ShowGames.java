@@ -143,7 +143,7 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
         }
     }
 
-    private void applyFilterCriteria(int from) {
+    private void applyFilterCriteria() {
         List<GameDetails> filterSet = new ArrayList<>();
         if (searchKey == null) {
             filterSet = gameDetailsList;
@@ -166,23 +166,18 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
                 if (String.valueOf(gameDetails.getTempGameId()).equals(searchValue)) {
                     filterSet.add(gameDetails);
                 }
-            } else if (searchType == 2) {
+            } else {
                 if (searchValue.equals(gameDetails.getCelebrityName())) {
                     filterSet.add(gameDetails);
                 }
             }
         }
-        if (filterSet.size() == 0) {
-            if (from == 1) {
-                // From search window
-                displayInfo("No Data Found. Please Check", null);
-                return;
-            } else if (from == 2) {
-                filterSet = gameDetailsList;
-                displayInfo("Searched Game(s) not valid now", null);
-            }
-        }
         lock.readLock().unlock();
+        if (filterSet.size() == 0) {
+            searchKey = null;
+            filterSet = gameDetailsList;
+            displayErrorAsToast("Searched data not found. Showing all");
+        }
         adapterList.clear();
         adapterList.addAll(filterSet);
         Runnable run = () -> mAdapter.notifyDataSetChanged();
@@ -202,7 +197,7 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
             searchKey = null;
             searchValue = null;
         }
-        applyFilterCriteria(1);
+        applyFilterCriteria();
     }
 
     @Override
@@ -321,7 +316,7 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
                 gameDetailsList.clear();
                 gameDetailsList.addAll(result);
                 lock.writeLock().unlock();
-                applyFilterCriteria(2);
+                applyFilterCriteria();
                 break;
             }
             case Request.GET_FUTURE_GAMES_STATUS:
@@ -359,11 +354,7 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
                     gameDetails.setCurrentCount(gameStatus.getCurrentCount());
                 }
                 lock.writeLock().unlock();
-                int from = 2;
-                if (gameCancelMsg != null) {
-                    from = 3;
-                }
-                applyFilterCriteria(from);
+                applyFilterCriteria();
                 Activity parentActivity = getActivity();
                 if (parentActivity instanceof MainActivity) {
                     ((MainActivity) parentActivity).fetchUpdateMoney();

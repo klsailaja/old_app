@@ -59,9 +59,11 @@ public class SelectGameTypeView extends BaseFragment implements View.OnClickList
         recyclerView.setAdapter(mAdapter);
 
         Bundle args = getArguments();
-        String msg = args.getString(Keys.LEAVE_ACTION_RESULT);
-        if (msg != null) {
-            Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+        if (args != null) {
+            String msg = args.getString(Keys.LEAVE_ACTION_RESULT);
+            if (msg != null) {
+                Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+            }
         }
         return root;
     }

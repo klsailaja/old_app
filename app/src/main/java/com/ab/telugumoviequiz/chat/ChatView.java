@@ -51,8 +51,9 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
     private List<Long> mixGameActualStartTimes, specialActualStartTimes;
     private boolean req1 = false, req2 = false;
     private int counter = 0;
+    private RecyclerView recyclerView;
 
-    private void fetchRecords() {
+    private void fetchChatRecords() {
         long startTime;
         if (endTimeFetched == -1) {
             endTimeFetched = System.currentTimeMillis();
@@ -83,9 +84,9 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
     @Override
     public void run() {
         try {
-            fetchRecords();
+            fetchChatRecords();
             counter++;
-            if (counter >= 62) {
+            if (counter >= 32) {
                 counter = 0;
                 new GameBasicFetcher().run();
             }
@@ -96,6 +97,9 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
 
     @Override
     public void itemsSelected(int messageType, int gameType, String gameRate, String gameTime, String gameId) {
+        if (gameRate.equals("FULL")) {
+            return;
+        }
         String ResponseTemplate = "Im joining for Rs.<RATE> game at <TIME> with GameId:<ID> in <TYPE>";
         String ReqTemplate = "Anyone coming for Rs.<RATE> game at <TIME> with GameId:<ID> in <TYPE>";
         if (messageType == 2) {
@@ -177,7 +181,7 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
         ViewAdapter.screenWidth = points[0];
 
         View root = inflater.inflate(R.layout.chat_view, container, false);
-        RecyclerView recyclerView = root.findViewById(R.id.recyclerView);
+        recyclerView = root.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -192,10 +196,9 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
         fillStrTime();
         chatAdapter.notifyDataSetChanged();
 
-        if (Constants.TEST_MODE == 0) {
-            new GameBasicFetcher().run();
-            chatFetchTask = Scheduler.getInstance().submitRepeatedTask(this, 0, 10, TimeUnit.SECONDS);
-        }
+        new GameBasicFetcher().run();
+        chatFetchTask = Scheduler.getInstance().submitRepeatedTask(this, 0, 10, TimeUnit.SECONDS);
+
         Button sendBut = root.findViewById(R.id.chatSendBut);
         sendBut.setEnabled(false);
         sendBut = root.findViewById(R.id.chat_invite_but);
@@ -257,7 +260,6 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
             }
 
             String selectedGameTime = (String) view.getTag();
-            System.out.println("selectedGameTime :" + selectedGameTime);
             long gameStartTime = -1;
             int timeIndex;
             int index = -1;
@@ -280,7 +282,6 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
                     }
                 }
             }
-            System.out.println(new Date(gameStartTime) + ":" + gameStartTime);
 
             Chat newChatMsg = new Chat();
             newChatMsg.setSenderUserId(UserDetails.getInstance().getUserProfile().getId());
@@ -299,6 +300,22 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
             return;
         }
         if ((view.getId() == R.id.chat_invite_but) || (view.getId() == R.id.chat_repy_but)) {
+            if ((mixGameIds.size() == 0) && (specialGameIds.size() == 0)) {
+                displayInfo("All the games are full. You cannot invite anyone", null);
+                return;
+            }
+            if (mixGameIds.size() == 0) {
+                String fullMsg = "FULL";
+                mixGameTktRates.add(fullMsg);
+                mixGameStartTimes.add(fullMsg);
+                mixGameIds.add(fullMsg);
+            }
+            if (specialGameIds.size() == 0) {
+                String fullMsg = "FULL";
+                specialCelebrityNames.add(fullMsg);
+                specialGameStartTimes.add(fullMsg);
+                specialGameIds.add(fullMsg);
+            }
             req1 = false;
             req2 = false;
             enableButtons(false);
@@ -319,7 +336,7 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
     private void fillStrTime() {
         @SuppressLint("SimpleDateFormat")
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
-        String datePattern = "HH:mm";
+        String datePattern = "hh:mm";
         for (Chat chatMsg : data) {
             Date date = new Date(chatMsg.getSentTimeStamp());
             simpleDateFormat.applyPattern(datePattern);
@@ -342,14 +359,14 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
         Chat chat1 = new Chat();
         chat1.setSenderUserId(UserDetails.getInstance().getUserProfile().getId());
         chat1.setSenderName("Your Name");
-        chat1.setMessage("You can send chat messages by clicking on left side buttons.Your messages appear here. Try it out.");
+        chat1.setMessage("You can send invite chat messages by clicking on left side buttons.Your messages appear here in green color. Try it out.");
         chat1.setSentTimeStamp(System.currentTimeMillis());
         data.add(chat1);
 
         Chat chat2 = new Chat();
         chat2.setSenderUserId(20);
         chat2.setSenderName("Username");
-        chat2.setMessage("Other users messages appear here. You can respond to these messages and play games.");
+        chat2.setMessage("Other users messages appear here in blue color. You can respond to these messages and play games.");
         chat2.setSentTimeStamp(System.currentTimeMillis());
         data.add(chat2);
 
@@ -383,12 +400,15 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
                 int delStartIndex = data.size() - CHAT_MAX_ENTRIES;
                 data.subList(0, delStartIndex).clear();
             }
-            Runnable run = () -> chatAdapter.notifyDataSetChanged();
+            Runnable run = () -> {
+                chatAdapter.notifyDataSetChanged();
+                recyclerView.scrollToPosition(chatAdapter.getItemCount() - 1);
+            };
+
             Activity activity = getActivity();
             if (activity != null) {
                 activity.runOnUiThread(run);
             }
-
         }
         if ((reqId == Request.CHAT_BASIC_GAME_DETAILS_MIX_SET) || (reqId == Request.CHAT_BASIC_GAME_DETAILS_CELEBRITY_SET)) {
             isHandled = handleAPIError(isAPIException, response, 2, textView, null);
@@ -415,7 +435,7 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
             Boolean result = (Boolean) response;
             if (result) {
                 displayErrorAsSnackBar("Posted Chat message success", textView);
-                fetchRecords();
+                fetchChatRecords();
             }
         }
     }
