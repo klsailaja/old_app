@@ -11,6 +11,7 @@ public class UserProfile {
 	private long createdDate;
 	private long lastLoggedDate;
 	private String bossName;
+	private long bossId;
 	
 	public long getId() {
 		return id;
@@ -67,9 +68,16 @@ public class UserProfile {
 	public void setBossName(String bossName) {
 		this.bossName = bossName;
 	}
+	
+	public long getBossId() {
+		return bossId;
+	}
+	public void setBossId(long bossId) {
+		this.bossId = bossId;
+	}
 	@Override
 	public String toString() {
-		return "UserProfile [id=" + id + ", phoneNumber=" + emailAddress + ", name=" + name + ", referalId=" + myReferalId
+		return "UserProfile [id=" + id + ", emailAddress=" + emailAddress + ", name=" + name + ", referalId=" + myReferalId
 				+ ", referredId=" + bossReferredId + ", createdDate=" + createdDate + ", lastLoggedDate="
 				+ lastLoggedDate + "]";
 	}

@@ -17,7 +17,7 @@ public class Utils {
     private static final String EMPTY_MESSAGE = "Value is empty for : %s";
     private static final String MAX_LENGTH = "Value exceeds %d for : %s";
     private static final String MIN_LENGTH = "Minimum length is %d for : %s";
-    private static final String ONLY_NUMERICS = "Ony numeric values allowed for : %s";
+    private static final String ONLY_NUMERICS = "Only numeric values allowed for : %s";
 
     public static int screenWidth;
     public static int screenHeight;
