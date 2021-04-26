@@ -15,6 +15,7 @@ import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ public class PostTask<T,R> implements Runnable {
     private final String reqUri;
     private final int requestId;
     private CallbackResponse callbackResponse;
-    private int reqTimeOut = 5 * 1000;
+    private int reqTimeOut = 20 * 1000;
     private T postObject;
     private final Class<R> classType;
     private Object helperObject;
@@ -133,6 +134,10 @@ public class PostTask<T,R> implements Runnable {
             if (ex instanceof HttpClientErrorException) {
                 HttpClientErrorException clientExp = (HttpClientErrorException) ex;
                 errMessage = clientExp.getResponseBodyAsString();
+                isAPIException = true;
+            } else if (ex instanceof HttpServerErrorException) {
+                HttpServerErrorException serverExp = (HttpServerErrorException) ex;
+                errMessage = serverExp.getResponseBodyAsString();
                 isAPIException = true;
             }
             getCallbackResponse().handleResponse(getRequestId(), true, isAPIException, errMessage, getHelperObject());

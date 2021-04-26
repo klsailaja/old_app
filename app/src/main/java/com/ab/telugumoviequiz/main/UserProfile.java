@@ -12,7 +12,22 @@ public class UserProfile {
 	private long lastLoggedDate;
 	private String bossName;
 	private long bossId;
+	private int loggedIn;
+	private int forgotPasswdUsed;
 	
+	
+	public int getLoggedIn() {
+		return loggedIn;
+	}
+	public void setLoggedIn(int loggedIn) {
+		this.loggedIn = loggedIn;
+	}
+	public int getForgotPasswdUsed() {
+		return forgotPasswdUsed;
+	}
+	public void setForgotPasswdUsed(int forgotPasswdUsed) {
+		this.forgotPasswdUsed = forgotPasswdUsed;
+	}
 	public long getId() {
 		return id;
 	}
@@ -22,8 +37,8 @@ public class UserProfile {
 	public String getEmailAddress() {
 		return emailAddress;
 	}
-	public void setEmailAddress(String phoneNumber) {
-		this.emailAddress = phoneNumber;
+	public void setEmailAddress(String emailAddress) {
+		this.emailAddress = emailAddress;
 	}
 	public String getPasswordHash() {
 		return password_hash;
@@ -58,7 +73,7 @@ public class UserProfile {
 	public long getLastLoggedDate() {
 		return lastLoggedDate;
 	}
-	public void setLastLoggedTime(long lastLoggedDate) {
+	public void setLastLoggedDate(long lastLoggedDate) {
 		this.lastLoggedDate = lastLoggedDate;
 	}
 	
