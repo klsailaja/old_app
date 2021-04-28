@@ -38,7 +38,7 @@
     <!-- New user Screen -->
     <string name="new_user_email_hint">Register with Frequently Used E-Mail Id</string>
     <string name="new_user_password">Configure Password with 4 to 8 chars length</string>
-    <string name="new_user_user_name">Configure Your Name with 4 to 8 chars length</string>
+    <string name="new_user_user_name">Configure Your Name with 2 to 20 chars length</string>
     <string name="newuser_referal_code_hint">Referral Code. Can be empty </string>
     <string name="newuser_register_text">Register</string>
     <string name="new_user_register_success">User successfully registered</string>

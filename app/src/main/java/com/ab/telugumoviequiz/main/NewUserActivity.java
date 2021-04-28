@@ -75,7 +75,7 @@ public class NewUserActivity extends AppCompatActivity
         } else if (viewId == id.registerButton) {
             UserProfile userProfile = getFromUI();
             if (userProfile == null) {
-                Utils.showMessage("Error", "Please correct the errors", NewUserActivity.this, null);
+                Utils.showMessage("Error", "Please correct errors", NewUserActivity.this, null);
                 return;
             }
             Button loginButton = findViewById(R.id.registerButton);
@@ -256,7 +256,7 @@ public class NewUserActivity extends AppCompatActivity
     private boolean validateName() {
         TextView nameText = findViewById(id.editTextName);
         String str = nameText.getText().toString().trim();
-        String result = Utils.fullValidate(str, "Name", false, 4, 8, false);
+        String result = Utils.fullValidate(str, "Name", false, 2, 20, false);
         if (result != null) {
             nameText.setError(result);
             nameText.requestFocus();
@@ -283,7 +283,7 @@ public class NewUserActivity extends AppCompatActivity
         String result = Utils.fullValidate(str, "Mail Id", false, -1, -1, false);
         boolean showErr;
         if (result != null) {
-            showErr = true;
+            showErr = false;
         } else {
             showErr = android.util.Patterns.EMAIL_ADDRESS.matcher(str).matches();
             result = "Invalid Mail Address";

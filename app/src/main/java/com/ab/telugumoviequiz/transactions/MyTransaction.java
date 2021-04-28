@@ -7,12 +7,21 @@ public class MyTransaction {
 	private long date;
 	private int amount;
 	private int accountType;  
-	private int transactionType; // Loaded, Withdrawn, Debited, Credited, TransferedTo, Refunded, TransferedFrom, PaidToReferal
+	private int transactionType; // Loaded, WithdrawInitiated, WithdrawCompleted, Debited, Credited, TransferedTo, Refunded, TransferedFrom, PaidToReferal
 	private int operResult;
 	private long openingBalance;
 	private long closingBalance;
 	private String comments;
+	private int isWin;
+	
 	private int sNo;
+	
+	public int getIsWin() {
+		return isWin;
+	}
+	public void setIsWin(int isWin) {
+		this.isWin = isWin;
+	}
 	
 	public int getOperResult() {
 		return operResult;

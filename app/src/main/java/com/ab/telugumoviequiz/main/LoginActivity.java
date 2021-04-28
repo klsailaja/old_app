@@ -2,7 +2,6 @@ package com.ab.telugumoviequiz.main;
 
 import android.content.Intent;
 import android.content.res.Resources;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -31,9 +30,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.M){
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-        }
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         setContentView(R.layout.activity_login);
         Request.baseUri = getString(R.string.base_url);
     }
@@ -262,7 +259,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         String result = Utils.fullValidate(str, "Mail Id", false, -1, -1, false);
         boolean showErr;
         if (result != null) {
-            showErr = true;
+            showErr = false;
         } else {
             showErr = android.util.Patterns.EMAIL_ADDRESS.matcher(str).matches();
             result = "Invalid Mail Address";
