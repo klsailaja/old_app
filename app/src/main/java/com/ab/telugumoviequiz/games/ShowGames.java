@@ -34,11 +34,9 @@ import com.ab.telugumoviequiz.main.UserProfile;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -139,7 +137,7 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
             SearchGamesDialog searchGamesDialog = new SearchGamesDialog(gameMode);
             searchGamesDialog.setData(searchGameIds, celebrityNames);
             searchGamesDialog.setListener(this);
-            FragmentManager fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
+            FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
             searchGamesDialog.show(fragmentManager, "dialog");
         }
     }
@@ -152,9 +150,7 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
             adapterList.addAll(filterSet);
             Runnable run = () -> mAdapter.notifyDataSetChanged();
             Activity parentActivity = getActivity();
-            if (parentActivity != null) {
-                parentActivity.runOnUiThread(run);
-            }
+            if (parentActivity != null) parentActivity.runOnUiThread(run);
             return;
         }
         int searchType = 1;
@@ -267,10 +263,11 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
                 throw new IllegalStateException("Unexpected value: " + fragmentIndex);
         }
         getGamesTask.setCallbackResponse(this);
+        getGamesTask.setActivity(getActivity(), "Processing. Please Wait!!");
         getGamesStatusTask.setCallbackResponse(this);
 
         fetchTask = Scheduler.getInstance().submitRepeatedTask(getGamesTask, 0, 5, TimeUnit.MINUTES);
-        pollerTask = Scheduler.getInstance().submitRepeatedTask(getGamesStatusTask, 10, 15, TimeUnit.SECONDS);
+        pollerTask = Scheduler.getInstance().submitRepeatedTask(getGamesStatusTask, 10, 10, TimeUnit.SECONDS);
     }
 
     @Override
@@ -297,7 +294,7 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
                 Resources resources = getResources();
                 String joinMsg = resources.getString(R.string.game_join_success_msg);
                 params.putString("msg", joinMsg);
-                ((Navigator) Objects.requireNonNull(getActivity())).launchView(Navigator.QUESTION_VIEW, params, false);
+                ((Navigator) requireActivity()).launchView(Navigator.QUESTION_VIEW, params, false);
 
                 Activity activity = getActivity();
                 if (activity instanceof MainActivity) {
@@ -347,7 +344,7 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
                             continue;
                         }
                         if (revertStatus) {
-                            gameCancelMsg = "GameId#" + userViewingGameId + " Cancelled. Ticket Money credited successfully";
+                            gameCancelMsg = "GameId#" + userViewingGameId + " Cancelled as minimum users not present. Ticket Money credited successfully";
                         } else {
                             gameCancelMsg = "GameId#" + userViewingGameId + " Cancelled. Ticket Money could not be credited";
                         }
@@ -374,6 +371,9 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
                 String isEnrolledStr = ((String) response);
                 boolean isEnrolled = Boolean.parseBoolean(isEnrolledStr);
                 if (isEnrolled) {
+                    Bundle params = new Bundle();
+                    params.putSerializable("gd", (GameDetails)helperObject);
+                    ((Navigator) requireActivity()).launchView(Navigator.QUESTION_VIEW, params, false);
                     return;
                 }
                 GameDetails quesGameDetails = (GameDetails) helperObject;
@@ -407,7 +407,7 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
 
                 Runnable run = () -> {
                     PayGameDialog payOptions = new PayGameDialog(modelList, this, quesGameDetails);
-                    FragmentManager fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
+                    FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
                     payOptions.show(fragmentManager, "dialog");
                 };
                 Activity activity = getActivity();
@@ -420,7 +420,7 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
                 CelebrityFullDetails celebrityFullDetails = (CelebrityFullDetails) response;
                 Runnable run = () -> {
                     ViewCelebritySchedule viewCelebritySchedule = new ViewCelebritySchedule(getContext(), celebrityFullDetails);
-                    FragmentManager fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
+                    FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
                     viewCelebritySchedule.show(fragmentManager, "dialog");
                 };
                 Activity activity = getActivity();
@@ -429,6 +429,8 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
                 }
                 break;
             }
+            default:
+                throw new IllegalStateException("Unexpected value: " + reqId);
         }
     }
     private void enableCelebrityButton(boolean enable) {

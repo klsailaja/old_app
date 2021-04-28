@@ -69,13 +69,15 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
     public View onCreateView(
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
+
         View root = inflater.inflate(R.layout.activity_question, container, false);
         Bundle bundle = getArguments();
-        String successMsg = "Success";
+
         if (bundle != null) {
             gameDetails = (GameDetails) bundle.getSerializable("gd");
-            successMsg = bundle.getString("sm");
         }
+        Resources resources = getResources();
+        String successMsg = resources.getString(R.string.game_join_success_msg);
 
         timerView = root.findViewById(R.id.timerView);
         progressBar = root.findViewById(R.id.timerProgress);
@@ -89,6 +91,7 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
         // Dangerous code....
         //Snackbar snackbar = Snackbar.make(timerView, successMsg, Snackbar.LENGTH_SHORT);
         //snackbar.show();
+        displayErrorAsToast(successMsg);
 
         long cTime = System.currentTimeMillis();
         long timeToStart = gameDetails.getStartTime() - cTime - Constants.GAME_BEFORE_LOCK_PERIOD_IN_MILLIS - Constants.SCHEDULER_OFFSET_IN_MILLIS;
@@ -104,15 +107,8 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
-
-
-    @Override
     public void onStart() {
         super.onStart();
-
     }
 
     @Override
@@ -149,9 +145,7 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
 
     @Override
     public void doAction(int calledId, Object userObject) {
-        System.out.println("Hasini called" + calledId);
         if (calledId == 10) {
-            System.out.println("Hasini called");
             GameDetails leaveGameDetails = (GameDetails) userObject;
             PostTask<GameOperation, Boolean> joinTask = Request.gameUnjoinTask(leaveGameDetails.getGameId());
             joinTask.setCallbackResponse(this);
@@ -363,7 +357,7 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
             }
             case Request.SUBMIT_ANSWER_REQ: {
                 Runnable run = () -> Toast.makeText(getContext(), "Submitted Success", Toast.LENGTH_SHORT).show();
-                Objects.requireNonNull(getActivity()).runOnUiThread(run);
+                requireActivity().runOnUiThread(run);
                 break;
             }
             case Request.LEADER_BOARD: {
@@ -402,7 +396,7 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
                 });
 
                 Runnable run = alertDialog::show;
-                Objects.requireNonNull(getActivity()).runOnUiThread(run);
+                requireActivity().runOnUiThread(run);
                 break;
             }
             case Request.UNJOIN_GAME: {
@@ -571,7 +565,7 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
                 viewLeaderboard.dismiss();
             }
         };
-        Objects.requireNonNull(getActivity()).runOnUiThread(run);
+        requireActivity().runOnUiThread(run);
     }
 
     private void handleShowLeaderBoard(boolean isAPIExceptionThrown, Object response, Object helperObject) {
@@ -603,10 +597,10 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
                 }
             }
             viewLeaderboard = new ViewLeaderboard(getContext(), isGameOver, gameLeaderBoardDetails, getActivity());
-            FragmentManager fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
+            FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
             viewLeaderboard.show(fragmentManager, "dialog");
         };
-        Objects.requireNonNull(getActivity()).runOnUiThread(run);
+        requireActivity().runOnUiThread(run);
     }
 
     private void showPrizeDetails() {
@@ -615,7 +609,7 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
             return;
         }
         viewPrizeDetails = new ViewPrizeDetails(getContext());
-        FragmentManager fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
+        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
         Bundle myAnswersBundle = new Bundle();
         myAnswersBundle.putParcelableArrayList("PrizeDetails", gamePrizeDetails);
         viewPrizeDetails.setArguments(myAnswersBundle);
@@ -642,7 +636,7 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
             viewTitle = getResources().getString(R.string.view_user_answers_title2);
         }
 
-        FragmentManager fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
+        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
         myAnsersDialog = new ViewMyAnswers(getContext(), userAnswers, viewTitle);
         myAnsersDialog.setStyle(DialogFragment.STYLE_NORMAL, R.style.CustomDialog);
         myAnsersDialog.show(fragmentManager, "dialog");
@@ -650,7 +644,7 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
 
     private void handleShowUserAnswers (final Question question) {
         Runnable run = () -> showUserAnswers(question);
-        Objects.requireNonNull(getActivity()).runOnUiThread(run);
+        requireActivity().runOnUiThread(run);
     }
 
     private void setTagValueToUIComponents(Integer questionNumber) {
@@ -678,7 +672,7 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
             buttonsView[2].setText(question.getnOptionC());
             buttonsView[3].setText(question.getnOptionD());
         };
-        Objects.requireNonNull(getActivity()).runOnUiThread(run);
+        requireActivity().runOnUiThread(run);
         for (int index = 1; index <= Constants.QUESTION_MAX_TIME_IN_SEC; index++) {
             try {
                 Thread.sleep(1000);
@@ -695,7 +689,7 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
             quesShowing(false);
             updateLifelines(false);
         };
-        Objects.requireNonNull(getActivity()).runOnUiThread(run);
+        requireActivity().runOnUiThread(run);
     }
 
     private void scheduleAllQuestions() {
@@ -743,7 +737,7 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
     private boolean handleKnownErrors(final String errMsg) {
         if (errMsg.contains("found")) {
             Runnable run = () -> showErrShowHomeScreen(errMsg);
-            Objects.requireNonNull(getActivity()).runOnUiThread(run);
+            requireActivity().runOnUiThread(run);
             return true;
         }
         return false;
@@ -767,7 +761,7 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
         if (result.getGameStatus() == 2) {
             scheduleAllQuestions();
             Runnable run = () -> gameStartedMode(getView());
-            Objects.requireNonNull(getActivity()).runOnUiThread(run);
+            requireActivity().runOnUiThread(run);
             GetTask<PrizeDetail[]> getPrizeDetailsReq = Request.getPrizeDetails(gameDetails.getGameId());
             getPrizeDetailsReq.setCallbackResponse(this);
             Scheduler.getInstance().submit(getPrizeDetailsReq);
@@ -798,7 +792,7 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
                 showErrShowHomeScreen(finalUsrMsg);
             }
         };
-        Objects.requireNonNull(getActivity()).runOnUiThread(run);
+        requireActivity().runOnUiThread(run);
     }
     /*
     private void handleNetworkSpeed() {

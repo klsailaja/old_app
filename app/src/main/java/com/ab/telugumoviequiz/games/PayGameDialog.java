@@ -90,7 +90,6 @@ public class PayGameDialog extends DialogFragment implements View.OnClickListene
         GameOperation gm = new GameOperation();
         gm.setUserProfileId(UserDetails.getInstance().getUserProfile().getId());
         gm.setUserAccountType(userMoneyAccountType.getId());
-        System.out.println("userMoneyAccountType.getId()" + userMoneyAccountType.getId());
         joinTask.setPostObject(gm);
         joinTask.setHelperObject(gameDetails);
         Scheduler.getInstance().submit(joinTask);
