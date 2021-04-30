@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,10 +28,14 @@ import com.ab.telugumoviequiz.common.GetTask;
 import com.ab.telugumoviequiz.common.MessageListener;
 import com.ab.telugumoviequiz.common.Request;
 import com.ab.telugumoviequiz.common.Scheduler;
+import com.ab.telugumoviequiz.common.ShowHomeScreen;
 import com.ab.telugumoviequiz.common.SwitchScreen;
 import com.ab.telugumoviequiz.common.UserDetails;
 import com.ab.telugumoviequiz.common.Utils;
 import com.ab.telugumoviequiz.common.WinMsgHandler;
+import com.ab.telugumoviequiz.games.GameDetails;
+import com.ab.telugumoviequiz.games.GameStatus;
+import com.ab.telugumoviequiz.games.GameStatusHolder;
 import com.ab.telugumoviequiz.games.QuestionFragment;
 import com.ab.telugumoviequiz.games.SelectGameTypeView;
 import com.ab.telugumoviequiz.games.ShowGames;
@@ -42,22 +47,40 @@ import com.ab.telugumoviequiz.withdraw.WithdrawReqsView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+
+import static com.ab.telugumoviequiz.common.Constants.GAME_BEFORE_LOCK_PERIOD_IN_MILLIS;
 
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, Navigator,
-        View.OnClickListener, CallbackResponse, MessageListener {
+        View.OnClickListener, CallbackResponse, MessageListener, DialogAction {
 
     public View activityView = null;
     private final Bundle appParams = new Bundle();
     private boolean stopped = false;
+    private ScheduledFuture<?> pollerTask = null;
+    private String currentView = null;
+    private GameDetails questionViewGameDetails;
 
     public void fetchUpdateMoney() {
         UserProfile userProfile = UserDetails.getInstance().getUserProfile();
         GetTask<UserMoney> fetchMoney = Request.getMoneyTask(userProfile.getId());
         fetchMoney.setCallbackResponse(this);
         Scheduler.getInstance().submit(fetchMoney);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (pollerTask != null) {
+            pollerTask.cancel(true);
+        }
     }
 
     @Override
@@ -96,12 +119,45 @@ public class MainActivity extends AppCompatActivity
         WinMsgHandler.getInstance().setUserProfileId(userProfile.getId());
 
         launchView(Navigator.CURRENT_GAMES, new Bundle(), false);
+
+        long startTime = System.currentTimeMillis();
+        startTime = startTime + 5 * 60 * 1000;
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(startTime);
+
+        int minute = calendar.get(Calendar.MINUTE);
+        minute = minute / 5;
+        minute = minute * 5;
+        calendar.set(Calendar.MINUTE, minute);
+        calendar.set(Calendar.SECOND, 0);
+        startTime = calendar.getTimeInMillis();
+        long initialDelay = startTime - System.currentTimeMillis() - 10 * 1000;
+        GetTask<GameStatusHolder> getGamesStatusTask = Request.getFutureGamesStatusTask(-1);
+        getGamesStatusTask.setCallbackResponse(this);
+        pollerTask = Scheduler.getInstance().submitRepeatedTask(getGamesStatusTask, initialDelay, 5 * 60 * 1000, TimeUnit.MILLISECONDS);
+    }
+
+    @Override
+    public void onBackPressed () {
+        Utils.showMessage("","Back button disabled. Please use eft top most navigation buttons", this, null);
     }
 
     public void onClick(View view) {
     }
 
     public boolean onNavigationItemSelected(MenuItem item) {
+        if (currentView != null) {
+            if (currentView.equals(Navigator.QUESTION_VIEW)) {
+                long currentTime = System.currentTimeMillis();
+                //long stat = questionViewGameStartTime - GAME_BEFORE_LOCK_PERIOD_IN_MILLIS;
+                //long end = questionViewGameStartTime + 10 * 60 * 1000;
+                //if ((currentTime >= stat) && (currentTime <= end)) {
+                    /*Utils.showConfirmationMessage("", "Game in progress. Are you sure to leave?",
+                            this, null, -1, null);*/
+                //}
+            }
+        }
         int id = item.getItemId();
         Bundle params = new Bundle();
         if (id == R.id.nav_current_games) {
@@ -147,6 +203,10 @@ public class MainActivity extends AppCompatActivity
         }
         if (fragment == null) {
             return;
+        }
+        currentView = viewName;
+        if (currentView.equals(Navigator.QUESTION_VIEW)) {
+            questionViewGameDetails = (GameDetails) params.getSerializable("gd");
         }
         fragment.setArguments(params);
         final FragmentTransaction ft = mgr.beginTransaction();
@@ -307,6 +367,50 @@ public class MainActivity extends AppCompatActivity
                 mainMoney.setText(String.valueOf(userMoney.getLoadedAmount()));
             };
             this.runOnUiThread(run);
+        } else if (reqId == Request.GET_FUTURE_GAMES_STATUS) {
+            String gameCancelMsg = null;
+            GameStatusHolder result = (GameStatusHolder) response;
+            HashMap<Long, GameStatus> statusHashMap = result.getVal();
+
+            UserProfile userProfile = UserDetails.getInstance().getUserProfile();
+            long userProfileId = -1;
+            if (userProfile != null) {
+                userProfileId = userProfile.getId();
+            }
+            for (Map.Entry<Long,GameStatus> entry : statusHashMap.entrySet()) {
+                Long gameId = entry.getKey();
+
+                GameStatus gameStatus = statusHashMap.get(gameId);
+                if (gameStatus == null) {
+                    continue;
+                }
+                int status = gameStatus.getGameStatus();
+                if (status == -1) {
+                    Map<Long, Boolean> userAccountRevertStatus = gameStatus.getUserAccountRevertStatus();
+                    Boolean revertStatus = userAccountRevertStatus.get(userProfileId);
+                    if (revertStatus == null) {
+                        continue;
+                    }
+                    int userViewingGameId = gameStatus.getViewId();
+                    if (revertStatus) {
+                        gameCancelMsg = "GameId#:" + userViewingGameId + " Cancelled as minimum users not present. Ticket Money credited successfully";
+                    }
+                }
+            }
+            fetchUpdateMoney();
+            if (gameCancelMsg == null) {
+                return;
+            }
+            displayInfo(gameCancelMsg, new ShowHomeScreen(this));
         }
+    }
+
+    @Override
+    public void doAction(int calledId, Object userObject) {
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 }

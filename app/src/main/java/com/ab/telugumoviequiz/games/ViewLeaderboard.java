@@ -318,6 +318,7 @@ public class ViewLeaderboard extends DialogFragment implements View.OnClickListe
             if (!fromHistory) {
                 if (parentActivity instanceof MainActivity) {
                     ((MainActivity)parentActivity).launchView(Navigator.CURRENT_GAMES, new Bundle(), false);
+                    ((MainActivity)parentActivity).storeParams(Navigator.QUESTION_VIEW, null);
                 }
             }
         }

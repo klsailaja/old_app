@@ -1,6 +1,8 @@
 package com.ab.telugumoviequiz.games;
 
-public class Question {
+import java.io.Serializable;
+
+public class Question implements Serializable {
 	
 	private int questionNumber;
 	private long category;

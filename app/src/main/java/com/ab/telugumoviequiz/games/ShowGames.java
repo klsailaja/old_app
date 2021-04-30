@@ -1,7 +1,6 @@
 package com.ab.telugumoviequiz.games;
 
 import android.app.Activity;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,7 +35,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -83,8 +81,13 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
         mAdapter.setClickListener(this);
-        setBaseParams();
+        setBaseParams(false);
         return root;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -225,7 +228,7 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
         }
     }
 
-    public void setBaseParams() {
+    public void setBaseParams(boolean runNow) {
         GetTask<GameDetails[]> getGamesTask;
         GetTask<GameStatusHolder> getGamesStatusTask;
         switch (fragmentIndex) {
@@ -266,8 +269,12 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
         getGamesTask.setActivity(getActivity(), "Processing. Please Wait!!");
         getGamesStatusTask.setCallbackResponse(this);
 
-        fetchTask = Scheduler.getInstance().submitRepeatedTask(getGamesTask, 0, 5, TimeUnit.MINUTES);
-        pollerTask = Scheduler.getInstance().submitRepeatedTask(getGamesStatusTask, 10, 10, TimeUnit.SECONDS);
+        if (runNow) {
+            Scheduler.getInstance().submit(getGamesTask);
+        } else {
+            fetchTask = Scheduler.getInstance().submitRepeatedTask(getGamesTask, 0, 5, TimeUnit.MINUTES);
+            pollerTask = Scheduler.getInstance().submitRepeatedTask(getGamesStatusTask, 10, 10, TimeUnit.SECONDS);
+        }
     }
 
     @Override
@@ -286,16 +293,14 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
             case Request.JOIN_GAME: {
                 isHandled = handleAPIError(isAPIException, response, 1, null, null);
                 if (isHandled) {
+                    setBaseParams(true);
                     return;
                 }
 
                 Bundle params = new Bundle();
                 params.putSerializable("gd", (GameDetails)helperObject);
-                Resources resources = getResources();
-                String joinMsg = resources.getString(R.string.game_join_success_msg);
-                params.putString("msg", joinMsg);
+                params.putLong("gstime",  ((GameDetails)helperObject).getStartTime());
                 ((Navigator) requireActivity()).launchView(Navigator.QUESTION_VIEW, params, false);
-
                 Activity activity = getActivity();
                 if (activity instanceof MainActivity) {
                     ((MainActivity) activity).fetchUpdateMoney();
@@ -319,48 +324,19 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
             }
             case Request.GET_FUTURE_GAMES_STATUS:
             case Request.GET_ENROLLED_GAMES_STATUS: {
-                String gameCancelMsg = null;
                 GameStatusHolder result = (GameStatusHolder) response;
                 HashMap<Long, GameStatus> statusHashMap = result.getVal();
-
-                UserProfile userProfile = UserDetails.getInstance().getUserProfile();
-                long userProfileId = -1;
-                if (userProfile != null) {
-                    userProfileId = userProfile.getId();
-                }
-
                 lock.writeLock().lock();
                 for (GameDetails gameDetails : gameDetailsList) {
                     Long gameId = gameDetails.getGameId();
-                    int userViewingGameId = gameDetails.getTempGameId();
                     GameStatus gameStatus = statusHashMap.get(gameId);
                     if (gameStatus == null) {
                         continue;
-                    }
-                    if (gameStatus.getGameStatus() == -1) {
-                        Map<Long, Boolean> userAccountRevertStatus = gameStatus.getUserAccountRevertStatus();
-                        Boolean revertStatus = userAccountRevertStatus.get(userProfileId);
-                        if (revertStatus == null) {
-                            continue;
-                        }
-                        if (revertStatus) {
-                            gameCancelMsg = "GameId#" + userViewingGameId + " Cancelled as minimum users not present. Ticket Money credited successfully";
-                        } else {
-                            gameCancelMsg = "GameId#" + userViewingGameId + " Cancelled. Ticket Money could not be credited";
-                        }
                     }
                     gameDetails.setCurrentCount(gameStatus.getCurrentCount());
                 }
                 lock.writeLock().unlock();
                 applyFilterCriteria();
-                Activity parentActivity = getActivity();
-                if (parentActivity instanceof MainActivity) {
-                    ((MainActivity) parentActivity).fetchUpdateMoney();
-                }
-                if (gameCancelMsg == null) {
-                    return;
-                }
-                displayInfo(gameCancelMsg, new ShowHomeScreen(parentActivity));
                 break;
             }
             case Request.GAME_ENROLLED_STATUS: {

@@ -55,7 +55,7 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
     private TextView questionView;
     private final TextView[] buttonsView = new TextView[4];
     private Button fiftyFifty, changeQues, moreOptions;
-    private final ArrayList<UserAnswer> userAnswers = new ArrayList<>(10);
+    private ArrayList<UserAnswer> userAnswers = new ArrayList<>(10);
     private ViewMyAnswers myAnsersDialog;
     private ViewPrizeDetails viewPrizeDetails;
     private ViewLeaderboard viewLeaderboard;
@@ -65,14 +65,68 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
     private final ArrayList<PlayerSummary> gameLeaderBoardDetails = new ArrayList<>(10);
     private TextView userCountTextLabel;
 
+    private final String FIFTYUSED = "FIFTYUSED";
+    private final String FLIPUSED = "FLIPUSED";
+    private final String USERANSWERS = "USERANS";
+    private final String GAMEDETAILS = "GAMEDETAILS";
+
+    private Bundle saveState() {
+        Bundle saveState = new Bundle();
+        System.out.println("11111111111111111111111111111111111 saveState");
+        saveState.putBoolean(FIFTYUSED, fiftyUsed);
+        saveState.putBoolean(FLIPUSED, flipQuestionUsed);
+        saveState.putParcelableArrayList(USERANSWERS, userAnswers);
+        System.out.println("In save state :" + userAnswers.size());
+        return saveState;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Bundle bundle = saveState();
+        outState.putAll(bundle);
+        outState.putSerializable(GAMEDETAILS, gameDetails);
+    }
+
     @Override
     public View onCreateView(
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.activity_question, container, false);
-        Bundle bundle = getArguments();
+        boolean isFiftyFound = false, isFlipQuestionFound = false, isUserAnswersFound = false;
 
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(FIFTYUSED)) {
+                isFiftyFound = true;
+                fiftyUsed = savedInstanceState.getBoolean(FIFTYUSED);
+            }
+            if (savedInstanceState.containsKey(FLIPUSED)) {
+                isFlipQuestionFound = true;
+                flipQuestionUsed = savedInstanceState.getBoolean(FLIPUSED);
+            }
+            if (savedInstanceState.containsKey(USERANSWERS)) {
+                isUserAnswersFound = true;
+                userAnswers = savedInstanceState.getParcelableArrayList(USERANSWERS);
+            }
+            if (savedInstanceState.containsKey(GAMEDETAILS)) {
+                gameDetails = (GameDetails) savedInstanceState.getSerializable(GAMEDETAILS);
+            }
+        }
+
+        MainActivity mainActivity = (MainActivity) getActivity();
+        Bundle savedState = new Bundle();
+        if (mainActivity != null) {
+            savedState = mainActivity.getParams(Navigator.QUESTION_VIEW);
+        }
+
+        if (savedState != null) {
+            fiftyUsed = savedState.getBoolean(FIFTYUSED);
+            flipQuestionUsed = savedState.getBoolean(FLIPUSED);
+            userAnswers = savedState.getParcelableArrayList(USERANSWERS);
+        }
+
+        Bundle bundle = getArguments();
         if (bundle != null) {
             gameDetails = (GameDetails) bundle.getSerializable("gd");
         }
@@ -95,13 +149,34 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
 
         long cTime = System.currentTimeMillis();
         long timeToStart = gameDetails.getStartTime() - cTime - Constants.GAME_BEFORE_LOCK_PERIOD_IN_MILLIS - Constants.SCHEDULER_OFFSET_IN_MILLIS;
+        long timeDiff = gameDetails.getStartTime() - cTime;
         if (timeToStart >= 0) {
             gameLockedMode(root);
             GetTask<GameStatus> pollStatusTask = Request.getSingleGameStatus(gameDetails.getGameId());
             pollStatusTask.setCallbackResponse(this);
-            gameStatusPollerHandle = Scheduler.getInstance().submitRepeatedTask(pollStatusTask, 0, 5, TimeUnit.SECONDS);
-        } else {
-            gameStartedMode(root);
+            gameStatusPollerHandle = Scheduler.getInstance().submitRepeatedTask(pollStatusTask, 0, 10, TimeUnit.SECONDS);
+        } else if ((timeDiff > 0) && (timeDiff <= Constants.GAME_BEFORE_LOCK_PERIOD_IN_MILLIS)) {
+            gameStartedMode(root, false);
+        } else if (timeDiff < 0) {
+            timeDiff = -1 * timeDiff;
+            timeDiff = timeDiff / 1000;
+            int mins = (int) (timeDiff / 60);
+            int secs = (int) timeDiff - (mins * 60);
+            int alreadyAnsweredCt = userAnswers.size();
+            for (int index = 1; index <= mins; index ++) {
+                UserAnswer userAnswer = new UserAnswer(alreadyAnsweredCt + index, false, -1L);
+                userAnswers.add(userAnswer);
+            }
+            scheduleAllQuestions(userAnswers.size() + 1);
+            gameStartedMode(root, true);
+            GetTask<PrizeDetail[]> getPrizeDetailsReq = Request.getPrizeDetails(gameDetails.getGameId());
+            getPrizeDetailsReq.setCallbackResponse(this);
+            Scheduler.getInstance().submit(getPrizeDetailsReq);
+
+            timerView.setText("0");
+            progressBar.setVisibility(View.INVISIBLE);
+            quesShowing(false);
+            updateLifelines(false);
         }
         return root;
     }
@@ -121,6 +196,11 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
         super.onDestroyView();
         if (gameStatusPollerHandle != null) {
             gameStatusPollerHandle.cancel(true);
+        }
+        Bundle saveState = saveState();
+        MainActivity mainActivity = (MainActivity) getActivity();
+        if (mainActivity != null) {
+            mainActivity.storeParams(Navigator.QUESTION_VIEW, saveState);
         }
     }
 
@@ -165,7 +245,7 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
     public void onClick(View v){
         int id = v.getId();
         if (id == R.id.game_starts_leave_but) {
-            Utils.showMessage("Confirm?", "Are you sure to quit?", getContext(), this, 10, gameDetails);
+            Utils.showConfirmationMessage("Confirm?", "Are you sure to quit?", getContext(), this, 10, gameDetails);
             return;
         }
         final Integer currentQuesPos = (Integer) v.getTag();
@@ -326,7 +406,7 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
         switch (reqId) {
             case Request.PRIZE_DETAILS: {
                 if (isAPIException) {
-                    handleAPIError(isAPIException, response, 1, null, null);
+                    handleAPIError(true, response, 1, null, null);
                     return;
                 }
                 List<PrizeDetail> result = Arrays.asList((PrizeDetail[]) response);
@@ -352,6 +432,9 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
                 break;
             }
             case Request.SHOW_USER_ANSWERS: {
+                if (!isVisible()) {
+                    return;
+                }
                 handleShowUserAnswers((Question) helperObject);
                 break;
             }
@@ -361,6 +444,9 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
                 break;
             }
             case Request.LEADER_BOARD: {
+                if (!isVisible()) {
+                    return;
+                }
                 handleShowLeaderBoard(isAPIException, response, helperObject);
                 break;
             }
@@ -374,36 +460,43 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
                 break;
             }
             case Request.SHOW_WINNERS: {
-                final AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
-                alertDialog.setTitle("View Winners");
-                alertDialog.setMessage("GAME OVER");
-                alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "View Winners", (dialogInterface, i) -> {
-                    alertDialog.hide();
-                    alertDialog.dismiss();
-                    alertDialog.cancel();
+                if (!isVisible()) {
+                    return;
+                }
+                System.out.println("In show winners");
+                Runnable runnable = () -> {
+                    System.out.println("b4 dialog show...");
+                    closeAllViews();
+                    final AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+                    alertDialog.setTitle("View Winners");
+                    alertDialog.setMessage("GAME OVER");
+                    alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "View Winners", (dialogInterface, i) -> {
+                        alertDialog.hide();
+                        alertDialog.dismiss();
+                        alertDialog.cancel();
 
-                    Question question = (Question) helperObject;
-                    int completedQuestionNumber = question.getQuestionNumber();
-                    GetTask<PlayerSummary[]> leaderBoardReq = Request.getLeaderBoard(gameDetails.getGameId(), completedQuestionNumber);
-                    leaderBoardReq.setCallbackResponse(this);
-                    leaderBoardReq.setHelperObject(helperObject);
-                    Scheduler.getInstance().submit(leaderBoardReq);
-                });
-                alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Close", (dialogInterface, i) -> {
-                    alertDialog.hide();
-                    alertDialog.dismiss();
-                    alertDialog.cancel();
-                });
-
-                Runnable run = alertDialog::show;
-                requireActivity().runOnUiThread(run);
+                        Question question = (Question) helperObject;
+                        int completedQuestionNumber = question.getQuestionNumber();
+                        GetTask<PlayerSummary[]> leaderBoardReq = Request.getLeaderBoard(gameDetails.getGameId(), completedQuestionNumber);
+                        leaderBoardReq.setCallbackResponse(this);
+                        leaderBoardReq.setHelperObject(helperObject);
+                        Scheduler.getInstance().submit(leaderBoardReq);
+                    });
+                    alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Close", (dialogInterface, i) -> {
+                        alertDialog.hide();
+                        alertDialog.dismiss();
+                        alertDialog.cancel();
+                    });
+                    alertDialog.show();
+                };
+                requireActivity().runOnUiThread(runnable);
                 break;
             }
             case Request.UNJOIN_GAME: {
                 String errosMsg;
                 if (isAPIException) {
                     errosMsg = (String) response;
-                    Utils.showMessage("Error", errosMsg, getContext(), null);
+                    displayError(errosMsg, null);
                     return;
                 } else {
                     Boolean result = (Boolean) response;
@@ -469,8 +562,14 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
         updateLifelines(false);
     }
 
-    private void gameStartedMode(View root) {
-        Toast.makeText(getContext(), getString(R.string.game_start_msg), Toast.LENGTH_SHORT).show();
+    private void gameStartedMode(View root, boolean rejoin) {
+        String joinMsg = getString(R.string.game_start_msg);
+        if (rejoin) {
+            joinMsg = getString(R.string.game_rejoin_msg);
+            timerView.setText("0");
+            progressBar.setVisibility(View.INVISIBLE);
+        }
+        Toast.makeText(getContext(), joinMsg, Toast.LENGTH_SHORT).show();
 
         TableLayout tableLayout = Objects.requireNonNull(root).findViewById(R.id.ques_button_panel);
         tableLayout.removeAllViews();
@@ -555,14 +654,17 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
 
     private void closeAllViews() {
         Runnable run = () -> {
-            if (myAnsersDialog != null) {
-                myAnsersDialog.dismiss();
-            }
-            if (viewPrizeDetails != null) {
-                viewPrizeDetails.dismiss();
-            }
-            if (viewLeaderboard != null) {
-                viewLeaderboard.dismiss();
+            try {
+                if (myAnsersDialog != null) {
+                    myAnsersDialog.dismiss();
+                }
+                if (viewPrizeDetails != null) {
+                    viewPrizeDetails.dismiss();
+                }
+                if (viewLeaderboard != null) {
+                    viewLeaderboard.dismiss();
+                }
+            } catch (IllegalStateException ex) {
             }
         };
         requireActivity().runOnUiThread(run);
@@ -590,12 +692,6 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
     private void showLeaderBoardView(final boolean isGameOver) {
         Runnable run = () -> {
             closeAllViews();
-            if (isGameOver) {
-                Activity activity = getActivity();
-                if (activity instanceof MainActivity) {
-                    ((MainActivity) activity).launchView(Navigator.CURRENT_GAMES, new Bundle(), false);
-                }
-            }
             viewLeaderboard = new ViewLeaderboard(getContext(), isGameOver, gameLeaderBoardDetails, getActivity());
             FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
             viewLeaderboard.show(fragmentManager, "dialog");
@@ -683,7 +779,7 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
                 progressBar.setProgress(finalIntVal);
                 timerView.setText(Integer.toString(finalIntVal));
             };
-            getActivity().runOnUiThread(run);
+            requireActivity().runOnUiThread(run);
         }
         run = () -> {
             quesShowing(false);
@@ -692,46 +788,64 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
         requireActivity().runOnUiThread(run);
     }
 
-    private void scheduleAllQuestions() {
+    private void scheduleAllQuestions(int startQuesNum) {
         Scheduler scheduler = Scheduler.getInstance();
 
         List<Question> gameQuestions = gameDetails.getGameQuestions();
         long questionStartTime;
         long actualStartTime;
         int maxQuestionsCount = gameQuestions.size();
+        System.out.println("maxQuestionsCount " + maxQuestionsCount + ":: start number" + startQuesNum);
+        long currentTime = System.currentTimeMillis();
         for (int index = 0; index <= (maxQuestionsCount - 2); index++) {
             Question question = gameQuestions.get(index);
             questionStartTime = question.getQuestionStartTime();
 
-            actualStartTime = questionStartTime - System.currentTimeMillis() - Constants.SCHEDULER_OFFSET_IN_MILLIS;
-            UITask setQuestionTask = new UITask(Request.SHOW_QUESTION, this, question);
-            scheduler.submit(setQuestionTask, actualStartTime, TimeUnit.MILLISECONDS);
+            if (currentTime < questionStartTime) {
+                actualStartTime = questionStartTime - System.currentTimeMillis() - Constants.SCHEDULER_OFFSET_IN_MILLIS;
+                UITask setQuestionTask = new UITask(Request.SHOW_QUESTION, this, question);
+                scheduler.submit(setQuestionTask, actualStartTime, TimeUnit.MILLISECONDS);
+            }
 
-            actualStartTime = questionStartTime + Constants.USER_ANSWERS_VIEW_START_TIME_IN_MILLIS - System.currentTimeMillis();
-            UITask showUserAnswersTask = new UITask(Request.SHOW_USER_ANSWERS, this, question);
-            scheduler.submit(showUserAnswersTask, actualStartTime, TimeUnit.MILLISECONDS);
+            if (currentTime < (questionStartTime + Constants.USER_ANSWERS_VIEW_START_TIME_IN_MILLIS)) {
+                actualStartTime = questionStartTime + Constants.USER_ANSWERS_VIEW_START_TIME_IN_MILLIS - System.currentTimeMillis();
+                UITask showUserAnswersTask = new UITask(Request.SHOW_USER_ANSWERS, this, question);
+                scheduler.submit(showUserAnswersTask, actualStartTime, TimeUnit.MILLISECONDS);
+            }
 
-            actualStartTime = questionStartTime + Constants.LEADERBOARD_VIEW_START_TIME_IN_MILLIS - System.currentTimeMillis();
-            UITask showLeaderBoardTask = new UITask(Request.SHOW_LEADER_BOARD, this, question);
-            scheduler.submit(showLeaderBoardTask, actualStartTime, TimeUnit.MILLISECONDS);
+            if (currentTime < (questionStartTime + Constants.LEADERBOARD_VIEW_START_TIME_IN_MILLIS)) {
+                actualStartTime = questionStartTime + Constants.LEADERBOARD_VIEW_START_TIME_IN_MILLIS - System.currentTimeMillis();
+                UITask showLeaderBoardTask = new UITask(Request.SHOW_LEADER_BOARD, this, question);
+                scheduler.submit(showLeaderBoardTask, actualStartTime, TimeUnit.MILLISECONDS);
+            }
         }
         Question question = gameQuestions.get(maxQuestionsCount - 1);
         questionStartTime = question.getQuestionStartTime();
 
-        actualStartTime = questionStartTime - System.currentTimeMillis() - Constants.SCHEDULER_OFFSET_IN_MILLIS;
-        UITask setQuestionTask = new UITask(Request.SHOW_QUESTION, this, question);
-        scheduler.submit(setQuestionTask, actualStartTime, TimeUnit.MILLISECONDS);
+        if (currentTime < questionStartTime) {
+            actualStartTime = questionStartTime - System.currentTimeMillis() - Constants.SCHEDULER_OFFSET_IN_MILLIS;
+            UITask setQuestionTask = new UITask(Request.SHOW_QUESTION, this, question);
+            scheduler.submit(setQuestionTask, actualStartTime, TimeUnit.MILLISECONDS);
+        }
 
-        actualStartTime = questionStartTime + Constants.USER_ANSWERS_VIEW_START_TIME_IN_MILLIS - System.currentTimeMillis();
-        UITask showUserAnswersTask = new UITask(Request.SHOW_USER_ANSWERS, this, question);
-        scheduler.submit(showUserAnswersTask, actualStartTime, TimeUnit.MILLISECONDS);
+        if (currentTime < (questionStartTime + Constants.USER_ANSWERS_VIEW_START_TIME_IN_MILLIS)) {
+            actualStartTime = questionStartTime + Constants.USER_ANSWERS_VIEW_START_TIME_IN_MILLIS - System.currentTimeMillis();
+            UITask showUserAnswersTask = new UITask(Request.SHOW_USER_ANSWERS, this, question);
+            scheduler.submit(showUserAnswersTask, actualStartTime, TimeUnit.MILLISECONDS);
+            System.out.println("User answers at : " + new Date(actualStartTime + System.currentTimeMillis()));
+        }
 
-        actualStartTime = questionStartTime + Constants.LEADERBOARD_VIEW_START_TIME_IN_MILLIS - System.currentTimeMillis();
-        UITask showLeaderBoardTask = new UITask(Request.SHOW_WINNERS, this, question);
-        scheduler.submit(showLeaderBoardTask, actualStartTime, TimeUnit.MILLISECONDS);
+        if (currentTime < (questionStartTime + Constants.LEADERBOARD_VIEW_START_TIME_IN_MILLIS)) {
+            actualStartTime = questionStartTime + Constants.LEADERBOARD_VIEW_START_TIME_IN_MILLIS - System.currentTimeMillis();
+            UITask showLeaderBoardTask = new UITask(Request.SHOW_WINNERS, this, question);
+            scheduler.submit(showLeaderBoardTask, actualStartTime, TimeUnit.MILLISECONDS);
+            System.out.println("show winners at : " + new Date(actualStartTime + System.currentTimeMillis()));
+        }
 
-        actualStartTime = questionStartTime + Constants.SCHEDULE_USER_MONEY_FETCH - System.currentTimeMillis();
-        scheduler.submit(new FetchUserMoneyTask((MainActivity) getActivity()), actualStartTime, TimeUnit.MILLISECONDS);
+        if (currentTime < (questionStartTime + Constants.SCHEDULE_USER_MONEY_FETCH)) {
+            actualStartTime = questionStartTime + Constants.SCHEDULE_USER_MONEY_FETCH - System.currentTimeMillis();
+            scheduler.submit(new FetchUserMoneyTask((MainActivity) getActivity()), actualStartTime, TimeUnit.MILLISECONDS);
+        }
     }
 
     private boolean handleKnownErrors(final String errMsg) {
@@ -759,37 +873,16 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
             }
         }
         if (result.getGameStatus() == 2) {
-            scheduleAllQuestions();
-            Runnable run = () -> gameStartedMode(getView());
+            scheduleAllQuestions(0);
+            Runnable run = () -> gameStartedMode(getView(), false);
             requireActivity().runOnUiThread(run);
             GetTask<PrizeDetail[]> getPrizeDetailsReq = Request.getPrizeDetails(gameDetails.getGameId());
             getPrizeDetailsReq.setCallbackResponse(this);
             Scheduler.getInstance().submit(getPrizeDetailsReq);
         }
-        String userMsg = null;
-        if (result.getGameStatus() == -1) {
-            Long currentUserProfileId = UserDetails.getInstance().getUserProfile().getId();
-            Boolean revertStatus;
-            if (result.getUserAccountRevertStatus() != null) {
-                revertStatus = result.getUserAccountRevertStatus().get(currentUserProfileId);
-                if (revertStatus == null) {
-                    revertStatus = false;
-                }
-                Resources resources = getResources();
-                userMsg = resources.getString(R.string.game_cancellation_success_msg);
-                if (!revertStatus) {
-                    userMsg = resources.getString(R.string.game_cancellation_fail_msg);
-                }
-                ((MainActivity)getActivity()).fetchUpdateMoney();
-            }
-        }
-        final String finalUsrMsg = userMsg;
         Runnable run = () -> {
             if (userCountTextLabel != null) {
                 userCountTextLabel.setText(String.valueOf(result.getCurrentCount()));
-            }
-            if (result.getGameStatus() == -1) {
-                showErrShowHomeScreen(finalUsrMsg);
             }
         };
         requireActivity().runOnUiThread(run);

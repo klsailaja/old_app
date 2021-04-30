@@ -3,11 +3,14 @@ package com.ab.telugumoviequiz.common;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Point;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Display;
 import android.view.WindowManager;
 
 import android.app.AlertDialog;
+
+import com.ab.telugumoviequiz.main.MainActivity;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -49,6 +52,27 @@ public class Utils {
         return null;
     }
 
+    public static void showConfirmationMessage(String title,String message, final Context context,
+                                               final DialogAction dialogAction, int id, Object userObject) {
+        final AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+        alertDialog.setTitle(title);
+        alertDialog.setMessage(message);
+        alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Ok", (dialogInterface, i) -> {
+            alertDialog.hide();
+            alertDialog.dismiss();
+            alertDialog.cancel();
+            if (dialogAction != null) {
+                dialogAction.doAction(id, userObject);
+            }
+        });
+        alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", (dialogInterface, i) -> {
+            alertDialog.hide();
+            alertDialog.dismiss();
+            alertDialog.cancel();
+        });
+        alertDialog.show();
+
+    }
     public static void showMessage(String title, String message, final Context context,
                                    final DialogAction dialogAction, int id, Object userObject) {
         final AlertDialog alertDialog = new AlertDialog.Builder(context).create();
@@ -62,11 +86,6 @@ public class Utils {
                 dialogAction.doAction(id, userObject);
             }
         });
-        /*alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", (dialogInterface, i) -> {
-            alertDialog.hide();
-            alertDialog.dismiss();
-            alertDialog.cancel();
-        });*/
         alertDialog.show();
     }
 
@@ -99,8 +118,8 @@ public class Utils {
             return null;
         }
         long minutes = (timeTaken / 1000) / 60;
-        long seconds = (timeTaken / 1000);
-        timeTaken = timeTaken - (minutes * 60 * 1000) - (seconds * 1000);
+        long seconds = (timeTaken / 1000) % 60;
+        long milliseconds = timeTaken - (minutes * 60 * 1000) - (seconds * 1000);
 
         StringBuilder stringBuilder = new StringBuilder();
 
@@ -116,10 +135,10 @@ public class Utils {
         if (str.length() == 1) {
             str = "0" + str;
         }
-        stringBuilder.append(seconds);
+        stringBuilder.append(str);
         stringBuilder.append(" s: ");
 
-        str = String.valueOf(timeTaken);
+        str = String.valueOf(milliseconds);
         if (str.length() == 1) {
             str = "00" + str;
         } else if (str.length() == 2) {
