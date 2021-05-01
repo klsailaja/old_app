@@ -72,20 +72,21 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
 
     private Bundle saveState() {
         Bundle saveState = new Bundle();
-        System.out.println("11111111111111111111111111111111111 saveState");
         saveState.putBoolean(FIFTYUSED, fiftyUsed);
         saveState.putBoolean(FLIPUSED, flipQuestionUsed);
         saveState.putParcelableArrayList(USERANSWERS, userAnswers);
-        System.out.println("In save state :" + userAnswers.size());
         return saveState;
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
+        Scheduler.getInstance().shutDown();
+        System.out.println("In onSaveInstanceState");
         super.onSaveInstanceState(outState);
         Bundle bundle = saveState();
         outState.putAll(bundle);
         outState.putSerializable(GAMEDETAILS, gameDetails);
+
     }
 
     @Override
@@ -193,6 +194,7 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
 
     @Override
     public void onDestroyView() {
+        System.out.println("In onDestroyView");
         super.onDestroyView();
         if (gameStatusPollerHandle != null) {
             gameStatusPollerHandle.cancel(true);
@@ -401,6 +403,7 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
     public void handleResponse(int reqId, boolean exceptionThrown, boolean isAPIException, final Object response, final Object helperObject) {
         boolean isHandled = handleServerError(exceptionThrown, isAPIException, response);
         if (isHandled) {
+            Scheduler.getInstance().shutDown();
             return;
         }
         switch (reqId) {
@@ -463,11 +466,9 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
                 if (!isVisible()) {
                     return;
                 }
-                System.out.println("In show winners");
                 Runnable runnable = () -> {
-                    System.out.println("b4 dialog show...");
                     closeAllViews();
-                    final AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+                    final AlertDialog alertDialog = new AlertDialog.Builder(requireContext()).create();
                     alertDialog.setTitle("View Winners");
                     alertDialog.setMessage("GAME OVER");
                     alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "View Winners", (dialogInterface, i) -> {
@@ -795,7 +796,6 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
         long questionStartTime;
         long actualStartTime;
         int maxQuestionsCount = gameQuestions.size();
-        System.out.println("maxQuestionsCount " + maxQuestionsCount + ":: start number" + startQuesNum);
         long currentTime = System.currentTimeMillis();
         for (int index = 0; index <= (maxQuestionsCount - 2); index++) {
             Question question = gameQuestions.get(index);
@@ -832,14 +832,12 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
             actualStartTime = questionStartTime + Constants.USER_ANSWERS_VIEW_START_TIME_IN_MILLIS - System.currentTimeMillis();
             UITask showUserAnswersTask = new UITask(Request.SHOW_USER_ANSWERS, this, question);
             scheduler.submit(showUserAnswersTask, actualStartTime, TimeUnit.MILLISECONDS);
-            System.out.println("User answers at : " + new Date(actualStartTime + System.currentTimeMillis()));
         }
 
         if (currentTime < (questionStartTime + Constants.LEADERBOARD_VIEW_START_TIME_IN_MILLIS)) {
             actualStartTime = questionStartTime + Constants.LEADERBOARD_VIEW_START_TIME_IN_MILLIS - System.currentTimeMillis();
             UITask showLeaderBoardTask = new UITask(Request.SHOW_WINNERS, this, question);
             scheduler.submit(showLeaderBoardTask, actualStartTime, TimeUnit.MILLISECONDS);
-            System.out.println("show winners at : " + new Date(actualStartTime + System.currentTimeMillis()));
         }
 
         if (currentTime < (questionStartTime + Constants.SCHEDULE_USER_MONEY_FETCH)) {
