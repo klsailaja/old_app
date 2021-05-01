@@ -34,11 +34,11 @@ public class Scheduler {
 	}
 	
 	public void shutDown() {
+		instance = null;
 		scheduler.shutdownNow();
 		try {
 			scheduler.awaitTermination(10 * 1000, TimeUnit.MILLISECONDS);
 		} catch (InterruptedException ignored) {
 		}
-		instance = null;
 	}
 }

@@ -1,7 +1,7 @@
 package com.ab.telugumoviequiz.common;
 
 public class Constants {
-    public static final long GAME_BEFORE_LOCK_PERIOD_IN_SECS = 10; // In Secs
+    public static final long GAME_BEFORE_LOCK_PERIOD_IN_SECS = 15; // In Secs
     public static final long GAME_BEFORE_LOCK_PERIOD_IN_MILLIS = GAME_BEFORE_LOCK_PERIOD_IN_SECS * 1000;
 
     public static final long SCHEDULER_OFFSET_IN_SECS = 0;

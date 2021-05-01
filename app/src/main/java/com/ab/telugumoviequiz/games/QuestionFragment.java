@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -47,6 +48,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+
+import static com.ab.telugumoviequiz.common.Constants.GAME_BEFORE_LOCK_PERIOD_IN_MILLIS;
+import static com.ab.telugumoviequiz.common.Constants.GAME_BEFORE_LOCK_PERIOD_IN_SECS;
 
 public class QuestionFragment extends BaseFragment implements View.OnClickListener, CallbackResponse, DialogAction {
     private GameDetails gameDetails;
@@ -149,14 +153,14 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
         displayErrorAsToast(successMsg);
 
         long cTime = System.currentTimeMillis();
-        long timeToStart = gameDetails.getStartTime() - cTime - Constants.GAME_BEFORE_LOCK_PERIOD_IN_MILLIS - Constants.SCHEDULER_OFFSET_IN_MILLIS;
+        long timeToStart = gameDetails.getStartTime() - cTime - GAME_BEFORE_LOCK_PERIOD_IN_MILLIS - Constants.SCHEDULER_OFFSET_IN_MILLIS;
         long timeDiff = gameDetails.getStartTime() - cTime;
         if (timeToStart >= 0) {
             gameLockedMode(root);
             GetTask<GameStatus> pollStatusTask = Request.getSingleGameStatus(gameDetails.getGameId());
             pollStatusTask.setCallbackResponse(this);
             gameStatusPollerHandle = Scheduler.getInstance().submitRepeatedTask(pollStatusTask, 0, 10, TimeUnit.SECONDS);
-        } else if ((timeDiff > 0) && (timeDiff <= Constants.GAME_BEFORE_LOCK_PERIOD_IN_MILLIS)) {
+        } else if ((timeDiff > 0) && (timeDiff <= GAME_BEFORE_LOCK_PERIOD_IN_MILLIS)) {
             gameStartedMode(root, false);
         } else if (timeDiff < 0) {
             timeDiff = -1 * timeDiff;
@@ -239,6 +243,13 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
             joinTask.setPostObject(gm);
             joinTask.setHelperObject(leaveGameDetails);
             Scheduler.getInstance().submit(joinTask);
+        } else if (calledId == 20) {
+            MenuItem item = (MenuItem) userObject;
+            Activity parentActivity = getActivity();
+            if (parentActivity instanceof MainActivity) {
+                MainActivity mainActivity = (MainActivity) parentActivity;
+                mainActivity.onNavigationItemSelected(item);
+            }
         }
     }
 
@@ -655,17 +666,14 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
 
     private void closeAllViews() {
         Runnable run = () -> {
-            try {
-                if (myAnsersDialog != null) {
-                    myAnsersDialog.dismiss();
-                }
-                if (viewPrizeDetails != null) {
-                    viewPrizeDetails.dismiss();
-                }
-                if (viewLeaderboard != null) {
-                    viewLeaderboard.dismiss();
-                }
-            } catch (IllegalStateException ex) {
+            if (myAnsersDialog != null) {
+                myAnsersDialog.dismiss();
+            }
+            if (viewPrizeDetails != null) {
+                viewPrizeDetails.dismiss();
+            }
+            if (viewLeaderboard != null) {
+                viewLeaderboard.dismiss();
             }
         };
         requireActivity().runOnUiThread(run);
@@ -714,7 +722,6 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
     }
 
     private void showUserAnswers(Question question) {
-
         closeAllViews();
         String viewTitle = getResources().getString(R.string.view_user_answers_title1);
         if (question != null) {
@@ -884,6 +891,23 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
             }
         };
         requireActivity().runOnUiThread(run);
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        boolean gameInProgress = false;
+        long currentTime = System.currentTimeMillis();
+        long gameStartTime = gameDetails.getStartTime() - GAME_BEFORE_LOCK_PERIOD_IN_MILLIS;
+        long gameEndTime = gameStartTime + 10 * 60 * 1000;
+        if ((currentTime >= gameStartTime) && (currentTime <= gameEndTime)) {
+            gameInProgress = true;
+        }
+        if (gameInProgress) {
+            Utils.showConfirmationMessage("Confirm", "Game in progress. You will miss questions. Are you sure to proceed?",
+                    getContext(), this, 20, item);
+            return false;
+        }
+        return super.onNavigationItemSelected(item);
     }
     /*
     private void handleNetworkSpeed() {

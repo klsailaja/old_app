@@ -33,7 +33,6 @@ import com.ab.telugumoviequiz.common.SwitchScreen;
 import com.ab.telugumoviequiz.common.UserDetails;
 import com.ab.telugumoviequiz.common.Utils;
 import com.ab.telugumoviequiz.common.WinMsgHandler;
-import com.ab.telugumoviequiz.games.GameDetails;
 import com.ab.telugumoviequiz.games.GameStatus;
 import com.ab.telugumoviequiz.games.GameStatusHolder;
 import com.ab.telugumoviequiz.games.QuestionFragment;
@@ -54,19 +53,15 @@ import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import static com.ab.telugumoviequiz.common.Constants.GAME_BEFORE_LOCK_PERIOD_IN_MILLIS;
-
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, Navigator,
-        View.OnClickListener, CallbackResponse, MessageListener, DialogAction {
+        implements Navigator, View.OnClickListener, CallbackResponse, MessageListener, DialogAction {
 
     public View activityView = null;
     private final Bundle appParams = new Bundle();
     private boolean stopped = false;
     private ScheduledFuture<?> pollerTask = null;
-    private String currentView = null;
-    private GameDetails questionViewGameDetails;
+    private NavigationView navigationView;
 
     public void fetchUpdateMoney() {
         UserProfile userProfile = UserDetails.getInstance().getUserProfile();
@@ -107,8 +102,8 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        navigationView = findViewById(R.id.nav_view);
+        //navigationView.setNavigationItemSelectedListener(this);
         String successMsg = getIntent().getStringExtra("msg");
         Snackbar.make(activityView, successMsg, Snackbar.LENGTH_SHORT).show();
 
@@ -140,24 +135,14 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed () {
-        Utils.showMessage("","Back button disabled. Please use eft top most navigation buttons", this, null);
+        Utils.showMessage("","Back button disabled. Please use left top most navigation buttons",
+                this, null);
     }
 
     public void onClick(View view) {
     }
 
     public boolean onNavigationItemSelected(MenuItem item) {
-        if (currentView != null) {
-            if (currentView.equals(Navigator.QUESTION_VIEW)) {
-                long currentTime = System.currentTimeMillis();
-                //long stat = questionViewGameStartTime - GAME_BEFORE_LOCK_PERIOD_IN_MILLIS;
-                //long end = questionViewGameStartTime + 10 * 60 * 1000;
-                //if ((currentTime >= stat) && (currentTime <= end)) {
-                    /*Utils.showConfirmationMessage("", "Game in progress. Are you sure to leave?",
-                            this, null, -1, null);*/
-                //}
-            }
-        }
         int id = item.getItemId();
         Bundle params = new Bundle();
         if (id == R.id.nav_current_games) {
@@ -180,7 +165,7 @@ public class MainActivity extends AppCompatActivity
         }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
-        return true;
+        return false;
     }
 
     public void storeParams(String viewName, Bundle params) {
@@ -204,14 +189,14 @@ public class MainActivity extends AppCompatActivity
         if (fragment == null) {
             return;
         }
-        currentView = viewName;
-        if (currentView.equals(Navigator.QUESTION_VIEW)) {
-            questionViewGameDetails = (GameDetails) params.getSerializable("gd");
-        }
         fragment.setArguments(params);
         final FragmentTransaction ft = mgr.beginTransaction();
         ft.replace(R.id.content, fragment, viewName);
         ft.commit();
+        if (fragment instanceof BaseFragment) {
+            System.out.println("This is instance of BaseFragment");
+            navigationView.setNavigationItemSelectedListener((BaseFragment) fragment);
+        }
     }
 
     private Fragment getFragment(String viewId) {
@@ -354,7 +339,10 @@ public class MainActivity extends AppCompatActivity
             UserDetails.getInstance().setUserMoney(userMoney);
             Runnable run = () -> {
                 ActionBar mActionBar = getSupportActionBar();
-                View view = mActionBar.getCustomView();
+                View view = null;
+                if (mActionBar != null) {
+                    view = mActionBar.getCustomView();
+                }
                 if (view == null) {
                     return;
                 }

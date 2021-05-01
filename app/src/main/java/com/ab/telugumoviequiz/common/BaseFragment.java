@@ -1,16 +1,19 @@
 package com.ab.telugumoviequiz.common;
 
 import android.app.Activity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
 import com.ab.telugumoviequiz.main.MainActivity;
+import com.google.android.material.navigation.NavigationView;
 
 import java.util.List;
 
-public abstract class BaseFragment extends Fragment implements MessageListener {
+public abstract class BaseFragment extends Fragment implements MessageListener,
+        NavigationView.OnNavigationItemSelectedListener {
 
     public BaseFragment() {
     }
@@ -96,5 +99,15 @@ public abstract class BaseFragment extends Fragment implements MessageListener {
 
     public TextView getStatusBar() {
         return null;
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        Activity parentActivity = getActivity();
+        if (parentActivity instanceof MainActivity) {
+            MainActivity mainActivity = (MainActivity) parentActivity;
+            return mainActivity.onNavigationItemSelected(item);
+        }
+        return false;
     }
 }
