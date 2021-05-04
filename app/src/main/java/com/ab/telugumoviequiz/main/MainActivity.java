@@ -1,6 +1,8 @@
 package com.ab.telugumoviequiz.main;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -25,6 +27,7 @@ import com.ab.telugumoviequiz.common.BaseFragment;
 import com.ab.telugumoviequiz.common.CallbackResponse;
 import com.ab.telugumoviequiz.common.DialogAction;
 import com.ab.telugumoviequiz.common.GetTask;
+import com.ab.telugumoviequiz.common.Keys;
 import com.ab.telugumoviequiz.common.MessageListener;
 import com.ab.telugumoviequiz.common.Request;
 import com.ab.telugumoviequiz.common.Scheduler;
@@ -38,6 +41,7 @@ import com.ab.telugumoviequiz.games.GameStatusHolder;
 import com.ab.telugumoviequiz.games.QuestionFragment;
 import com.ab.telugumoviequiz.games.SelectGameTypeView;
 import com.ab.telugumoviequiz.games.ShowGames;
+import com.ab.telugumoviequiz.games.UserAnswer;
 import com.ab.telugumoviequiz.history.HistoryView;
 import com.ab.telugumoviequiz.referals.MyReferralsView;
 import com.ab.telugumoviequiz.transactions.TransactionsView;
@@ -46,6 +50,7 @@ import com.ab.telugumoviequiz.withdraw.WithdrawReqsView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -55,7 +60,7 @@ import java.util.concurrent.TimeUnit;
 
 
 public class MainActivity extends AppCompatActivity
-        implements Navigator, View.OnClickListener, CallbackResponse, MessageListener, DialogAction {
+        implements Navigator, CallbackResponse, MessageListener {
 
     public View activityView = null;
     private final Bundle appParams = new Bundle();
@@ -75,6 +80,55 @@ public class MainActivity extends AppCompatActivity
         super.onStop();
         if (pollerTask != null) {
             pollerTask.cancel(true);
+        }
+    }
+
+    @Override
+    protected void onDestroy () {
+        super.onDestroy();
+        System.out.println("DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD Hasini");
+        Bundle gameState = getParams(Navigator.QUESTION_VIEW);
+        if (gameState != null) {
+            System.out.println("Writing part is done here");
+            String FIFTYUSED = "FIFTYUSED";
+            String FLIPUSED = "FLIPUSED";
+            String USERANSWERS = "USERANS";
+            String GAMESTARTTIME = "GAMESTARTTIME";
+
+            boolean fiftyUsed = gameState.getBoolean(FIFTYUSED);
+            boolean flipQuestionUsed = gameState.getBoolean(FLIPUSED);
+            ArrayList<UserAnswer> userAnswers  = gameState.getParcelableArrayList(USERANSWERS);
+            long gameStartTime = gameState.getLong(GAMESTARTTIME);
+
+            boolean gameInProgress = false;
+            long currentTime = System.currentTimeMillis();
+            long gameEndTime = gameStartTime + 10 * 60 * 1000;
+            if ((currentTime >= gameStartTime) && (currentTime <= gameEndTime)) {
+                gameInProgress = true;
+            }
+            if (!gameInProgress) {
+                return;
+            }
+            SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putBoolean(Keys.QUESTION_VIEW_FIFTY_FIFTY, fiftyUsed);
+            editor.putBoolean(Keys.QUESTION_VIEW_FLIP_QUESTION, flipQuestionUsed);
+            int userAnsSize = userAnswers.size();
+            editor.putInt(Keys.QUESTION_VIEW_USER_ANS_LENGTH, userAnsSize);
+            editor.putLong(Keys.QUESTION_VIEW_GAME_START_TIME, gameStartTime);
+            for (int index = 0; index < userAnsSize; index ++) {
+                UserAnswer userAnswer = userAnswers.get(index);
+
+                String qNoKey = Keys.QUESTION_VIEW_USER_ANS_QNO_PREFIX + index + 1;
+                editor.putInt(qNoKey, userAnswer.getqNo());
+
+                String isCorrectKey = Keys.QUESTION_VIEW_USER_ANS_IS_CORRECT_PREFIX + index + 1;
+                editor.putBoolean(isCorrectKey, userAnswer.isCorrect());
+
+                String quesTimeKey = Keys.QUESTION_VIEW_USER_ANS_TIME_PREFIX + index + 1;
+                editor.putLong(quesTimeKey, userAnswer.getTimeTaken());
+            }
+            editor.apply();
         }
     }
 
@@ -115,6 +169,67 @@ public class MainActivity extends AppCompatActivity
 
         launchView(Navigator.CURRENT_GAMES, new Bundle(), false);
 
+        String FIFTYUSED = "FIFTYUSED";
+        String FLIPUSED = "FLIPUSED";
+        String USERANSWERS = "USERANS";
+
+        ArrayList<UserAnswer> userAnswers  = new ArrayList<>(10);
+
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        boolean fiftyUsed = sharedPref.getBoolean(Keys.QUESTION_VIEW_FIFTY_FIFTY, false);
+        boolean flipQuestionUsed = sharedPref.getBoolean(Keys.QUESTION_VIEW_FLIP_QUESTION, false);
+        long gameStartTime = sharedPref.getLong(Keys.QUESTION_VIEW_GAME_START_TIME, -1);
+        int userAnsSize = sharedPref.getInt(Keys.QUESTION_VIEW_USER_ANS_LENGTH, 0);
+
+        for (int index = 0; index < userAnsSize; index ++) {
+            UserAnswer userAnswer = new UserAnswer();
+
+            String qNoKey = Keys.QUESTION_VIEW_USER_ANS_QNO_PREFIX + index + 1;
+            int qNo = sharedPref.getInt(qNoKey, 0);
+            userAnswer.setqNo(qNo);
+
+            String isCorrectKey = Keys.QUESTION_VIEW_USER_ANS_IS_CORRECT_PREFIX + index + 1;
+            boolean isCorrect = sharedPref.getBoolean(isCorrectKey, false);
+            userAnswer.setCorrect(isCorrect);
+
+            String quesTimeKey = Keys.QUESTION_VIEW_USER_ANS_TIME_PREFIX + index + 1;
+            long timeTaken = sharedPref.getLong(quesTimeKey, 0);
+            userAnswer.setTimeTaken(timeTaken);
+
+            userAnswers.add(userAnswer);
+        }
+
+        boolean gameInProgress = false;
+        long currentTime = System.currentTimeMillis();
+        long gameEndTime = gameStartTime + 10 * 60 * 1000;
+        if ((currentTime >= gameStartTime) && (currentTime <= gameEndTime)) {
+            gameInProgress = true;
+        }
+
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.remove(Keys.QUESTION_VIEW_FIFTY_FIFTY);
+        editor.remove(Keys.QUESTION_VIEW_FLIP_QUESTION);
+        editor.remove(Keys.QUESTION_VIEW_GAME_START_TIME);
+        editor.remove(Keys.QUESTION_VIEW_USER_ANS_LENGTH);
+        for (int index = 0; index < userAnsSize; index ++) {
+            String qNoKey = Keys.QUESTION_VIEW_USER_ANS_QNO_PREFIX + index + 1;
+            editor.remove(qNoKey);
+            String isCorrectKey = Keys.QUESTION_VIEW_USER_ANS_IS_CORRECT_PREFIX + index + 1;
+            editor.remove(isCorrectKey);
+            String quesTimeKey = Keys.QUESTION_VIEW_USER_ANS_TIME_PREFIX + index + 1;
+            editor.remove(quesTimeKey);
+        }
+        editor.apply();
+
+        if (gameInProgress) {
+            Bundle gameState = new Bundle();
+            gameState.putBoolean(FIFTYUSED, fiftyUsed);
+            gameState.putBoolean(FLIPUSED, flipQuestionUsed);
+            gameState.putParcelableArrayList(USERANSWERS, userAnswers);
+            System.out.println("Reading part is done");
+            storeParams(Navigator.QUESTION_VIEW, gameState);
+        }
+
         long startTime = System.currentTimeMillis();
         startTime = startTime + 5 * 60 * 1000;
 
@@ -137,9 +252,6 @@ public class MainActivity extends AppCompatActivity
     public void onBackPressed () {
         Utils.showMessage("","Back button disabled. Please use left top most navigation buttons",
                 this, null);
-    }
-
-    public void onClick(View view) {
     }
 
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -170,6 +282,7 @@ public class MainActivity extends AppCompatActivity
 
     public void storeParams(String viewName, Bundle params) {
         appParams.putBundle(viewName, params);
+        System.out.println(viewName + "::" + params);
     }
 
     public Bundle getParams(String viewName) {
@@ -391,10 +504,6 @@ public class MainActivity extends AppCompatActivity
             }
             displayInfo(gameCancelMsg, new ShowHomeScreen(this));
         }
-    }
-
-    @Override
-    public void doAction(int calledId, Object userObject) {
     }
 
     @Override

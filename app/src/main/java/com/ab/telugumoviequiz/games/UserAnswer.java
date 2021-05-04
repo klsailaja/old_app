@@ -4,9 +4,12 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class UserAnswer implements Parcelable {
-    private final int qNo;
-    private final boolean isCorrect;
-    private final long timeTaken;
+    private int qNo;
+    private boolean isCorrect;
+    private long timeTaken;
+
+    public UserAnswer() {
+    }
 
     public UserAnswer(int qNo, boolean isCorrect, long timeTaken) {
         this.qNo = qNo;
@@ -17,11 +20,20 @@ public class UserAnswer implements Parcelable {
     public int getqNo() {
         return qNo;
     }
+    public void setqNo(int qNo) {
+        this.qNo = qNo;
+    }
     public boolean isCorrect() {
         return isCorrect;
     }
+    public void setCorrect(boolean isCorrect) {
+        this.isCorrect = isCorrect;
+    }
     public long getTimeTaken() {
         return timeTaken;
+    }
+    public void setTimeTaken(long timeTaken) {
+        this.timeTaken = timeTaken;
     }
 
     public int describeContents() {

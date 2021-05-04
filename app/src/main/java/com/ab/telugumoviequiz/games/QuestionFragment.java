@@ -50,7 +50,6 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import static com.ab.telugumoviequiz.common.Constants.GAME_BEFORE_LOCK_PERIOD_IN_MILLIS;
-import static com.ab.telugumoviequiz.common.Constants.GAME_BEFORE_LOCK_PERIOD_IN_SECS;
 
 public class QuestionFragment extends BaseFragment implements View.OnClickListener, CallbackResponse, DialogAction {
     private GameDetails gameDetails;
@@ -79,19 +78,25 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
         saveState.putBoolean(FIFTYUSED, fiftyUsed);
         saveState.putBoolean(FLIPUSED, flipQuestionUsed);
         saveState.putParcelableArrayList(USERANSWERS, userAnswers);
+        String GAMESTARTTIME = "GAMESTARTTIME";
+        saveState.putLong(GAMESTARTTIME, gameDetails.getStartTime());
         return saveState;
     }
-
+    
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
-        Scheduler.getInstance().shutDown();
         System.out.println("In onSaveInstanceState");
-        super.onSaveInstanceState(outState);
         Bundle bundle = saveState();
         outState.putAll(bundle);
         outState.putSerializable(GAMEDETAILS, gameDetails);
+        super.onSaveInstanceState(outState);
+   }
 
-    }
+   @Override
+   public void onCreate (Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        System.out.println("onCreate " + savedInstanceState);
+   }
 
     @Override
     public View onCreateView(
@@ -99,33 +104,33 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
             Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.activity_question, container, false);
-        boolean isFiftyFound = false, isFlipQuestionFound = false, isUserAnswersFound = false;
 
+        // Minimise te game screen case start
+        System.out.println("Minimise state is " + savedInstanceState);
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey(FIFTYUSED)) {
-                isFiftyFound = true;
                 fiftyUsed = savedInstanceState.getBoolean(FIFTYUSED);
             }
             if (savedInstanceState.containsKey(FLIPUSED)) {
-                isFlipQuestionFound = true;
                 flipQuestionUsed = savedInstanceState.getBoolean(FLIPUSED);
             }
             if (savedInstanceState.containsKey(USERANSWERS)) {
-                isUserAnswersFound = true;
                 userAnswers = savedInstanceState.getParcelableArrayList(USERANSWERS);
             }
             if (savedInstanceState.containsKey(GAMEDETAILS)) {
                 gameDetails = (GameDetails) savedInstanceState.getSerializable(GAMEDETAILS);
             }
         }
+        // Minimise the game screen case end
 
         MainActivity mainActivity = (MainActivity) getActivity();
-        Bundle savedState = new Bundle();
+        Bundle savedState = null;
         if (mainActivity != null) {
             savedState = mainActivity.getParams(Navigator.QUESTION_VIEW);
         }
 
         if (savedState != null) {
+            System.out.println("Read from saved state");
             fiftyUsed = savedState.getBoolean(FIFTYUSED);
             flipQuestionUsed = savedState.getBoolean(FLIPUSED);
             userAnswers = savedState.getParcelableArrayList(USERANSWERS);
@@ -135,8 +140,6 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
         if (bundle != null) {
             gameDetails = (GameDetails) bundle.getSerializable("gd");
         }
-        Resources resources = getResources();
-        String successMsg = resources.getString(R.string.game_join_success_msg);
 
         timerView = root.findViewById(R.id.timerView);
         progressBar = root.findViewById(R.id.timerProgress);
@@ -147,33 +150,34 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
         buttonsView[2] = root.findViewById(R.id.optionC);
         buttonsView[3] = root.findViewById(R.id.optionD);
 
-        // Dangerous code....
-        //Snackbar snackbar = Snackbar.make(timerView, successMsg, Snackbar.LENGTH_SHORT);
-        //snackbar.show();
-        displayErrorAsToast(successMsg);
+        Resources resources = getResources();
+        String successMsg = resources.getString(R.string.game_join_success_msg);
 
         long cTime = System.currentTimeMillis();
         long timeToStart = gameDetails.getStartTime() - cTime - GAME_BEFORE_LOCK_PERIOD_IN_MILLIS - Constants.SCHEDULER_OFFSET_IN_MILLIS;
         long timeDiff = gameDetails.getStartTime() - cTime;
         if (timeToStart >= 0) {
+            displayErrorAsToast(successMsg);
             gameLockedMode(root);
             GetTask<GameStatus> pollStatusTask = Request.getSingleGameStatus(gameDetails.getGameId());
             pollStatusTask.setCallbackResponse(this);
             gameStatusPollerHandle = Scheduler.getInstance().submitRepeatedTask(pollStatusTask, 0, 10, TimeUnit.SECONDS);
         } else if ((timeDiff > 0) && (timeDiff <= GAME_BEFORE_LOCK_PERIOD_IN_MILLIS)) {
+            displayErrorAsToast(successMsg);
             gameStartedMode(root, false);
         } else if (timeDiff < 0) {
-            timeDiff = -1 * timeDiff;
-            timeDiff = timeDiff / 1000;
-            int mins = (int) (timeDiff / 60);
-            int secs = (int) timeDiff - (mins * 60);
-            int alreadyAnsweredCt = userAnswers.size();
-            for (int index = 1; index <= mins; index ++) {
+            //timeDiff = -1 * timeDiff;
+            //timeDiff = timeDiff / 1000;
+            //int mins = (int) (timeDiff / 60);
+            //int secs = (int) timeDiff - (mins * 60);
+            //int alreadyAnsweredCt = userAnswers.size();
+            // Missed minutes user answers are formed here for rejoin..
+            /*for (int index = 1; index <= mins; index ++) {
                 UserAnswer userAnswer = new UserAnswer(alreadyAnsweredCt + index, false, -1L);
                 userAnswers.add(userAnswer);
-            }
-            scheduleAllQuestions(userAnswers.size() + 1);
+            }*/
             gameStartedMode(root, true);
+            scheduleAllQuestions();
             GetTask<PrizeDetail[]> getPrizeDetailsReq = Request.getPrizeDetails(gameDetails.getGameId());
             getPrizeDetailsReq.setCallbackResponse(this);
             Scheduler.getInstance().submit(getPrizeDetailsReq);
@@ -203,6 +207,12 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
         if (gameStatusPollerHandle != null) {
             gameStatusPollerHandle.cancel(true);
         }
+
+        boolean gameProgress = isGameInProgress();
+        if (!gameProgress) {
+            return;
+        }
+        Scheduler.getInstance().shutDown();
         Bundle saveState = saveState();
         MainActivity mainActivity = (MainActivity) getActivity();
         if (mainActivity != null) {
@@ -446,9 +456,6 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
                 break;
             }
             case Request.SHOW_USER_ANSWERS: {
-                if (!isVisible()) {
-                    return;
-                }
                 handleShowUserAnswers((Question) helperObject);
                 break;
             }
@@ -458,9 +465,6 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
                 break;
             }
             case Request.LEADER_BOARD: {
-                if (!isVisible()) {
-                    return;
-                }
                 handleShowLeaderBoard(isAPIException, response, helperObject);
                 break;
             }
@@ -474,9 +478,6 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
                 break;
             }
             case Request.SHOW_WINNERS: {
-                if (!isVisible()) {
-                    return;
-                }
                 Runnable runnable = () -> {
                     closeAllViews();
                     final AlertDialog alertDialog = new AlertDialog.Builder(requireContext()).create();
@@ -499,6 +500,9 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
                         alertDialog.dismiss();
                         alertDialog.cancel();
                     });
+                    if (!isVisible()) {
+                        return;
+                    }
                     alertDialog.show();
                 };
                 requireActivity().runOnUiThread(runnable);
@@ -703,6 +707,9 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
             closeAllViews();
             viewLeaderboard = new ViewLeaderboard(getContext(), isGameOver, gameLeaderBoardDetails, getActivity());
             FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+            if (!isVisible()) {
+                return;
+            }
             viewLeaderboard.show(fragmentManager, "dialog");
         };
         requireActivity().runOnUiThread(run);
@@ -718,6 +725,9 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
         Bundle myAnswersBundle = new Bundle();
         myAnswersBundle.putParcelableArrayList("PrizeDetails", gamePrizeDetails);
         viewPrizeDetails.setArguments(myAnswersBundle);
+        if (!isVisible()) {
+            return;
+        }
         viewPrizeDetails.show(fragmentManager, "dialog");
     }
 
@@ -743,6 +753,9 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
         FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
         myAnsersDialog = new ViewMyAnswers(getContext(), userAnswers, viewTitle);
         myAnsersDialog.setStyle(DialogFragment.STYLE_NORMAL, R.style.CustomDialog);
+        if (!isVisible()) {
+            return;
+        }
         myAnsersDialog.show(fragmentManager, "dialog");
     }
 
@@ -796,9 +809,8 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
         requireActivity().runOnUiThread(run);
     }
 
-    private void scheduleAllQuestions(int startQuesNum) {
+    private void scheduleAllQuestions() {
         Scheduler scheduler = Scheduler.getInstance();
-
         List<Question> gameQuestions = gameDetails.getGameQuestions();
         long questionStartTime;
         long actualStartTime;
@@ -878,7 +890,7 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
             }
         }
         if (result.getGameStatus() == 2) {
-            scheduleAllQuestions(0);
+            scheduleAllQuestions();
             Runnable run = () -> gameStartedMode(getView(), false);
             requireActivity().runOnUiThread(run);
             GetTask<PrizeDetail[]> getPrizeDetailsReq = Request.getPrizeDetails(gameDetails.getGameId());
@@ -893,8 +905,7 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
         requireActivity().runOnUiThread(run);
     }
 
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    private boolean isGameInProgress() {
         boolean gameInProgress = false;
         long currentTime = System.currentTimeMillis();
         long gameStartTime = gameDetails.getStartTime() - GAME_BEFORE_LOCK_PERIOD_IN_MILLIS;
@@ -902,6 +913,12 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
         if ((currentTime >= gameStartTime) && (currentTime <= gameEndTime)) {
             gameInProgress = true;
         }
+        return gameInProgress;
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        boolean gameInProgress = isGameInProgress();
         if (gameInProgress) {
             Utils.showConfirmationMessage("Confirm", "Game in progress. You will miss questions. Are you sure to proceed?",
                     getContext(), this, 20, item);
