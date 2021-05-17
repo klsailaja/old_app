@@ -50,5 +50,13 @@
                 android:id="@+id/myreferals_next_but"
                 android:text="@string/next_data_set"/>
         </LinearLayout>
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:src="@drawable/floating_action"
+            android:contentDescription="@string/submit"
+            android:layout_margin="16dp" />
     </LinearLayout>
 </ScrollView>

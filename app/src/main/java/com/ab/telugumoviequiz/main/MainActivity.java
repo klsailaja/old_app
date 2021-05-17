@@ -43,6 +43,7 @@ import com.ab.telugumoviequiz.games.SelectGameTypeView;
 import com.ab.telugumoviequiz.games.ShowGames;
 import com.ab.telugumoviequiz.games.UserAnswer;
 import com.ab.telugumoviequiz.history.HistoryView;
+import com.ab.telugumoviequiz.money.WalletView;
 import com.ab.telugumoviequiz.referals.MyReferralsView;
 import com.ab.telugumoviequiz.transactions.TransactionsView;
 import com.ab.telugumoviequiz.userprofile.UpdateUserProfile;
@@ -67,6 +68,7 @@ public class MainActivity extends AppCompatActivity
     private boolean stopped = false;
     private ScheduledFuture<?> pollerTask = null;
     private NavigationView navigationView;
+    private MessageListener userMoneyFetchedListener;
 
     public void fetchUpdateMoney() {
         UserProfile userProfile = UserDetails.getInstance().getUserProfile();
@@ -274,6 +276,8 @@ public class MainActivity extends AppCompatActivity
             launchView(Navigator.CHAT_VIEW, params, false);
         } else if (id == R.id.nav_user_profile) {
             launchView(Navigator.PROFILE_VIEW, params, false);
+        } else if (id == R.id.nav_wallet) {
+            launchView(Navigator.WALLET_VIEW, params, false);
         }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -307,7 +311,6 @@ public class MainActivity extends AppCompatActivity
         ft.replace(R.id.content, fragment, viewName);
         ft.commit();
         if (fragment instanceof BaseFragment) {
-            System.out.println("This is instance of BaseFragment");
             navigationView.setNavigationItemSelectedListener((BaseFragment) fragment);
         }
     }
@@ -365,6 +368,11 @@ public class MainActivity extends AppCompatActivity
             case Navigator.PROFILE_VIEW: {
                 stopped = true;
                 fragment = new UpdateUserProfile();
+                break;
+            }
+            case Navigator.WALLET_VIEW: {
+                stopped = true;
+                fragment = new WalletView();
                 break;
             }
         }
@@ -436,6 +444,10 @@ public class MainActivity extends AppCompatActivity
         this.runOnUiThread(run);
     }
 
+    public void setUserMoneyFetchedListener(MessageListener userMoneyFetchedListener) {
+        this.userMoneyFetchedListener = userMoneyFetchedListener;
+    }
+
     @Override
     public void handleResponse(int reqId, boolean exceptionThrown, boolean isAPIException, Object response, Object userObject) {
         boolean isHandled = handleServerError(exceptionThrown, isAPIException, response);
@@ -450,6 +462,9 @@ public class MainActivity extends AppCompatActivity
         if (reqId == Request.GET_USER_MONEY) {
             UserMoney userMoney = (UserMoney) response;
             UserDetails.getInstance().setUserMoney(userMoney);
+            if (userMoneyFetchedListener != null) {
+                this.userMoneyFetchedListener.passData(1000, null);
+            }
             Runnable run = () -> {
                 ActionBar mActionBar = getSupportActionBar();
                 View view = null;

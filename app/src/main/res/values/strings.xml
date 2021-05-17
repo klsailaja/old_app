@@ -199,6 +199,7 @@
     </string-array>
     <string name="more_content">More options</string>
     <string name="wd_placed_success">Successfully Placed a Withdraw Request. Money will be credited in 2 to 3 days</string>
+    <string name="submit">Submit</string>
 
     <!-- Chat Window -->
     <string name="chat_invite_msg">Form a Chat Invite Msg</string>
@@ -226,4 +227,11 @@
     <string name="search_txt">Search</string>
     <string name="clear_txt">Show All</string>
     <string name="close_but">Close</string>
+
+    <!-- Wallet View -->
+    <string name="load_money">Load Money</string>
+    <string name="transfer_from">Transfer From</string>
+    <string name="transfer_to">Transfer To</string>
+    <string name="transferAmtButTxt">Transfer</string>
+    <string name="enter_transfer_amount">Enter Transfer Amount</string>
 </resources>

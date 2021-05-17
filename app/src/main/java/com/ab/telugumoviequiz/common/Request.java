@@ -15,6 +15,7 @@ import com.ab.telugumoviequiz.history.UserHistoryGameDetails;
 import com.ab.telugumoviequiz.main.LoginData;
 import com.ab.telugumoviequiz.main.UserMoney;
 import com.ab.telugumoviequiz.main.UserProfile;
+import com.ab.telugumoviequiz.money.TransferRequest;
 import com.ab.telugumoviequiz.referals.ReferalDetails;
 import com.ab.telugumoviequiz.transactions.TransactionsHolder;
 import com.ab.telugumoviequiz.withdraw.GetReceiptTask;
@@ -59,6 +60,7 @@ public class Request {
     public static final int UPDATE_USER_PROFILE = 4010;
     public static final int FORGOT_PASSWORD = 4011;
     public static final int CELEBRITY_SCHEDULE_DETAIS = 4020;
+    public static final int TRANSFER_MONEY_REQ = 4030;
 
 
     public static GetTask<String[]> getWinWdMessages(long userProfileId) {
@@ -139,6 +141,12 @@ public class Request {
         String uri = baseUri + "/game/" + gameId + "/submit";
         return new PostTask<>(uri, SUBMIT_ANSWER_REQ,
                 null, null, String.class);
+    }
+    /* Wallet View related */
+    public static PostTask<TransferRequest, Boolean> getTransferRequest() {
+        String uri = baseUri + "/money/" + UserDetails.getInstance().getUserProfile().getId() + "/transfer";
+        return new PostTask<>(uri, TRANSFER_MONEY_REQ,
+                null, null, Boolean.class);
     }
 
     /* Login Screen related */
