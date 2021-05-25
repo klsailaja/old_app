@@ -27,6 +27,7 @@
     <style name="button" parent="viewParent">
         <item name="android:textColor">@color/whiteTextColor</item>
         <item name="android:textStyle">bold</item>
+        <item name="textAllCaps">false</item>
         <item name="android:fontFamily">"sans-serif-medium"</item>
         <item name="android:textSize">@dimen/normal_label_left_textsize</item>
     </style>

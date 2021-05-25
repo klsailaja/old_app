@@ -31,7 +31,7 @@
     <string name="user_profile_boss_name_label">My Referral Person Name:</string>
     <string name="user_profile_boss_code_label">My Referral Person Code:</string>
     <string name="user_profile_myname_label">My Name:</string>
-    <string name="user_profile_new_password_label">New Password:</string>
+    <string name="user_profile_new_password_label">Change Password:</string>
     <string name="user_profile_confirm_password_label">Confirm Password:</string>
 
 
@@ -183,7 +183,7 @@
     <string name="wd_col3">Withdrawn Amount</string>
     <string name="wd_col4">Request Status</string>
     <string name="wd_col5">Opened Date</string>
-    <string name="wd_col6">Cancel Withdrawal</string>
+    <string name="wd_col6">Cancel Request</string>
     <string name="wd_col7">More Options</string>
     <string name="wd_col8">Cancel Req</string>
     <string-array name="wd_options">
@@ -193,7 +193,7 @@
         <item>Cancelled</item>
     </string-array>
     <string-array name="wd_more_options">
-        <item>View Bank Account Details</item>
+        <item>View Withdraw Account Details</item>
         <item>View Withdrawn Money Receipt</item>
         <item>View Closed Comments</item>
     </string-array>
@@ -244,4 +244,7 @@
     <string name="wdAccountHolderName">Bank Account Holder Name</string>
     <string name="wdBankAmount">Withdraw Amount</string>
     <string name="wdBankNewReqBut">Submit Withdraw Request</string>
+    <string name="wdPhonePeNumber1">PhonePe Phone Number</string>
+    <string name="wdPhonePeNumber2">Confirm PhonePe Phone Number</string>
+    <string name="wdPhonePeHolderName">Enter PhonePe User Name</string>
 </resources>

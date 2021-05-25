@@ -78,23 +78,51 @@ public class UpdateUserProfile extends BaseFragment implements View.OnClickListe
         }
     }
 
+    private boolean validateData() {
+        boolean result = validateName();
+        if (!result) {
+            return false;
+        }
+        result = validatePasswd(1);
+        if (!result) {
+            return false;
+        }
+        result = validatePasswd(2);
+        if (!result) {
+            return false;
+        }
+        View view = getView();
+        if (view != null) {
+            TextView newPasswdTextView = view.findViewById(R.id.profileNewPasswd);
+            TextView confirmPasswdTextView = view.findViewById(R.id.profileConfirmPasswd);
+            String str1 = newPasswdTextView.getText().toString().trim();
+            String str2 = confirmPasswdTextView.getText().toString().trim();
+            if (!str1.equals(str2)) {
+                confirmPasswdTextView.setError("New Password and Confirm Password are not same. Please check");
+                confirmPasswdTextView.requestFocus();
+                return false;
+            }
+        }
+        return true;
+    }
+
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.changeButton) {
+            boolean uiValidationRes = validateData();
+            if (!uiValidationRes) {
+                return;
+            }
             View view1 = getView();
             if (view1 == null) {
                 return;
             }
-            TextView newPasswdTextView = view1.findViewById(R.id.profileNewPasswd);
-            TextView confirmPasswdTextView = view1.findViewById(R.id.profileConfirmPasswd);
-            String str1 = newPasswdTextView.getText().toString().trim();
-            String str2 = confirmPasswdTextView.getText().toString().trim();
-            if (!str1.equals(str2)) {
-                displayError("New Password and Confirm Password are not same. Please check", null);
-                return;
-            }
+
             UserProfile userProfile = new UserProfile();
             TextView userNameTextView = view1.findViewById(R.id.profileName);
+            TextView passwdTextView = view1.findViewById(R.id.profileNewPasswd);
+            String str1 = passwdTextView.getText().toString().trim();
+
             userProfile.setName(userNameTextView.getText().toString().trim());
             userProfile.setPasswordHash(Utils.getPasswordHash(str1));
             userProfile.setEmailAddress(UserDetails.getInstance().getUserProfile().getEmailAddress());
@@ -121,6 +149,7 @@ public class UpdateUserProfile extends BaseFragment implements View.OnClickListe
         if (reqId == Request.UPDATE_USER_PROFILE) {
             UserProfile newUserProfile = (UserProfile) response;
             UserDetails.getInstance().setUserProfile(newUserProfile);
+            displayInfo("Successfully updated", null);
         }
     }
 

@@ -1,7 +1,6 @@
 package com.ab.telugumoviequiz.withdraw;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -40,13 +39,19 @@ import java.util.List;
 public class WithdrawReqsView extends BaseFragment implements PopupMenu.OnMenuItemClickListener,
         View.OnClickListener, CallbackResponse, DialogAction {
 
-    private AlertDialog alertDialog;
     private int startPosOffset = 0;
     private ViewAdapter tableAdapter;
     private final List<WithdrawRequest> tableData = new ArrayList<>();
     private int wdStatus = -1;
     public final static int CANCEL_BUTTON_ID = 1;
     public final static int MORE_OPTIONS_BUTTON_ID = 2;
+    private final static int FILTER_ALL = 1;
+    private final static int FILTER_OPENED = 2;
+    private final static int FILTER_CLOSED = 3;
+    private final static int FILTER_CANCELLED = 4;
+    private final static int VIEW_BENEFICIERY_DETAILS = 10;
+    private final static int VIEW_RECEIPT = 11;
+    private final static int VIEW_CLOSED_CMTS = 12;
 
     private void handleListeners(View.OnClickListener listener) {
         View view = getView();
@@ -67,20 +72,14 @@ public class WithdrawReqsView extends BaseFragment implements PopupMenu.OnMenuIt
     }
 
     private void fetchRecords() {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
-        alertDialogBuilder.setTitle("Information");
-        alertDialogBuilder.setMessage("Loading. Please Wait!").setCancelable(false);
-        alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
-
         UserProfile userProfile = UserDetails.getInstance().getUserProfile();
         GetTask<WithdrawRequestsHolder> request = Request.getWDReqs(userProfile.getId(), startPosOffset, wdStatus);
         request.setCallbackResponse(this);
+        request.setActivity(getActivity(), "Processing. Please Wait");
         Scheduler.getInstance().submit(request);
     }
 
     private void populateTable(WithdrawRequestsHolder details) {
-
         View view = getView();
         if (view == null) {
             return;
@@ -171,23 +170,23 @@ public class WithdrawReqsView extends BaseFragment implements PopupMenu.OnMenuIt
             Resources resources = requireActivity().getResources();
             CharSequence[] accTypes = resources.getTextArray(R.array.wd_options);
             PopupMenu popupMenu = new PopupMenu(getActivity(), view);
+            int counter = 1;
             for (CharSequence s : accTypes) {
-                MenuItem item = popupMenu.getMenu().add(s);
-                item.setActionView(view);
+                popupMenu.getMenu().add(0,counter++, 0, s);
             }
             popupMenu.setOnMenuItemClickListener(this);
             popupMenu.show();
         } else if (id == CANCEL_BUTTON_ID){
             String wdRefId = (String) view.getTag();
-            Utils.showMessage("Confirmation?", "Please confirm?", getContext(), this,
-                    CANCEL_BUTTON_ID, wdRefId);
+            Utils.showConfirmationMessage("Confirm?", "Please confirm?", getContext(), this, CANCEL_BUTTON_ID, wdRefId);
         } else if (id == MORE_OPTIONS_BUTTON_ID) {
             WithdrawRequest selectedWDRequest = (WithdrawRequest) view.getTag();
             Resources resources = requireActivity().getResources();
             CharSequence[] accTypes = resources.getTextArray(R.array.wd_more_options);
             PopupMenu popupMenu = new PopupMenu(getActivity(), view);
+            int counter = 10;
             for (CharSequence s : accTypes) {
-                MenuItem item = popupMenu.getMenu().add(s);
+                MenuItem item = popupMenu.getMenu().add(0,counter++, 0, s);
                 view.setTag(selectedWDRequest);
                 item.setActionView(view);
             }
@@ -203,70 +202,82 @@ public class WithdrawReqsView extends BaseFragment implements PopupMenu.OnMenuIt
 
     @Override
     public boolean onMenuItemClick (MenuItem item) {
-        String text = (String) item.getTitle();
-        text = text.toLowerCase();
-        int clickedOption = -1;
-        int subCategory = -1;
-        if (text.contains("view")) {
-            clickedOption = 2;
-            subCategory = 3;
-        }
-        else if (text.contains("all")) {
-            wdStatus = -1;
-            clickedOption = 1;
-        } else if (text.contains("opened")) {
-            wdStatus = 1;
-            clickedOption = 1;
-        } else if (text.contains("closed")) {
-            wdStatus = 2;
-            clickedOption = 1;
-        } else if (text.contains("cancelled")) {
-            wdStatus = 3;
-            clickedOption = 1;
-        } else if (text.contains("bank")) {
-            clickedOption = 2;
-            subCategory = 1;
-        } else if (text.contains("receipt")) {
-            clickedOption = 2;
-            subCategory = 2;
-        }
-        if (clickedOption == 1) {
-            startPosOffset = 0;
-            fetchRecords();
-        } else if (clickedOption == 2) {
-            WithdrawRequest selectedWDRequest = (WithdrawRequest) item.getActionView().getTag();
-            boolean isReqClosed = (selectedWDRequest.getReqStatus() == WithdrawReqState.CLOSED.getId());
-            if (subCategory == 1) {
+        int id = item.getItemId();
+        switch (id) {
+            case FILTER_ALL: {
+                startPosOffset = 0;
+                wdStatus = -1;
+                fetchRecords();
+                break;
+            }
+            case FILTER_OPENED: {
+                startPosOffset = 0;
+                wdStatus = 1;
+                fetchRecords();
+                break;
+            }
+            case FILTER_CLOSED: {
+                startPosOffset = 0;
+                wdStatus = 2;
+                fetchRecords();
+                break;
+            }
+            case FILTER_CANCELLED: {
+                startPosOffset = 0;
+                wdStatus = 3;
+                fetchRecords();
+                break;
+            }
+            case VIEW_BENEFICIERY_DETAILS: {
+                WithdrawRequest selectedWDRequest = (WithdrawRequest) item.getActionView().getTag();
                 String accDetails = getBenefeciaryAccountDetails(selectedWDRequest);
                 Utils.showMessage("Details", accDetails, getContext(), null);
-            } else if (subCategory == 3) {
+                break;
+            }
+            case VIEW_RECEIPT: {
+                WithdrawRequest selectedWDRequest = (WithdrawRequest) item.getActionView().getTag();
+                boolean isReqClosed = (selectedWDRequest.getReqStatus() == WithdrawReqState.CLOSED.getId());
+                if (!isReqClosed) {
+                    displayInfo("Receipt can be viewed once the withdraw request is closed", null);
+                    return false;
+                }
+                GetTask<byte[]> viewReceiptTask = Request.getReceiptTask(selectedWDRequest.getReceiptId());
+                viewReceiptTask.setCallbackResponse(this);
+                Scheduler.getInstance().submit(viewReceiptTask);
+                break;
+            }
+            case VIEW_CLOSED_CMTS: {
+                WithdrawRequest selectedWDRequest = (WithdrawRequest) item.getActionView().getTag();
+                boolean isReqClosed = (selectedWDRequest.getReqStatus() == WithdrawReqState.CLOSED.getId());
                 String closedCmts = "Closed comments updated after the withdraw request is closed";
                 if (isReqClosed) {
                     closedCmts = selectedWDRequest.getClosedComents();
                 }
                 Utils.showMessage("Comments", closedCmts, getContext(), null);
-            } else {
-                System.out.println("In click");
-                GetTask<byte[]> viewReceiptTask = Request.getReceiptTask(selectedWDRequest.getReceiptId(),
-                        selectedWDRequest.getRequestType());
-                viewReceiptTask.setCallbackResponse(this);
-                Scheduler.getInstance().submit(viewReceiptTask);
+                break;
             }
         }
         return true;
     }
 
     private String getBenefeciaryAccountDetails(WithdrawRequest wdRequest) {
-        if (wdRequest.getRequestType() == WithdrawReqType.BY_PHONE.getId()) {
+        if (wdRequest.getRequestType() == WithdrawReqType.BY_BANK.getId()) {
+            WithdrawReqByBank byBank = wdRequest.getByBank();
+            return "Pay to Account : " +
+                    byBank.getAccountNumber() +
+                    "\n" +
+                    "Pay to Bank : " +
+                    byBank.getBankName() +
+                    "\n" +
+                    "With IFSC Code : " +
+                    byBank.getIfscCode();
+        }
+        else if (wdRequest.getRequestType() == WithdrawReqType.BY_PHONE.getId()) {
             WithdrawReqByPhone byPhone = wdRequest.getByPhone();
             return "Pay to Phone Number : " +
                     byPhone.getPhNumber() +
                     "\n" +
-                    "Using : " +
-                    byPhone.getPaymentMethod() +
-                    "\n";
-        }
-        if (wdRequest.getRequestType() == WithdrawReqType.BY_BANK.getId()) {
+                    "Using : PhonePe";
         }
         return null;
     }
@@ -274,38 +285,33 @@ public class WithdrawReqsView extends BaseFragment implements PopupMenu.OnMenuIt
 
     @Override
     public void handleResponse(int reqId, boolean exceptionThrown, boolean isAPIException, final Object response, Object helperObject) {
-        Runnable run = () -> {
-            if (alertDialog != null) {
-                alertDialog.dismiss();
-            }
-        };
-        Activity activity = getActivity();
-        if (activity != null) {
-            activity.runOnUiThread(run);
-        }
-
         if((exceptionThrown) && (!isAPIException)) {
             showErrShowHomeScreen((String) response);
             return;
         }
+        Activity activity = getActivity();
         if (reqId == Request.USER_WITHDRAW_LIST) {
             if (isAPIException) {
                 showErrShowHomeScreen((String) response);
                 return;
             }
             final WithdrawRequestsHolder result = (WithdrawRequestsHolder) response;
-            run = () -> populateTable(result);
+            Runnable run = () -> populateTable(result);
             if (activity != null) {
                 activity.runOnUiThread(run);
             }
         } else if (reqId == Request.WITHDRAW_CANCEL) {
             final Boolean result = (Boolean) response;
             if (result) {
-                String successMsg = getResources().getString(R.string.wd_placed_success);
-                Button filterStatus = getView().findViewById(R.id.filterStatus);
-                Snackbar snackbar = Snackbar.make(filterStatus, successMsg, Snackbar.LENGTH_LONG);
-                snackbar.show();
+                startPosOffset = 0;
                 fetchRecords();
+                if (activity instanceof MainActivity) {
+                    ((MainActivity)activity).fetchUpdateMoney();
+                }
+                if (activity != null) {
+                    Runnable run = this::run;
+                    activity.runOnUiThread(run);
+                }
             }
         } else if (reqId == Request.WITHDRAW_RECEIPT) {
             final byte[] contents = (byte[]) response;
@@ -314,7 +320,7 @@ public class WithdrawReqsView extends BaseFragment implements PopupMenu.OnMenuIt
                 return;
             }
             System.out.println("This is in receipt view" + contents.length);
-            run = () -> {
+            Runnable run = () -> {
                 ViewReceipt viewReceipt = new ViewReceipt((getContext()), contents, "Transferred Receipt");
                 FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
                 viewReceipt.show(fragmentManager, "dialog");
@@ -323,5 +329,15 @@ public class WithdrawReqsView extends BaseFragment implements PopupMenu.OnMenuIt
                 activity.runOnUiThread(run);
             }
         }
+    }
+
+    private void run() {
+        View view = getView();
+        if (view == null) {
+            return;
+        }
+        Button filterStatus = getView().findViewById(R.id.filterStatus);
+        Snackbar snackbar = Snackbar.make(filterStatus, "Withdraw Request Cancellation success", Snackbar.LENGTH_LONG);
+        snackbar.show();
     }
 }

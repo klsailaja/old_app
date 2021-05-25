@@ -28,7 +28,7 @@ public class Request {
     public static final int GET_ENROLLED_GAMES = 201;
     public static final int GET_FUTURE_GAMES_STATUS = 202;
     public static final int GET_ENROLLED_GAMES_STATUS = 203;
-    public static final int GET_CELEBRITY_NAME = 204;
+    //public static final int GET_CELEBRITY_NAME = 204;
     public static final int CREATE_USER_PROFILE = 100;
     public static final int LOGIN_REQ = 101;
     public static final int SUBMIT_ANSWER_REQ = 102;
@@ -53,9 +53,9 @@ public class Request {
     public static final int SHOW_QUESTION = 1000;
     public static final int SHOW_USER_ANSWERS = 2000;
     public static final int SHOW_LEADER_BOARD = 2001;
-    public static final int SHOW_READY_MSG = 2002;
+    //public static final int SHOW_READY_MSG = 2002;
     public static final int SHOW_WINNERS = 2003;
-    public static final int LOCK_TIME_OVER = 3000;
+    //public static final int LOCK_TIME_OVER = 3000;
     public static final int WIN_WD_MSGS = 4000;
     public static final int WIN_WD_SHOW_MSG = 4001;
     public static final int UPDATE_USER_PROFILE = 4010;
@@ -84,11 +84,11 @@ public class Request {
         return new GetTask<>(uri, CELEBRITY_SCHEDULE_DETAIS, null,
                 CelebrityFullDetails.class, null);
     }
-    public static GetTask<String> getCelebrityNameTask() {
+    /*public static GetTask<String> getCelebrityNameTask() {
         String uri = baseUri + "/game/celebrity";
         return new GetTask<>(uri, GET_CELEBRITY_NAME, null,
                 String.class, null);
-    }
+    }*/
 
 
     public static GetTask<GameStatus> getSingleGameStatus(long gameId) {
@@ -213,7 +213,7 @@ public class Request {
         return new GetTask<>(uri, WITHDRAW_CANCEL, null, Boolean.class, null);
     }
 
-    public static GetTask<byte[]> getReceiptTask(long receiptId, int requestType) {
+    public static GetTask<byte[]> getReceiptTask(long receiptId) {
         String uri = baseUri + "/wd/receipt/" + receiptId;
         return new GetReceiptTask<>(uri, WITHDRAW_RECEIPT, null, byte[].class, null);
     }

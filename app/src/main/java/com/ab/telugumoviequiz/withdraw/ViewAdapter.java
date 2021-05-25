@@ -146,19 +146,19 @@ public class ViewAdapter extends RecyclerView.Adapter {
             DataViewHolder holder = (DataViewHolder) holderArg;
 
             holder.snoView.getLayoutParams().width = w1;
-            holder.snoView.getLayoutParams().height = 200;
+            holder.snoView.getLayoutParams().height = 150;
             holder.refIdView.getLayoutParams().width = w2;
-            holder.refIdView.getLayoutParams().height = 200;
+            holder.refIdView.getLayoutParams().height = 150;
             holder.amtView.getLayoutParams().width = w3;
-            holder.amtView.getLayoutParams().height = 200;
+            holder.amtView.getLayoutParams().height = 150;
             holder.statusView.getLayoutParams().width = w4;
-            holder.statusView.getLayoutParams().height = 200;
+            holder.statusView.getLayoutParams().height = 150;
             holder.openedDateView.getLayoutParams().width = w5;
-            holder.openedDateView.getLayoutParams().height = 200;
+            holder.openedDateView.getLayoutParams().height = 150;
             holder.cancelReqButton.getLayoutParams().width = w6;
-            holder.cancelReqButton.getLayoutParams().height = 200;
+            holder.cancelReqButton.getLayoutParams().height = 150;
             holder.moreOptionsButton.getLayoutParams().width = w7;
-            holder.moreOptionsButton.getLayoutParams().height = 200;
+            holder.moreOptionsButton.getLayoutParams().height = 150;
 
             WithdrawRequest wdRequest = data.get(position - 1);
 

@@ -34,17 +34,15 @@ import com.google.android.material.textfield.TextInputLayout;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TransferBankAccount extends BaseFragment
-        implements CallbackResponse, View.OnClickListener, NotifyTextChanged,
+public class TransferByPhonePe extends BaseFragment implements CallbackResponse, View.OnClickListener, NotifyTextChanged,
         AdapterView.OnItemSelectedListener, DialogAction {
 
-    private PATextWatcher accNumTextWatcher, confirmAccNumTextWatcher;
-    private PATextWatcher bankNameTextWatcher, ifscCodeTextWatcher;
+    private PATextWatcher phoneNumberWatcher, confirmPhoneNumberWatcher;
+    private PATextWatcher userNameTextWatcher;
     private PATextWatcher wdAmtTextWatcher;
-
     private Spinner accountsSpinner;
 
-    public TransferBankAccount() {
+    public TransferByPhonePe() {
         super();
     }
 
@@ -58,12 +56,11 @@ public class TransferBankAccount extends BaseFragment
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.wd_transfer_bank, container, false);
+        View view = inflater.inflate(R.layout.wd_transfer_phonepe, container, false);
         List<String> userAccountNames = new ArrayList<>();
         userAccountNames.add("Withdraw From Referral Money");
         userAccountNames.add("Withdraw From Winning Money");
         userAccountNames.add("Withdraw From Main Money");
-
 
         ArrayAdapter<String> userAccountsAdapter = new ArrayAdapter<>(getContext(), R.layout.spinner_list_item, userAccountNames);
         userAccountsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -74,9 +71,9 @@ public class TransferBankAccount extends BaseFragment
         accountsSpinner.setAdapter(userAccountsAdapter);
         accountsSpinner.setSelection(0);
 
-        TextInputLayout textInputLayout = view.findViewById(R.id.accNumIL);
+        TextInputLayout textInputLayout = view.findViewById(R.id.phNumberIL);
         textInputLayout.setHelperTextEnabled(true);
-        textInputLayout.setHelperText("The Account Number Entered is final");
+        textInputLayout.setHelperText("The Phone Number Entered is final");
         textInputLayout.setHelperTextColor(ColorStateList.valueOf(Color.RED));
         return view;
     }
@@ -138,27 +135,21 @@ public class TransferBankAccount extends BaseFragment
         wdUserInput.setOpenedTime(System.currentTimeMillis());
         wdUserInput.setAmount(Integer.parseInt(str));
         wdRequestBankType.setWithdrawUserInput(wdUserInput);
-        wdUserInput.setRequestType(2);
+        wdUserInput.setRequestType(1);
 
-        TextView accountNumTextView = view.findViewById(R.id.accNum);
-        TextView bankNameTextView = view.findViewById(R.id.bankName);
-        TextView bankIfscCodeTextView = view.findViewById(R.id.bankIfscCode);
+        TextView phNumTextView = view.findViewById(R.id.phNumber);
+        TextView userNameTextView = view.findViewById(R.id.userName);
 
-        WithdrawReqByBank wdBankDetails = new WithdrawReqByBank();
+        WithdrawReqByPhone reqByPhone = new WithdrawReqByPhone();
+        str = phNumTextView.getText().toString().trim();
+        reqByPhone.setPhNumber(str);
 
-        str = accountNumTextView.getText().toString().trim();
-        wdBankDetails.setAccountNumber(str);
+        str = userNameTextView.getText().toString().trim();
+        reqByPhone.setAccountHolderName(str);
+        reqByPhone.setPaymentMethod(1);
 
-        str = bankIfscCodeTextView.getText().toString().trim();
-        wdBankDetails.setIfscCode(str);
-
-        str = bankNameTextView.getText().toString().trim();
-        wdBankDetails.setBankName(str);
-
-        wdBankDetails.setUserName(UserDetails.getInstance().getUserProfile().getName());
-
-        wdRequestBankType.setByBankDetails(wdBankDetails);
-        wdRequestBankType.setByPhoneDetails(null);
+        wdRequestBankType.setByBankDetails(null);
+        wdRequestBankType.setByPhoneDetails(reqByPhone);
 
         return wdRequestBankType;
     }
@@ -218,14 +209,12 @@ public class TransferBankAccount extends BaseFragment
 
     @Override
     public void textChanged(int viewId) {
-        if (viewId == R.id.accNum) {
-            validateAccountNumber();
-        } else if (viewId == R.id.confirmAccNum) {
-            validateConfirmAccountNumber();
-        } else if (viewId == R.id.bankName) {
-            validateBankName();
-        } else if (viewId == R.id.bankIfscCode) {
-            validateBankIfSCCode();
+        if (viewId == R.id.phNumber) {
+            validatePhoneNumber();
+        } else if (viewId == R.id.confirmPhNum) {
+            validateConfirmPhNumber();
+        } else if (viewId == R.id.userName) {
+            validateUserName();
         } else if (viewId == R.id.bankWithdrawAmt) {
             validateWDAmount();
         }
@@ -236,110 +225,30 @@ public class TransferBankAccount extends BaseFragment
         if (!result) {
             return false;
         }
-        result = validateAccountNumber();
+        result = validatePhoneNumber();
         if (!result) {
             return false;
         }
-        result = validateConfirmAccountNumber();
+        result = validateConfirmPhNumber();
         if (!result) {
             return false;
         }
         View view = getView();
         if (view != null) {
-            TextView accountNumberTxtView = view.findViewById(R.id.accNum);
+            TextView accountNumberTxtView = view.findViewById(R.id.phNumber);
             String str1 = accountNumberTxtView.getText().toString().trim();
-            TextView confirmAccNumberTxtView = view.findViewById(R.id.confirmAccNum);
+            TextView confirmAccNumberTxtView = view.findViewById(R.id.confirmPhNum);
             String str2 = confirmAccNumberTxtView.getText().toString().trim();
             if (!str1.equals(str2)) {
-                confirmAccNumberTxtView.setError("Account Number and Confirm Number not same");
+                confirmAccNumberTxtView.setError("Phone Number and Confirm Phone Number not same");
                 confirmAccNumberTxtView.requestFocus();
                 return false;
             }
         }
-        result = validateBankName();
-        if (!result) {
-            return false;
-        }
-        result = validateBankIfSCCode();
+        result = validateUserName();
         return result;
     }
 
-
-    private boolean validateAccountNumber() {
-        View view = getView();
-        if (view == null) {
-            return false;
-        }
-
-        TextView accountNumberTxtView = view.findViewById(R.id.accNum);
-        String str = accountNumberTxtView.getText().toString().trim();
-        String result = Utils.fullValidate(str, "Beneficiary Account Number", false, -1, -1, false);
-        boolean showErr ;
-        showErr = result == null;
-        if (!showErr) {
-            accountNumberTxtView.setError(result);
-            accountNumberTxtView.requestFocus();
-            return false;
-        }
-        return true;
-    }
-
-    private boolean validateConfirmAccountNumber() {
-        View view = getView();
-        if (view == null) {
-            return false;
-        }
-
-        TextView accountNumberTxtView = view.findViewById(R.id.confirmAccNum);
-        String str = accountNumberTxtView.getText().toString().trim();
-        String result = Utils.fullValidate(str, "Confirm Beneficiary Account Number", false, -1, -1, false);
-        boolean showErr ;
-        showErr = result == null;
-        if (!showErr) {
-            accountNumberTxtView.setError(result);
-            accountNumberTxtView.requestFocus();
-            return false;
-        }
-        return true;
-    }
-
-    private boolean validateBankName() {
-        View view = getView();
-        if (view == null) {
-            return false;
-        }
-
-        TextView txtView = view.findViewById(R.id.bankName);
-        String str = txtView.getText().toString().trim();
-        String result = Utils.fullValidate(str, "Bank Name", false, -1, -1, false);
-        boolean showErr ;
-        showErr = result == null;
-        if (!showErr) {
-            txtView.setError(result);
-            txtView.requestFocus();
-            return false;
-        }
-        return true;
-    }
-
-    private boolean validateBankIfSCCode() {
-        View view = getView();
-        if (view == null) {
-            return false;
-        }
-
-        TextView txtView = view.findViewById(R.id.bankIfscCode);
-        String str = txtView.getText().toString().trim();
-        String result = Utils.fullValidate(str, "IFSC Code", false, -1, -1, false);
-        boolean showErr ;
-        showErr = result == null;
-        if (!showErr) {
-            txtView.setError(result);
-            txtView.requestFocus();
-            return false;
-        }
-        return true;
-    }
     private boolean validateWDAmount() {
         View view = getView();
         if (view == null) {
@@ -359,18 +268,74 @@ public class TransferBankAccount extends BaseFragment
         return setCurrentBalance(true, Integer.parseInt(str));
     }
 
+    private boolean validatePhoneNumber() {
+        View view = getView();
+        if (view == null) {
+            return false;
+        }
+
+        TextView accountNumberTxtView = view.findViewById(R.id.phNumber);
+        String str = accountNumberTxtView.getText().toString().trim();
+        String result = Utils.fullValidate(str, "Phone Pe PhoneNumber", false, 10, 10, true);
+        boolean showErr ;
+        showErr = result == null;
+        if (!showErr) {
+            accountNumberTxtView.setError(result);
+            accountNumberTxtView.requestFocus();
+            return false;
+        }
+        return true;
+    }
+
+    private boolean validateConfirmPhNumber() {
+        View view = getView();
+        if (view == null) {
+            return false;
+        }
+
+        TextView accountNumberTxtView = view.findViewById(R.id.confirmPhNum);
+        String str = accountNumberTxtView.getText().toString().trim();
+        String result = Utils.fullValidate(str, "Confirm Phone Pe PhoneNumber", false, 10, 10, true);
+        boolean showErr ;
+        showErr = result == null;
+        if (!showErr) {
+            accountNumberTxtView.setError(result);
+            accountNumberTxtView.requestFocus();
+            return false;
+        }
+        return true;
+    }
+
+    private boolean validateUserName() {
+        View view = getView();
+        if (view == null) {
+            return false;
+        }
+
+        TextView txtView = view.findViewById(R.id.userName);
+        String str = txtView.getText().toString().trim();
+        String result = Utils.fullValidate(str, "User Name", false, -1, -1, false);
+        boolean showErr ;
+        showErr = result == null;
+        if (!showErr) {
+            txtView.setError(result);
+            txtView.requestFocus();
+            return false;
+        }
+        return true;
+    }
+
     private void handleListeners(View.OnClickListener listener) {
         View view = getView();
         if (view == null) {
             return;
         }
 
-        Button createNewBut = view.findViewById(R.id.wdBankCreateBut);
+        Button createNewBut = view.findViewById(R.id.wdPhoneCreate);
         createNewBut.setOnClickListener(listener);
 
         accountsSpinner = view.findViewById(R.id.bankMoneyAccounts);
         accountsSpinner.setOnItemSelectedListener(this);
-
     }
 
     private void handleTextWatchers(boolean add) {
@@ -378,29 +343,25 @@ public class TransferBankAccount extends BaseFragment
         if (view == null) {
             return;
         }
-        TextView accountNumTextView = view.findViewById(R.id.accNum);
-        TextView confirmAccNuTextView = view.findViewById(R.id.confirmAccNum);
-        TextView bankNameTextView = view.findViewById(R.id.bankName);
-        TextView bankIfscCodeTextView = view.findViewById(R.id.bankIfscCode);
+        TextView phoneNumTextView = view.findViewById(R.id.phNumber);
+        TextView confirmPhoneNumTextView = view.findViewById(R.id.confirmPhNum);
+        TextView userNameTextView = view.findViewById(R.id.userName);
         TextView withdrawTextView = view.findViewById(R.id.bankWithdrawAmt);
 
         if (add) {
-            accNumTextWatcher = new PATextWatcher(accountNumTextView, this);
-            confirmAccNumTextWatcher = new PATextWatcher(confirmAccNuTextView, this);
-            bankNameTextWatcher = new PATextWatcher(bankNameTextView, this);
-            ifscCodeTextWatcher = new PATextWatcher(bankIfscCodeTextView, this);
+            phoneNumberWatcher = new PATextWatcher(phoneNumTextView, this);
+            confirmPhoneNumberWatcher = new PATextWatcher(confirmPhoneNumTextView, this);
+            userNameTextWatcher = new PATextWatcher(userNameTextView, this);
             wdAmtTextWatcher = new PATextWatcher(withdrawTextView, this);
 
-            accountNumTextView.addTextChangedListener(accNumTextWatcher);
-            confirmAccNuTextView.addTextChangedListener(confirmAccNumTextWatcher);
-            bankNameTextView.addTextChangedListener(bankNameTextWatcher);
-            bankIfscCodeTextView.addTextChangedListener(ifscCodeTextWatcher);
+            phoneNumTextView.addTextChangedListener(phoneNumberWatcher);
+            confirmPhoneNumTextView.addTextChangedListener(confirmPhoneNumberWatcher);
+            userNameTextView.addTextChangedListener(userNameTextWatcher);
             withdrawTextView.addTextChangedListener(wdAmtTextWatcher);
         } else {
-            accountNumTextView.removeTextChangedListener(accNumTextWatcher);
-            confirmAccNuTextView.removeTextChangedListener(confirmAccNumTextWatcher);
-            bankNameTextView.removeTextChangedListener(bankNameTextWatcher);
-            bankIfscCodeTextView.removeTextChangedListener(ifscCodeTextWatcher);
+            phoneNumTextView.removeTextChangedListener(phoneNumberWatcher);
+            confirmPhoneNumTextView.removeTextChangedListener(confirmPhoneNumberWatcher);
+            userNameTextView.removeTextChangedListener(userNameTextWatcher);
             withdrawTextView.removeTextChangedListener(wdAmtTextWatcher);
         }
     }

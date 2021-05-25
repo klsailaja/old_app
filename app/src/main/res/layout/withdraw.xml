@@ -8,7 +8,8 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
         <TextView
-            android:textSize="20sp"
+            android:layout_marginTop="5dp"
+            android:textSize="18sp"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:text="@string/transactionview_intro"
@@ -32,31 +33,33 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_gravity="center"
-            android:gravity="center"
+            android:layout_gravity="end"
+            android:gravity="end"
             android:id="@+id/next_prev_buts">
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
+                android:layout_gravity="end"
+                android:gravity="end"
                 android:id="@+id/myreferals_prev_but"
+                style="@style/button"
                 android:text="@string/prev_data_set"/>
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
+                android:layout_gravity="end"
+                android:gravity="end"
+                style="@style/button"
                 android:id="@+id/myreferals_next_but"
                 android:text="@string/next_data_set"/>
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:src="@drawable/floating_action"
+                android:contentDescription="@string/submit"
+                android:layout_margin="16dp" />
         </LinearLayout>
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end|bottom"
-            android:src="@drawable/floating_action"
-            android:contentDescription="@string/submit"
-            android:layout_margin="16dp" />
     </LinearLayout>
 </ScrollView>

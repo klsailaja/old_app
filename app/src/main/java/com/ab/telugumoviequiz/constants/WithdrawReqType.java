@@ -5,7 +5,7 @@ public enum WithdrawReqType {
 	
 	private final int id;
 	
-	private WithdrawReqType(int id){
+	WithdrawReqType(int id){
 		this.id = id;
 	}
 	

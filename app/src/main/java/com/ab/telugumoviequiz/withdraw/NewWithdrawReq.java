@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
@@ -17,7 +18,7 @@ import com.ab.telugumoviequiz.R;
 import com.ab.telugumoviequiz.common.BaseFragment;
 import com.ab.telugumoviequiz.main.Navigator;
 
-public class NewWithdrawReq extends BaseFragment {
+public class NewWithdrawReq extends BaseFragment implements AdapterView.OnItemSelectedListener {
 
     public NewWithdrawReq() {
         super();
@@ -41,8 +42,11 @@ public class NewWithdrawReq extends BaseFragment {
                 R.layout.spinner_list_item, transferTypes);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         transferTypesSpinner.setAdapter(adapter);
+
         transferTypesSpinner.setSelection(0);
+
         showView(Navigator.TRANSFER_TO_BANK_ACCOUNT);
+        transferTypesSpinner.setOnItemSelectedListener(this);
         return root;
     }
 
@@ -89,10 +93,23 @@ public class NewWithdrawReq extends BaseFragment {
                 break;
             }
             case Navigator.TRANSFER_TO_PHONEPE_ACCOUNT: {
-                fragment = null;
+                fragment = new TransferByPhonePe();
                 break;
             }
         }
         return fragment;
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> arg0, View arg1, int position,long id) {
+        String viewName = Navigator.TRANSFER_TO_BANK_ACCOUNT;
+        if (position == 1) {
+            viewName = Navigator.TRANSFER_TO_PHONEPE_ACCOUNT;
+        }
+        showView(viewName);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> arg0) {
     }
 }

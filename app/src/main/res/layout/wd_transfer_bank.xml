@@ -31,7 +31,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/bankWithdrawAmt"
                     android:hint="@string/wdBankAmount"
-                    android:inputType="number"
+                    android:inputType="numberSigned"
                     android:singleLine="true"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
@@ -44,16 +44,17 @@
             android:baselineAligned="false">
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/accNumIL"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:inputType="text"
                 android:layout_weight="0.4"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/accNum"
                     android:hint="@string/wdBankTransferAccNum"
+                    android:inputType="text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -61,13 +62,13 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="0dp"
                 android:layout_weight="0.4"
-                android:inputType="text"
                 android:layout_margin="5dp"
                 android:layout_height="wrap_content"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/confirmAccNum"
                     android:hint="@string/wdBankTransferConfirmAccNum"
+                    android:inputType="text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -82,13 +83,13 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="0dp"
                 android:layout_margin="5dp"
-                android:inputType="text"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.4"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/bankName"
                     android:hint="@string/wdBankTransferBankName"
+                    android:inputType="text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -96,13 +97,13 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="0dp"
                 android:layout_weight="0.4"
-                android:inputType="text"
                 android:layout_margin="5dp"
                 android:layout_height="wrap_content"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/bankIfscCode"
                     android:hint="@string/wdBankTransferIfscCode"
+                    android:inputType="text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </com.google.android.material.textfield.TextInputLayout>
