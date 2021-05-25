@@ -19,6 +19,7 @@ import com.ab.telugumoviequiz.money.TransferRequest;
 import com.ab.telugumoviequiz.referals.ReferalDetails;
 import com.ab.telugumoviequiz.transactions.TransactionsHolder;
 import com.ab.telugumoviequiz.withdraw.GetReceiptTask;
+import com.ab.telugumoviequiz.withdraw.WithdrawRequestInput;
 import com.ab.telugumoviequiz.withdraw.WithdrawRequestsHolder;
 
 public class Request {
@@ -61,7 +62,14 @@ public class Request {
     public static final int FORGOT_PASSWORD = 4011;
     public static final int CELEBRITY_SCHEDULE_DETAIS = 4020;
     public static final int TRANSFER_MONEY_REQ = 4030;
+    public static final int CREATE_NEW_WD_REQ = 4040;
 
+
+    public static PostTask<WithdrawRequestInput, Boolean> createNewWDRequest() {
+        String uri = baseUri + "/wd";
+        return new PostTask<>(uri, CREATE_NEW_WD_REQ,
+                null, null, Boolean.class);
+    }
 
     public static GetTask<String[]> getWinWdMessages(long userProfileId) {
         String uri = baseUri + "/wd/messages/" + userProfileId;
@@ -201,6 +209,7 @@ public class Request {
 
     public static GetTask<Boolean> getCancelReq(long userProfileId, String refId) {
         String uri = baseUri + "/wd/cancel/" + userProfileId + "/" + refId;
+        System.out.println("Cancel Task " + uri);
         return new GetTask<>(uri, WITHDRAW_CANCEL, null, Boolean.class, null);
     }
 

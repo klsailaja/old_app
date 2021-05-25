@@ -28,13 +28,14 @@ import com.ab.telugumoviequiz.common.UserDetails;
 import com.ab.telugumoviequiz.common.Utils;
 import com.ab.telugumoviequiz.constants.WithdrawReqState;
 import com.ab.telugumoviequiz.constants.WithdrawReqType;
-import com.ab.telugumoviequiz.games.ViewLeaderboard;
+import com.ab.telugumoviequiz.main.MainActivity;
+import com.ab.telugumoviequiz.main.Navigator;
 import com.ab.telugumoviequiz.main.UserProfile;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class WithdrawReqsView extends BaseFragment implements PopupMenu.OnMenuItemClickListener,
         View.OnClickListener, CallbackResponse, DialogAction {
@@ -60,6 +61,9 @@ public class WithdrawReqsView extends BaseFragment implements PopupMenu.OnMenuIt
 
         Button filterAccType = view.findViewById(R.id.filterStatus);
         filterAccType.setOnClickListener(listener);
+
+        FloatingActionButton newWithdrawBut = view.findViewById(R.id.fab);
+        newWithdrawBut.setOnClickListener(listener);
     }
 
     private void fetchRecords() {
@@ -136,14 +140,10 @@ public class WithdrawReqsView extends BaseFragment implements PopupMenu.OnMenuIt
         tableAdapter.setClickListener(this);
         recyclerView.setAdapter(tableAdapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
+        fetchRecords();
         return root;
     }
 
-    @Override
-    public void onActivityCreated(Bundle savedBundle) {
-        super.onActivityCreated(savedBundle);
-        fetchRecords();
-    }
 
     @Override
     public void onResume() {
@@ -168,7 +168,7 @@ public class WithdrawReqsView extends BaseFragment implements PopupMenu.OnMenuIt
             startPosOffset = startPosOffset + maxRowCount;
             fetchRecords();
         } else if (id == R.id.filterStatus) {
-            Resources resources = Objects.requireNonNull(getActivity()).getResources();
+            Resources resources = requireActivity().getResources();
             CharSequence[] accTypes = resources.getTextArray(R.array.wd_options);
             PopupMenu popupMenu = new PopupMenu(getActivity(), view);
             for (CharSequence s : accTypes) {
@@ -183,7 +183,7 @@ public class WithdrawReqsView extends BaseFragment implements PopupMenu.OnMenuIt
                     CANCEL_BUTTON_ID, wdRefId);
         } else if (id == MORE_OPTIONS_BUTTON_ID) {
             WithdrawRequest selectedWDRequest = (WithdrawRequest) view.getTag();
-            Resources resources = Objects.requireNonNull(getActivity()).getResources();
+            Resources resources = requireActivity().getResources();
             CharSequence[] accTypes = resources.getTextArray(R.array.wd_more_options);
             PopupMenu popupMenu = new PopupMenu(getActivity(), view);
             for (CharSequence s : accTypes) {
@@ -193,6 +193,11 @@ public class WithdrawReqsView extends BaseFragment implements PopupMenu.OnMenuIt
             }
             popupMenu.setOnMenuItemClickListener(this);
             popupMenu.show();
+        } else if (id == R.id.fab) {
+            Activity activity = getActivity();
+            if (activity instanceof MainActivity) {
+                ((MainActivity)activity).launchView(Navigator.NEW_WITHDRAW_REQUEST, null, false);
+            }
         }
     }
 
@@ -240,7 +245,7 @@ public class WithdrawReqsView extends BaseFragment implements PopupMenu.OnMenuIt
                     closedCmts = selectedWDRequest.getClosedComents();
                 }
                 Utils.showMessage("Comments", closedCmts, getContext(), null);
-            } else if (subCategory == 2) {
+            } else {
                 System.out.println("In click");
                 GetTask<byte[]> viewReceiptTask = Request.getReceiptTask(selectedWDRequest.getReceiptId(),
                         selectedWDRequest.getRequestType());
@@ -254,13 +259,12 @@ public class WithdrawReqsView extends BaseFragment implements PopupMenu.OnMenuIt
     private String getBenefeciaryAccountDetails(WithdrawRequest wdRequest) {
         if (wdRequest.getRequestType() == WithdrawReqType.BY_PHONE.getId()) {
             WithdrawReqByPhone byPhone = wdRequest.getByPhone();
-            String stringBuffer = "Pay to Phone Number : " +
+            return "Pay to Phone Number : " +
                     byPhone.getPhNumber() +
                     "\n" +
                     "Using : " +
                     byPhone.getPaymentMethod() +
                     "\n";
-            return stringBuffer;
         }
         if (wdRequest.getRequestType() == WithdrawReqType.BY_BANK.getId()) {
         }
@@ -312,7 +316,7 @@ public class WithdrawReqsView extends BaseFragment implements PopupMenu.OnMenuIt
             System.out.println("This is in receipt view" + contents.length);
             run = () -> {
                 ViewReceipt viewReceipt = new ViewReceipt((getContext()), contents, "Transferred Receipt");
-                FragmentManager fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
+                FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
                 viewReceipt.show(fragmentManager, "dialog");
             };
             if (activity != null) {

@@ -23,7 +23,8 @@ import com.ab.telugumoviequiz.common.Utils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SearchGamesDialog extends DialogFragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
+public class SearchGamesDialog extends DialogFragment
+        implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
     private final int gameMode;
     private List<String> gameIds, celebrityNames;

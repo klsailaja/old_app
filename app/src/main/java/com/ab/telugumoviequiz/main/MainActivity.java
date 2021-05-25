@@ -47,6 +47,7 @@ import com.ab.telugumoviequiz.money.WalletView;
 import com.ab.telugumoviequiz.referals.MyReferralsView;
 import com.ab.telugumoviequiz.transactions.TransactionsView;
 import com.ab.telugumoviequiz.userprofile.UpdateUserProfile;
+import com.ab.telugumoviequiz.withdraw.NewWithdrawReq;
 import com.ab.telugumoviequiz.withdraw.WithdrawReqsView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -88,10 +89,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onDestroy () {
         super.onDestroy();
-        System.out.println("DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD Hasini");
         Bundle gameState = getParams(Navigator.QUESTION_VIEW);
         if (gameState != null) {
-            System.out.println("Writing part is done here");
             String FIFTYUSED = "FIFTYUSED";
             String FLIPUSED = "FLIPUSED";
             String USERANSWERS = "USERANS";
@@ -286,7 +285,6 @@ public class MainActivity extends AppCompatActivity
 
     public void storeParams(String viewName, Bundle params) {
         appParams.putBundle(viewName, params);
-        System.out.println(viewName + "::" + params);
     }
 
     public Bundle getParams(String viewName) {
@@ -374,6 +372,10 @@ public class MainActivity extends AppCompatActivity
                 stopped = true;
                 fragment = new WalletView();
                 break;
+            }
+            case Navigator.NEW_WITHDRAW_REQUEST: {
+                stopped = true;
+                fragment = new NewWithdrawReq();
             }
         }
         if (stopped) {

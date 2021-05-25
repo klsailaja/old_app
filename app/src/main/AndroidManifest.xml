@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.ab.telugumoviequiz">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -20,14 +21,16 @@
 
         <activity
             android:name="com.ab.telugumoviequiz.main.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/Theme.TeluguMovieQuiz"
             android:screenOrientation="landscape">
         </activity>
 
         <activity
             android:name="com.ab.telugumoviequiz.main.LoginActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -37,6 +40,7 @@
         <activity
             android:name="com.ab.telugumoviequiz.main.NewUserActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            tools:ignore="LockedOrientationActivity" />
     </application>
 </manifest>

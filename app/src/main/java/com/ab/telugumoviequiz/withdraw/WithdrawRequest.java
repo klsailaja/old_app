@@ -1,7 +1,5 @@
 package com.ab.telugumoviequiz.withdraw;
 
-import java.util.Arrays;
-
 public class WithdrawRequest {
 	private long id;
 	private String refId;
@@ -17,6 +15,7 @@ public class WithdrawRequest {
 	private String closedComents;
 	private int sNo;
 	private WithdrawReqByPhone byPhone;
+	private WithdrawReqByBank byBank;
 	private byte[] receiptContents;
 	
 	public byte[] getReceiptContents() {
@@ -26,12 +25,20 @@ public class WithdrawRequest {
 		this.receiptContents = receiptContents;
 	}
 	
+	public void setByBank(WithdrawReqByBank byBank) {
+		this.byBank = byBank;
+	}
+	public WithdrawReqByBank getByBank() {
+		return byBank;
+	}
+	
 	public WithdrawReqByPhone getByPhone() {
 		return byPhone;
 	}
 	public void setByPhone(WithdrawReqByPhone byPhone) {
 		this.byPhone = byPhone;
 	}
+	
 	public long getId() {
 		return id;
 	}

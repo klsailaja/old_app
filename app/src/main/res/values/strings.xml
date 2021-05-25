@@ -234,4 +234,14 @@
     <string name="transfer_to">Transfer To</string>
     <string name="transferAmtButTxt">Transfer</string>
     <string name="enter_transfer_amount">Enter Transfer Amount</string>
+
+    <!--Withdraw Request View-->
+    <string name="wdTransferTo">Select Transfer To</string>
+    <string name="wdBankTransferAccNum">Beneficiary Account Number</string>
+    <string name="wdBankTransferConfirmAccNum">Confirm Beneficiary Account Number</string>
+    <string name="wdBankTransferIfscCode">Bank IFSC Code</string>
+    <string name="wdBankTransferBankName">Bank Name</string>
+    <string name="wdAccountHolderName">Bank Account Holder Name</string>
+    <string name="wdBankAmount">Withdraw Amount</string>
+    <string name="wdBankNewReqBut">Submit Withdraw Request</string>
 </resources>

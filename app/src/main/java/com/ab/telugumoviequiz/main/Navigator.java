@@ -19,6 +19,9 @@ public interface Navigator {
     String TRANSACTIONS_VIEW = "TransactionsView";
     String WITHDRAW_REQ_VIEW = "WithdrawReqsView";
     String PROFILE_VIEW = "ProfileView";
+    String NEW_WITHDRAW_REQUEST = "NewWithdrawReqView";
+    String TRANSFER_TO_BANK_ACCOUNT = "TransferToBankAccount";
+    String TRANSFER_TO_PHONEPE_ACCOUNT = "TransferToPhonePeAccount";
 
     void launchView(String viewId, Bundle params, boolean storeState);
 }

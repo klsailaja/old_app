@@ -5,6 +5,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.ab.telugumoviequiz.main.MainActivity;
@@ -102,7 +103,7 @@ public abstract class BaseFragment extends Fragment implements MessageListener,
     }
 
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         Activity parentActivity = getActivity();
         if (parentActivity instanceof MainActivity) {
             MainActivity mainActivity = (MainActivity) parentActivity;
