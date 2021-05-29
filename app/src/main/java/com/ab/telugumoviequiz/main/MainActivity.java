@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -36,6 +35,7 @@ import com.ab.telugumoviequiz.common.SwitchScreen;
 import com.ab.telugumoviequiz.common.UserDetails;
 import com.ab.telugumoviequiz.common.Utils;
 import com.ab.telugumoviequiz.common.WinMsgHandler;
+import com.ab.telugumoviequiz.games.GameDetails;
 import com.ab.telugumoviequiz.games.GameStatus;
 import com.ab.telugumoviequiz.games.GameStatusHolder;
 import com.ab.telugumoviequiz.games.QuestionFragment;
@@ -43,7 +43,7 @@ import com.ab.telugumoviequiz.games.SelectGameTypeView;
 import com.ab.telugumoviequiz.games.ShowGames;
 import com.ab.telugumoviequiz.games.UserAnswer;
 import com.ab.telugumoviequiz.history.HistoryView;
-import com.ab.telugumoviequiz.money.WalletView;
+import com.ab.telugumoviequiz.money.LifeCycle;
 import com.ab.telugumoviequiz.referals.MyReferralsView;
 import com.ab.telugumoviequiz.transactions.TransactionsView;
 import com.ab.telugumoviequiz.userprofile.UpdateUserProfile;
@@ -80,6 +80,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onStop() {
+        System.out.println("Activity onStop ");
         super.onStop();
         if (pollerTask != null) {
             pollerTask.cancel(true);
@@ -88,18 +89,20 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onDestroy () {
+        System.out.println("Activity onDestroy ");
         super.onDestroy();
         Bundle gameState = getParams(Navigator.QUESTION_VIEW);
         if (gameState != null) {
             String FIFTYUSED = "FIFTYUSED";
             String FLIPUSED = "FLIPUSED";
             String USERANSWERS = "USERANS";
-            String GAMESTARTTIME = "GAMESTARTTIME";
+            String GAMEDETAILS = "GAMEDETAILS";
 
             boolean fiftyUsed = gameState.getBoolean(FIFTYUSED);
             boolean flipQuestionUsed = gameState.getBoolean(FLIPUSED);
             ArrayList<UserAnswer> userAnswers  = gameState.getParcelableArrayList(USERANSWERS);
-            long gameStartTime = gameState.getLong(GAMESTARTTIME);
+            GameDetails gameDetails = (GameDetails) gameState.getSerializable(GAMEDETAILS);
+            long gameStartTime = gameDetails.getStartTime();
 
             boolean gameInProgress = false;
             long currentTime = System.currentTimeMillis();
@@ -135,6 +138,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        System.out.println("Activity onCreate" + savedInstanceState);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         activityView = this.findViewById(android.R.id.content);
@@ -168,7 +172,7 @@ public class MainActivity extends AppCompatActivity
         UserProfile userProfile = UserDetails.getInstance().getUserProfile();
         WinMsgHandler.getInstance().setUserProfileId(userProfile.getId());
 
-        launchView(Navigator.CURRENT_GAMES, new Bundle(), false);
+        String initialViewName = Navigator.CURRENT_GAMES;
 
         String FIFTYUSED = "FIFTYUSED";
         String FLIPUSED = "FLIPUSED";
@@ -247,6 +251,8 @@ public class MainActivity extends AppCompatActivity
         GetTask<GameStatusHolder> getGamesStatusTask = Request.getFutureGamesStatusTask(-1);
         getGamesStatusTask.setCallbackResponse(this);
         pollerTask = Scheduler.getInstance().submitRepeatedTask(getGamesStatusTask, initialDelay, 5 * 60 * 1000, TimeUnit.MILLISECONDS);
+
+        launchView(initialViewName, new Bundle(), false);
     }
 
     @Override
@@ -331,12 +337,14 @@ public class MainActivity extends AppCompatActivity
             }
             case Navigator.CURRENT_GAMES: {
                 stopped = false;
-                fragment = new SelectGameTypeView(SelectGameTypeView.FUTURE_GAMES);
+                fragment = new SelectGameTypeView();
+                ((SelectGameTypeView)fragment).setViewType(SelectGameTypeView.FUTURE_GAMES);
                 break;
             }
             case Navigator.ENROLLED_GAMES: {
                 stopped = false;
-                fragment = new SelectGameTypeView(SelectGameTypeView.ENROLLED_GAMES);
+                fragment = new SelectGameTypeView();
+                ((SelectGameTypeView)fragment).setViewType(SelectGameTypeView.ENROLLED_GAMES);
                 break;
             }
             case Navigator.REFERRALS_VIEW: {
@@ -370,7 +378,8 @@ public class MainActivity extends AppCompatActivity
             }
             case Navigator.WALLET_VIEW: {
                 stopped = true;
-                fragment = new WalletView();
+                //fragment = new WalletView();
+                fragment = new LifeCycle();
                 break;
             }
             case Navigator.NEW_WITHDRAW_REQUEST: {
@@ -524,7 +533,26 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
+    public void onStart() {
+        super.onStart();
+        System.out.println("Activity onStart ");
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        System.out.println("Activity onResume");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        System.out.println("Activity onPause ");
+    }
+
+    /*@Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        System.out.println("Activity onSaveInstanceState ");
+        super.onSaveInstanceState(outState);
+    }*/
 }

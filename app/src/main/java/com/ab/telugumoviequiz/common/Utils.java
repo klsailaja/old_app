@@ -3,14 +3,11 @@ package com.ab.telugumoviequiz.common;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Point;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Display;
 import android.view.WindowManager;
 
-import android.app.AlertDialog;
-
-import com.ab.telugumoviequiz.main.MainActivity;
+import androidx.appcompat.app.AlertDialog;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

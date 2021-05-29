@@ -24,9 +24,13 @@ public class SelectGameTypeView extends BaseFragment implements View.OnClickList
     private final List<GameTypeModel> modelList = new ArrayList<>();
     public static final int FUTURE_GAMES = 1; //
     public static final int ENROLLED_GAMES = 2; //
-    private final int viewType;
+    private int viewType;
 
-    public SelectGameTypeView(int viewType) {
+    public SelectGameTypeView() {
+
+    }
+
+    public void setViewType(int viewType) {
         this.viewType = viewType;
     }
 

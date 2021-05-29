@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -79,35 +78,23 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
         saveState.putBoolean(FIFTYUSED, fiftyUsed);
         saveState.putBoolean(FLIPUSED, flipQuestionUsed);
         saveState.putParcelableArrayList(USERANSWERS, userAnswers);
-        String GAMESTARTTIME = "GAMESTARTTIME";
-        saveState.putLong(GAMESTARTTIME, gameDetails.getStartTime());
+        saveState.putSerializable(GAMEDETAILS, gameDetails);
         return saveState;
     }
-    
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        System.out.println("In onSaveInstanceState");
-        Bundle bundle = saveState();
-        outState.putAll(bundle);
-        outState.putSerializable(GAMEDETAILS, gameDetails);
-        super.onSaveInstanceState(outState);
-   }
 
-   @Override
-   public void onCreate (Bundle savedInstanceState) {
+    @Override
+    public void onCreate (Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         System.out.println("onCreate " + savedInstanceState);
-   }
+    }
 
     @Override
     public View onCreateView(
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
 
-        View root = inflater.inflate(R.layout.activity_question, container, false);
-
         // Minimise te game screen case start
-        System.out.println("Minimise state is " + savedInstanceState);
+        /*System.out.println("Minimise state is " + savedInstanceState);
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey(FIFTYUSED)) {
                 fiftyUsed = savedInstanceState.getBoolean(FIFTYUSED);
@@ -121,25 +108,62 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
             if (savedInstanceState.containsKey(GAMEDETAILS)) {
                 gameDetails = (GameDetails) savedInstanceState.getSerializable(GAMEDETAILS);
             }
-        }
+        }*/
         // Minimise the game screen case end
+        return inflater.inflate(R.layout.activity_question, container, false);
+    }
 
+    @Override
+    public void onStart() {
+        restoreState();
+        super.onStart();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        System.out.println("onResume called");
+
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    }
+
+    private void restoreState() {
         MainActivity mainActivity = (MainActivity) getActivity();
         Bundle savedState = null;
+
         if (mainActivity != null) {
             savedState = mainActivity.getParams(Navigator.QUESTION_VIEW);
         }
 
+        GameDetails savedGameDetails = null;
         if (savedState != null) {
             System.out.println("Read from saved state");
             fiftyUsed = savedState.getBoolean(FIFTYUSED);
             flipQuestionUsed = savedState.getBoolean(FLIPUSED);
             userAnswers = savedState.getParcelableArrayList(USERANSWERS);
+            savedGameDetails = (GameDetails) savedState.getSerializable(GAMEDETAILS);
         }
 
         Bundle bundle = getArguments();
         if (bundle != null) {
             gameDetails = (GameDetails) bundle.getSerializable("gd");
+        }
+        if (gameDetails == null) {
+            gameDetails = savedGameDetails;
+        }
+        if (gameDetails != null) {
+            if (gameDetails.getStartTime() >= (gameDetails.getStartTime() + 10 * 60 * 1000)) {
+                Utils.showMessage("Info", "Game Over", getContext(), this, 100, null);
+                return;
+            }
+        }
+        View root = getView();
+        if (root == null) {
+            return;
         }
 
         timerView = root.findViewById(R.id.timerView);
@@ -165,18 +189,26 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
             gameStatusPollerHandle = Scheduler.getInstance().submitRepeatedTask(pollStatusTask, 0, 10, TimeUnit.SECONDS);
         } else if ((timeDiff > 0) && (timeDiff <= GAME_BEFORE_LOCK_PERIOD_IN_MILLIS)) {
             displayErrorAsToast(successMsg);
+            scheduleAllQuestions();
             gameStartedMode(root, false);
         } else if (timeDiff < 0) {
-            //timeDiff = -1 * timeDiff;
-            //timeDiff = timeDiff / 1000;
-            //int mins = (int) (timeDiff / 60);
-            //int secs = (int) timeDiff - (mins * 60);
-            //int alreadyAnsweredCt = userAnswers.size();
+            AlertDialog alertDialog = Utils.getProgressDialog(getActivity(), "Rejoining. Please Wait");
+            alertDialog.show();
+            timeDiff = -1 * timeDiff;
+            timeDiff = timeDiff / 1000;
+            int mins = (int) (timeDiff / 60);
+            int secs = (int) timeDiff - (mins * 60);
+            if (secs > 0) {
+                mins++;
+            }
+            int alreadyAnsweredCt = userAnswers.size();
+            mins = mins - alreadyAnsweredCt;
+            System.out.println("Missed minutes is " + mins);
             // Missed minutes user answers are formed here for rejoin..
-            /*for (int index = 1; index <= mins; index ++) {
+            for (int index = 1; index <= mins; index ++) {
                 UserAnswer userAnswer = new UserAnswer(alreadyAnsweredCt + index, false, -1L);
                 userAnswers.add(userAnswer);
-            }*/
+            }
             gameStartedMode(root, true);
             scheduleAllQuestions();
             GetTask<PrizeDetail[]> getPrizeDetailsReq = Request.getPrizeDetails(gameDetails.getGameId());
@@ -187,37 +219,7 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
             progressBar.setVisibility(View.INVISIBLE);
             quesShowing(false);
             updateLifelines(false);
-        }
-        return root;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    public void onDestroyView() {
-        System.out.println("In onDestroyView");
-        super.onDestroyView();
-        if (gameStatusPollerHandle != null) {
-            gameStatusPollerHandle.cancel(true);
-        }
-
-        boolean gameProgress = isGameInProgress();
-        if (!gameProgress) {
-            return;
-        }
-        Scheduler.getInstance().shutDown();
-        Bundle saveState = saveState();
-        MainActivity mainActivity = (MainActivity) getActivity();
-        if (mainActivity != null) {
-            mainActivity.storeParams(Navigator.QUESTION_VIEW, saveState);
+            alertDialog.dismiss();
         }
     }
 
@@ -233,6 +235,20 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
     @Override
     public void onPause() {
         super.onPause();
+        System.out.println("onPause Called");
+        if (gameStatusPollerHandle != null) {
+            gameStatusPollerHandle.cancel(true);
+        }
+        boolean gameProgress = isGameInProgress();
+        if (!gameProgress) {
+            return;
+        }
+        Scheduler.getInstance().shutDown();
+        Bundle saveState = saveState();
+        MainActivity mainActivity = (MainActivity) getActivity();
+        if (mainActivity != null) {
+            mainActivity.storeParams(Navigator.QUESTION_VIEW, saveState);
+        }
     }
 
     @Override
@@ -260,6 +276,12 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
             if (parentActivity instanceof MainActivity) {
                 MainActivity mainActivity = (MainActivity) parentActivity;
                 mainActivity.onNavigationItemSelected(item);
+            }
+        } else if (calledId == 100) {
+            Activity parentActivity = getActivity();
+            if (parentActivity instanceof MainActivity) {
+                MainActivity mainActivity = (MainActivity) parentActivity;
+                mainActivity.launchView(Navigator.CURRENT_GAMES, null, false);
             }
         }
     }
@@ -602,7 +624,7 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
         id++;
         changeQues.setId(id);
         changeQues.setText(R.string.flip_question);
-        changeQues.setTextAppearance(R.style.button);
+        //changeQues.setTextAppearance(R.style.button);
         changeQues.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
                 TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
 

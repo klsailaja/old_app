@@ -1,7 +1,7 @@
 package com.ab.telugumoviequiz.common;
 
 import android.app.Activity;
-import android.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -117,9 +117,7 @@ public class GetTask<T> implements Runnable {
             getCallbackResponse().handleResponse(getRequestId(), false, false, resObj, helperObject);
         } catch (Exception ex) {
             if (activity != null) {
-                Runnable run = () -> {
-                    alertDialog.dismiss();
-                };
+                Runnable run = () -> alertDialog.dismiss();
                 activity.runOnUiThread(run);
             }
             ex.printStackTrace();
