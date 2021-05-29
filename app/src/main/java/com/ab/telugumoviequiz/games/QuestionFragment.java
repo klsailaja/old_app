@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -601,8 +602,10 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
         id++;
         changeQues.setId(id);
         changeQues.setText(R.string.flip_question);
+        changeQues.setTextAppearance(R.style.button);
         changeQues.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
                 TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
+
 
         moreOptions = new Button(getContext());
         id++;
@@ -917,7 +920,7 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
     }
 
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         boolean gameInProgress = isGameInProgress();
         if (gameInProgress) {
             Utils.showConfirmationMessage("Confirm", "Game in progress. You will miss questions. Are you sure to proceed?",
