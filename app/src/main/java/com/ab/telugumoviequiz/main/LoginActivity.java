@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.ab.telugumoviequiz.R;
 import com.ab.telugumoviequiz.common.CallbackResponse;
+import com.ab.telugumoviequiz.common.DialogAction;
 import com.ab.telugumoviequiz.common.MessageListener;
 import com.ab.telugumoviequiz.common.NotifyTextChanged;
 import com.ab.telugumoviequiz.common.PATextWatcher;
@@ -24,7 +25,7 @@ import com.ab.telugumoviequiz.common.WinMsgHandler;
 import java.util.List;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener, NotifyTextChanged,
-        CallbackResponse, MessageListener {
+        CallbackResponse, MessageListener, DialogAction {
     private PATextWatcher mailTextWatcher, passwordTextWatcher;
 
     @Override
@@ -82,17 +83,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             loginReq.setActivity(LoginActivity.this, "Processing. Please Wait!");
             Scheduler.getInstance().submit(loginReq);
         } else if (viewId == R.id.forgotPasswordBut) {
-            boolean result = validateMailId();
-            if (!result) {
-                return;
-            }
-            LoginData loginData = formEntity();
-
-            PostTask<LoginData, UserProfile> forgotPassword = Request.getForgotPassword();
-            forgotPassword.setCallbackResponse(this);
-            forgotPassword.setPostObject(loginData);
-            forgotPassword.setActivity(LoginActivity.this, "Processing. Please Wait!");
-            Scheduler.getInstance().submit(forgotPassword);
+            Utils.showConfirmationMessage("Confirm?", "Are you sure to proceed?",
+                    this, this, 10, null);
         }
     }
 
@@ -270,5 +262,20 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             return false;
         }
         return true;
+    }
+
+    @Override
+    public void doAction(int calledId, Object userObject) {
+        boolean result = validateMailId();
+        if (!result) {
+            return;
+        }
+        LoginData loginData = formEntity();
+
+        PostTask<LoginData, UserProfile> forgotPassword = Request.getForgotPassword();
+        forgotPassword.setCallbackResponse(this);
+        forgotPassword.setPostObject(loginData);
+        forgotPassword.setActivity(LoginActivity.this, "Processing. Please Wait!");
+        Scheduler.getInstance().submit(forgotPassword);
     }
 }

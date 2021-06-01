@@ -32,14 +32,20 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:id="@+id/myreferals_prev_but"
-                android:text="@string/prev_data_set"/>
+                android:text="@string/prev_data_set"
+                style="?android:attr/buttonBarButtonStyle" />
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:id="@+id/myreferals_next_but"
-                android:text="@string/next_data_set"/>
+                android:text="@string/next_data_set"
+                style="?android:attr/buttonBarButtonStyle" />
         </LinearLayout>
+        <TextView
+            android:id="@+id/winMsgs"
+            style="@style/StatusBarMsg"
+            android:text="@string/status_bar_msg" />
     </LinearLayout>
 </ScrollView>

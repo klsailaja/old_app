@@ -61,5 +61,9 @@
                 android:contentDescription="@string/submit"
                 android:layout_margin="16dp" />
         </LinearLayout>
+        <TextView
+            android:id="@+id/winMsgs"
+            style="@style/StatusBarMsg"
+            android:text="@string/status_bar_msg" />
     </LinearLayout>
 </ScrollView>

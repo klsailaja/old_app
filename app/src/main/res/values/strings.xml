@@ -228,6 +228,7 @@
     <string name="search_txt">Search</string>
     <string name="clear_txt">Show All</string>
     <string name="close_but">Close</string>
+    <string name="nextFreeSlot">Show Available Games</string>
 
     <!-- Wallet View -->
     <string name="load_money">Add Money</string>
@@ -249,4 +250,6 @@
     <string name="wdPhonePeNumber1">PhonePe Phone Number</string>
     <string name="wdPhonePeNumber2">Confirm PhonePe Phone Number</string>
     <string name="wdPhonePeHolderName">Enter PhonePe User Name</string>
+
+    <string name="status_bar_msg">Recent Winning Messages</string>
 </resources>

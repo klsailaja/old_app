@@ -44,6 +44,7 @@ import com.ab.telugumoviequiz.games.ShowGames;
 import com.ab.telugumoviequiz.games.UserAnswer;
 import com.ab.telugumoviequiz.history.HistoryView;
 import com.ab.telugumoviequiz.money.LifeCycle;
+import com.ab.telugumoviequiz.money.WalletView;
 import com.ab.telugumoviequiz.referals.MyReferralsView;
 import com.ab.telugumoviequiz.transactions.TransactionsView;
 import com.ab.telugumoviequiz.userprofile.UpdateUserProfile;
@@ -348,7 +349,7 @@ public class MainActivity extends AppCompatActivity
                 break;
             }
             case Navigator.REFERRALS_VIEW: {
-                stopped = true;
+                stopped = false;
                 fragment = new MyReferralsView();
                 break;
             }
@@ -363,7 +364,7 @@ public class MainActivity extends AppCompatActivity
                 break;
             }
             case Navigator.WITHDRAW_REQ_VIEW: {
-                stopped = true;
+                stopped = false;
                 fragment = new WithdrawReqsView();
                 break;
             } case Navigator.CHAT_VIEW: {
@@ -378,8 +379,7 @@ public class MainActivity extends AppCompatActivity
             }
             case Navigator.WALLET_VIEW: {
                 stopped = true;
-                //fragment = new WalletView();
-                fragment = new LifeCycle();
+                fragment = new WalletView();
                 break;
             }
             case Navigator.NEW_WITHDRAW_REQUEST: {
@@ -390,7 +390,7 @@ public class MainActivity extends AppCompatActivity
         if (stopped) {
             WinMsgHandler.getInstance().setListener(null);
         } else {
-            WinMsgHandler.getInstance().setListener(fragment);
+            WinMsgHandler.getInstance().setListener(this);
         }
         return fragment;
     }

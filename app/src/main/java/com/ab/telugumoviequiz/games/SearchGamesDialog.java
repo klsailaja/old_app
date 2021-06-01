@@ -11,6 +11,7 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
@@ -27,19 +28,21 @@ public class SearchGamesDialog extends DialogFragment
         implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
     private final int gameMode;
-    private List<String> gameIds, celebrityNames;
+    private List<String> gameIds, celebrityNames, gameTimes;
     private Spinner searchColsSpinner;
     private Spinner searchValsSpinner;
+    private CheckBox box;
     private String[] searchCols;
-    private ArrayAdapter<String> gameIdsAdapter, celebrityNamesAdapter;
+    private ArrayAdapter<String> gameIdsAdapter, celebrityNamesAdapter, gameTimesAdapter;
     private MessageListener listener;
 
     public SearchGamesDialog(int gameMode) {
         this.gameMode = gameMode;
     }
-    public void setData(List<String> gameIds, List<String> celebrityNames) {
+    public void setData(List<String> gameIds, List<String> celebrityNames, List<String> gameTimes) {
         this.gameIds = gameIds;
         this.celebrityNames = celebrityNames;
+        this.gameTimes = gameTimes;
     }
 
     public void setListener(MessageListener listener) {
@@ -52,8 +55,9 @@ public class SearchGamesDialog extends DialogFragment
         Resources resources = getResources();
         searchCols = resources.getStringArray(R.array.search_options);
         if (gameMode == 1) {
-            String[] keys = new String[1];
+            String[] keys = new String[2];
             keys[0] = searchCols[0];
+            keys[1] = searchCols[1];
             searchCols = keys;
         }
     }
@@ -74,6 +78,8 @@ public class SearchGamesDialog extends DialogFragment
         searchColsSpinner = root.findViewById(R.id.searchCols);
         searchValsSpinner = root.findViewById(R.id.searchVals);
 
+        box = root.findViewById(R.id.showNextFree);
+
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, searchCols);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         searchColsSpinner.setAdapter(adapter);
@@ -88,6 +94,10 @@ public class SearchGamesDialog extends DialogFragment
         celebrityNamesAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, celebrityNames);
         celebrityNamesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         celebrityNamesAdapter.setNotifyOnChange(false);
+
+        gameTimesAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, gameTimes);
+        gameTimesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        gameTimesAdapter.setNotifyOnChange(false);
 
         searchColsSpinner.setOnItemSelectedListener(this);
         return root;
@@ -104,10 +114,15 @@ public class SearchGamesDialog extends DialogFragment
 
     private void populateUI() {
         int selectedGameType = searchColsSpinner.getSelectedItemPosition();
+        box.setEnabled(false);
         if (selectedGameType == 0) {
             searchValsSpinner.setAdapter(gameIdsAdapter);
+        } else if (selectedGameType == 1) {
+            box.setEnabled(true);
+            searchValsSpinner.setAdapter(gameTimesAdapter);
         } else {
             searchValsSpinner.setAdapter(celebrityNamesAdapter);
+            box.setEnabled(true);
         }
     }
 
@@ -142,6 +157,12 @@ public class SearchGamesDialog extends DialogFragment
             List<String> searchVals = new ArrayList<>();
             searchVals.add(searchKey);
             searchVals.add(searchValue);
+            if (box.isChecked()) {
+                searchVals.add("true");
+            } else {
+                searchVals.add("false");
+            }
+
             listener.passData(1, searchVals);
             dismiss();
         } else if (view.getId() == R.id.clear_but) {

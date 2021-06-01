@@ -22,14 +22,22 @@
         <Spinner
             android:id="@+id/searchCols"
             android:layout_width="200dp"
-            android:layout_height="wrap_content" />
+            android:layout_height="70dp" />
         <Spinner
             android:id="@+id/searchVals"
             android:layout_width="200dp"
-            android:layout_height="wrap_content"
+            android:layout_height="70dp"
             android:layout_alignBottom="@+id/searchCols"
             android:layout_toEndOf="@+id/searchCols" />
     </RelativeLayout>
+    <CheckBox
+        android:id="@+id/showNextFree"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:checked="false"
+        android:text="@string/nextFreeSlot"/>
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_marginTop="30dp"

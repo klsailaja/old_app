@@ -21,7 +21,7 @@
     <!-- edittext style -->
     <style name="modifiedEditText" parent="parent">
         <item name="android:textSize">@dimen/newsMoreTextSize</item>
-        <item name="android:backgroundTint">@color/primaryTextColor</item>
+        <item name="android:backgroundTint">@color/colorPrimary</item>
     </style>
     <!-- Button style -->
     <style name="button" parent="viewParent">
@@ -79,5 +79,16 @@
     <style name="CustomDialog" parent="@style/Theme.AppCompat.Light.Dialog">
         <item name="android:windowNoTitle">false</item>
         <item name="android:textSize">15sp</item>
+    </style>
+    <style name="StatusBarMsg">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">20sp</item>
+        <item name="fontFamily">sans-serif-condensed-medium</item>
+        <item name="android:background">@color/black</item>
+        <item name="android:textColor">@color/whiteTextColor</item>
+        <item name="android:layout_marginTop">@dimen/statusBarMargin</item>
     </style>
 </resources>

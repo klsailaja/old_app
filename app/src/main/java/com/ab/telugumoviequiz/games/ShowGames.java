@@ -1,5 +1,6 @@
 package com.ab.telugumoviequiz.games;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -31,8 +32,10 @@ import com.ab.telugumoviequiz.main.Navigator;
 import com.ab.telugumoviequiz.main.UserMoney;
 import com.ab.telugumoviequiz.main.UserProfile;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ScheduledFuture;
@@ -52,7 +55,9 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
     private ScheduledFuture<?> fetchTask = null;
     private ScheduledFuture<?> pollerTask = null;
-    private String searchKey, searchValue;
+    private String searchKey = null, searchValue = null, showFreeGame = null;
+    private final List<Long> gameStartTimeLongValues = new ArrayList<>();
+    private final List<String> gameStartTimeStrValues = new ArrayList<>();
 
     public ShowGames() {
         super();
@@ -128,9 +133,27 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
             }
             List<String> searchGameIds = new ArrayList<>();
             List<String> celebrityNames = new ArrayList<>();
+
+            gameStartTimeLongValues.clear();
+            gameStartTimeStrValues.clear();
+
             lock.readLock().lock();
             for (GameDetails gameDetails : gameDetailsList) {
                 searchGameIds.add(String.valueOf(gameDetails.getTempGameId()));
+
+                Long searchStartTime = gameDetails.getStartTime();
+                if (!gameStartTimeLongValues.contains(searchStartTime)) {
+                    gameStartTimeLongValues.add(searchStartTime);
+                }
+                @SuppressLint("SimpleDateFormat")
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
+                String datePattern = "hh:mm";
+                Date date = new Date(searchStartTime);
+                simpleDateFormat.applyPattern(datePattern);
+                String timeStr = simpleDateFormat.format(date);
+                if (!gameStartTimeStrValues.contains(timeStr)) {
+                    gameStartTimeStrValues.add(timeStr);
+                }
                 if (gameMode == 2) {
                     celebrityNames.add(gameDetails.getCelebrityName());
                 }
@@ -138,7 +161,7 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
             lock.readLock().unlock();
 
             SearchGamesDialog searchGamesDialog = new SearchGamesDialog(gameMode);
-            searchGamesDialog.setData(searchGameIds, celebrityNames);
+            searchGamesDialog.setData(searchGameIds, celebrityNames, gameStartTimeStrValues);
             searchGamesDialog.setListener(this);
             FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
             searchGamesDialog.show(fragmentManager, "dialog");
@@ -159,6 +182,8 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
         int searchType = 1;
         if (searchKey.equals("Celebrity Name")) {
             searchType = 2;
+        } else if (searchKey.equals("Game Start Time")) {
+            searchType = 3;
         }
         lock.readLock().lock();
         for (GameDetails gameDetails : gameDetailsList) {
@@ -166,8 +191,31 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
                 if (String.valueOf(gameDetails.getTempGameId()).equals(searchValue)) {
                     filterSet.add(gameDetails);
                 }
-            } else {
+            } else if (searchType == 2) {
                 if (searchValue.equals(gameDetails.getCelebrityName())) {
+                    if (showFreeGame != null) {
+                        if (showFreeGame.equals("true")) {
+                            if (gameDetails.getCurrentCount() == 10) {
+                                continue;
+                            }
+                        }
+                    }
+                    filterSet.add(gameDetails);
+                }
+            } else {
+                int startTimeIndex = gameStartTimeStrValues.indexOf(searchValue);
+                if (startTimeIndex == -1) {
+                    return;
+                }
+                Long longStartTime = gameStartTimeLongValues.get(startTimeIndex);
+                if (longStartTime == gameDetails.getStartTime()) {
+                    if (showFreeGame != null) {
+                        if (showFreeGame.equals("true")) {
+                            if (gameDetails.getCurrentCount() == 10) {
+                                continue;
+                            }
+                        }
+                    }
                     filterSet.add(gameDetails);
                 }
             }
@@ -175,6 +223,8 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
         lock.readLock().unlock();
         if (filterSet.size() == 0) {
             searchKey = null;
+            searchValue = null;
+            showFreeGame = null;
             filterSet = gameDetailsList;
             displayErrorAsToast("Searched data not found. Showing all");
         }
@@ -193,9 +243,11 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
             // Search operation...
             searchKey = data.get(0).trim();
             searchValue = data.get(1).trim();
+            showFreeGame = data.get(2).trim();
         } else if (id == 2) {
             searchKey = null;
             searchValue = null;
+            showFreeGame = null;
         }
         applyFilterCriteria();
     }
@@ -361,6 +413,7 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
                 PayGameModel referralMoney = new PayGameModel();
                 referralMoney.setAccountName("Referral Money");
                 referralMoney.setAccountBalance(String.valueOf(userMoney.getReferalAmount()));
+                assert UserMoneyAccountType.findById(3) != null;
                 referralMoney.setAccountNumber(UserMoneyAccountType.findById(3).getId());
                 referralMoney.setValid(userMoney.getReferalAmount() >= tktRate);
                 modelList.add(referralMoney);

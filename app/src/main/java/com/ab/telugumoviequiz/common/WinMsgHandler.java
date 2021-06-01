@@ -2,14 +2,13 @@ package com.ab.telugumoviequiz.common;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class WinMsgHandler implements CallbackResponse {
 
     private static WinMsgHandler instance;
-    private List<String> winWdMessages = new ArrayList<>();
+    private final List<String> winWdMessages = new ArrayList<>();
     private long userProfileId = -1;
     private MessageListener listener;
     private boolean isStopped = false;
@@ -36,6 +35,7 @@ public class WinMsgHandler implements CallbackResponse {
     }
 
     public void setUserProfileId(long userProfileId1) {
+        System.out.println("In setUserProfileId" + userProfileId1);
         this.userProfileId = userProfileId1;
         fetchData();
     }
@@ -56,15 +56,17 @@ public class WinMsgHandler implements CallbackResponse {
         if (listener != null) {
             List<String> msgList = new ArrayList<>();
             msgList.add(msg);
-            listener.passData(1, msgList);
+            listener.passData(999, msgList);
         }
     }
 
     public void handleResponse(int reqId, boolean exceptionThrown, boolean isAPIException, final Object response, Object helperObject) {
         if((exceptionThrown) && (!isAPIException)) {
+            System.out.println("Exception thrown here " + response);
             return;
         }
         if (isAPIException) {
+            System.out.println("isAPIException thrown here " + response);
             return;
         }
         if (reqId == Request.WIN_WD_MSGS) {
@@ -72,9 +74,10 @@ public class WinMsgHandler implements CallbackResponse {
             winWdMessages.clear();
             winWdMessages.addAll(result);
             int size = winWdMessages.size();
+            System.out.println("size is " + size);
             String errMessage;
             if (size == 0) {
-                errMessage = "No Data Found";
+                errMessage = "No Data";
             } else {
                 errMessage = winWdMessages.get(0);
             }
