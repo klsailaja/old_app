@@ -43,7 +43,6 @@ import com.ab.telugumoviequiz.games.SelectGameTypeView;
 import com.ab.telugumoviequiz.games.ShowGames;
 import com.ab.telugumoviequiz.games.UserAnswer;
 import com.ab.telugumoviequiz.history.HistoryView;
-import com.ab.telugumoviequiz.money.LifeCycle;
 import com.ab.telugumoviequiz.money.WalletView;
 import com.ab.telugumoviequiz.referals.MyReferralsView;
 import com.ab.telugumoviequiz.transactions.TransactionsView;
@@ -173,8 +172,6 @@ public class MainActivity extends AppCompatActivity
         UserProfile userProfile = UserDetails.getInstance().getUserProfile();
         WinMsgHandler.getInstance().setUserProfileId(userProfile.getId());
 
-        String initialViewName = Navigator.CURRENT_GAMES;
-
         String FIFTYUSED = "FIFTYUSED";
         String FLIPUSED = "FLIPUSED";
         String USERANSWERS = "USERANS";
@@ -253,7 +250,7 @@ public class MainActivity extends AppCompatActivity
         getGamesStatusTask.setCallbackResponse(this);
         pollerTask = Scheduler.getInstance().submitRepeatedTask(getGamesStatusTask, initialDelay, 5 * 60 * 1000, TimeUnit.MILLISECONDS);
 
-        launchView(initialViewName, new Bundle(), false);
+        launchView(Navigator.CURRENT_GAMES, new Bundle(), false);
     }
 
     @Override
@@ -542,6 +539,7 @@ public class MainActivity extends AppCompatActivity
     public void onResume() {
         super.onResume();
         System.out.println("Activity onResume");
+
     }
 
     @Override

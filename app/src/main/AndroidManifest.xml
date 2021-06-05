@@ -21,7 +21,6 @@
 
         <activity
             android:name="com.ab.telugumoviequiz.main.MainActivity"
-            android:windowSoftInputMode="adjustResize"
             android:theme="@style/Theme.TeluguMovieQuiz"
             android:screenOrientation="landscape">
         </activity>

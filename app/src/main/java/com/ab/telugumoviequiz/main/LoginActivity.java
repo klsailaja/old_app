@@ -8,10 +8,13 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 import com.ab.telugumoviequiz.R;
 import com.ab.telugumoviequiz.common.CallbackResponse;
 import com.ab.telugumoviequiz.common.DialogAction;
+import com.ab.telugumoviequiz.common.HelpMessage;
+import com.ab.telugumoviequiz.common.HelpTopic;
 import com.ab.telugumoviequiz.common.MessageListener;
 import com.ab.telugumoviequiz.common.NotifyTextChanged;
 import com.ab.telugumoviequiz.common.PATextWatcher;
@@ -20,8 +23,11 @@ import com.ab.telugumoviequiz.common.Request;
 import com.ab.telugumoviequiz.common.Scheduler;
 import com.ab.telugumoviequiz.common.UserDetails;
 import com.ab.telugumoviequiz.common.Utils;
+import com.ab.telugumoviequiz.common.ViewHelp;
 import com.ab.telugumoviequiz.common.WinMsgHandler;
+import com.ab.telugumoviequiz.games.ViewLeaderboard;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener, NotifyTextChanged,
@@ -66,9 +72,33 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View view) {
         int viewId = view.getId();
         if (viewId == R.id.viewNewUserBut) {
-            Intent intent = new Intent(this, NewUserActivity.class);
+            List<HelpTopic> topics = new ArrayList<>();
+
+            List<HelpMessage> topic1Msgs = new ArrayList<>();
+            HelpMessage topic1Msg1 = new HelpMessage("This is a Topic1 Message1", 1);
+            HelpMessage topic1Msg2 = new HelpMessage("This is a Topic1 Message2", 2);
+            topic1Msgs.add(topic1Msg1);
+            topic1Msgs.add(topic1Msg2);
+
+            HelpTopic topic1 = new HelpTopic("Topic1", topic1Msgs);
+            topics.add(topic1);
+
+            List<HelpMessage> topic2Msgs = new ArrayList<>();
+            HelpMessage topic2Msg1 = new HelpMessage("This is a Topic2 Message1", 1);
+            HelpMessage topic2Msg2 = new HelpMessage("This is a Topic2 Message2", 2);
+            topic1Msgs.add(topic2Msg1);
+            topic1Msgs.add(topic2Msg2);
+
+            HelpTopic topic2 = new HelpTopic("Topic2", topic2Msgs);
+            topics.add(topic2);
+
+            ViewHelp viewHelp = new ViewHelp(topics);
+            viewHelp.setMainHeading("Main Topic Name");
+            FragmentManager fragmentManager = this.getSupportFragmentManager();
+            viewHelp.show(fragmentManager, "dialog");
+            /*Intent intent = new Intent(this, NewUserActivity.class);
             startActivity(intent);
-            finish();
+            finish();*/
         } else if (viewId == R.id.loginBut) {
             LoginData loginData = getFromUI();
             if (loginData == null) {

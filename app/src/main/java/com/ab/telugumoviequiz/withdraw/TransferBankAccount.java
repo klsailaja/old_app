@@ -29,6 +29,7 @@ import com.ab.telugumoviequiz.common.Utils;
 import com.ab.telugumoviequiz.main.MainActivity;
 import com.ab.telugumoviequiz.main.Navigator;
 import com.ab.telugumoviequiz.main.UserMoney;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
@@ -36,6 +37,7 @@ import java.util.List;
 
 public class TransferBankAccount extends BaseFragment
         implements CallbackResponse, View.OnClickListener, NotifyTextChanged,
+        View.OnFocusChangeListener,
         AdapterView.OnItemSelectedListener, DialogAction {
 
     private PATextWatcher accNumTextWatcher, confirmAccNumTextWatcher;
@@ -86,6 +88,7 @@ public class TransferBankAccount extends BaseFragment
         super.onResume();
         setCurrentBalance(false, -1);
         handleListeners(this);
+        handleFocusListener(this);
         handleTextWatchers(true);
     }
 
@@ -93,6 +96,7 @@ public class TransferBankAccount extends BaseFragment
     public void onPause() {
         super.onPause();
         handleListeners(null);
+        handleFocusListener(null);
         handleTextWatchers(false);
     }
 
@@ -109,6 +113,26 @@ public class TransferBankAccount extends BaseFragment
         wdNewRequest.setPostObject(withdrawRequestInput);
         wdNewRequest.setActivity(getActivity(), "Processing. Please Wait!");
         Scheduler.getInstance().submit(wdNewRequest);
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> arg0, View arg1, int position,long id) {
+        setCurrentBalance(false, -1);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> arg0) {
+    }
+
+    @Override
+    public void onFocusChange (View v, boolean hasFocus) {
+        if (v instanceof TextInputEditText) {
+            if (hasFocus) {
+                TextInputEditText txtInputEdit = (TextInputEditText) v;
+                String compName = txtInputEdit.getHint().toString();
+                displayErrorAsToast("You are typing " + compName + " details");
+            }
+        }
     }
 
     private WithdrawRequestInput formEntity() {
@@ -163,14 +187,7 @@ public class TransferBankAccount extends BaseFragment
         return wdRequestBankType;
     }
 
-    @Override
-    public void onItemSelected(AdapterView<?> arg0, View arg1, int position,long id) {
-        setCurrentBalance(false, -1);
-    }
 
-    @Override
-    public void onNothingSelected(AdapterView<?> arg0) {
-    }
 
     private boolean setCurrentBalance(boolean checkRangeValue, int wdAmt) {
         View view = getView();
@@ -281,6 +298,7 @@ public class TransferBankAccount extends BaseFragment
             accountNumberTxtView.requestFocus();
             return false;
         }
+        //displayErrorAsToast("You are typing in account number");
         return true;
     }
 
@@ -371,6 +389,24 @@ public class TransferBankAccount extends BaseFragment
         accountsSpinner = view.findViewById(R.id.bankMoneyAccounts);
         accountsSpinner.setOnItemSelectedListener(this);
 
+    }
+
+    private void handleFocusListener(View.OnFocusChangeListener listener) {
+        View view = getView();
+        if (view == null) {
+            return;
+        }
+        TextView accountNumTextView = view.findViewById(R.id.accNum);
+        TextView confirmAccNuTextView = view.findViewById(R.id.confirmAccNum);
+        TextView bankNameTextView = view.findViewById(R.id.bankName);
+        TextView bankIfscCodeTextView = view.findViewById(R.id.bankIfscCode);
+        TextView withdrawTextView = view.findViewById(R.id.bankWithdrawAmt);
+
+        accountNumTextView.setOnFocusChangeListener(listener);
+        confirmAccNuTextView.setOnFocusChangeListener(listener);
+        bankNameTextView.setOnFocusChangeListener(listener);
+        bankIfscCodeTextView.setOnFocusChangeListener(listener);
+        withdrawTextView.setOnFocusChangeListener(listener);
     }
 
     private void handleTextWatchers(boolean add) {

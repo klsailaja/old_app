@@ -619,12 +619,14 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
         fiftyFifty.setText(R.string.fifty_fifty);
         fiftyFifty.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
                 TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
+        fiftyFifty.setBackgroundResource(R.color.colorPrimary);
 
         changeQues = new Button(getContext());
         id++;
         changeQues.setId(id);
         changeQues.setText(R.string.flip_question);
         //changeQues.setTextAppearance(R.style.button);
+        changeQues.setBackgroundResource(R.color.colorPrimary);
         changeQues.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
                 TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
 
@@ -633,6 +635,7 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
         id++;
         moreOptions.setId(id);
         moreOptions.setText(R.string.more_game_options);
+        moreOptions.setBackgroundResource(R.color.colorPrimary);
         moreOptions.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
                 TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
 

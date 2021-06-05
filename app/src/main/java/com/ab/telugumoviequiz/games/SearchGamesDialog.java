@@ -77,25 +77,26 @@ public class SearchGamesDialog extends DialogFragment
 
         searchColsSpinner = root.findViewById(R.id.searchCols);
         searchValsSpinner = root.findViewById(R.id.searchVals);
+        searchColsSpinner.getLayoutParams().height = 200;
 
         box = root.findViewById(R.id.showNextFree);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, searchCols);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.spinner_list_item, searchCols);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         searchColsSpinner.setAdapter(adapter);
         searchColsSpinner.setSelection(0);
 
-        gameIdsAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, gameIds);
+        gameIdsAdapter = new ArrayAdapter<>(getContext(), R.layout.spinner_list_item, gameIds);
         gameIdsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         gameIdsAdapter.setNotifyOnChange(false);
         searchValsSpinner.setAdapter(gameIdsAdapter);
         searchValsSpinner.setSelection(0);
 
-        celebrityNamesAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, celebrityNames);
+        celebrityNamesAdapter = new ArrayAdapter<>(getContext(), R.layout.spinner_list_item, celebrityNames);
         celebrityNamesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         celebrityNamesAdapter.setNotifyOnChange(false);
 
-        gameTimesAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, gameTimes);
+        gameTimesAdapter = new ArrayAdapter<>(getContext(), R.layout.spinner_list_item, gameTimes);
         gameTimesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         gameTimesAdapter.setNotifyOnChange(false);
 

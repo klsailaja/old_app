@@ -56,7 +56,8 @@ public class ViewLeaderboard extends DialogFragment implements View.OnClickListe
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (!fromHistory) {
             if (getDialog() != null) {
@@ -73,7 +74,7 @@ public class ViewLeaderboard extends DialogFragment implements View.OnClickListe
         int rightRowMargin=0;
         int bottomRowMargin = 0;
 
-        int textSize = 40, smallTextSize = 30;
+        int textSize = 50, smallTextSize = 40;
         int rows = list.size();
         tableLayout.removeAllViews();
         Resources resources = getResources();

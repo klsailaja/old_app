@@ -1,191 +1,191 @@
 <resources>
     <!-- Main App -->
     <string name="app_name">TeluguMovieQuiz</string>
-    <string name="base_url">http://192.168.1.4:8080</string>
+    <string name="base_url" translatable="false">http://192.168.1.2:8080</string>
 
-    <string name="quiz_screen_server_err">Server Error. Please try after some time</string>
+    <string name="quiz_screen_server_err" translatable="false">Server Error. Please try after some time</string>
 
     <!-- Login screen options -->
     <string name="login_email_hint">Type Registered E-Mail Id here</string>
-    <string name="login_password_hint">Type Configured Password here</string>
-    <string name="login_screen_already_have_acc">Already \nhave an \nAccount?</string>
+    <string name="login_password_hint" translatable="false">Type Configured Password here</string>
+    <string name="login_screen_already_have_acc" translatable="false">Already \nhave an \nAccount?</string>
     <string name="login_screen_forgot_password">Forgot Password?</string>
-    <string name="login_screen_new_user_register_now">New user? Register Now</string>
+    <string name="login_screen_new_user_register_now" translatable="false">New user? Register Now</string>
     <string name="login_screen_login_text">Login</string>
-    <string name="user_login_fail_msg">Login not successful. Please use forgot password option if required</string>
-    <string name="user_login_success_msg">Login successful</string>
-    <string name="user_forgot_passwd_success_msg">Password Reset. Please check your mail and login</string>
+    <string name="user_login_fail_msg" translatable="false">Login not successful. Please use forgot password option if required</string>
+    <string name="user_login_success_msg" translatable="false">Login successful</string>
+    <string name="user_forgot_passwd_success_msg" translatable="false">Password Reset. Please check your mail and login</string>
 
     <!-- Update User Profile options -->
-    <string name="user_profile_email">E-Mail cannot be updated</string>
-    <string name="user_profile_code">My Referral Code cannot be updated</string>
-    <string name="user_profile_boss_name">My Boss Name cannot be updated</string>
-    <string name="user_profile_boss_code">My Boss Code Name cannot be updated</string>
-    <string name="user_profile_name">Change Your Name Here</string>
-    <string name="user_profile_n_p">Change Your Password Here</string>
-    <string name="user_profile_con_p">Type Confirm Password Here</string>
-    <string name="user_profile_update_but">Update</string>
+    <string name="user_profile_email" translatable="false">E-Mail cannot be updated</string>
+    <string name="user_profile_code" translatable="false">My Referral Code cannot be updated</string>
+    <string name="user_profile_boss_name" translatable="false">My Boss Name cannot be updated</string>
+    <string name="user_profile_boss_code" translatable="false">My Boss Code Name cannot be updated</string>
+    <string name="user_profile_name" translatable="false">Change Your Name Here</string>
+    <string name="user_profile_n_p" translatable="false">Change Your Password Here</string>
+    <string name="user_profile_con_p" translatable="false">Type Confirm Password Here</string>
+    <string name="user_profile_update_but" translatable="false">Update</string>
 
-    <string name="user_profile_email_label">Registered Mail Id:</string>
-    <string name="user_profile_mycode_label">My Referral Code:</string>
-    <string name="user_profile_boss_name_label">My Referral Person Name:</string>
-    <string name="user_profile_boss_code_label">My Referral Person Code:</string>
-    <string name="user_profile_myname_label">My Name:</string>
-    <string name="user_profile_new_password_label">Change Password:</string>
-    <string name="user_profile_confirm_password_label">Confirm Password:</string>
+    <string name="user_profile_email_label" translatable="false">Registered Mail Id:</string>
+    <string name="user_profile_mycode_label" translatable="false">My Referral Code:</string>
+    <string name="user_profile_boss_name_label" translatable="false">My Referral Person Name:</string>
+    <string name="user_profile_boss_code_label" translatable="false">My Referral Person Code:</string>
+    <string name="user_profile_myname_label" translatable="false">My Name:</string>
+    <string name="user_profile_new_password_label" translatable="false">Change Password:</string>
+    <string name="user_profile_confirm_password_label" translatable="false">Confirm Password:</string>
 
 
     <!-- New user Screen -->
-    <string name="new_user_email_hint">Register with Frequently Used E-Mail Id</string>
-    <string name="new_user_password">Configure Password with 4 to 8 chars length</string>
-    <string name="new_user_user_name">Configure Your Name with 2 to 20 chars length</string>
-    <string name="newuser_referal_code_hint">Compulsory</string>
-    <string name="newuser_register_text">Register</string>
-    <string name="new_user_register_success">User successfully registered</string>
-    <string name="new_user_screen_intro">Here\'s\nyour first\nstep with \nus!</string>
-    <string name="new_user_already_registered">Already have an account?</string>
+    <string name="new_user_email_hint" translatable="false">Register with Frequently Used E-Mail Id</string>
+    <string name="new_user_password" translatable="false">Configure Password with 4 to 8 chars length</string>
+    <string name="new_user_user_name" translatable="false">Configure Your Name with 2 to 20 chars length</string>
+    <string name="newuser_referal_code_hint" translatable="false">Compulsory</string>
+    <string name="newuser_register_text" translatable="false">Register</string>
+    <string name="new_user_register_success" translatable="false">User successfully registered</string>
+    <string name="new_user_screen_intro" translatable="false">Here\'s\nyour first\nstep with \nus!</string>
+    <string name="new_user_already_registered" translatable="false">Already have an account?</string>
 
     <!-- Navigation -->
-    <string name="menu_current_games">Current Games</string>
-    <string name="menu_enrolled_games">Enrolled Games</string>
-    <string name="menu_history_games">History Games</string>
-    <string name="menu_chat">Chat</string>
-    <string name="menu_referal">My Referrals</string>
-    <string name="menu_history">My Games</string>
-    <string name="menu_transactions">My Transactions</string>
-    <string name="nav_withdraw_view">Withdraw Money</string>
-    <string name="menu_wallet">My Wallet</string>
-    <string name="menu_user_profile">My Profile</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_desc">Navigation header</string>
-    <string name="nav_header_title">Telugu Movie Quiz</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="menu_current_games" translatable="false">Current Games</string>
+    <string name="menu_enrolled_games" translatable="false">Enrolled Games</string>
+    <string name="menu_history_games" translatable="false">History Games</string>
+    <string name="menu_chat" translatable="false">Chat</string>
+    <string name="menu_referal" translatable="false">My Referrals</string>
+    <string name="menu_history" translatable="false">My Games</string>
+    <string name="menu_transactions" translatable="false">My Transactions</string>
+    <string name="nav_withdraw_view" translatable="false">Withdraw Money</string>
+    <string name="menu_wallet" translatable="false">My Wallet</string>
+    <string name="menu_user_profile" translatable="false">My Profile</string>
+    <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
+    <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
+    <string name="nav_header_desc" translatable="false">Navigation header</string>
+    <string name="nav_header_title" translatable="false">Telugu Movie Quiz</string>
+    <string name="nav_header_subtitle" translatable="false">android.studio@android.com</string>
 
     <!-- Action Bar -->
-    <string name="chat_msg">You have a new Chat Msg</string>
+    <string name="chat_msg" translatable="false">You have a new Chat Msg</string>
 
     <!-- Show Games List Screen -->
-    <string name="dialog_close">Close</string>
-    <string name="leave_but_text">Leave Game</string>
-    <string name="speed_but_text">Network Speed</string>
-    <string name="starts_text">Starts At:</string>
-    <string name="starts_user_ct">Users:</string>
-    <string name="starts_user_ct_val">10</string>
-    <string name="timerInitialVal">0</string>
-    <string name="game_start_msg">Game starting soon \n Cannot Leave now</string>
-    <string name="game_rejoin_msg">Successfully Rejoined</string>
-    <string name="fifty_fifty">50–50</string>
-    <string name="flip_question">Flip Question</string>
-    <string name="more_game_options">More Options</string>
-    <string name="game_join_success_msg">Successfully Joined Game</string>
-    <string name="game_join_fail_msg">Not Joined the Game</string>
-    <string name="game_cancellation_success_msg">Game cancelled as minimum users not present. Your ticket money reverted status : Success</string>
-    <string name="game_cancellation_fail_msg">Game cancelled as minimum users not present. Your ticket money reverted status : Fail will be credited in 1 to 2 days</string>
-    <string name="ques_initial_text">Your question appears here with 4 options. Time and Correct answers matter. Choose the right answer in first attempt. No Second chance and No Negative Marks.</string>
-    <string name="open_drawer">Open</string>
-    <string name="close_drawer">Close</string>
-    <string name="action_settings">appbar_settings</string>
+    <string name="dialog_close" translatable="false">Close</string>
+    <string name="leave_but_text" translatable="false">Leave Game</string>
+    <string name="speed_but_text" translatable="false">Network Speed</string>
+    <string name="starts_text" translatable="false">Starts At:</string>
+    <string name="starts_user_ct" translatable="false">Users:</string>
+    <string name="starts_user_ct_val" translatable="false">10</string>
+    <string name="timerInitialVal" translatable="false">0</string>
+    <string name="game_start_msg" translatable="false">Game starting soon \n Cannot Leave now</string>
+    <string name="game_rejoin_msg" translatable="false">Successfully Rejoined</string>
+    <string name="fifty_fifty" translatable="false">50–50</string>
+    <string name="flip_question" translatable="false">Flip Question</string>
+    <string name="more_game_options" translatable="false">More Options</string>
+    <string name="game_join_success_msg" translatable="false">Successfully Joined Game</string>
+    <string name="game_join_fail_msg" translatable="false">Not Joined the Game</string>
+    <string name="game_cancellation_success_msg" translatable="false">Game cancelled as minimum users not present. Your ticket money reverted status : Success</string>
+    <string name="game_cancellation_fail_msg" translatable="false">Game cancelled as minimum users not present. Your ticket money reverted status : Fail will be credited in 1 to 2 days</string>
+    <string name="ques_initial_text" translatable="false">Your question appears here with 4 options. Time and Correct answers matter. Choose the right answer in first attempt. No Second chance and No Negative Marks.</string>
+    <string name="open_drawer" translatable="false">Open</string>
+    <string name="close_drawer" translatable="false">Close</string>
+    <string name="action_settings" translatable="false">appbar_settings</string>
 
     <!-- List Item Card Layout -->
-    <string name="games_screen_game_id_label">GameId#:</string>
-    <string name="games_screen_game_id_default_val">-</string>
-    <string name="games_screen_prize_money_label1">Prize Money</string>
-    <string name="games_screen_prize_money_label2">Announce At:</string>
-    <string name="games_screen_prize_money_val">4:30 PM</string>
-    <string name="games_screen_starts_label">Starts At:</string>
-    <string name="games_screen_details_label">Game Details:</string>
-    <string name="games_screen_total_user_count">/ 10</string>
-    <string name="games_screen_per_ticket">/ Ticket</string>
-    <string name="game_join_button">Join Game</string>
-    <string name="game_scroll_nxt">Swipe Right</string>
-    <string name="game_card_day">Game Date</string>
-    <string name="game_card_time">Game Time</string>
-    <string name="game_card_users">Enrolled User Count</string>
-    <string name="game_card_rupee">Indian Rupee</string>
+    <string name="games_screen_game_id_label" translatable="false">GameId#:</string>
+    <string name="games_screen_game_id_default_val" translatable="false">-</string>
+    <string name="games_screen_prize_money_label1" translatable="false">Prize Money</string>
+    <string name="games_screen_prize_money_label2" translatable="false">Announce At:</string>
+    <string name="games_screen_prize_money_val" translatable="false">4:30 PM</string>
+    <string name="games_screen_starts_label" translatable="false">Starts At:</string>
+    <string name="games_screen_details_label" translatable="false">Game Details:</string>
+    <string name="games_screen_total_user_count" translatable="false">/ 10</string>
+    <string name="games_screen_per_ticket" translatable="false">/ Ticket</string>
+    <string name="game_join_button" translatable="false">Join Game</string>
+    <string name="game_scroll_nxt" translatable="false">Swipe Right</string>
+    <string name="game_card_day" translatable="false">Game Date</string>
+    <string name="game_card_time" translatable="false">Game Time</string>
+    <string name="game_card_users" translatable="false">Enrolled User Count</string>
+    <string name="game_card_rupee" translatable="false">Indian Rupee</string>
 
     <!-- View Referals details -->
-    <string name="view_referals_name_heading">Name</string>
-    <string name="view_referals_logged_heading">Last Seen</string>
+    <string name="view_referals_name_heading" translatable="false">Name</string>
+    <string name="view_referals_logged_heading" translatable="false">Last Seen</string>
 
-    <string name="view_user_answers_Qno">Q.No#</string>
-    <string name="view_user_answers_correctness">Is Correct</string>
-    <string name="view_user_answers_timetaken">Time Taken</string>
-    <string name="view_user_answers_not_answered">Not Answered</string>
-    <string name="view_user_answers_correct">Correct</string>
-    <string name="view_user_answers_wrong">Wrong</string>
-    <string name="view_user_answers_wrong_time">Not Applicable</string>
-    <string name="view_user_correct_ques_summary">Correct Questions Ct:</string>
-    <string name="view_user_correct_ques_time_taken">Total Time:</string>
-    <string name="view_user_answers_title1">My Answers Summary: This view closes after 10 secs</string>
-    <string name="view_user_answers_title2">My Answers Summary</string>
+    <string name="view_user_answers_Qno" translatable="false">Q.No#</string>
+    <string name="view_user_answers_correctness" translatable="false">Is Correct</string>
+    <string name="view_user_answers_timetaken" translatable="false">Time Taken</string>
+    <string name="view_user_answers_not_answered" translatable="false">Not Answered</string>
+    <string name="view_user_answers_correct" translatable="false">Correct</string>
+    <string name="view_user_answers_wrong" translatable="false">Wrong</string>
+    <string name="view_user_answers_wrong_time" translatable="false">Not Applicable</string>
+    <string name="view_user_correct_ques_summary" translatable="false">Correct Questions Ct:</string>
+    <string name="view_user_correct_ques_time_taken" translatable="false">Total Time:</string>
+    <string name="view_user_answers_title1" translatable="false">My Answers Summary: This view closes after 10 secs</string>
+    <string name="view_user_answers_title2" translatable="false">My Answers Summary</string>
 
-    <string name="view_prize_details_rank">Rank</string>
-    <string name="view_prize_details_amt">Prize Money</string>
-    <string name="view_prize_details_free_game_prize">No Prize Money for Free Game</string>
+    <string name="view_prize_details_rank" translatable="false">Rank</string>
+    <string name="view_prize_details_amt" translatable="false">Prize Money</string>
+    <string name="view_prize_details_free_game_prize" translatable="false">No Prize Money for Free Game</string>
 
-    <string name="view_leadership_rank">Rank#</string>
-    <string name="view_leadership_correct_count">Ct Ans Ct</string>
-    <string name="view_leadership_time_taken">Total Time</string>
-    <string name="view_leadership_username">Name</string>
-    <string name="view_leadership_amount">Amt Won</string>
+    <string name="view_leadership_rank" translatable="false">Rank#</string>
+    <string name="view_leadership_correct_count" translatable="false">Ct Ans Ct</string>
+    <string name="view_leadership_time_taken" translatable="false">Total Time</string>
+    <string name="view_leadership_username" translatable="false">Name</string>
+    <string name="view_leadership_amount" translatable="false">Amt Won</string>
 
-    <string name="test_user_name">ggraj.pec@gmail.com</string>
-    <string name="test_passwd">12345</string>
+    <string name="test_user_name" translatable="false">ggraj.pec@gmail.com</string>
+    <string name="test_passwd" translatable="false">12345</string>
     <!-- Referal View -->
-    <string name="myreferal_intro">This view shows the users registered with your referral code. When they play and win, you earn money</string>
-    <string name="myreferal_more_view_options">Filter on Account Type</string>
+    <string name="myreferal_intro" translatable="false">This view shows the users registered with your referral code. When they play and win, you earn money</string>
+    <string name="myreferal_more_view_options" translatable="false">Filter on Account Type</string>
     <string-array name="myreferal_acc_options">
         <item>All Accounts</item>
         <item>Main Account</item>
         <item>Win Account</item>
         <item>Referral Account</item>
     </string-array>
-    <string name="prev_data_set">Previous Set</string>
-    <string name="next_data_set">Next Set</string>
-    <string name="table_view_col1_xml">Col1</string>
-    <string name="table_view_col2_xml">Col2</string>
-    <string name="table_view_col3_xml">Col3</string>
-    <string name="table_view_col4_xml">Col4</string>
-    <string name="table_view_col5_xml">Col5</string>
-    <string name="table_view_col6_xml">Col6</string>
-    <string name="table_view_col7_xml">Col7</string>
-    <string name="table_view_col8_xml">Col8</string>
-    <string name="table_view_col1">S.No</string>
-    <string name="table_view_col2">Player Name</string>
-    <string name="table_view_col3">Last Seen On</string>
+    <string name="prev_data_set" translatable="false">Previous Set</string>
+    <string name="next_data_set" translatable="false">Next Set</string>
+    <string name="table_view_col1_xml" translatable="false">Col1</string>
+    <string name="table_view_col2_xml" translatable="false">Col2</string>
+    <string name="table_view_col3_xml" translatable="false">Col3</string>
+    <string name="table_view_col4_xml" translatable="false">Col4</string>
+    <string name="table_view_col5_xml" translatable="false">Col5</string>
+    <string name="table_view_col6_xml" translatable="false">Col6</string>
+    <string name="table_view_col7_xml" translatable="false">Col7</string>
+    <string name="table_view_col8_xml" translatable="false">Col8</string>
+    <string name="table_view_col1" translatable="false">S.No</string>
+    <string name="table_view_col2" translatable="false">Player Name</string>
+    <string name="table_view_col3" translatable="false">Last Seen On</string>
 
     <!--Transactions View-->
-    <string name="transactionview_intro">This view shows all the money transactions done by you in all Main,Win,Referral accounts. Use filter options below.O.B# means Opening Balance in Account. C.B# means Closing Balance</string>
-    <string name="transactionview_filter_but">Apply</string>
-    <string name="transactionview_col1">S.No</string>
-    <string name="transactionview_col2">O.B#</string>
-    <string name="transactionview_col3">Acc Type</string>
-    <string name="transactionview_col4">Amount</string>
-    <string name="transactionview_col5">Trans Date</string>
-    <string name="transactionview_col6">Result</string>
-    <string name="transactionview_col7">C.B</string>
-    <string name="transactionview_col8">Coments</string>
+    <string name="transactionview_intro" translatable="false">This view shows all the money transactions done by you in all Main,Win,Referral accounts. Use filter options below.O.B# means Opening Balance in Account. C.B# means Closing Balance</string>
+    <string name="transactionview_filter_but" translatable="false">Apply</string>
+    <string name="transactionview_col1" translatable="false">S.No</string>
+    <string name="transactionview_col2" translatable="false">O.B#</string>
+    <string name="transactionview_col3" translatable="false">Acc Type</string>
+    <string name="transactionview_col4" translatable="false">Amount</string>
+    <string name="transactionview_col5" translatable="false">Trans Date</string>
+    <string name="transactionview_col6" translatable="false">Result</string>
+    <string name="transactionview_col7" translatable="false">C.B</string>
+    <string name="transactionview_col8" translatable="false">Coments</string>
 
     <!-- User Games History -->
-    <string name="history_games_intro">This view shows the games played the you.</string>
-    <string name="history_games_col1">S.No</string>
-    <string name="history_games_col2">Game Played Time</string>
-    <string name="history_games_col3">Tkt Rate</string>
-    <string name="history_games_col4">Celebrity</string>
-    <string name="history_games_col5">View Result</string>
+    <string name="history_games_intro" translatable="false">This view shows the games played the you.</string>
+    <string name="history_games_col1" translatable="false">S.No</string>
+    <string name="history_games_col2" translatable="false">Game Played Time</string>
+    <string name="history_games_col3" translatable="false">Tkt Rate</string>
+    <string name="history_games_col4" translatable="false">Celebrity</string>
+    <string name="history_games_col5" translatable="false">View Result</string>
 
     <!-- Withdraw View -->
-    <string name="wd_intro">This view shows the games played the you.</string>
-    <string name="wd_more_view_options">Filter</string>
-    <string name="wd_col1">S.No</string>
-    <string name="wd_col2">Reference Id#</string>
-    <string name="wd_col3">Withdrawn Amount</string>
-    <string name="wd_col4">Request Status</string>
-    <string name="wd_col5">Opened Date</string>
-    <string name="wd_col6">Cancel Request</string>
-    <string name="wd_col7">More Options</string>
-    <string name="wd_col8">Cancel Req</string>
+    <string name="wd_intro" translatable="false">This view shows the games played the you.</string>
+    <string name="wd_more_view_options" translatable="false">Filter</string>
+    <string name="wd_col1" translatable="false">S.No</string>
+    <string name="wd_col2" translatable="false">Reference Id#</string>
+    <string name="wd_col3" translatable="false">Withdrawn Amount</string>
+    <string name="wd_col4" translatable="false">Request Status</string>
+    <string name="wd_col5" translatable="false">Opened Date</string>
+    <string name="wd_col6" translatable="false">Cancel Request</string>
+    <string name="wd_col7" translatable="false">More Options</string>
+    <string name="wd_col8" translatable="false">Cancel Req</string>
     <string-array name="wd_options">
         <item>All</item>
         <item>Opened</item>
@@ -197,26 +197,26 @@
         <item>View Withdrawn Money Receipt</item>
         <item>View Closed Comments</item>
     </string-array>
-    <string name="more_content">More options</string>
-    <string name="wd_placed_success">Successfully Placed a Withdraw Request. Money will be credited in 2 to 3 days</string>
-    <string name="submit">Submit</string>
+    <string name="more_content" translatable="false">More options</string>
+    <string name="wd_placed_success" translatable="false">Successfully Placed a Withdraw Request. Money will be credited in 2 to 3 days</string>
+    <string name="submit" translatable="false">Submit</string>
 
     <!-- Chat Window -->
-    <string name="chat_invite_msg">Form a Chat Invite Msg</string>
-    <string name="chat_reply_msg">Form a Chat Reply Msg</string>
+    <string name="chat_invite_msg" translatable="false">Form a Chat Invite Msg</string>
+    <string name="chat_reply_msg" translatable="false">Form a Chat Reply Msg</string>
     <string-array name="chat_game_types">
         <item>Mixed Quiz</item>
         <item>Celebrity Special</item>
     </string-array>
-    <string name="chat_send_but">Send Msg</string>
-    <string name="chat_dialog_close">Ok</string>
-    <string name="chat_intro_text">These values are valid only for some time as time is running</string>
+    <string name="chat_send_but" translatable="false">Send Msg</string>
+    <string name="chat_dialog_close" translatable="false">Ok</string>
+    <string name="chat_intro_text" translatable="false">These values are valid only for some time as time is running</string>
 
     <!-- View Celebrity Schedule -->
-    <string name="col1">Game Time#</string>
-    <string name="col2">Celebrities List</string>
-    <string name="celebrity_name">Celebrity Name</string>
-    <string name="showNextTimeSlot">Show Next ComingUp Game Time</string>
+    <string name="col1" translatable="false">Game Time#</string>
+    <string name="col2" translatable="false">Celebrities List</string>
+    <string name="celebrity_name" translatable="false">Celebrity Name</string>
+    <string name="showNextTimeSlot" translatable="false">Show Next ComingUp Game Time</string>
 
     <!-- Search Dialog-->
     <string-array name="search_options">
@@ -224,32 +224,34 @@
         <item>Game Start Time</item>
         <item>Celebrity Name</item>
     </string-array>
-    <string name="search_intro_text">Search by:</string>
-    <string name="search_txt">Search</string>
-    <string name="clear_txt">Show All</string>
-    <string name="close_but">Close</string>
-    <string name="nextFreeSlot">Show Available Games</string>
+    <string name="search_intro_text" translatable="false">Search by:</string>
+    <string name="search_txt" translatable="false">Search</string>
+    <string name="clear_txt" translatable="false">Show All</string>
+    <string name="close_but" translatable="false">Close</string>
+    <string name="nextFreeSlot" translatable="false">Show Available Games</string>
 
     <!-- Wallet View -->
-    <string name="load_money">Add Money</string>
-    <string name="loadMoneyTxtHint">Enter Amount To Add Money to Main Money Account</string>
-    <string name="transfer_from">Transfer From</string>
-    <string name="transfer_to">Transfer To</string>
-    <string name="transferAmtButTxt">Transfer</string>
-    <string name="enter_transfer_amount">Enter Transfer Amount</string>
+    <string name="load_money" translatable="false">Add Money</string>
+    <string name="loadMoneyTxtHint" translatable="false">Enter Amount To Add Money to Main Money Account</string>
+    <string name="transfer_from" translatable="false">Transfer From</string>
+    <string name="transfer_to" translatable="false">Transfer To</string>
+    <string name="transferAmtButTxt" translatable="false">Transfer</string>
+    <string name="enter_transfer_amount" translatable="false">Enter Transfer Amount</string>
 
     <!--Withdraw Request View-->
-    <string name="wdTransferTo">Select Transfer To</string>
-    <string name="wdBankTransferAccNum">Beneficiary Account Number</string>
-    <string name="wdBankTransferConfirmAccNum">Confirm Beneficiary Account Number</string>
-    <string name="wdBankTransferIfscCode">Bank IFSC Code</string>
-    <string name="wdBankTransferBankName">Bank Name</string>
-    <string name="wdAccountHolderName">Bank Account Holder Name</string>
-    <string name="wdBankAmount">Withdraw Amount</string>
-    <string name="wdBankNewReqBut">Submit Withdraw Request</string>
-    <string name="wdPhonePeNumber1">PhonePe Phone Number</string>
-    <string name="wdPhonePeNumber2">Confirm PhonePe Phone Number</string>
-    <string name="wdPhonePeHolderName">Enter PhonePe User Name</string>
+    <string name="wdTransferTo" translatable="false">Select Transfer To</string>
+    <string name="wdBankTransferAccNum" translatable="false">Beneficiary Account Number</string>
+    <string name="wdBankTransferConfirmAccNum" translatable="false">Confirm Beneficiary Account Number</string>
+    <string name="wdBankTransferIfscCode" translatable="false">Bank IFSC Code</string>
+    <string name="wdBankTransferBankName" translatable="false">Bank Name</string>
+    <string name="wdAccountHolderName" translatable="false">Bank Account Holder Name</string>
+    <string name="wdBankAmount" translatable="false">Withdraw Amount</string>
+    <string name="wdBankNewReqBut" translatable="false">Submit Withdraw Request</string>
+    <string name="wdPhonePeNumber1" translatable="false">PhonePe Phone Number</string>
+    <string name="wdPhonePeNumber2" translatable="false">Confirm PhonePe Phone Number</string>
+    <string name="wdPhonePeHolderName" translatable="false">Enter PhonePe User Name</string>
 
-    <string name="status_bar_msg">Recent Winning Messages</string>
+    <string name="status_bar_msg" translatable="false">Recent Winning Messages</string>
+    <string name="tab_text_1" translatable="false">In Telugu</string>
+    <string name="tab_text_2" translatable="false">In English</string>
 </resources>
