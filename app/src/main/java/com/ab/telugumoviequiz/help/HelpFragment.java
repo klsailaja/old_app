@@ -41,11 +41,7 @@ public class HelpFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        int helpWindowLayoutFileName = R.layout.horizontal_help_window;
-        if (orientation == ViewHelp.VERTICAL) {
-            helpWindowLayoutFileName = R.layout.help_window;
-        }
-
+        int helpWindowLayoutFileName = R.layout.help_window;
         View view = inflater.inflate(helpWindowLayoutFileName, container, false);
         WebView webView = view.findViewById(R.id.webview);
         webView.loadData(helpContents, "text/html", "UTF-8");

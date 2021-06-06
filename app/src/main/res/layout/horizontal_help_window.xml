@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <ScrollView
+    <HorizontalScrollView
         android:layout_alignParentTop="true"
         android:id="@+id/tableScrollView"
         android:layout_above="@+id/checkbox1"
@@ -12,7 +12,7 @@
             android:id="@+id/webview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-    </ScrollView>
+    </HorizontalScrollView>
     <CheckBox
         android:id="@+id/checkbox1"
         android:layout_above="@+id/helpCloseBut"

@@ -2,8 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
-
-    <group android:checkableBehavior="single">
+    <group android:id="@+id/menu_games"
+        android:checkableBehavior="none">
         <item
             android:id="@+id/nav_current_games"
             android:title="@string/menu_current_games" />
@@ -13,23 +13,41 @@
         <item
             android:id="@+id/nav_history_games"
             android:title="@string/menu_history_games" />
+    </group>
+    <group android:id="@+id/menu_cash"
+        android:checkableBehavior="none">
+        <item
+            android:id="@+id/nav_wallet"
+            android:title="@string/menu_wallet" />
         <item
             android:id="@+id/nav_withdraw_view"
             android:title="@string/nav_withdraw_view" />
+    </group>
+    <group android:id="@+id/menu_my_opers"
+        android:checkableBehavior="none">
         <item
-            android:id="@+id/nav_chat"
-            android:title="@string/menu_chat" />
+            android:id="@+id/nav_user_profile"
+            android:title="@string/menu_user_profile"/>
         <item
             android:id="@+id/nav_referals"
             android:title="@string/menu_referal" />
         <item
             android:id="@+id/nav_transactions"
             android:title="@string/menu_transactions" />
+    </group>
+    <group android:id="@+id/menu_chat"
+        android:checkableBehavior="none">
         <item
-            android:id="@+id/nav_wallet"
-            android:title="@string/menu_wallet" />
+            android:id="@+id/nav_chat"
+            android:title="@string/menu_chat" />
+    </group>
+    <group android:id="@+id/menu_logout"
+        android:checkableBehavior="none">
         <item
-            android:id="@+id/nav_user_profile"
-            android:title="@string/menu_user_profile"/>
+            android:id="@+id/logout"
+            android:title="@string/menu_logout"/>
+        <item
+            android:id="@+id/version"
+            android:title="@string/versionLabel"/>
     </group>
 </menu>

@@ -90,11 +90,6 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
         return root;
     }
 
-    /*@Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-    }*/
-
     @Override
     public void onClick(View view) {
         int viewId = view.getId();

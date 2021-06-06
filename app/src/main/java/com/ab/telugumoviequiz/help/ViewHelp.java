@@ -94,7 +94,7 @@ public class ViewHelp extends DialogFragment implements MessageListener {
         Context context = getContext();
         if (context != null) {
             HelpPreferences.getInstance().writePreference(context,
-                    HelpPreferences.REFERRAL_INFO, stateInt);
+                    helpPreferencesKey, stateInt);
         }
     }
 

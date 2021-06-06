@@ -2,6 +2,7 @@ package com.ab.telugumoviequiz.main;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -42,7 +43,6 @@ import com.ab.telugumoviequiz.games.QuestionFragment;
 import com.ab.telugumoviequiz.games.SelectGameTypeView;
 import com.ab.telugumoviequiz.games.ShowGames;
 import com.ab.telugumoviequiz.games.UserAnswer;
-import com.ab.telugumoviequiz.help.HelpReader;
 import com.ab.telugumoviequiz.history.HistoryView;
 import com.ab.telugumoviequiz.money.WalletView;
 import com.ab.telugumoviequiz.referals.MyReferralsView;
@@ -81,7 +81,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onStop() {
-        System.out.println("Activity onStop ");
         super.onStop();
         if (pollerTask != null) {
             pollerTask.cancel(true);
@@ -90,7 +89,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onDestroy () {
-        System.out.println("Activity onDestroy ");
         super.onDestroy();
         Bundle gameState = getParams(Navigator.QUESTION_VIEW);
         if (gameState != null) {
@@ -139,7 +137,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        System.out.println("Activity onCreate" + savedInstanceState);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         activityView = this.findViewById(android.R.id.content);
@@ -163,7 +160,12 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
 
         navigationView = findViewById(R.id.nav_view);
-        //navigationView.setNavigationItemSelectedListener(this);
+        View hView =  navigationView.getHeaderView(0);
+        TextView nav_userName = (TextView)hView.findViewById(R.id.userNameTxt);
+        nav_userName.setText(UserDetails.getInstance().getUserProfile().getName());
+        TextView nav_mailId = (TextView)hView.findViewById(R.id.userMailId);
+        nav_mailId.setText(UserDetails.getInstance().getUserProfile().getEmailAddress());
+
         String successMsg = getIntent().getStringExtra("msg");
         Snackbar.make(activityView, successMsg, Snackbar.LENGTH_SHORT).show();
 
@@ -230,7 +232,6 @@ public class MainActivity extends AppCompatActivity
             gameState.putBoolean(FIFTYUSED, fiftyUsed);
             gameState.putBoolean(FLIPUSED, flipQuestionUsed);
             gameState.putParcelableArrayList(USERANSWERS, userAnswers);
-            System.out.println("Reading part is done");
             storeParams(Navigator.QUESTION_VIEW, gameState);
         }
 
@@ -282,6 +283,10 @@ public class MainActivity extends AppCompatActivity
             launchView(Navigator.PROFILE_VIEW, params, false);
         } else if (id == R.id.nav_wallet) {
             launchView(Navigator.WALLET_VIEW, params, false);
+        } else if (id == R.id.logout) {
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+            finish();
         }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -533,20 +538,16 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onStart() {
         super.onStart();
-        System.out.println("Activity onStart ");
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        System.out.println("Activity onResume");
-
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        System.out.println("Activity onPause ");
     }
 
     /*@Override

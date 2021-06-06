@@ -79,9 +79,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             List<HelpTopic> loginHelpLocalTopics = Utils.getHelpTopics(helpKeys, 1);
             List<HelpTopic> loginHelpEnglishTopics = Utils.getHelpTopics(helpKeys, 2);
 
-            System.out.println("&&&&&" + loginHelpLocalTopics.size());
-            System.out.println("&&&&&" + loginHelpEnglishTopics.size());
-
             ViewHelp viewHelp = new ViewHelp(loginHelpLocalTopics,
                     loginHelpEnglishTopics, ViewHelp.HORIZONTAL, HelpPreferences.REFERRAL_INFO);
             viewHelp.setLocalMainHeading("Main Heading Telugu");
