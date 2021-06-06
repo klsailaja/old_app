@@ -138,6 +138,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Utils.clearState();
         setContentView(R.layout.activity_main);
         activityView = this.findViewById(android.R.id.content);
 

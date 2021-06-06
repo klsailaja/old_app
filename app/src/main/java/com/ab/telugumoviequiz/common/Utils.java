@@ -152,6 +152,10 @@ public class Utils {
         return stringBuilder.toString();
     }
 
+    public static void clearState() {
+        screenWidth = 0;
+    }
+
     public static int[] getScreenWidth(Context context) {
         if (screenWidth == 0) {
             WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);

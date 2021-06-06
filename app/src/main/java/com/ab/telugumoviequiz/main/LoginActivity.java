@@ -83,6 +83,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     loginHelpEnglishTopics, ViewHelp.HORIZONTAL, HelpPreferences.REFERRAL_INFO);
             viewHelp.setLocalMainHeading("Main Heading Telugu");
             viewHelp.setEnglishMainHeading("Main Heading English");
+            Utils.clearState();
             FragmentManager fragmentManager = this.getSupportFragmentManager();
             viewHelp.show(fragmentManager, "dialog");
             /*Intent intent = new Intent(this, NewUserActivity.class);
