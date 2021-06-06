@@ -7,7 +7,7 @@
 
     <!-- Login screen options -->
     <string name="login_email_hint">Type Registered E-Mail Id here</string>
-    <string name="login_password_hint" translatable="false">Type Configured Password here</string>
+    <string name="login_password_hint">Type Configured Password here</string>
     <string name="login_screen_already_have_acc" translatable="false">Already \nhave an \nAccount?</string>
     <string name="login_screen_forgot_password">Forgot Password?</string>
     <string name="login_screen_new_user_register_now" translatable="false">New user? Register Now</string>

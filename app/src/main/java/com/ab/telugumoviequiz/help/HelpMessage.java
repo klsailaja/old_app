@@ -1,8 +1,8 @@
-package com.ab.telugumoviequiz.common;
+package com.ab.telugumoviequiz.help;
 
 public class HelpMessage {
-    private String message;
-    private int msgSeverity;
+    private final String message;
+    private final int msgSeverity;
 
     public HelpMessage(String message, int msgSeverity) {
         this.message = message;

@@ -1,0 +1,17 @@
+main_heading=main_heading
+topic_name1=topic_name1
+topic_name1_point1=topic_name1_point1
+topic_name1_point1_severity=1
+topic_name1_point2=topic_name1_point2
+topic_name1_point2_severity=1
+topic_name1_point3=topic_name1_point3
+topic_name1_point3_severity=1
+topic_name2=topic_name2
+topic_name2_point1=topic_name2_point1
+topic_name2_point1_severity=1
+topic_name2_point2=topic_name2_point2
+topic_name2_point2_severity=2
+topic_name2_point3=topic_name2_point3
+topic_name2_point3_severity=2
+
+

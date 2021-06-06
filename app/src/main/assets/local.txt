@@ -1,0 +1,13 @@
+main_heading=నిబంధనలు మరియు షరతులు
+topic_name1=గేమ్ నియమాలు
+topic_name1_point1=సిగ్నల్ బలాన్ని తనిఖీ చేయండి
+topic_name1_point1_severity=2
+topic_name1_point2=ఫోన్ ప్రదర్శన నిలిచిపోకుండా చూసుకోండి. ప్రదర్శన మరియు నిద్ర సెట్టింగులను మార్చండి
+topic_name1_point2_severity=1
+topic_name1_point3=మోడ్‌ను డిస్టర్బ్ చేయవద్దు
+topic_name1_point3_severity=2
+topic_name2=రిఫెరల్ కోడ్ గురించి
+topic_name2_point1=మీ లాభం 50 రూపాయల కన్నా ఎక్కువ ఉంటే ప్రతి 50 రూపాయలకు 1 రూపాయి మీ రిఫరర్‌కు వెళుతుంది
+topic_name2_point1_severity=2
+topic_name2_point2=ఇలా మీరు ఇతరులను సూచించడం ద్వారా డబ్బును కూడా గెలుచుకోవచ్చు
+topic_name2_point2_severity=1

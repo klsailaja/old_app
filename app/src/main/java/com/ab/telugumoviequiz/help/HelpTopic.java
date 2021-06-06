@@ -1,4 +1,4 @@
-package com.ab.telugumoviequiz.common;
+package com.ab.telugumoviequiz.help;
 
 import java.util.List;
 

@@ -5,14 +5,24 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
+import com.ab.telugumoviequiz.help.HelpFragment;
+
 public class MyPagerAdapter extends FragmentPagerAdapter {
     private final String teluguHelpStr;
     private final String englishHelpStr;
+    private final int orientation;
+    private final MessageListener listener;
+    private final String helpPreferencesKey;
 
-    public MyPagerAdapter(FragmentManager fragmentManager, String teluguHelpStr, String englishHelpStr) {
+    public MyPagerAdapter(FragmentManager fragmentManager, String teluguHelpStr,
+                          String englishHelpStr, int orientation, MessageListener listener,
+                          String helpPreferencesKey) {
         super(fragmentManager);
         this.teluguHelpStr = teluguHelpStr;
         this.englishHelpStr = englishHelpStr;
+        this.orientation = orientation;
+        this.listener = listener;
+        this.helpPreferencesKey = helpPreferencesKey;
     }
 
     // Returns total number of pages
@@ -25,14 +35,10 @@ public class MyPagerAdapter extends FragmentPagerAdapter {
     @NonNull
     @Override
     public Fragment getItem(int position) {
-        switch (position) {
-            case 0:
-                return new FirstFragment(teluguHelpStr);
-            case 1:
-                return new FirstFragment(englishHelpStr);
-            default:
-                return new FirstFragment(teluguHelpStr);
+        if (position == 1) {
+            return new HelpFragment(englishHelpStr, orientation, listener, helpPreferencesKey);
         }
+        return new HelpFragment(teluguHelpStr, orientation, listener, helpPreferencesKey);
     }
 
     // Returns the page title for the top indicator

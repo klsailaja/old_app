@@ -9,8 +9,14 @@ import android.view.WindowManager;
 
 import androidx.appcompat.app.AlertDialog;
 
+import com.ab.telugumoviequiz.help.HelpMessage;
+import com.ab.telugumoviequiz.help.HelpReader;
+import com.ab.telugumoviequiz.help.HelpTopic;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public class Utils {
@@ -166,5 +172,43 @@ public class Utils {
         //alertDialogBuilder.setTitle("Information");
         alertDialogBuilder.setMessage(waitingMessage).setCancelable(false);
         return alertDialogBuilder.create();
+    }
+
+    public static String getHelpMessage(String key, int localeType) {
+        String value = HelpReader.getInstance().getString(key, localeType);
+        if (value == null) {
+            value = "";
+        }
+        return value;
+    }
+
+    public static List<HelpTopic> getHelpTopics(List<String> helpTopicNames, int localeType) {
+        List<HelpTopic> helpTopicList = new ArrayList<>();
+        for (String helpTopicKeyStr : helpTopicNames) {
+            int index = 1;
+            List<HelpMessage> topicHelpMessages = new ArrayList<>();
+            while (index <= 5) {
+                String pointStrKey = helpTopicKeyStr + "_point" + index;
+                String pointSeverityKey = helpTopicKeyStr + "_point" + index + "_severity";
+                String pointStrValue = getHelpMessage(pointStrKey, localeType);
+                if (pointStrValue.length() == 0) {
+                    break;
+                }
+                String pointSeverityValue = getHelpMessage(pointSeverityKey, localeType);
+                int pointSeverityValueInt;
+                try {
+                    pointSeverityValueInt = Integer.parseInt(pointSeverityValue);
+                } catch (NumberFormatException ex) {
+                    pointSeverityValueInt = 1;
+                }
+                HelpMessage topicHelpMsg = new HelpMessage(pointStrValue, pointSeverityValueInt);
+                topicHelpMessages.add(topicHelpMsg);
+                index++;
+            }
+            String topicName = getHelpMessage(helpTopicKeyStr, localeType);
+            HelpTopic helpTopic = new HelpTopic(topicName, topicHelpMessages);
+            helpTopicList.add(helpTopic);
+        }
+        return helpTopicList;
     }
 }

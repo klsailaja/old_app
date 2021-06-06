@@ -42,6 +42,7 @@ import com.ab.telugumoviequiz.games.QuestionFragment;
 import com.ab.telugumoviequiz.games.SelectGameTypeView;
 import com.ab.telugumoviequiz.games.ShowGames;
 import com.ab.telugumoviequiz.games.UserAnswer;
+import com.ab.telugumoviequiz.help.HelpReader;
 import com.ab.telugumoviequiz.history.HistoryView;
 import com.ab.telugumoviequiz.money.WalletView;
 import com.ab.telugumoviequiz.referals.MyReferralsView;
