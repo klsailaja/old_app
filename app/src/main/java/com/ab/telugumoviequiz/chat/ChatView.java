@@ -205,37 +205,6 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
         }
     }
 
-    private void fetchChatRecords() {
-        long startTime;
-        if (endTimeFetched == -1) {
-            endTimeFetched = System.currentTimeMillis();
-            startTime = endTimeFetched - Constants.CHAT_MAX_DURATION_IN_MILLIS;
-        } else {
-            startTime = endTimeFetched;
-            endTimeFetched = System.currentTimeMillis();
-        }
-
-        displayErrorAsSnackBar("Fetching Chat Messages", textView);
-        GetTask<Chat[]> request = Request.getChatMessages(startTime, endTimeFetched);
-        request.setCallbackResponse(this);
-        Scheduler.getInstance().submit(request);
-    }
-
-    private void handleListeners(View.OnClickListener listener) {
-        View view = getView();
-        if (view == null) {
-            return;
-        }
-        Button inviteBut = view.findViewById(R.id.chat_invite_but);
-        inviteBut.setOnClickListener(listener);
-
-        Button replyBut = view.findViewById(R.id.chat_repy_but);
-        replyBut.setOnClickListener(listener);
-
-        Button sendBut = view.findViewById(R.id.chatSendBut);
-        sendBut.setOnClickListener(listener);
-    }
-
     @Override
     public void handleResponse(int reqId, final boolean exceptionThrown, final boolean isAPIException,
                                final Object response, final Object userObject) {
@@ -489,6 +458,38 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
             gameIds.add(value);
         }
     }
+
+    private void fetchChatRecords() {
+        long startTime;
+        if (endTimeFetched == -1) {
+            endTimeFetched = System.currentTimeMillis();
+            startTime = endTimeFetched - Constants.CHAT_MAX_DURATION_IN_MILLIS;
+        } else {
+            startTime = endTimeFetched;
+            endTimeFetched = System.currentTimeMillis();
+        }
+
+        displayErrorAsSnackBar("Fetching Chat Messages", textView);
+        GetTask<Chat[]> request = Request.getChatMessages(startTime, endTimeFetched);
+        request.setCallbackResponse(this);
+        Scheduler.getInstance().submit(request);
+    }
+
+    private void handleListeners(View.OnClickListener listener) {
+        View view = getView();
+        if (view == null) {
+            return;
+        }
+        Button inviteBut = view.findViewById(R.id.chat_invite_but);
+        inviteBut.setOnClickListener(listener);
+
+        Button replyBut = view.findViewById(R.id.chat_repy_but);
+        replyBut.setOnClickListener(listener);
+
+        Button sendBut = view.findViewById(R.id.chatSendBut);
+        sendBut.setOnClickListener(listener);
+    }
+
 
     private class GameBasicFetcher implements Runnable {
         @Override

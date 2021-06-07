@@ -1,9 +1,9 @@
 package com.ab.telugumoviequiz.common;
 
 public class UITask implements Runnable {
-    private int requestId;
-    private CallbackResponse callbackResponse;
-    private Object helperObject;
+    private final int requestId;
+    private final CallbackResponse callbackResponse;
+    private final Object helperObject;
 
     public UITask(int requestId, CallbackResponse callbackResponse, Object helperObject) {
         this.requestId = requestId;

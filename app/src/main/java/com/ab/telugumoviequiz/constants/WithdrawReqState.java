@@ -5,7 +5,7 @@ public enum WithdrawReqState {
 	
 	private final int id;
 	
-	private WithdrawReqState(int id){
+	WithdrawReqState(int id){
 		this.id = id;
 	}
 	

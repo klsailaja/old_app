@@ -114,19 +114,6 @@ public class ChatMsgDialog extends DialogFragment implements View.OnClickListene
         return root;
     }
 
-    private void populateUI() {
-        int selectedGameType = gameTypeSpinner.getSelectedItemPosition();
-        if (selectedGameType == 0) {
-            rateSpinner.setAdapter(mixRatesAdapter);
-            timeSpinner.setAdapter(mixStartTimesAdapter);
-            gameIdSpinner.setAdapter(mixIdsAdapter);
-        } else {
-            rateSpinner.setAdapter(celebRatesAdapter);
-            timeSpinner.setAdapter(celebStartTimesAdapter);
-            gameIdSpinner.setAdapter(celebIdsAdapter);
-        }
-    }
-
     @Override
     public void onItemSelected(AdapterView<?> arg0, View arg1, int position,long id) {
         populateUI();
@@ -169,5 +156,18 @@ public class ChatMsgDialog extends DialogFragment implements View.OnClickListene
     @Override
     public void onDismiss (@NonNull DialogInterface dialog) {
         super.onDismiss(dialog);
+    }
+
+    private void populateUI() {
+        int selectedGameType = gameTypeSpinner.getSelectedItemPosition();
+        if (selectedGameType == 0) {
+            rateSpinner.setAdapter(mixRatesAdapter);
+            timeSpinner.setAdapter(mixStartTimesAdapter);
+            gameIdSpinner.setAdapter(mixIdsAdapter);
+        } else {
+            rateSpinner.setAdapter(celebRatesAdapter);
+            timeSpinner.setAdapter(celebStartTimesAdapter);
+            gameIdSpinner.setAdapter(celebIdsAdapter);
+        }
     }
 }

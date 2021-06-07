@@ -3,7 +3,7 @@ package com.ab.telugumoviequiz.money;
 import com.ab.telugumoviequiz.main.MainActivity;
 
 public class FetchUserMoneyTask implements Runnable {
-    private MainActivity activity;
+    private final MainActivity activity;
 
     public FetchUserMoneyTask(MainActivity activity) {
         this.activity = activity;

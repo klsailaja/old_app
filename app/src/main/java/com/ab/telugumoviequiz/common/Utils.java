@@ -43,9 +43,9 @@ public class Utils {
             }
         }
         if ((minLen != -1) && (str.length() < minLen))
-            return String.format((Locale) null, MIN_LENGTH, minLen, componentName);
+            return String.format(Locale.ENGLISH, MIN_LENGTH, minLen, componentName);
         if ((maxLen != -1) && (str.length() > maxLen)) {
-            return String.format((Locale) null, MAX_LENGTH, maxLen, componentName);
+            return String.format(Locale.ENGLISH, MAX_LENGTH, maxLen, componentName);
         }
         if (onlyNumerics) {
             if (!TextUtils.isDigitsOnly(str)) {
@@ -191,7 +191,7 @@ public class Utils {
         for (String helpTopicKeyStr : helpTopicNames) {
             int index = 1;
             List<HelpMessage> topicHelpMessages = new ArrayList<>();
-            while (index <= 5) {
+            while (index <= 100) {
                 String pointStrKey = helpTopicKeyStr + "_point" + index;
                 String pointSeverityKey = helpTopicKeyStr + "_point" + index + "_severity";
                 String pointStrValue = getHelpMessage(pointStrKey, localeType);

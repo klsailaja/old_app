@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 
 import com.ab.telugumoviequiz.main.LoginActivity;
-import com.ab.telugumoviequiz.main.MainActivity;
-import com.ab.telugumoviequiz.main.Navigator;
 
 public class SwitchScreen implements DialogAction {
     private final Activity mainActivity;

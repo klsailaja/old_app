@@ -4,8 +4,6 @@ import android.app.Activity;
 
 import androidx.appcompat.app.AlertDialog;
 
-import com.ab.telugumoviequiz.main.MainActivity;
-
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;

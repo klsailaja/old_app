@@ -1,7 +1,6 @@
 package com.ab.telugumoviequiz.games;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -23,17 +22,14 @@ import com.ab.telugumoviequiz.common.Scheduler;
 import com.ab.telugumoviequiz.common.UserDetails;
 import com.ab.telugumoviequiz.common.Utils;
 import com.ab.telugumoviequiz.constants.UserMoneyAccountType;
-import com.ab.telugumoviequiz.main.UserMoney;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class PayGameDialog extends DialogFragment implements View.OnClickListener {
 
-    private List<PayGameModel> modelList;
-    private PaymentOptionsAdapter mAdapter;
-    private CallbackResponse listener;
-    private GameDetails gameDetails;
+    private final List<PayGameModel> modelList;
+    private final CallbackResponse listener;
+    private final GameDetails gameDetails;
 
     public PayGameDialog(List<PayGameModel> modelList, CallbackResponse listener, GameDetails gameDetails) {
         this.modelList = modelList;
@@ -51,7 +47,7 @@ public class PayGameDialog extends DialogFragment implements View.OnClickListene
         super.onCreate(savedInstanceState);
         View root = inflater.inflate(R.layout.list_games_view, container, false);
         RecyclerView recyclerView = root.findViewById(R.id.recyclerView);
-        mAdapter = new PaymentOptionsAdapter(modelList, this, getContext());
+        PaymentOptionsAdapter mAdapter = new PaymentOptionsAdapter(modelList, this, getContext());
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         mLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         recyclerView.setLayoutManager(mLayoutManager);

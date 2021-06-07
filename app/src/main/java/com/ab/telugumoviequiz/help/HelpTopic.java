@@ -3,8 +3,8 @@ package com.ab.telugumoviequiz.help;
 import java.util.List;
 
 public class HelpTopic {
-    private String topicHeading;
-    private List<HelpMessage> topicMessages;
+    private final String topicHeading;
+    private final List<HelpMessage> topicMessages;
 
     public HelpTopic(String topicHeading, List<HelpMessage> topicMessages) {
         this.topicHeading = topicHeading;

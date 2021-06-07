@@ -8,14 +8,10 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
 
 import com.ab.telugumoviequiz.R;
 import com.ab.telugumoviequiz.common.CallbackResponse;
 import com.ab.telugumoviequiz.common.DialogAction;
-import com.ab.telugumoviequiz.help.HelpPreferences;
-import com.ab.telugumoviequiz.help.HelpReader;
-import com.ab.telugumoviequiz.help.HelpTopic;
 import com.ab.telugumoviequiz.common.MessageListener;
 import com.ab.telugumoviequiz.common.NotifyTextChanged;
 import com.ab.telugumoviequiz.common.PATextWatcher;
@@ -24,10 +20,9 @@ import com.ab.telugumoviequiz.common.Request;
 import com.ab.telugumoviequiz.common.Scheduler;
 import com.ab.telugumoviequiz.common.UserDetails;
 import com.ab.telugumoviequiz.common.Utils;
-import com.ab.telugumoviequiz.help.ViewHelp;
 import com.ab.telugumoviequiz.common.WinMsgHandler;
+import com.ab.telugumoviequiz.help.HelpReader;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener, NotifyTextChanged,
@@ -73,7 +68,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View view) {
         int viewId = view.getId();
         if (viewId == R.id.viewNewUserBut) {
-            List<String> helpKeys = new ArrayList<>();
+            /*List<String> helpKeys = new ArrayList<>();
             helpKeys.add("topic_name1");
             helpKeys.add("topic_name2");
             List<HelpTopic> loginHelpLocalTopics = Utils.getHelpTopics(helpKeys, 1);
@@ -85,10 +80,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             viewHelp.setEnglishMainHeading("Main Heading English");
             Utils.clearState();
             FragmentManager fragmentManager = this.getSupportFragmentManager();
-            viewHelp.show(fragmentManager, "dialog");
-            /*Intent intent = new Intent(this, NewUserActivity.class);
+            viewHelp.show(fragmentManager, "dialog");*/
+            Intent intent = new Intent(this, NewUserActivity.class);
             startActivity(intent);
-            finish();*/
+            finish();
         } else if (viewId == R.id.loginBut) {
             LoginData loginData = getFromUI();
             if (loginData == null) {

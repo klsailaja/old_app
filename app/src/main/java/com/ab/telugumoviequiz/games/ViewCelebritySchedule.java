@@ -37,7 +37,6 @@ public class ViewCelebritySchedule extends DialogFragment implements View.OnClic
     private final List<Spinner> gameCelebritiesSpinners = new ArrayList<>(24);
     private final int normalColor = Color.parseColor("black");
     private final int selectColor = Color.parseColor("red");
-    private int lastSelectedIndex = -1;
 
     public ViewCelebritySchedule(Context context, CelebrityFullDetails celebrityFullDetails) {
         this.context = context;
@@ -204,12 +203,6 @@ public class ViewCelebritySchedule extends DialogFragment implements View.OnClic
         if (view.getId() == R.id.user_answers_close_but) {
             dismiss();
         } else if (view.getId() == R.id.searchBut) {
-            if (lastSelectedIndex > -1) {
-                TextView textView = gameTimeTextViews.get(lastSelectedIndex);
-                Spinner spinner = gameCelebritiesSpinners.get(lastSelectedIndex);
-                textView.setTextColor(normalColor);
-                spinner.setSelection(0);
-            }
             String selectedCelebrityName = (String) namesSpinner.getSelectedItem();
             String nextGameTime = null;
             int index = -1;

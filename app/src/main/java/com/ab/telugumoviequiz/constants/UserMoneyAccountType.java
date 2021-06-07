@@ -5,7 +5,7 @@ public enum UserMoneyAccountType {
 	
 	private final int id;
 	
-	private UserMoneyAccountType(int id){
+	UserMoneyAccountType(int id){
 		this.id = id;
 	}
 	

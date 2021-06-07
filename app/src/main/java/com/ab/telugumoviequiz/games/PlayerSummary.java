@@ -1,5 +1,7 @@
 package com.ab.telugumoviequiz.games;
 
+import androidx.annotation.NonNull;
+
 public class PlayerSummary {
 	private long userProfileId;
 	private String userName;
@@ -58,6 +60,7 @@ public class PlayerSummary {
 		this.amountWon = amountWon;
 	}
 
+	@NonNull
 	@Override
 	public String toString() {
 		return "PlayerSummary [rank=" + rank + ", totalTime=" + totalTime + ", correctCount=" + correctCount

@@ -1,5 +1,7 @@
 package com.ab.telugumoviequiz.games;
 
+import androidx.annotation.NonNull;
+
 import java.util.List;
 
 public class UpcomingCelebrity {
@@ -26,6 +28,7 @@ public class UpcomingCelebrity {
 		this.celebrityNames = celebrityNames;
 	}
 	
+	@NonNull
 	@Override
 	public String toString() {
 		return "UpcomingCelebrity [hourVal=" + hourVal + ", gameStartTime=" + gameStartTime + ", celebrityNames="
