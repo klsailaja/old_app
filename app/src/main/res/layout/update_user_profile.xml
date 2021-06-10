@@ -142,7 +142,7 @@
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
         <Button
-            style="@style/button"
+            style="@style/normalButton"
             android:layout_marginTop="5dp"
             android:id="@+id/changeButton"
             android:layout_width="wrap_content"

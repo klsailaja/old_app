@@ -2,7 +2,9 @@ package com.ab.telugumoviequiz.main;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -21,6 +23,7 @@ import com.ab.telugumoviequiz.common.Scheduler;
 import com.ab.telugumoviequiz.common.UserDetails;
 import com.ab.telugumoviequiz.common.Utils;
 import com.ab.telugumoviequiz.common.WinMsgHandler;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.List;
 
@@ -37,6 +40,15 @@ public class NewUserActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(layout.activity_register);
+
+        TextView mailTextView = findViewById(id.editTextEmail);
+        mailTextView.requestFocus();
+
+        Resources resources = getResources();
+        TextInputLayout textInputLayout = findViewById(R.id.editReferralCodeIL);
+        textInputLayout.setHelperTextEnabled(true);
+        textInputLayout.setHelperText(resources.getText(R.string.referral_code_helper_text));
+        textInputLayout.setHelperTextColor(ColorStateList.valueOf(Color.RED));
         Request.baseUri = getString(string.base_url);
     }
 

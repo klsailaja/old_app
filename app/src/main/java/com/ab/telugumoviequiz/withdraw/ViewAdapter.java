@@ -1,7 +1,6 @@
 package com.ab.telugumoviequiz.withdraw;
 
 import android.annotation.SuppressLint;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,8 +30,6 @@ public class ViewAdapter extends RecyclerView.Adapter {
     static int w1, w2, w3, w4, w5, w6, w7;
     @SuppressLint("SimpleDateFormat")
     private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
-    private int creditColor = Color.parseColor("green");
-    private int withdrawColor = Color.parseColor("red");
     private static final int HEADING_VIEW = 1;
     private static final int DATA_VIEW = 2;
     private View.OnClickListener mClickListener;
@@ -108,23 +105,25 @@ public class ViewAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holderArg, int position) {
+        int height = 120;
+        int dataHeight = 120;
         if (position == 0) {
             HeadViewHolder holder = (HeadViewHolder) holderArg;
 
             holder.snoView.getLayoutParams().width = w1;
-            holder.snoView.getLayoutParams().height = 200;
+            holder.snoView.getLayoutParams().height = height;
             holder.refIdView.getLayoutParams().width = w2;
-            holder.refIdView.getLayoutParams().height = 200;
+            holder.refIdView.getLayoutParams().height = height;
             holder.amtView.getLayoutParams().width = w3;
-            holder.amtView.getLayoutParams().height = 200;
+            holder.amtView.getLayoutParams().height = height;
             holder.statusView.getLayoutParams().width = w4;
-            holder.statusView.getLayoutParams().height = 200;
+            holder.statusView.getLayoutParams().height = height;
             holder.openedDateView.getLayoutParams().width = w5;
-            holder.openedDateView.getLayoutParams().height = 200;
+            holder.openedDateView.getLayoutParams().height = height;
             holder.cancelReqHeading.getLayoutParams().width = w6;
-            holder.cancelReqHeading.getLayoutParams().height = 200;
+            holder.cancelReqHeading.getLayoutParams().height = height;
             holder.moreOptionsHeading.getLayoutParams().width = w7;
-            holder.moreOptionsHeading.getLayoutParams().height = 200;
+            holder.moreOptionsHeading.getLayoutParams().height = height;
 
             holder.snoView.setText(headings[0]);
             holder.refIdView.setText(headings[1]);
@@ -146,19 +145,19 @@ public class ViewAdapter extends RecyclerView.Adapter {
             DataViewHolder holder = (DataViewHolder) holderArg;
 
             holder.snoView.getLayoutParams().width = w1;
-            holder.snoView.getLayoutParams().height = 150;
+            holder.snoView.getLayoutParams().height = dataHeight;
             holder.refIdView.getLayoutParams().width = w2;
-            holder.refIdView.getLayoutParams().height = 150;
+            holder.refIdView.getLayoutParams().height = dataHeight;
             holder.amtView.getLayoutParams().width = w3;
-            holder.amtView.getLayoutParams().height = 150;
+            holder.amtView.getLayoutParams().height = dataHeight;
             holder.statusView.getLayoutParams().width = w4;
-            holder.statusView.getLayoutParams().height = 150;
+            holder.statusView.getLayoutParams().height = dataHeight;
             holder.openedDateView.getLayoutParams().width = w5;
-            holder.openedDateView.getLayoutParams().height = 150;
+            holder.openedDateView.getLayoutParams().height = dataHeight;
             holder.cancelReqButton.getLayoutParams().width = w6;
-            holder.cancelReqButton.getLayoutParams().height = 150;
+            holder.cancelReqButton.getLayoutParams().height = dataHeight;
             holder.moreOptionsButton.getLayoutParams().width = w7;
-            holder.moreOptionsButton.getLayoutParams().height = 150;
+            holder.moreOptionsButton.getLayoutParams().height = dataHeight;
 
             WithdrawRequest wdRequest = data.get(position - 1);
 

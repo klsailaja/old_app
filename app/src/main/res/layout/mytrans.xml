@@ -22,7 +22,7 @@
             android:text="@string/myreferal_more_view_options"
             android:layout_gravity="start"
             android:gravity="start"
-            style="@style/button"/>
+            style="@style/normalButton"/>
         <androidx.recyclerview.widget.RecyclerView
             android:layout_marginTop="2dp"
             android:id="@+id/recyclerView"

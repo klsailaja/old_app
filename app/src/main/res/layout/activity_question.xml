@@ -65,7 +65,7 @@
                         android:id="@+id/starts_user_ct_val" />
                 </LinearLayout>
                 <Button
-                    style="@style/button"
+                    style="@style/normalButton"
                     android:layout_column="3"
                     android:id="@+id/game_starts_leave_but"
                     android:layout_width="wrap_content"
@@ -75,7 +75,7 @@
                     android:layout_weight="0.0"
                     android:text="@string/leave_but_text" />
                 <Button
-                    style="@style/button"
+                    style="@style/normalButton"
                     android:layout_column="4"
                     android:id="@+id/game_starts_network_speed"
                     android:layout_width="wrap_content"

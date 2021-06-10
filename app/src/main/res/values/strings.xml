@@ -15,6 +15,7 @@
     <string name="user_login_fail_msg" translatable="false">Login not successful. Please use forgot password option if required</string>
     <string name="user_login_success_msg" translatable="false">Login successful</string>
     <string name="user_forgot_passwd_success_msg" translatable="false">Password Reset. Please check your mail and login</string>
+    <string name="terms_conditions" translatable="false">Agree to our Terms and Conditions</string>
 
     <!-- Update User Profile options -->
     <string name="user_profile_email" translatable="false">E-Mail cannot be updated</string>
@@ -38,12 +39,14 @@
     <!-- New user Screen -->
     <string name="new_user_email_hint" translatable="false">Register with Frequently Used E-Mail Id</string>
     <string name="new_user_password" translatable="false">Configure Password with 4 to 8 chars length</string>
-    <string name="new_user_user_name" translatable="false">Configure Your Name with 2 to 20 chars length</string>
-    <string name="newuser_referal_code_hint" translatable="false">Compulsory</string>
+    <string name="new_user_user_name" translatable="false">Enter Your Name with 2 to 20 chars length</string>
+    <string name="newuser_referal_code_hint" translatable="false">Enter Referral Code</string>
     <string name="newuser_register_text" translatable="false">Register</string>
     <string name="new_user_register_success" translatable="false">User successfully registered</string>
     <string name="new_user_screen_intro" translatable="false">Here\'s\nyour first\nstep with \nus!</string>
     <string name="new_user_already_registered" translatable="false">Already have an account?</string>
+    <string name="referral_code_more_info" translatable="false">Read more</string>
+    <string name="referral_code_helper_text" translatable="false">Portion of your winning money paid to user with this code. Important read more details</string>
 
     <!-- Navigation -->
     <string name="menu_current_games" translatable="false">Current Games</string>
@@ -256,4 +259,8 @@
     <string name="status_bar_msg" translatable="false">Recent Winning Messages</string>
     <string name="tab_text_1" translatable="false">In Telugu</string>
     <string name="tab_text_2" translatable="false">In English</string>
+    <string name="game_day_icon_desc" translatable="false">game_day_icon_dec</string>
+    <string name="game_clock_icon_desc" translatable="false">game_clock_icon_desc</string>
+    <string name="game_rupee_icon_desc" translatable="false">game_rupee_icon_desc</string>
+    <string name="game_screen_users_icon" translatable="false">game_screen_users_icon</string>
 </resources>

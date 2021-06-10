@@ -5,9 +5,11 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 import com.ab.telugumoviequiz.R;
 import com.ab.telugumoviequiz.common.CallbackResponse;
@@ -21,8 +23,12 @@ import com.ab.telugumoviequiz.common.Scheduler;
 import com.ab.telugumoviequiz.common.UserDetails;
 import com.ab.telugumoviequiz.common.Utils;
 import com.ab.telugumoviequiz.common.WinMsgHandler;
+import com.ab.telugumoviequiz.help.HelpPreferences;
 import com.ab.telugumoviequiz.help.HelpReader;
+import com.ab.telugumoviequiz.help.HelpTopic;
+import com.ab.telugumoviequiz.help.ViewHelp;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener, NotifyTextChanged,
@@ -68,19 +74,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View view) {
         int viewId = view.getId();
         if (viewId == R.id.viewNewUserBut) {
-            /*List<String> helpKeys = new ArrayList<>();
-            helpKeys.add("topic_name1");
-            helpKeys.add("topic_name2");
-            List<HelpTopic> loginHelpLocalTopics = Utils.getHelpTopics(helpKeys, 1);
-            List<HelpTopic> loginHelpEnglishTopics = Utils.getHelpTopics(helpKeys, 2);
-
-            ViewHelp viewHelp = new ViewHelp(loginHelpLocalTopics,
-                    loginHelpEnglishTopics, ViewHelp.HORIZONTAL, HelpPreferences.REFERRAL_INFO);
-            viewHelp.setLocalMainHeading("Main Heading Telugu");
-            viewHelp.setEnglishMainHeading("Main Heading English");
-            Utils.clearState();
-            FragmentManager fragmentManager = this.getSupportFragmentManager();
-            viewHelp.show(fragmentManager, "dialog");*/
             Intent intent = new Intent(this, NewUserActivity.class);
             startActivity(intent);
             finish();
@@ -100,6 +93,20 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         } else if (viewId == R.id.forgotPasswordBut) {
             Utils.showConfirmationMessage("Confirm?", "Are you sure to proceed?",
                     this, this, 10, null);
+        } else if (viewId == R.id.termsConditionsText) {
+            List<String> helpKeys = new ArrayList<>();
+            helpKeys.add("topic_name1");
+            helpKeys.add("topic_name2");
+            List<HelpTopic> loginHelpLocalTopics = Utils.getHelpTopics(helpKeys, 1);
+            List<HelpTopic> loginHelpEnglishTopics = Utils.getHelpTopics(helpKeys, 2);
+
+            ViewHelp viewHelp = new ViewHelp(loginHelpLocalTopics,
+                    loginHelpEnglishTopics, ViewHelp.HORIZONTAL, HelpPreferences.TERMS_CONDITIONS);
+            viewHelp.setLocalMainHeading("Main Heading Telugu");
+            viewHelp.setEnglishMainHeading("Main Heading English");
+            Utils.clearState();
+            FragmentManager fragmentManager = this.getSupportFragmentManager();
+            viewHelp.show(fragmentManager, "dialog");
         }
     }
 
@@ -188,12 +195,26 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
+    private boolean validateTermsConditions() {
+        CheckBox checkBox = findViewById(R.id.termsConditionsCheck);
+        if (!checkBox.isChecked()) {
+            Utils.showMessage("Info",
+                    "Read Terms and Conditions and Accept", this, null);
+            return false;
+        }
+        return true;
+    }
+
     private boolean validateData() {
         boolean result = validateMailId();
         if (!result) {
             return false;
         }
         result = validatePasswd();
+        if (!result) {
+            return false;
+        }
+        result = validateTermsConditions();
         return result;
     }
 
@@ -246,6 +267,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         TextView forgotPassword = findViewById(R.id.forgotPasswordBut);
         forgotPassword.setOnClickListener(listener);
+
+        TextView termsConditions = findViewById(R.id.termsConditionsText);
+        termsConditions.setOnClickListener(listener);
     }
 
     private boolean validatePasswd() {
