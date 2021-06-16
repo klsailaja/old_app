@@ -287,7 +287,7 @@ public class ViewMyAnswers extends DialogFragment implements View.OnClickListene
         int[] points = Utils.getScreenWidth(getContext());
         int width = (points[0] * 100) /100;
         //int height = ConstraintLayout.LayoutParams.WRAP_CONTENT;
-        int height = (points[1] * 100) /100;
+        int height = (points[1] * 95) /100;
         Dialog dialog = getDialog();
         if (dialog != null) {
             Window window = dialog.getWindow();

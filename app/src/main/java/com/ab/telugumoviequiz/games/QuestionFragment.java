@@ -12,8 +12,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
-import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -294,12 +292,8 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
             Utils.showConfirmationMessage("Confirm?", "Are you sure to quit?", getContext(), this, 10, gameDetails);
             return;
         }
-        final Integer currentQuesPos = (Integer) v.getTag();
-        if (currentQuesPos == null) {
-            return;
-        }
         switch (id) {
-            case 3: {
+            case R.id.moreOptions: {
                 PopupMenu popupMenu = new PopupMenu(getContext(), v);
                 popupMenu.getMenuInflater().inflate(R.menu.popup, popupMenu.getMenu());
 
@@ -314,6 +308,10 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
                             break;
                         }
                         case R.id.item_leaderboard: {
+                            final Integer currentQuesPos = (Integer) v.getTag();
+                            if (currentQuesPos == null) {
+                                break;
+                            }
                             Question currentQuestion = gameDetails.getGameQuestions().get(currentQuesPos);
                             showLeaderBoardView(currentQuestion.getQuestionNumber() == 10);
                             break;
@@ -324,7 +322,11 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
                 popupMenu.show();
                 break;
             }
-            case 2: {
+            case R.id.flipQuestion: {
+                final Integer currentQuesPos = (Integer) v.getTag();
+                if (currentQuesPos == null) {
+                    break;
+                }
                 List<Question> questions = gameDetails.getGameQuestions();
                 Question oldQuestion = questions.get(currentQuesPos);
                 Question newQuestion = gameDetails.getFlipQuestion();
@@ -344,7 +346,11 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
                 updateLifelines(true);
                 break;
             }
-            case 1: {
+            case R.id.fiftyFifty: {
+                final Integer currentQuesPos = (Integer) v.getTag();
+                if (currentQuesPos == null) {
+                    break;
+                }
                 int randomNumber = 1 + (int) (Math.random() * (101 - 1));
                 boolean forward = true;
                 if (randomNumber % 2 == 0) {
@@ -389,6 +395,10 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
             case R.id.optionB:
             case R.id.optionC:
             case R.id.optionD: {
+                final Integer currentQuesPos = (Integer) v.getTag();
+                if (currentQuesPos == null) {
+                    break;
+                }
                 setQuesView(false);
                 updateLifelines(false);
                 long butPressedTime = System.currentTimeMillis();
@@ -610,34 +620,54 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
         }
         Toast.makeText(getContext(), joinMsg, Toast.LENGTH_SHORT).show();
 
-        TableLayout tableLayout = Objects.requireNonNull(root).findViewById(R.id.ques_button_panel);
-        tableLayout.removeAllViews();
+        //TableLayout tableLayout = Objects.requireNonNull(root).findViewById(R.id.ques_button_panel);
+        //tableLayout.removeAllViews();
+        TextView startAtLabel = root.findViewById(R.id.startAtLabel);
+        TextView startAtValLabel = root.findViewById(R.id.game_starts_label);
+        TextView usersAtLabel = root.findViewById(R.id.usersAtLabel);
+        TextView userAtValLabel = root.findViewById(R.id.starts_user_ct_val);
+        Button gameStartBut = root.findViewById(R.id.game_starts_leave_but);
 
-        int id = 1;
+        fiftyFifty = root.findViewById(R.id.fiftyFifty);
+        changeQues = root.findViewById(R.id.flipQuestion);
+        moreOptions = root.findViewById(R.id.moreOptions);
+
+        startAtLabel.setVisibility(View.GONE);
+        startAtValLabel.setVisibility(View.GONE);
+        usersAtLabel.setVisibility(View.GONE);
+        userAtValLabel.setVisibility(View.GONE);
+        gameStartBut.setVisibility(View.GONE);
+
+        fiftyFifty.setVisibility(View.VISIBLE);
+        changeQues.setVisibility(View.VISIBLE);
+        moreOptions.setVisibility(View.VISIBLE);
+
+        /*int id = 1;
         fiftyFifty = new Button(getContext());
         fiftyFifty.setId(id);
         fiftyFifty.setText(R.string.fifty_fifty);
         fiftyFifty.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
-                TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
-        fiftyFifty.setBackgroundResource(R.color.colorPrimary);
+                TableRow.LayoutParams.WRAP_CONTENT, 0.0f));
+        fiftyFifty.setBackgroundResource(R.color.quesWrong);
 
         changeQues = new Button(getContext());
         id++;
         changeQues.setId(id);
         changeQues.setText(R.string.flip_question);
         //changeQues.setTextAppearance(R.style.button);
-        changeQues.setBackgroundResource(R.color.colorPrimary);
+        changeQues.setBackgroundResource(R.color.quesWrong);
         changeQues.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
-                TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
+                TableRow.LayoutParams.WRAP_CONTENT, 0.0f));
+        changeQues.setPadding(20,20,20,20);
 
 
         moreOptions = new Button(getContext());
         id++;
         moreOptions.setId(id);
         moreOptions.setText(R.string.more_game_options);
-        moreOptions.setBackgroundResource(R.color.colorPrimary);
+        moreOptions.setBackgroundResource(R.color.quesWrong);
         moreOptions.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
-                TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
+                TableRow.LayoutParams.WRAP_CONTENT, 0.0f));
 
         TableRow tr = new TableRow(getContext());
         TableLayout.LayoutParams trParams = new
@@ -647,7 +677,7 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
         tr.addView(fiftyFifty);
         tr.addView(changeQues);
         tr.addView(moreOptions);
-        tableLayout.addView(tr, trParams);
+        tableLayout.addView(tr, trParams);*/
         fiftyFifty.setOnClickListener(this);
         changeQues.setOnClickListener(this);
         moreOptions.setOnClickListener(this);
