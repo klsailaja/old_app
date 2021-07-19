@@ -1,7 +1,7 @@
 <resources>
     <!-- Main App -->
     <string name="app_name">TeluguMovieQuiz</string>
-    <string name="base_url" translatable="false">http://192.168.1.2:8080</string>
+    <string name="base_url" translatable="false">http://192.168.43.188:8080</string>
 
     <string name="quiz_screen_server_err" translatable="false">Server Error. Please try after some time</string>
 
@@ -130,7 +130,7 @@
     <string name="view_prize_details_free_game_prize" translatable="false">No Prize Money for Free Game</string>
 
     <string name="view_leadership_rank" translatable="false">Rank#</string>
-    <string name="view_leadership_correct_count" translatable="false">Ct Ans Ct</string>
+    <string name="view_leadership_correct_count" translatable="false">Correct Ans Ct</string>
     <string name="view_leadership_time_taken" translatable="false">Total Time</string>
     <string name="view_leadership_username" translatable="false">Name</string>
     <string name="view_leadership_amount" translatable="false">Amt Won</string>

@@ -174,7 +174,7 @@ public class MainActivity extends AppCompatActivity
 
         WinMsgHandler.getInstance().setListener(this);
         UserProfile userProfile = UserDetails.getInstance().getUserProfile();
-        WinMsgHandler.getInstance().setUserProfileId(userProfile.getId());
+        WinMsgHandler.getInstance().setUserProfileId(userProfile.getBossId());
 
         String FIFTYUSED = "FIFTYUSED";
         String FLIPUSED = "FLIPUSED";

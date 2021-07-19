@@ -150,7 +150,9 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
                     gameStartTimeStrValues.add(timeStr);
                 }
                 if (gameMode == 2) {
-                    celebrityNames.add(gameDetails.getCelebrityName());
+                    if (!celebrityNames.contains(gameDetails.getCelebrityName())) {
+                        celebrityNames.add(gameDetails.getCelebrityName());
+                    }
                 }
             }
             lock.readLock().unlock();
