@@ -51,6 +51,8 @@ public class ViewPrizeDetails extends DialogFragment implements View.OnClickList
         TableLayout tableLayout = root.findViewById(R.id.tableInvoices);
         Button closeButton = root.findViewById(R.id.user_answers_close_but);
         closeButton.setOnClickListener(this);
+        TextView totalCountLabel = root.findViewById(R.id.totalCount);
+        totalCountLabel.setText("Number of Winners:" + list.size());
 
         int leftRowMargin=0;
         int topRowMargin=0;

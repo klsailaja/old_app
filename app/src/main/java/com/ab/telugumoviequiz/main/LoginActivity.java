@@ -55,7 +55,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         handleListeners(this);
         handleTextWatchers(true);
         WinMsgHandler.getInstance().setListener(this);
-        WinMsgHandler.getInstance().start();
+        WinMsgHandler.getInstance().setUserProfileId(-1);
     }
 
     @Override

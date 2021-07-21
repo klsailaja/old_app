@@ -2,8 +2,16 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <ScrollView
+    <TextView
+        android:id="@+id/totalCount"
+        android:layout_marginTop="1dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/tableScrollView"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
+        android:layout_marginBottom="1dp"/>
+    <ScrollView
         android:id="@+id/tableScrollView"
         android:layout_above="@+id/user_answers_close_but"
         android:layout_width="match_parent"

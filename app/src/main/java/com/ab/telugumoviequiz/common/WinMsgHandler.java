@@ -13,6 +13,7 @@ public class WinMsgHandler implements CallbackResponse {
     private MessageListener listener;
     private boolean isStopped = false;
     private int count;
+    private long lastFetchTime;
 
     private WinMsgHandler() {
     }
@@ -54,6 +55,10 @@ public class WinMsgHandler implements CallbackResponse {
             return;
         }
         if (listener != null) {
+            long currentTime = System.currentTimeMillis();
+            if ((currentTime - lastFetchTime) < 15 * 1000) {
+                return;
+            }
             List<String> msgList = new ArrayList<>();
             msgList.add(msg);
             listener.passData(999, msgList);
@@ -80,6 +85,7 @@ public class WinMsgHandler implements CallbackResponse {
                 errMessage = "No Data";
             } else {
                 errMessage = winWdMessages.get(0);
+                lastFetchTime = System.currentTimeMillis();
             }
             notifyMessage(errMessage);
             UITask task = new UITask(Request.WIN_WD_SHOW_MSG, this, 1);

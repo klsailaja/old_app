@@ -493,7 +493,9 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
                 break;
             }
             case Request.SUBMIT_ANSWER_REQ: {
-                Runnable run = () -> Toast.makeText(getContext(), "Submitted Success", Toast.LENGTH_SHORT).show();
+                Integer lastAnsQuestionNo = (Integer) helperObject;
+                String submitMsg = "Successfully submitted Question:" + lastAnsQuestionNo + " answer";
+                Runnable run = () -> Toast.makeText(getContext(), submitMsg, Toast.LENGTH_SHORT).show();
                 requireActivity().runOnUiThread(run);
                 break;
             }
