@@ -263,4 +263,5 @@
     <string name="game_clock_icon_desc" translatable="false">game_clock_icon_desc</string>
     <string name="game_rupee_icon_desc" translatable="false">game_rupee_icon_desc</string>
     <string name="game_screen_users_icon" translatable="false">game_screen_users_icon</string>
+    <string name="game_total_winner" translatable="false">Total Winners:</string>
 </resources>

@@ -766,6 +766,7 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
         Runnable run = () -> {
             closeAllViews();
             viewLeaderboard = new ViewLeaderboard(getContext(), isGameOver, gameLeaderBoardDetails, getActivity());
+            viewLeaderboard.setTotalWinnersCount(gamePrizeDetails.size());
             FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
             if (!isVisible()) {
                 return;
@@ -782,9 +783,10 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
         }
         viewPrizeDetails = new ViewPrizeDetails(getContext());
         FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-        Bundle myAnswersBundle = new Bundle();
+        /*Bundle myAnswersBundle = new Bundle();
         myAnswersBundle.putParcelableArrayList("PrizeDetails", gamePrizeDetails);
-        viewPrizeDetails.setArguments(myAnswersBundle);
+        viewPrizeDetails.setArguments(myAnswersBundle);*/
+        viewPrizeDetails.setValues(gamePrizeDetails);
         if (!isVisible()) {
             return;
         }

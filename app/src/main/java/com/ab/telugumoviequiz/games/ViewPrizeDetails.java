@@ -35,24 +35,30 @@ public class ViewPrizeDetails extends DialogFragment implements View.OnClickList
         this.context = context;
     }
 
+    public void setValues(List<PrizeDetail> list) {
+        this.list = list;
+    }
+
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
-        Bundle data = getArguments();
+        /*Bundle data = getArguments();
         if (data != null) {
             list = data.getParcelableArrayList("PrizeDetails");
-        }
+        }*/
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        View root = inflater.inflate(R.layout.user_answers, container, false);
+        View root = inflater.inflate(R.layout.view_prizes, container, false);
         TableLayout tableLayout = root.findViewById(R.id.tableInvoices);
         Button closeButton = root.findViewById(R.id.user_answers_close_but);
         closeButton.setOnClickListener(this);
         TextView totalCountLabel = root.findViewById(R.id.totalCount);
-        totalCountLabel.setText("Number of Winners:" + list.size());
+        String winnersLabel = getString(R.string.game_total_winner);
+        winnersLabel = winnersLabel + list.size();
+        totalCountLabel.setText(winnersLabel);
 
         int leftRowMargin=0;
         int topRowMargin=0;

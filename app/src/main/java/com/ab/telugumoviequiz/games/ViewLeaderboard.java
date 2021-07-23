@@ -35,6 +35,7 @@ public class ViewLeaderboard extends DialogFragment implements View.OnClickListe
     private final Context context;
     private Activity parentActivity;
     private boolean fromHistory;
+    private int winnerCount;
 
     public ViewLeaderboard(Context context, boolean isGameOver, List<PlayerSummary> list, Activity parentActivity) {
         this.context = context;
@@ -48,6 +49,9 @@ public class ViewLeaderboard extends DialogFragment implements View.OnClickListe
         this.isGameOver = isGameOver;
         this.list = list;
         this.fromHistory = fromHistory;
+    }
+    public void setTotalWinnersCount(int winnersCount) {
+        this.winnerCount = winnersCount;
     }
 
     @Override
@@ -64,12 +68,11 @@ public class ViewLeaderboard extends DialogFragment implements View.OnClickListe
                 getDialog().setTitle("Closes automatically after 15 secs");
             }
         }
-        View root = inflater.inflate(R.layout.user_answers, container, false);
+        View root = inflater.inflate(R.layout.view_prizes, container, false);
         TableLayout tableLayout = root.findViewById(R.id.tableInvoices);
         Button closeButton = root.findViewById(R.id.user_answers_close_but);
         closeButton.setOnClickListener(this);
-        TextView totalCountLabel = root.findViewById(R.id.totalCount);
-        totalCountLabel.setText("Number of Winners:" + list.size());
+
 
         int leftRowMargin=0;
         int topRowMargin=0;
@@ -89,6 +92,8 @@ public class ViewLeaderboard extends DialogFragment implements View.OnClickListe
 
         int highlightTextSizeRowOffset;
         TextView userTextView = null;
+        String winnersBGColor = "#a4c639";
+        int actualWinnersCount = 0;
         for(int i = -1; i < rows; i ++) {
             PlayerSummary row = null;
             highlightTextSizeRowOffset = 0;
@@ -96,7 +101,8 @@ public class ViewLeaderboard extends DialogFragment implements View.OnClickListe
                 row = list.get(i);
                 if (isGameOver) {
                     if (row.getAmountWon() > 0) {
-                        highlightTextSizeRowOffset = 10;
+                        highlightTextSizeRowOffset = 0;
+                        actualWinnersCount++;
                     }
                 } else {
                     if (row.getUserProfileId() == UserDetails.getInstance().getUserProfile().getId()) {
@@ -126,6 +132,9 @@ public class ViewLeaderboard extends DialogFragment implements View.OnClickListe
                     tv.setTextColor(Color.parseColor("#FF0000"));
                     userTextView = tv;
                 }
+                if (row.getAmountWon() > 0) {
+                    tv.setBackgroundColor(Color.parseColor(winnersBGColor));
+                }
             }
             final TextView tv2 = new TextView(context);
             if (i == -1) {
@@ -152,6 +161,9 @@ public class ViewLeaderboard extends DialogFragment implements View.OnClickListe
                 tv2.setText(String.valueOf(row.getCorrectCount()));
                 if (highlightTextSizeRowOffset == 10) {
                     tv2.setTextColor(Color.parseColor("#FF0000"));
+                }
+                if (row.getAmountWon() > 0) {
+                    tv2.setBackgroundColor(Color.parseColor(winnersBGColor));
                 }
             }
 
@@ -186,6 +198,9 @@ public class ViewLeaderboard extends DialogFragment implements View.OnClickListe
                 if (highlightTextSizeRowOffset == 10) {
                     tv3.setTextColor(Color.parseColor("#FF0000"));
                 }
+                if (row.getAmountWon() > 0) {
+                    tv3.setBackgroundColor(Color.parseColor(winnersBGColor));
+                }
             }
 
             final TextView tv4 = new TextView(context);
@@ -214,6 +229,9 @@ public class ViewLeaderboard extends DialogFragment implements View.OnClickListe
                 if (highlightTextSizeRowOffset == 10) {
                     tv4.setTextColor(Color.parseColor("#FF0000"));
                 }
+                if (row.getAmountWon() > 0) {
+                    tv4.setBackgroundColor(Color.parseColor(winnersBGColor));
+                }
             }
 
             final TextView tv5 = new TextView(context);
@@ -228,9 +246,6 @@ public class ViewLeaderboard extends DialogFragment implements View.OnClickListe
                         TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
                         TableRow.LayoutParams.MATCH_PARENT));
                 tv5.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
-                if (highlightTextSizeRowOffset == 10) {
-                    tv5.setTextColor(Color.parseColor("#FF0000"));
-                }
             }
             tv5.setGravity(Gravity.CENTER);
             //tv5.setPadding(5, 15, 0, 15);
@@ -244,6 +259,9 @@ public class ViewLeaderboard extends DialogFragment implements View.OnClickListe
                 tv5.setText(String.valueOf(row.getAmountWon()));
                 if (highlightTextSizeRowOffset == 10) {
                     tv5.setTextColor(Color.parseColor("#FF0000"));
+                }
+                if (row.getAmountWon() > 0) {
+                    tv5.setBackgroundColor(Color.parseColor(winnersBGColor));
                 }
             }
             // add table row
@@ -294,6 +312,15 @@ public class ViewLeaderboard extends DialogFragment implements View.OnClickListe
                 userTextView.requestFocus();
             }
         }
+        TextView totalCountLabel = root.findViewById(R.id.totalCount);
+        String winnersLabel = getString(R.string.game_total_winner);
+        if (isGameOver) {
+            winnersLabel = winnersLabel + actualWinnersCount;
+        } else {
+            winnersLabel = winnersLabel + winnerCount;
+        }
+
+        totalCountLabel.setText(winnersLabel);
         return root;
     }
 

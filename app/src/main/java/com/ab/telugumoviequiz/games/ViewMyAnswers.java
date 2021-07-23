@@ -49,8 +49,6 @@ public class ViewMyAnswers extends DialogFragment implements View.OnClickListene
         TableLayout tableLayout = root.findViewById(R.id.tableInvoices);
         Button closeButton = root.findViewById(R.id.user_answers_close_but);
         closeButton.setOnClickListener(this);
-        TextView totalCountLabel = root.findViewById(R.id.totalCount);
-        totalCountLabel.setVisibility(View.GONE);
         int correctCount = 0;
         long totalTimeTaken = 0;
         for (UserAnswer userAnswer : list) {
