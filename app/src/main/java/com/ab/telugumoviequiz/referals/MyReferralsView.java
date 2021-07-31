@@ -1,13 +1,13 @@
 package com.ab.telugumoviequiz.referals;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MyReferralsView extends BaseFragment implements View.OnClickListener, CallbackResponse {
-    private AlertDialog alertDialog;
     private int rowCount = 0;
     private ReferalViewAdapter tableAdapter;
     private final List<UserReferal> tableData = new ArrayList<>();
@@ -46,15 +45,10 @@ public class MyReferralsView extends BaseFragment implements View.OnClickListene
     }
 
     private void fetchRecords() {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
-        alertDialogBuilder.setTitle("Information");
-        alertDialogBuilder.setMessage("Loading. Please Wait!").setCancelable(false);
-        alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
-
         UserProfile userProfile = UserDetails.getInstance().getUserProfile();
         GetTask<ReferalDetails> request = Request.getUserReferalDetails(userProfile.getMyReferalId(), rowCount);
         request.setCallbackResponse(this);
+        request.setActivity(getActivity(), null);
         Scheduler.getInstance().submit(request);
     }
 
@@ -73,6 +67,20 @@ public class MyReferralsView extends BaseFragment implements View.OnClickListene
         tableData.clear();
         tableData.addAll(list);
         tableAdapter.notifyDataSetChanged();
+        TextView totalView = view.findViewById(R.id.view_total);
+        String totalPrefix = getResources().getString(R.string.total_prefix);
+        int start;
+        int end;
+        if (details.getTotal() == 0) {
+            start = 0;
+            end = 0;
+        } else {
+            start = rowCount + 1;
+            end = rowCount + list.size();
+        }
+        String totalStr = totalPrefix + start + " - " + end
+                + " of " + details.getTotal();
+        totalView.setText(totalStr);
     }
 
     @Override
@@ -92,7 +100,7 @@ public class MyReferralsView extends BaseFragment implements View.OnClickListene
         Resources resources = getResources();
         tableHeadings[0] = resources.getString(R.string.table_view_col1);
         tableHeadings[1] = resources.getString(R.string.table_view_col2);
-        tableHeadings[2] = resources.getString(R.string.table_view_col2);
+        tableHeadings[2] = resources.getString(R.string.table_view_col3);
 
         View root = inflater.inflate(R.layout.myreferals, container, false);
         RecyclerView recyclerView = root.findViewById(R.id.recyclerView);
@@ -103,13 +111,8 @@ public class MyReferralsView extends BaseFragment implements View.OnClickListene
         tableAdapter = new ReferalViewAdapter(tableData, tableHeadings);
         recyclerView.setAdapter(tableAdapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        return root;
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedBundle) {
-        super.onActivityCreated(savedBundle);
         fetchRecords();
+        return root;
     }
 
     @Override
@@ -138,16 +141,6 @@ public class MyReferralsView extends BaseFragment implements View.OnClickListene
 
     @Override
     public void handleResponse(int reqId, boolean exceptionThrown, boolean isAPIException, final Object response, Object helperObject) {
-        Runnable run = () -> {
-            if (alertDialog != null) {
-                alertDialog.dismiss();
-            }
-        };
-        Activity activity = getActivity();
-        if (activity != null) {
-            activity.runOnUiThread(run);
-        }
-
         if((exceptionThrown) && (!isAPIException)) {
             showErrShowHomeScreen((String) response);
             return;
@@ -158,7 +151,8 @@ public class MyReferralsView extends BaseFragment implements View.OnClickListene
                 return;
             }
             final ReferalDetails result = (ReferalDetails) response;
-            run = () -> populateTable(result);
+            Runnable run = () -> populateTable(result);
+            Activity activity = getActivity();
             if (activity != null) {
                 activity.runOnUiThread(run);
             }

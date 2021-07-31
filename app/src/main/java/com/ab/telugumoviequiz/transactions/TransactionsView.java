@@ -1,7 +1,6 @@
 package com.ab.telugumoviequiz.transactions;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.PopupMenu;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -28,12 +28,10 @@ import com.ab.telugumoviequiz.main.UserProfile;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class TransactionsView extends BaseFragment implements PopupMenu.OnMenuItemClickListener,
         View.OnClickListener, CallbackResponse {
 
-    private AlertDialog alertDialog;
     private int startPosOffset = 0;
     private ViewAdapter tableAdapter;
     private final List<MyTransaction> tableData = new ArrayList<>();
@@ -55,15 +53,10 @@ public class TransactionsView extends BaseFragment implements PopupMenu.OnMenuIt
     }
 
     private void fetchRecords() {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
-        alertDialogBuilder.setTitle("Information");
-        alertDialogBuilder.setMessage("Loading. Please Wait!").setCancelable(false);
-        alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
-
         UserProfile userProfile = UserDetails.getInstance().getUserProfile();
         GetTask<TransactionsHolder> request = Request.getUserTransactions(userProfile.getId(), startPosOffset, accountType);
         request.setCallbackResponse(this);
+        request.setActivity(getActivity(), null);
         Scheduler.getInstance().submit(request);
     }
 
@@ -78,10 +71,23 @@ public class TransactionsView extends BaseFragment implements PopupMenu.OnMenuIt
 
         prevButton.setEnabled(details.isPrevEnabled());
         nextButton.setEnabled(details.isNextEnabled());
+        TextView totalView = view.findViewById(R.id.view_total);
         List<MyTransaction> list = details.getTransactionsList();
         tableData.clear();
         tableData.addAll(list);
         tableAdapter.notifyDataSetChanged();
+        String totalPrefix = getResources().getString(R.string.total_prefix);
+        int start;
+        int end;
+        if (details.getTotal() == 0) {
+            start = 0;
+            end = 0;
+        } else {
+            start = startPosOffset + 1;
+            end = startPosOffset + list.size();
+        }
+        String totalStr = totalPrefix + start + " - " + end + " of " + details.getTotal();
+        totalView.setText(totalStr);
     }
 
 
@@ -117,13 +123,8 @@ public class TransactionsView extends BaseFragment implements PopupMenu.OnMenuIt
         tableAdapter = new ViewAdapter(tableData, tableHeadings);
         recyclerView.setAdapter(tableAdapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        return root;
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedBundle) {
-        super.onActivityCreated(savedBundle);
         fetchRecords();
+        return root;
     }
 
     @Override
@@ -149,7 +150,7 @@ public class TransactionsView extends BaseFragment implements PopupMenu.OnMenuIt
             startPosOffset = startPosOffset + maxRowCount;
             fetchRecords();
         } else if (id == R.id.filterAccType) {
-            Resources resources = Objects.requireNonNull(getActivity()).getResources();
+            Resources resources = requireActivity().getResources();
             CharSequence[] accTypes = resources.getTextArray(R.array.myreferal_acc_options);
             PopupMenu popupMenu = new PopupMenu(getActivity(), view);
             for (CharSequence s : accTypes) {
@@ -179,16 +180,6 @@ public class TransactionsView extends BaseFragment implements PopupMenu.OnMenuIt
 
     @Override
     public void handleResponse(int reqId, boolean exceptionThrown, boolean isAPIException, final Object response, Object helperObject) {
-        Runnable run = () -> {
-            if (alertDialog != null) {
-                alertDialog.dismiss();
-            }
-        };
-        Activity activity = getActivity();
-        if (activity != null) {
-            activity.runOnUiThread(run);
-        }
-
         if((exceptionThrown) && (!isAPIException)) {
             showErrShowHomeScreen((String) response);
             return;
@@ -199,7 +190,8 @@ public class TransactionsView extends BaseFragment implements PopupMenu.OnMenuIt
                 return;
             }
             final TransactionsHolder result = (TransactionsHolder) response;
-            run = () -> populateTable(result);
+            Runnable run = () -> populateTable(result);
+            Activity activity = getActivity();
             if (activity != null) {
                 activity.runOnUiThread(run);
             }

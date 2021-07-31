@@ -112,18 +112,14 @@ public class PostTask<T,R> implements Runnable {
                     classType);
             Object result = responseEntity.getBody();
             if (activity != null) {
-                Runnable run = () -> {
-                    alertDialog.dismiss();
-                };
+                Runnable run = () -> alertDialog.dismiss();
                 activity.runOnUiThread(run);
             }
             getCallbackResponse().handleResponse(getRequestId(), false, false, result, getHelperObject());
 
         } catch (Exception ex) {
             if (activity != null) {
-                Runnable run = () -> {
-                    alertDialog.dismiss();
-                };
+                Runnable run = () -> alertDialog.dismiss();
                 activity.runOnUiThread(run);
             }
             ex.printStackTrace();

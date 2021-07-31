@@ -314,7 +314,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         PostTask<LoginData, UserProfile> forgotPassword = Request.getForgotPassword();
         forgotPassword.setCallbackResponse(this);
         forgotPassword.setPostObject(loginData);
-        forgotPassword.setActivity(LoginActivity.this, "Processing. Please Wait!");
+        forgotPassword.setActivity(LoginActivity.this, null);
         Scheduler.getInstance().submit(forgotPassword);
     }
 }

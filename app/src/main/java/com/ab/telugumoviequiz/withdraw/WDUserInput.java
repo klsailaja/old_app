@@ -1,5 +1,7 @@
 package com.ab.telugumoviequiz.withdraw;
 
+import androidx.annotation.NonNull;
+
 public class WDUserInput {
 	private long userProfileId; 
 	private int fromAccType; 
@@ -38,6 +40,7 @@ public class WDUserInput {
 		this.openedTime = openedTime;
 	}
 	
+	@NonNull
 	@Override
 	public String toString() {
 		return "WDUserInput [userProfileId=" + userProfileId + ", fromAccType=" + fromAccType + ", requestType="

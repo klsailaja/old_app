@@ -23,7 +23,7 @@ public class ViewAdapter extends RecyclerView.Adapter<ViewAdapter.MyViewHolder> 
     static int w1, w2, w3, w4, w5;
     @SuppressLint("SimpleDateFormat")
     private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
-    private View.OnClickListener listener;
+    private final View.OnClickListener listener;
 
     static class MyViewHolder extends RecyclerView.ViewHolder {
         TextView snoView, dateView, tktRateView, celebrityView, viewResultsView;
@@ -42,7 +42,7 @@ public class ViewAdapter extends RecyclerView.Adapter<ViewAdapter.MyViewHolder> 
         this.gameResults = gameResults;
         this.headings = headings;
         this.listener = listener;
-        w1 = (screenWidth * 6)/100;
+        w1 = (screenWidth * 8)/100;
         w2 = (screenWidth * 25)/100;
         w3 = (screenWidth * 15)/100;
         w4 = (screenWidth * 27)/100;
@@ -51,9 +51,13 @@ public class ViewAdapter extends RecyclerView.Adapter<ViewAdapter.MyViewHolder> 
 
     @NonNull
     @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        int layoutId = R.layout.history_table_header;
+        if (viewType == 1) {
+            layoutId = R.layout.history_table_item;
+        }
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.history_table_item, parent, false);
+                .inflate(layoutId, parent, false);
         return new MyViewHolder(itemView);
     }
 
@@ -90,12 +94,16 @@ public class ViewAdapter extends RecyclerView.Adapter<ViewAdapter.MyViewHolder> 
             holder.snoView.setText(String.valueOf(gameResult.getsNo()));
 
             Date date = new Date(gameResult.getGamePlayedTime());
-            String datePattern = "dd:MMM:yyyy:HH:mm";
+            String datePattern = "dd:MMM:yyyy-HH:mm";
             simpleDateFormat.applyPattern(datePattern);
             String timeStr = simpleDateFormat.format(date);
             holder.dateView.setText(timeStr);
             holder.tktRateView.setText(String.valueOf(gameResult.getTktRate()));
-            holder.celebrityView.setText(gameResult.getCelebrityName());
+            String celebrityName = gameResult.getCelebrityName();
+            if (celebrityName.equalsIgnoreCase("na")) {
+                celebrityName = "No Celebrity";
+            }
+            holder.celebrityView.setText(celebrityName);
 
             holder.snoView.setBackgroundResource(R.drawable.table_content_cell_bg);
             holder.dateView.setBackgroundResource(R.drawable.table_content_cell_bg);
@@ -110,5 +118,13 @@ public class ViewAdapter extends RecyclerView.Adapter<ViewAdapter.MyViewHolder> 
     @Override
     public int getItemCount() {
         return gameResults.size() + 1;
+    }
+
+    @Override
+    public int getItemViewType (int position) {
+        if (position == 0) {
+            return 0;
+        }
+        return 1;
     }
 }

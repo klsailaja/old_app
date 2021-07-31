@@ -1,14 +1,18 @@
 package com.ab.telugumoviequiz.common;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Point;
 import android.text.TextUtils;
 import android.view.Display;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 
+import com.ab.telugumoviequiz.R;
 import com.ab.telugumoviequiz.help.HelpMessage;
 import com.ab.telugumoviequiz.help.HelpReader;
 import com.ab.telugumoviequiz.help.HelpTopic;
@@ -171,12 +175,27 @@ public class Utils {
         return points;
     }
 
-    public static AlertDialog getProgressDialog(Context context, String waitingMessage) {
+    public static AlertDialog getProgressDialog(Activity parentActivity, String waitingMessage) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(parentActivity);
+        final View customLayout = parentActivity.
+                getLayoutInflater().inflate(R.layout.progress_dialog, null);
+        TextView waitingMsg = customLayout.findViewById(R.id.status_bar_msg);
+        if (waitingMessage != null) {
+            waitingMsg.setText(waitingMessage);
+        }
+        alertDialogBuilder.setView(customLayout);
+
+        // create and show the alert dialog
+        return alertDialogBuilder.create();
+    }
+
+
+    /*public static AlertDialog getProgressDialog(Context context, String waitingMessage) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         //alertDialogBuilder.setTitle("Information");
         alertDialogBuilder.setMessage(waitingMessage).setCancelable(false);
         return alertDialogBuilder.create();
-    }
+    }*/
 
     public static String getHelpMessage(String key, int localeType) {
         String value = HelpReader.getInstance().getString(key, localeType);

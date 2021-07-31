@@ -3,7 +3,6 @@ package com.ab.telugumoviequiz.history;
 import java.util.List;
 
 public class UserHistoryGameDetails {
-	
 	private int total;
 	private boolean isPrevEnabled;
 	private boolean isNextEnabled;

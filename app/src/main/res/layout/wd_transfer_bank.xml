@@ -113,12 +113,13 @@
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
         <Button
-            android:layout_width="wrap_content"
+            style="@style/normalButton"
+            android:layout_marginTop="5dp"
             android:id="@+id/wdBankCreateBut"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@string/wdBankNewReqBut"
-            android:paddingBottom="2dp"
-            android:gravity="center"/>
+            android:gravity="center"
+            android:text="@string/wdBankNewReqBut"/>
     </LinearLayout>
 </ScrollView>

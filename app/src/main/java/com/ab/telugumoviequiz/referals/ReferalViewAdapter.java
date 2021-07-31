@@ -1,5 +1,6 @@
 package com.ab.telugumoviequiz.referals;
 
+import android.annotation.SuppressLint;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,12 +19,12 @@ import java.util.List;
 public class ReferalViewAdapter extends RecyclerView.Adapter<ReferalViewAdapter.MyViewHolder> {
 
     private final List<UserReferal> userReferals;
-    private String[] headings;
+    private final String[] headings;
     static int screenWidth;
     static int screenHeight;
     static int w1, w2, w3;
-    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
-    private String datePattern = "dd:MMM:yyyy:HH:mm";
+    @SuppressLint("SimpleDateFormat")
+    private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
 
     static class MyViewHolder extends RecyclerView.ViewHolder {
         TextView snoView , userNameView, lastSeenView;
@@ -82,22 +83,22 @@ public class ReferalViewAdapter extends RecyclerView.Adapter<ReferalViewAdapter.
             UserReferal userReferal = userReferals.get(position - 1);
 
             holder.snoView.setText(String.valueOf(userReferal.getSno()));
-            holder.snoView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+            //holder.snoView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
             holder.userNameView.setText(userReferal.getUserName());
-            holder.userNameView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+            //holder.userNameView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
 
             Date date = new Date(userReferal.getLastLoggedDate());
+            String datePattern = "dd:MMM:yyyy-HH:mm";
             simpleDateFormat.applyPattern(datePattern);
             String timeStr = simpleDateFormat.format(date);
             holder.lastSeenView.setText(timeStr);
-            holder.lastSeenView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+            //holder.lastSeenView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
 
             holder.snoView.setBackgroundResource(R.drawable.table_content_cell_bg);
             holder.userNameView.setBackgroundResource(R.drawable.table_content_cell_bg);
             holder.lastSeenView.setBackgroundResource(R.drawable.table_content_cell_bg);
         }
     }
-
     @Override
     public int getItemCount() {
         return userReferals.size() + 1;

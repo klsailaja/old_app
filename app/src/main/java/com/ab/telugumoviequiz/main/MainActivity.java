@@ -162,9 +162,9 @@ public class MainActivity extends AppCompatActivity
 
         navigationView = findViewById(R.id.nav_view);
         View hView =  navigationView.getHeaderView(0);
-        TextView nav_userName = (TextView)hView.findViewById(R.id.userNameTxt);
+        TextView nav_userName = hView.findViewById(R.id.userNameTxt);
         nav_userName.setText(UserDetails.getInstance().getUserProfile().getName());
-        TextView nav_mailId = (TextView)hView.findViewById(R.id.userMailId);
+        TextView nav_mailId = hView.findViewById(R.id.userMailId);
         nav_mailId.setText(UserDetails.getInstance().getUserProfile().getEmailAddress());
 
         String successMsg = getIntent().getStringExtra("msg");

@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.telugumoviequiz.R;
 import com.ab.telugumoviequiz.constants.WithdrawReqState;
-import com.ab.telugumoviequiz.constants.WithdrawReqType;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -22,7 +21,7 @@ import java.util.List;
 import static com.ab.telugumoviequiz.withdraw.WithdrawReqsView.CANCEL_BUTTON_ID;
 import static com.ab.telugumoviequiz.withdraw.WithdrawReqsView.MORE_OPTIONS_BUTTON_ID;
 
-public class ViewAdapter extends RecyclerView.Adapter {
+public class ViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final List<WithdrawRequest> data;
     private final String[] headings;
@@ -71,7 +70,7 @@ public class ViewAdapter extends RecyclerView.Adapter {
         this.headings = headings;
         w1 = (screenWidth * 6)/100;
         w2 = (screenWidth * 15)/100;
-        w3 = (screenWidth * 15)/100;
+        w3 = (screenWidth * 19)/100;
         w4 = (screenWidth * 15)/100;
         w5 = (screenWidth * 15)/100;
         w6 = (screenWidth * 20)/100;
@@ -163,7 +162,16 @@ public class ViewAdapter extends RecyclerView.Adapter {
 
             holder.snoView.setText(String.valueOf(wdRequest.getsNo()));
             holder.refIdView.setText(String.valueOf(wdRequest.getRefId()));
-            holder.amtView.setText(String.valueOf(wdRequest.getAmount()));
+
+            String accTypeName = "Main";
+            if (wdRequest.getFromAccType() == 2) {
+                accTypeName = "Winning";
+            } else if (wdRequest.getFromAccType() == 3) {
+                accTypeName = "Referral";
+            }
+            String amtDetails = wdRequest.getAmount() + " from " +
+                    accTypeName;
+            holder.amtView.setText(amtDetails);
 
             String wdState = "OPEN";
             boolean isCancelAllowed = false;
@@ -186,7 +194,7 @@ public class ViewAdapter extends RecyclerView.Adapter {
             holder.moreOptionsButton.setOnClickListener(mClickListener);
 
             Date date = new Date(wdRequest.getOpenedTime());
-            String datePattern = "dd:MMM:yyyy:HH:mm";
+            String datePattern = "dd:MMM:yyyy-HH:mm";
             simpleDateFormat.applyPattern(datePattern);
             String timeStr = simpleDateFormat.format(date);
             holder.openedDateView.setText(timeStr);
@@ -205,6 +213,7 @@ public class ViewAdapter extends RecyclerView.Adapter {
         return data.size() + 1;
     }
 
+    /*
     private long getReceiptContentsId(WithdrawRequest wdRequest) {
         if (wdRequest.getFromAccType() == WithdrawReqType.BY_PHONE.getId()) {
             return wdRequest.getByPhone().getId();
@@ -213,5 +222,5 @@ public class ViewAdapter extends RecyclerView.Adapter {
             return -1;
         }
         return -1;
-    }
+    }*/
 }

@@ -34,6 +34,7 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class TransferBankAccount extends BaseFragment
         implements CallbackResponse, View.OnClickListener, NotifyTextChanged,
@@ -129,7 +130,7 @@ public class TransferBankAccount extends BaseFragment
         if (v instanceof TextInputEditText) {
             if (hasFocus) {
                 TextInputEditText txtInputEdit = (TextInputEditText) v;
-                String compName = txtInputEdit.getHint().toString();
+                String compName = Objects.requireNonNull(txtInputEdit.getHint()).toString();
                 displayErrorAsToast("You are typing " + compName + " details");
             }
         }

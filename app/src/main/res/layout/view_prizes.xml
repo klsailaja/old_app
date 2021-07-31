@@ -30,11 +30,12 @@
         </HorizontalScrollView>
     </ScrollView>
     <Button
+        style="@style/normalButton"
         android:layout_marginBottom="5dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/dialog_close"
-        android:background="@color/colorPrimary"
+        android:background="@drawable/dialog_close"
         android:textColor="@color/whiteTextColor"
         android:id="@+id/user_answers_close_but"
         android:layout_centerInParent="true"

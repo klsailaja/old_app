@@ -29,7 +29,7 @@ public class PaymentOptionsAdapter extends RecyclerView.Adapter<PaymentOptionsAd
         this.listener = listener;
         points = Utils.getScreenWidth(context);
         width = (points[0] * 3)/4;
-        height = (points[1] * 3)/4;
+        height = (points[1] * 4)/4;
     }
 
     static class MyViewHolder extends RecyclerView.ViewHolder {
@@ -44,7 +44,7 @@ public class PaymentOptionsAdapter extends RecyclerView.Adapter<PaymentOptionsAd
             cardView.getLayoutParams().height = height / 2;
 
             accountTypeBut = cardView.findViewById(R.id.gameTypeEntryBut);
-            accountTypeBut.getLayoutParams().width = width / 6;
+            accountTypeBut.getLayoutParams().width = width / 5;
             accountTypeBut.getLayoutParams().height = height / 3;
             accountBalance = cardView.findViewById(R.id.gameTypeEntryName);
         }

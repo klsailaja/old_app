@@ -1,54 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_marginTop="@dimen/view_gap_from_top"
     android:layout_height="match_parent"
-    android:layout_marginTop="50dp"
     android:layout_width="match_parent">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
         <TextView
-            android:textSize="20sp"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
+            style="@style/viewIntroText"
             android:text="@string/transactionview_intro"
             android:id="@+id/wd_intro">
         </TextView>
-        <Button
-            android:layout_marginTop="3dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/filterAccType"
-            android:text="@string/myreferal_more_view_options"
-            android:layout_gravity="start"
-            android:gravity="start"
-            style="@style/normalButton"/>
-        <androidx.recyclerview.widget.RecyclerView
-            android:layout_marginTop="2dp"
-            android:id="@+id/recyclerView"
+        <View
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:background="@color/black"
+            android:layout_height="1dp"/>
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_gravity="center"
-            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <Button
+                android:layout_marginTop="@dimen/filter_layer_text_top_gap"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/filterAccType"
+                android:text="@string/myreferal_more_view_options"
+                android:layout_gravity="start"
+                android:gravity="start"
+                style="@style/normalButton"/>
+            <TextView
+                android:id="@+id/view_total"
+                style="@style/filterLayerText"
+                android:text="@string/common_total_text" />
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            style="@style/viewTable"
+            android:id="@+id/recyclerView" />
+        <LinearLayout
+            style="@style/next_prev_parent"
             android:id="@+id/next_prev_buts">
             <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
                 android:id="@+id/myreferals_prev_but"
-                android:text="@string/prev_data_set"/>
+                android:layout_marginEnd="@dimen/next_prev_but_gap"
+                style="@style/next_prev_but"
+                android:text="@string/prev_data_set"
+                android:contentDescription="@string/prev_data_set" />
             <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
                 android:id="@+id/myreferals_next_but"
-                android:text="@string/next_data_set"/>
+                android:layout_marginStart="@dimen/next_prev_but_gap"
+                style="@style/next_prev_but"
+                android:text="@string/next_data_set"
+                android:contentDescription="@string/next_data_set"/>
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

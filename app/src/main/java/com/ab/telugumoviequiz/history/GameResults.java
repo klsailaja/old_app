@@ -1,7 +1,5 @@
 package com.ab.telugumoviequiz.history;
 
-import java.util.Date;
-
 public class GameResults {
 	
 	private int sNo;
@@ -19,7 +17,7 @@ public class GameResults {
 	public void setsNo(int sNo) {
 		this.sNo = sNo;
 	}
-	
+
 	public int getTktRate() {
 		return tktRate;
 	}
@@ -33,18 +31,21 @@ public class GameResults {
 	public void setGameId(long gameId) {
 		this.gameId = gameId;
 	}
+
 	public long getGamePlayedTime() {
 		return gamePlayedTime;
 	}
 	public void setGamePlayedTime(long gamePlayedTime) {
 		this.gamePlayedTime = gamePlayedTime;
 	}
+
 	public String getCelebrityName() {
 		return celebrityName;
 	}
 	public void setCelebrityName(String celebrityName) {
 		this.celebrityName = celebrityName;
 	}
+
 	public String getWinnersList() {
 		return WinnersList;
 	}

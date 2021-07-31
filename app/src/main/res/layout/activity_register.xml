@@ -32,14 +32,14 @@
                     android:text="@string/new_user_screen_intro"/>
 
             </RelativeLayout>
-            <androidx.cardview.widget.CardView
+            <!--<androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/gap_in_components_medium"
                 app:cardBackgroundColor="@color/black"
-                app:cardCornerRadius="5dp">
+                app:cardCornerRadius="5dp">-->
 
-                <LinearLayout
+            <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="2dp"
@@ -152,7 +152,7 @@
                         android:text="@string/new_user_already_registered"
                         android:layout_marginTop="@dimen/gap_in_components" />
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            <!--</androidx.cardview.widget.CardView>-->
             <TextView
                 android:id="@+id/winMsgs"
                 style="@style/StatusBarMsg"

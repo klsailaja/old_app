@@ -73,8 +73,8 @@
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">20sp</item>
         <item name="fontFamily">Arial</item>
-        <item name="android:background">@color/black</item>
-        <item name="android:textColor">@color/whiteTextColor</item>
+        <item name="android:background">@color/whiteTextColor</item>
+        <item name="android:textColor">@color/colorPrimary</item>
         <item name="android:layout_marginTop">@dimen/statusBarMargin</item>
     </style>
     <!-- edittext style -->
@@ -88,6 +88,12 @@
         <item name="textAllCaps">false</item>
         <item name="android:fontFamily">Arial</item>
         <item name="android:textSize">@dimen/normal_label_left_textsize</item>
+    </style>
+    <style name="listTypeButtons" parent="viewParent">
+        <item name="android:textStyle">bold</item>
+        <item name="textAllCaps">false</item>
+        <item name="android:fontFamily">Arial</item>
+        <item name="android:textSize">@dimen/list_type_textsize</item>
     </style>
     <style name="tableHeaderTextBox">
         <item name="android:layout_width">0dp</item>
@@ -104,5 +110,40 @@
         <item name="android:gravity">center</item>
         <item name="android:textSize">@dimen/wdCancelButTxt</item>
         <item name="android:fontFamily">Arial</item>
+    </style>
+    <style name="viewIntroText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/introduction_text_top_gap</item>
+        <item name="android:layout_marginStart">@dimen/introduction_text_start_gap</item>
+        <item name="android:textSize">@dimen/introduction_text_size</item>
+        <item name="android:fontFamily">Arial</item>
+    </style>
+    <style name="filterLayerText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/filter_layer_text_top_gap</item>
+        <item name="android:layout_marginStart">@dimen/filter_layer_text_start_gap</item>
+        <item name="android:textSize">@dimen/filter_layer_text_size</item>
+        <item name="android:fontFamily">Arial</item>
+    </style>
+    <style name="viewTable">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/table_top_gap</item>
+    </style>
+    <style name="next_prev_parent">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:gravity">center</item>
+    </style>
+    <style name="next_prev_but">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="fontFamily">Arial</item>
+        <item name="android:gravity">center</item>
     </style>
 </resources>

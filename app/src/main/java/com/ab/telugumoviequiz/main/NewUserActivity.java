@@ -96,7 +96,7 @@ public class NewUserActivity extends AppCompatActivity
             PostTask<UserProfile, UserProfile> createUserReq = Request.getCreateUserProfile();
             createUserReq.setCallbackResponse(this);
             createUserReq.setPostObject(userProfile);
-            createUserReq.setActivity(NewUserActivity.this, "Processing. Please Wait!");
+            createUserReq.setActivity(NewUserActivity.this, null);
             Scheduler.getInstance().submit(createUserReq);
         }
     }

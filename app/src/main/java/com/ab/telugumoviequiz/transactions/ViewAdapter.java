@@ -2,7 +2,6 @@ package com.ab.telugumoviequiz.transactions;
 
 import android.annotation.SuppressLint;
 import android.graphics.Color;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,8 +24,8 @@ public class ViewAdapter extends RecyclerView.Adapter<ViewAdapter.MyViewHolder> 
     static int w1, w2, w3, w4, w5, w6, w7, w8;
     @SuppressLint("SimpleDateFormat")
     private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
-    private int creditColor = Color.parseColor("green");
-    private int withdrawColor = Color.parseColor("red");
+    private final int creditColor = Color.parseColor("#FF138C18");
+    private final int withdrawColor = Color.parseColor("#FF0000");
 
     static class MyViewHolder extends RecyclerView.ViewHolder {
         TextView snoView , OBView, accTypeView, amtView, dateView, resultView, comentsView, CBView;
@@ -67,7 +66,6 @@ public class ViewAdapter extends RecyclerView.Adapter<ViewAdapter.MyViewHolder> 
 
     @Override
     public void onBindViewHolder(ViewAdapter.MyViewHolder holder, int position) {
-
         holder.snoView.getLayoutParams().width = w1;
         holder.snoView.getLayoutParams().height = 200;
         holder.OBView.getLayoutParams().width = w2;
@@ -84,18 +82,6 @@ public class ViewAdapter extends RecyclerView.Adapter<ViewAdapter.MyViewHolder> 
         holder.CBView.getLayoutParams().height = 200;
         holder.comentsView.getLayoutParams().width = w8;
         holder.comentsView.getLayoutParams().height = 200;
-
-        /*
-        holder.snoView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
-        holder.OBView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
-        holder.accTypeView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
-        holder.amtView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
-        holder.dateView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
-        holder.resultView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
-        holder.CBView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
-         */
-
-
 
         if (position == 0) {
             holder.snoView.setText(headings[0]);
@@ -116,7 +102,7 @@ public class ViewAdapter extends RecyclerView.Adapter<ViewAdapter.MyViewHolder> 
             holder.comentsView.setBackgroundResource(R.drawable.table_header_cell_bg);
             holder.CBView.setBackgroundResource(R.drawable.table_header_cell_bg);
 
-        } else {
+        } else if (position > 0) {
             MyTransaction myTransaction = myTransactions.get(position - 1);
 
             holder.snoView.setText(String.valueOf(myTransaction.getsNo()));
@@ -134,10 +120,10 @@ public class ViewAdapter extends RecyclerView.Adapter<ViewAdapter.MyViewHolder> 
             if ((myTransaction.getTransactionType() == 1) || (myTransaction.getTransactionType() == 4)
                     || (myTransaction.getTransactionType() == 5)) {
                 signVal = 1; // +
-            } else if ((myTransaction.getTransactionType() == 2) || (myTransaction.getTransactionType() == 3)
+            } /*else if ((myTransaction.getTransactionType() == 2) || (myTransaction.getTransactionType() == 3)
                     || (myTransaction.getTransactionType() == 6)) {
-                signVal = -1; // -
-            }
+                signVal = -1;
+            }*/
 
             int finalAmt = signVal * myTransaction.getAmount();
             String amtStrVal = String.valueOf(finalAmt);
@@ -152,7 +138,7 @@ public class ViewAdapter extends RecyclerView.Adapter<ViewAdapter.MyViewHolder> 
             holder.amtView.setTextColor(textColor);
 
             Date date = new Date(myTransaction.getDate());
-            String datePattern = "dd:MMM:yyyy:HH:mm";
+            String datePattern = "dd:MMM:yyyy-HH:mm";
             simpleDateFormat.applyPattern(datePattern);
             String timeStr = simpleDateFormat.format(date);
             holder.dateView.setText(timeStr);
@@ -166,7 +152,6 @@ public class ViewAdapter extends RecyclerView.Adapter<ViewAdapter.MyViewHolder> 
             holder.resultView.setText(operResult);
             holder.resultView.setTextColor(textColor);
             holder.comentsView.setText(myTransaction.getComment());
-            //holder.comentsView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
             holder.CBView.setText(String.valueOf(myTransaction.getClosingBalance()));
 
             holder.snoView.setBackgroundResource(R.drawable.table_content_cell_bg);

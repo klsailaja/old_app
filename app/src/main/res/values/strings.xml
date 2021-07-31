@@ -148,7 +148,7 @@
     </string-array>
     <string name="prev_data_set" translatable="false">Previous Set</string>
     <string name="next_data_set" translatable="false">Next Set</string>
-    <string name="table_view_col1_xml" translatable="false">Col1</string>
+    <string name="table_view_col1_xml" translatable="false">Col10</string>
     <string name="table_view_col2_xml" translatable="false">Col2</string>
     <string name="table_view_col3_xml" translatable="false">Col3</string>
     <string name="table_view_col4_xml" translatable="false">Col4</string>
@@ -169,7 +169,7 @@
     <string name="transactionview_col4" translatable="false">Amount</string>
     <string name="transactionview_col5" translatable="false">Trans Date</string>
     <string name="transactionview_col6" translatable="false">Result</string>
-    <string name="transactionview_col7" translatable="false">C.B</string>
+    <string name="transactionview_col7" translatable="false">C.B#</string>
     <string name="transactionview_col8" translatable="false">Coments</string>
 
     <!-- User Games History -->
@@ -182,7 +182,7 @@
 
     <!-- Withdraw View -->
     <string name="wd_intro" translatable="false">This view shows the games played the you.</string>
-    <string name="wd_more_view_options" translatable="false">Filter</string>
+    <string name="wd_more_view_options" translatable="false">Filter on Request Status</string>
     <string name="wd_col1" translatable="false">S.No</string>
     <string name="wd_col2" translatable="false">Reference Id#</string>
     <string name="wd_col3" translatable="false">Withdrawn Amount</string>
@@ -214,7 +214,7 @@
         <item>Celebrity Special</item>
     </string-array>
     <string name="chat_send_but" translatable="false">Send Msg</string>
-    <string name="chat_dialog_close" translatable="false">Ok</string>
+    <string name="chat_dialog_close" translatable="false">OK</string>
     <string name="chat_intro_text" translatable="false">These values are valid only for some time as time is running</string>
 
     <!-- View Celebrity Schedule -->
@@ -244,7 +244,7 @@
     <string name="enter_transfer_amount" translatable="false">Enter Transfer Amount</string>
 
     <!--Withdraw Request View-->
-    <string name="wdTransferTo" translatable="false">Select Transfer To</string>
+    <string name="wdTransferTo" translatable="false">Select Transfer To:</string>
     <string name="wdBankTransferAccNum" translatable="false">Beneficiary Account Number</string>
     <string name="wdBankTransferConfirmAccNum" translatable="false">Confirm Beneficiary Account Number</string>
     <string name="wdBankTransferIfscCode" translatable="false">Bank IFSC Code</string>
@@ -264,4 +264,8 @@
     <string name="game_rupee_icon_desc" translatable="false">game_rupee_icon_desc</string>
     <string name="game_screen_users_icon" translatable="false">game_screen_users_icon</string>
     <string name="game_total_winner" translatable="false">Total Winners:</string>
+    <string name="common_total_text" translatable="false">1 - 10 of 100</string>
+    <string name="loading" translatable="false">Loading...</string>
+    <string name="total_prefix" translatable="false">Showing:</string>
+    <string name="receipt_desc" translatable="false">receipt</string>
 </resources>

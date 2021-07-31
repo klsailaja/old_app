@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.PopupMenu;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
@@ -75,7 +76,7 @@ public class WithdrawReqsView extends BaseFragment implements PopupMenu.OnMenuIt
         UserProfile userProfile = UserDetails.getInstance().getUserProfile();
         GetTask<WithdrawRequestsHolder> request = Request.getWDReqs(userProfile.getId(), startPosOffset, wdStatus);
         request.setCallbackResponse(this);
-        request.setActivity(getActivity(), "Processing. Please Wait");
+        request.setActivity(getActivity(), null);
         Scheduler.getInstance().submit(request);
     }
 
@@ -93,6 +94,19 @@ public class WithdrawReqsView extends BaseFragment implements PopupMenu.OnMenuIt
         tableData.clear();
         tableData.addAll(list);
         tableAdapter.notifyDataSetChanged();
+        TextView totalView = view.findViewById(R.id.view_total);
+        String totalPrefix = getResources().getString(R.string.total_prefix);
+        int start;
+        int end;
+        if (details.getTotal() == 0) {
+            start = 0;
+            end = 0;
+        } else {
+            start = startPosOffset + 1;
+            end = startPosOffset + list.size();
+        }
+        String totalStr = totalPrefix + start + " - " + end + " of " + details.getTotal();
+        totalView.setText(totalStr);
     }
 
     @Override
