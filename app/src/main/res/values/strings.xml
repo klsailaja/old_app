@@ -1,7 +1,7 @@
 <resources>
     <!-- Main App -->
     <string name="app_name">TeluguMovieQuiz</string>
-    <string name="base_url" translatable="false">http://192.168.1.2:8080</string>
+    <string name="base_url" translatable="false">http://192.168.43.188:8080</string>
 
     <string name="quiz_screen_server_err" translatable="false">Server Error. Please try after some time</string>
 
@@ -57,7 +57,8 @@
     <string name="menu_history" translatable="false">My Games</string>
     <string name="menu_transactions" translatable="false">My Transactions</string>
     <string name="nav_withdraw_view" translatable="false">Cash Withdraw</string>
-    <string name="menu_wallet" translatable="false">Add Cash</string>
+    <string name="menu_add_money" translatable="false">Add Money</string>
+    <string name="menu_transfer_money" translatable="false">Transfer Money</string>
     <string name="menu_user_profile" translatable="false">My Profile</string>
     <string name="menu_logout" translatable="false">Logout</string>
     <string name="versionLabel" translatable="false">Ver 1.0.0</string>
@@ -205,6 +206,18 @@
     <string name="more_content" translatable="false">More options</string>
     <string name="wd_placed_success" translatable="false">Successfully Placed a Withdraw Request. Money will be credited in 2 to 3 days</string>
     <string name="submit" translatable="false">Submit</string>
+
+    <!--Add Money View-->
+    <string name="add_money_intro" translatable="false">Add Money View introduction</string>
+    <string name="add_money_others_chk_box" translatable="false">Others</string>
+    <string name="add_money_others_text_box" translatable="false">300</string>
+    <string name="add_money_others_text_box_hint" translatable="false">Enter Other Money Amount here</string>
+    <string name="add_money_extra_fees_text" translatable="false">I Agree that there are extra charges for Add Money</string>
+    <string name="add_money_button_text" translatable="false">Add Money</string>
+
+    <!-- Transfer Money View -->
+    <string name="transfer_money_intro" translatable="false">Transfer Money View introduction</string>
+    <string name="transfer_money_others_text_box_hint" translatable="false">Enter Transfer Amount here</string>
 
     <!-- Chat Window -->
     <string name="chat_invite_msg" translatable="false">Form a Chat Invite Msg</string>

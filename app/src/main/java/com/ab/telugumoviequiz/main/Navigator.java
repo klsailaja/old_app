@@ -13,7 +13,8 @@ public interface Navigator {
     String QUESTION_VIEW = "QuestionView";
 
     String HISTORY_VIEW = "HistoryView";
-    String WALLET_VIEW = "WalletView";
+    String ADD_MONEY_VIEW = "AddMoney";
+    String TRANSFER_MONEY_VIEW = "TransferMoney";
     String CHAT_VIEW = "ChatView";
     String REFERRALS_VIEW = "ReferralsView";
     String TRANSACTIONS_VIEW = "TransactionsView";

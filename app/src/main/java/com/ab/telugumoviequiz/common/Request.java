@@ -63,6 +63,7 @@ public class Request {
     public static final int CELEBRITY_SCHEDULE_DETAIS = 4020;
     public static final int TRANSFER_MONEY_REQ = 4030;
     public static final int CREATE_NEW_WD_REQ = 4040;
+    public static final int ADD_MONEY_REQ = 4050;
 
 
     public static PostTask<WithdrawRequestInput, Boolean> createNewWDRequest() {
@@ -149,6 +150,13 @@ public class Request {
         String uri = baseUri + "/game/" + gameId + "/submit";
         return new PostTask<>(uri, SUBMIT_ANSWER_REQ,
                 null, null, String.class);
+    }
+
+    public static PostTask<TransferRequest, Boolean> getLoadMoneyRequest(int amt) {
+        String uri = baseUri + "/money/" + UserDetails.getInstance().getUserProfile().getId()
+                + "/load/" + amt;
+        return new PostTask<>(uri, ADD_MONEY_REQ,
+                null, null, Boolean.class);
     }
     /* Wallet View related */
     public static PostTask<TransferRequest, Boolean> getTransferRequest() {

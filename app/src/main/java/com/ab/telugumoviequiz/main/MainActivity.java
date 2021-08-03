@@ -44,7 +44,8 @@ import com.ab.telugumoviequiz.games.SelectGameTypeView;
 import com.ab.telugumoviequiz.games.ShowGames;
 import com.ab.telugumoviequiz.games.UserAnswer;
 import com.ab.telugumoviequiz.history.HistoryView;
-import com.ab.telugumoviequiz.money.WalletView;
+import com.ab.telugumoviequiz.money.AddMoney;
+import com.ab.telugumoviequiz.money.TransferMoney;
 import com.ab.telugumoviequiz.referals.MyReferralsView;
 import com.ab.telugumoviequiz.transactions.TransactionsView;
 import com.ab.telugumoviequiz.userprofile.UpdateUserProfile;
@@ -282,9 +283,12 @@ public class MainActivity extends AppCompatActivity
             launchView(Navigator.CHAT_VIEW, params, false);
         } else if (id == R.id.nav_user_profile) {
             launchView(Navigator.PROFILE_VIEW, params, false);
-        } else if (id == R.id.nav_wallet) {
-            launchView(Navigator.WALLET_VIEW, params, false);
-        } else if (id == R.id.logout) {
+        } else if (id == R.id.nav_add_money) {
+            launchView(Navigator.ADD_MONEY_VIEW, params, false);
+        } else if (id == R.id.nav_transfer_money) {
+            launchView(Navigator.TRANSFER_MONEY_VIEW, params, false);
+        }
+        else if (id == R.id.logout) {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
             finish();
@@ -381,9 +385,14 @@ public class MainActivity extends AppCompatActivity
                 fragment = new UpdateUserProfile();
                 break;
             }
-            case Navigator.WALLET_VIEW: {
+            case Navigator.ADD_MONEY_VIEW: {
                 stopped = true;
-                fragment = new WalletView();
+                fragment = new AddMoney();
+                break;
+            }
+            case Navigator.TRANSFER_MONEY_VIEW: {
+                stopped = true;
+                fragment = new TransferMoney();
                 break;
             }
             case Navigator.NEW_WITHDRAW_REQUEST: {
@@ -465,6 +474,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void handleResponse(int reqId, boolean exceptionThrown, boolean isAPIException, Object response, Object userObject) {
+        System.out.println("handleResponse" + reqId + ":" + exceptionThrown + ":" + isAPIException + ":" + response);
         boolean isHandled = handleServerError(exceptionThrown, isAPIException, response);
         if (isHandled) {
             return;
@@ -533,6 +543,14 @@ public class MainActivity extends AppCompatActivity
                 return;
             }
             displayInfo(gameCancelMsg, new ShowHomeScreen(this));
+        } else if (reqId == Request.ADD_MONEY_REQ) {
+            Boolean result = (Boolean) response;
+            String msg = "Money added successfully";
+            if (!result) {
+                msg = "Server problem in updating";
+            }
+            displayErrorAsToast(msg);
+            fetchUpdateMoney();
         }
     }
 
