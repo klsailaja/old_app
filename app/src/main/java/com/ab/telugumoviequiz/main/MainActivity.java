@@ -74,9 +74,14 @@ public class MainActivity extends AppCompatActivity
     private MessageListener userMoneyFetchedListener;
 
     public void fetchUpdateMoney() {
+        fetchUpdateMoney(false);
+    }
+
+    public void fetchUpdateMoney(boolean isGameOver) {
         UserProfile userProfile = UserDetails.getInstance().getUserProfile();
         GetTask<UserMoney> fetchMoney = Request.getMoneyTask(userProfile.getId());
         fetchMoney.setCallbackResponse(this);
+        fetchMoney.setHelperObject(isGameOver);
         Scheduler.getInstance().submit(fetchMoney);
     }
 
@@ -474,7 +479,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void handleResponse(int reqId, boolean exceptionThrown, boolean isAPIException, Object response, Object userObject) {
-        System.out.println("handleResponse" + reqId + ":" + exceptionThrown + ":" + isAPIException + ":" + response);
         boolean isHandled = handleServerError(exceptionThrown, isAPIException, response);
         if (isHandled) {
             return;
@@ -487,8 +491,15 @@ public class MainActivity extends AppCompatActivity
         if (reqId == Request.GET_USER_MONEY) {
             UserMoney userMoney = (UserMoney) response;
             UserDetails.getInstance().setUserMoney(userMoney);
+            Boolean isGameOverBoolean = (Boolean) userObject;
             if (userMoneyFetchedListener != null) {
-                this.userMoneyFetchedListener.passData(1000, null);
+                List<String> values = new ArrayList<>();
+                String isGameOver = "0";
+                if (isGameOverBoolean) {
+                    isGameOver = "1";
+                }
+                values.add(isGameOver);
+                this.userMoneyFetchedListener.passData(1000, values);
             }
             Runnable run = () -> {
                 ActionBar mActionBar = getSupportActionBar();

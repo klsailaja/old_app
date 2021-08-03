@@ -15,20 +15,17 @@
                 android:id="@+id/tableInvoices"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="0dp"
                 android:stretchColumns="*">
             </TableLayout>
         </HorizontalScrollView>
     </ScrollView>
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         style="@style/normalButton"
         android:layout_marginBottom="5dp"
-        android:padding="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/dialog_close"
         android:background="@drawable/dialog_close"
-        android:textColor="@color/whiteTextColor"
         android:id="@+id/user_answers_close_but"
         android:layout_centerInParent="true"
         android:layout_alignParentBottom="true" />

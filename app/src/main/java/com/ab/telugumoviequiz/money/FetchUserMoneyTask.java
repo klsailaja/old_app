@@ -11,6 +11,6 @@ public class FetchUserMoneyTask implements Runnable {
 
     @Override
     public void run() {
-        activity.fetchUpdateMoney();
+        activity.fetchUpdateMoney(true);
     }
 }

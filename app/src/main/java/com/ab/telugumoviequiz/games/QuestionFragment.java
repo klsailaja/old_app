@@ -47,9 +47,11 @@ import java.util.Objects;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+
 import static com.ab.telugumoviequiz.common.Constants.GAME_BEFORE_LOCK_PERIOD_IN_MILLIS;
 
-public class QuestionFragment extends BaseFragment implements View.OnClickListener, CallbackResponse, DialogAction {
+public class QuestionFragment extends BaseFragment
+        implements View.OnClickListener, CallbackResponse, DialogAction {
     private GameDetails gameDetails;
     private ProgressBar progressBar;
     private TextView timerView;
@@ -126,7 +128,9 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
 
     @Override
     public void onDestroyView() {
+        System.out.println("In onDestroyView");
         super.onDestroyView();
+        closeAllViews(false);
     }
 
     private void restoreState() {
@@ -234,6 +238,7 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
     public void onPause() {
         super.onPause();
         System.out.println("onPause Called");
+        closeAllViews(false);
         if (gameStatusPollerHandle != null) {
             gameStatusPollerHandle.cancel(true);
         }
@@ -729,6 +734,9 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
     }
 
     private void closeAllViews() {
+        closeAllViews(true);
+    }
+    public void closeAllViews(boolean uiThread) {
         Runnable run = () -> {
             if (myAnsersDialog != null) {
                 myAnsersDialog.dismiss();
@@ -740,7 +748,11 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
                 viewLeaderboard.dismiss();
             }
         };
-        requireActivity().runOnUiThread(run);
+        if (uiThread) {
+            requireActivity().runOnUiThread(run);
+        } else {
+            run.run();
+        }
     }
 
     private void handleShowLeaderBoard(boolean isAPIExceptionThrown, Object response, Object helperObject) {
@@ -923,6 +935,9 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
 
         if (currentTime < (questionStartTime + Constants.SCHEDULE_USER_MONEY_FETCH)) {
             actualStartTime = questionStartTime + Constants.SCHEDULE_USER_MONEY_FETCH - System.currentTimeMillis();
+            MainActivity mainActivity = (MainActivity) getActivity();
+            assert mainActivity != null;
+            mainActivity.setUserMoneyFetchedListener(this);
             scheduler.submit(new FetchUserMoneyTask((MainActivity) getActivity()), actualStartTime, TimeUnit.MILLISECONDS);
         }
     }
@@ -997,4 +1012,18 @@ public class QuestionFragment extends BaseFragment implements View.OnClickListen
         int downSpeed = nc.getLinkDownstreamBandwidthKbps();
         int upSpeed = nc.getLinkUpstreamBandwidthKbps();
     }*/
+
+    @Override
+    public void passData(int reqId, List<String> data) {
+        if (reqId != 1000) {
+            super.passData(reqId, data);
+            return;
+        }
+        if ((data != null) && (data.size() > 0)) {
+            String isGameOverStr = data.get(0);
+            if (isGameOverStr.equalsIgnoreCase("1")) {
+                displayErrorAsToast("Winning Money is updated for winners");
+            }
+        }
+    }
 }
