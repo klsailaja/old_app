@@ -241,6 +241,7 @@
     <string-array name="search_options">
         <item>Game Id</item>
         <item>Game Start Time</item>
+        <item>Ticket Rate</item>>
         <item>Celebrity Name</item>
     </string-array>
     <string name="search_intro_text" translatable="false">Search by:</string>

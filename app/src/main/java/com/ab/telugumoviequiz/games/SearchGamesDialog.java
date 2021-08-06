@@ -28,21 +28,23 @@ public class SearchGamesDialog extends DialogFragment
         implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
     private final int gameMode;
-    private List<String> gameIds, celebrityNames, gameTimes;
+    private List<String> gameIds, celebrityNames, gameTimes, gameRates;
     private Spinner searchColsSpinner;
     private Spinner searchValsSpinner;
     private CheckBox box;
     private String[] searchCols;
-    private ArrayAdapter<String> gameIdsAdapter, celebrityNamesAdapter, gameTimesAdapter;
+    private ArrayAdapter<String> gameIdsAdapter, celebrityNamesAdapter, gameTimesAdapter, gameRatesAdapter;
     private MessageListener listener;
 
     public SearchGamesDialog(int gameMode) {
         this.gameMode = gameMode;
     }
-    public void setData(List<String> gameIds, List<String> celebrityNames, List<String> gameTimes) {
+    public void setData(List<String> gameIds, List<String> celebrityNames,
+                        List<String> gameTimes, List<String> gameRates) {
         this.gameIds = gameIds;
         this.celebrityNames = celebrityNames;
         this.gameTimes = gameTimes;
+        this.gameRates = gameRates;
     }
 
     public void setListener(MessageListener listener) {
@@ -55,9 +57,10 @@ public class SearchGamesDialog extends DialogFragment
         Resources resources = getResources();
         searchCols = resources.getStringArray(R.array.search_options);
         if (gameMode == 1) {
-            String[] keys = new String[2];
+            String[] keys = new String[3];
             keys[0] = searchCols[0];
             keys[1] = searchCols[1];
+            keys[2] = searchCols[2];
             searchCols = keys;
         }
     }
@@ -100,6 +103,10 @@ public class SearchGamesDialog extends DialogFragment
         gameTimesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         gameTimesAdapter.setNotifyOnChange(false);
 
+        gameRatesAdapter = new ArrayAdapter<>(getContext(), R.layout.spinner_list_item, gameRates);
+        gameRatesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        gameRatesAdapter.setNotifyOnChange(false);
+
         searchColsSpinner.setOnItemSelectedListener(this);
         return root;
     }
@@ -121,6 +128,9 @@ public class SearchGamesDialog extends DialogFragment
         } else if (selectedGameType == 1) {
             box.setEnabled(true);
             searchValsSpinner.setAdapter(gameTimesAdapter);
+        } else if (selectedGameType == 2) {
+            box.setEnabled(true);
+            searchValsSpinner.setAdapter(gameRatesAdapter);
         } else {
             searchValsSpinner.setAdapter(celebrityNamesAdapter);
             box.setEnabled(true);

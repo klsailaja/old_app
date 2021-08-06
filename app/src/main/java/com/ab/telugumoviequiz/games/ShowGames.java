@@ -58,6 +58,7 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
     private String searchKey = null, searchValue = null, showFreeGame = null;
     private final List<Long> gameStartTimeLongValues = new ArrayList<>();
     private final List<String> gameStartTimeStrValues = new ArrayList<>();
+    private RecyclerView recyclerView;
 
     public ShowGames() {
         super();
@@ -78,7 +79,7 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.list_games_view, container, false);
-        RecyclerView recyclerView = root.findViewById(R.id.recyclerView);
+        recyclerView = root.findViewById(R.id.recyclerView);
         mAdapter = new GameAdapter(adapterList);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         mLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
@@ -128,6 +129,7 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
             }
             List<String> searchGameIds = new ArrayList<>();
             List<String> celebrityNames = new ArrayList<>();
+            List<String> searchRates = new ArrayList<>();
 
             gameStartTimeLongValues.clear();
             gameStartTimeStrValues.clear();
@@ -135,6 +137,9 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
             lock.readLock().lock();
             for (GameDetails gameDetails : gameDetailsList) {
                 searchGameIds.add(String.valueOf(gameDetails.getTempGameId()));
+                if (!searchRates.contains(String.valueOf(gameDetails.getTicketRate()))) {
+                    searchRates.add(String.valueOf(gameDetails.getTicketRate()));
+                }
 
                 Long searchStartTime = gameDetails.getStartTime();
                 if (!gameStartTimeLongValues.contains(searchStartTime)) {
@@ -158,7 +163,7 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
             lock.readLock().unlock();
 
             SearchGamesDialog searchGamesDialog = new SearchGamesDialog(gameMode);
-            searchGamesDialog.setData(searchGameIds, celebrityNames, gameStartTimeStrValues);
+            searchGamesDialog.setData(searchGameIds, celebrityNames, gameStartTimeStrValues, searchRates);
             searchGamesDialog.setListener(this);
             FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
             searchGamesDialog.show(fragmentManager, "dialog");
@@ -176,7 +181,11 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
             if (parentActivity != null) parentActivity.runOnUiThread(run);
             return;
         }
-        int searchType = 1;
+        int searchType = 4;
+        String[] searchConfiguredKeyValues = getResources().getStringArray(R.array.search_options);
+        if (searchKey.equals(searchConfiguredKeyValues[0])) {
+            searchType = 1;
+        }
         if (searchKey.equals("Celebrity Name")) {
             searchType = 2;
         } else if (searchKey.equals("Game Start Time")) {
@@ -199,13 +208,24 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
                     }
                     filterSet.add(gameDetails);
                 }
-            } else {
+            } else if (searchType == 3) {
                 int startTimeIndex = gameStartTimeStrValues.indexOf(searchValue);
                 if (startTimeIndex == -1) {
                     return;
                 }
                 Long longStartTime = gameStartTimeLongValues.get(startTimeIndex);
                 if (longStartTime == gameDetails.getStartTime()) {
+                    if (showFreeGame != null) {
+                        if (showFreeGame.equals("true")) {
+                            if (gameDetails.getCurrentCount() == 10) {
+                                continue;
+                            }
+                        }
+                    }
+                    filterSet.add(gameDetails);
+                }
+            } else {
+                if (searchValue.equals(String.valueOf(gameDetails.getTicketRate()))) {
                     if (showFreeGame != null) {
                         if (showFreeGame.equals("true")) {
                             if (gameDetails.getCurrentCount() == 10) {
@@ -227,7 +247,15 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
         }
         adapterList.clear();
         adapterList.addAll(filterSet);
-        Runnable run = () -> mAdapter.notifyDataSetChanged();
+        final List<GameDetails> finalFilterSet = filterSet;
+        Runnable run = () -> {
+            mAdapter.notifyDataSetChanged();
+            if (finalFilterSet.size() > 0) {
+                if (recyclerView.getLayoutManager() != null) {
+                    recyclerView.getLayoutManager().scrollToPosition(0);
+                }
+            }
+        };
         Activity parentActivity = getActivity();
         if (parentActivity != null) {
             parentActivity.runOnUiThread(run);
