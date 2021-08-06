@@ -19,10 +19,32 @@
             <TableRow android:padding="2dp"
                 tools:ignore="UselessParent">
                 <LinearLayout
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="25dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_column="1"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/gameIdLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/quiz_right_label"
+                        android:layout_gravity="end"
+                        android:gravity="end"
+                        android:text="@string/gameid_text" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/quiz_right_label"
+                        android:layout_gravity="start"
+                        android:gravity="start"
+                        android:id="@+id/gameid_text_val_id" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_marginTop="25dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_column="2"
                     android:orientation="horizontal">
                     <TextView
                         android:id="@+id/startAtLabel"
@@ -41,10 +63,10 @@
                         android:id="@+id/game_starts_label" />
                 </LinearLayout>
                 <LinearLayout
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="25dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_column="2"
+                    android:layout_column="3"
                     android:orientation="horizontal">
                     <TextView
                         android:id="@+id/usersAtLabel"
@@ -66,21 +88,22 @@
                     android:layout_marginTop="10dp"
                     style="@style/normalButton"
                     android:id="@+id/game_starts_leave_but"
-                    android:layout_column="3"
+                    android:layout_column="4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:background="@drawable/dialog_close"
                     android:gravity="center"
                     android:text="@string/leave_but_text" />
                 <Button
                     android:layout_marginTop="20dp"
                     android:id="@+id/fiftyFifty"
                     style="@style/normalButton"
-                    android:background="@color/lifelines"
-                    android:layout_column="4"
+                    android:layout_column="5"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="1dp"
+                    android:background="@drawable/dialog_close"
                     android:layout_gravity="fill_horizontal"
                     android:gravity="center"
                     android:visibility="gone"
@@ -89,12 +112,12 @@
                     android:layout_marginTop="20dp"
                     android:id="@+id/flipQuestion"
                     style="@style/normalButton"
-                    android:background="@color/lifelines"
-                    android:layout_column="5"
+                    android:layout_column="6"
                     android:layout_margin="1dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="fill_horizontal"
+                    android:background="@drawable/dialog_close"
                     android:gravity="center"
                     android:visibility="gone"
                     android:text="@string/flip_question" />
@@ -102,12 +125,13 @@
                     android:layout_marginTop="20dp"
                     android:id="@+id/moreOptions"
                     style="@style/normalButton"
-                    android:layout_column="6"
+                    android:layout_column="7"
                     android:layout_margin="1dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="fill_horizontal"
                     android:gravity="center"
+                    android:background="@drawable/dialog_close"
                     android:visibility="gone"
                     android:text="@string/more_game_options" />
             </TableRow>

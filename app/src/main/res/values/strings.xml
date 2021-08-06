@@ -75,11 +75,12 @@
     <string name="dialog_close" translatable="false">Close</string>
     <string name="leave_but_text" translatable="false">Leave Game</string>
     <string name="speed_but_text" translatable="false">Network Speed</string>
+    <string name="gameid_text" translatable="false">Game Id:</string>
     <string name="starts_text" translatable="false">Starts At:</string>
     <string name="starts_user_ct" translatable="false">Users:</string>
     <string name="starts_user_ct_val" translatable="false">10</string>
     <string name="timerInitialVal" translatable="false">0</string>
-    <string name="game_start_msg" translatable="false">Game starting soon \n Cannot Leave now</string>
+    <string name="game_start_msg" translatable="false">Game Locked.Cannot Leave.You can check prize details</string>
     <string name="game_rejoin_msg" translatable="false">Successfully Rejoined</string>
     <string name="fifty_fifty" translatable="false">50–50</string>
     <string name="flip_question" translatable="false">Flip Question</string>
@@ -277,6 +278,7 @@
     <string name="game_rupee_icon_desc" translatable="false">game_rupee_icon_desc</string>
     <string name="game_screen_users_icon" translatable="false">game_screen_users_icon</string>
     <string name="game_total_winner" translatable="false">Total Winners:</string>
+    <string name="game_total_players_ct" translatable="false">Total Players:</string>
     <string name="common_total_text" translatable="false">1 - 10 of 100</string>
     <string name="loading" translatable="false">Loading...</string>
     <string name="total_prefix" translatable="false">Showing:</string>

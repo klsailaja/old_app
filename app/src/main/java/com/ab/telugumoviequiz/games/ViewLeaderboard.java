@@ -34,8 +34,9 @@ public class ViewLeaderboard extends DialogFragment implements View.OnClickListe
     private final List<PlayerSummary> list;
     private final Context context;
     private Activity parentActivity;
-    private boolean fromHistory;
-    private int winnerCount;
+    private boolean fromHistory = false;
+    private int winnerCount, playersCount;
+
 
     public ViewLeaderboard(Context context, boolean isGameOver, List<PlayerSummary> list, Activity parentActivity) {
         this.context = context;
@@ -53,6 +54,9 @@ public class ViewLeaderboard extends DialogFragment implements View.OnClickListe
     public void setTotalWinnersCount(int winnersCount) {
         this.winnerCount = winnersCount;
     }
+    public void setTotalPlayersCount(int playersCount) {
+        this.playersCount = playersCount;
+    }
 
     @Override
     public void onCreate(Bundle bundle) {
@@ -63,15 +67,15 @@ public class ViewLeaderboard extends DialogFragment implements View.OnClickListe
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (!fromHistory) {
-            if (getDialog() != null) {
-                getDialog().setTitle("Closes automatically after 15 secs");
-            }
-        }
         View root = inflater.inflate(R.layout.view_prizes, container, false);
         TableLayout tableLayout = root.findViewById(R.id.tableInvoices);
         Button closeButton = root.findViewById(R.id.user_answers_close_but);
         closeButton.setOnClickListener(this);
+
+        TextView currentPlayersCount = root.findViewById(R.id.playerCount);
+        String currentCtLabel = getString(R.string.game_total_players_ct);
+        currentCtLabel = currentCtLabel + playersCount;
+        currentPlayersCount.setText(currentCtLabel);
 
 
         int leftRowMargin=0;
@@ -92,7 +96,7 @@ public class ViewLeaderboard extends DialogFragment implements View.OnClickListe
 
         int highlightTextSizeRowOffset;
         TextView userTextView = null;
-        String winnersBGColor = "#a4c639";
+        String winnersBGColor = "#FF8BC34A";
         int actualWinnersCount = 0;
         for(int i = -1; i < rows; i ++) {
             PlayerSummary row = null;
@@ -104,10 +108,9 @@ public class ViewLeaderboard extends DialogFragment implements View.OnClickListe
                         highlightTextSizeRowOffset = 0;
                         actualWinnersCount++;
                     }
-                } else {
-                    if (row.getUserProfileId() == UserDetails.getInstance().getUserProfile().getId()) {
-                        highlightTextSizeRowOffset = 10;
-                    }
+                }
+                if (row.getUserProfileId() == UserDetails.getInstance().getUserProfile().getId()) {
+                    highlightTextSizeRowOffset = 10;
                 }
             }
             // data columns
@@ -337,6 +340,9 @@ public class ViewLeaderboard extends DialogFragment implements View.OnClickListe
             Window window = dialog.getWindow();
             if (window != null) {
                 window.setLayout(width, height);
+                if (!fromHistory) {
+                    window.setTitle("Closes automatically after 15 secs");
+                }
             }
         }
     }

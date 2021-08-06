@@ -30,9 +30,11 @@ import java.util.List;
 public class ViewPrizeDetails extends DialogFragment implements View.OnClickListener {
     private List<PrizeDetail> list = new ArrayList<>();
     private final Context context;
+    private int playerCount;
 
-    public ViewPrizeDetails(Context context) {
+    public ViewPrizeDetails(Context context, int playerCount) {
         this.context = context;
+        this.playerCount = playerCount;
     }
 
     public void setValues(List<PrizeDetail> list) {
@@ -42,10 +44,6 @@ public class ViewPrizeDetails extends DialogFragment implements View.OnClickList
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
-        /*Bundle data = getArguments();
-        if (data != null) {
-            list = data.getParcelableArrayList("PrizeDetails");
-        }*/
     }
 
     @Override
@@ -59,6 +57,11 @@ public class ViewPrizeDetails extends DialogFragment implements View.OnClickList
         String winnersLabel = getString(R.string.game_total_winner);
         winnersLabel = winnersLabel + list.size();
         totalCountLabel.setText(winnersLabel);
+
+        TextView currentPlayersCount = root.findViewById(R.id.playerCount);
+        String currentCtLabel = getString(R.string.game_total_players_ct);
+        currentCtLabel = currentCtLabel + playerCount;
+        currentPlayersCount.setText(currentCtLabel);
 
         int leftRowMargin=0;
         int topRowMargin=0;
@@ -119,7 +122,7 @@ public class ViewPrizeDetails extends DialogFragment implements View.OnClickList
                 if (row.getPrizeMoney() == 0) {
                     tv2.setText(freeGamePrizeMoney);
                 } else {
-                    tv2.setText(String.valueOf(row.getPrizeMoney()));
+                    tv2.setText(String.valueOf(row.getPrizeMoney()) + " Indian Rupees");
                 }
             }
             // add table row

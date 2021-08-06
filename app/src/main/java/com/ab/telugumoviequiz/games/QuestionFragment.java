@@ -43,10 +43,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-
 
 import static com.ab.telugumoviequiz.common.Constants.GAME_BEFORE_LOCK_PERIOD_IN_MILLIS;
 
@@ -149,16 +147,23 @@ public class QuestionFragment extends BaseFragment
             userAnswers = savedState.getParcelableArrayList(USERANSWERS);
             savedGameDetails = (GameDetails) savedState.getSerializable(GAMEDETAILS);
         }
-
         Bundle bundle = getArguments();
         if (bundle != null) {
             gameDetails = (GameDetails) bundle.getSerializable("gd");
-        }
-        if (gameDetails == null) {
-            gameDetails = savedGameDetails;
+            if (savedGameDetails != null) {
+                if (savedGameDetails.getGameId() != gameDetails.getGameId()) {
+                    fiftyUsed = false;
+                    flipQuestionUsed = false;
+                    userAnswers.clear();
+                    gamePrizeDetails.clear();
+                    gameLeaderBoardDetails.clear();
+                } else {
+                    gameDetails = savedGameDetails;
+                }
+            }
         }
         if (gameDetails != null) {
-            if (gameDetails.getStartTime() >= (gameDetails.getStartTime() + 10 * 60 * 1000)) {
+            if (System.currentTimeMillis() >= (gameDetails.getStartTime() + 10 * 60 * 1000)) {
                 Utils.showMessage("Info", "Game Over", getContext(), this, 100, null);
                 return;
             }
@@ -216,6 +221,8 @@ public class QuestionFragment extends BaseFragment
             GetTask<PrizeDetail[]> getPrizeDetailsReq = Request.getPrizeDetails(gameDetails.getGameId());
             getPrizeDetailsReq.setCallbackResponse(this);
             Scheduler.getInstance().submit(getPrizeDetailsReq);
+            boolean rejoin = true;
+            getPrizeDetailsReq.setHelperObject(rejoin);
 
             timerView.setText("0");
             progressBar.setVisibility(View.INVISIBLE);
@@ -301,7 +308,24 @@ public class QuestionFragment extends BaseFragment
             case R.id.moreOptions: {
                 PopupMenu popupMenu = new PopupMenu(getContext(), v);
                 popupMenu.getMenuInflater().inflate(R.menu.popup, popupMenu.getMenu());
-
+                boolean enable = true;
+                if (userAnswers.size() == 0) {
+                    enable = false;
+                }
+                MenuItem menuItem = popupMenu.getMenu().findItem(R.id.item_my_answers);
+                menuItem.setEnabled(enable);
+                enable = true;
+                if (gameLeaderBoardDetails.size() == 0) {
+                    enable = false;
+                }
+                menuItem = popupMenu.getMenu().findItem(R.id.item_leaderboard);
+                menuItem.setEnabled(enable);
+                enable = true;
+                if (gamePrizeDetails.size() == 0) {
+                    enable = false;
+                }
+                menuItem = popupMenu.getMenu().findItem(R.id.item_prize_money);
+                menuItem.setEnabled(enable);
                 popupMenu.setOnMenuItemClickListener(item -> {
                     switch (item.getItemId()) {
                         case R.id.item_prize_money: {
@@ -313,12 +337,7 @@ public class QuestionFragment extends BaseFragment
                             break;
                         }
                         case R.id.item_leaderboard: {
-                            final Integer currentQuesPos = (Integer) v.getTag();
-                            if (currentQuesPos == null) {
-                                break;
-                            }
-                            Question currentQuestion = gameDetails.getGameQuestions().get(currentQuesPos);
-                            showLeaderBoardView(currentQuestion.getQuestionNumber() == 10);
+                            showLeaderBoardView(false);
                             break;
                         }
                     }
@@ -592,7 +611,10 @@ public class QuestionFragment extends BaseFragment
     }
 
     private void gameLockedMode(View root) {
-        TextView label = Objects.requireNonNull(root).findViewById(R.id.game_starts_label);
+        if (root == null) {
+            return;
+        }
+        TextView label = root.findViewById(R.id.game_starts_label);
         if (label != null) {
             Date date = new Date(gameDetails.getStartTime());
 
@@ -606,6 +628,11 @@ public class QuestionFragment extends BaseFragment
             label.setText(timeStr);
 
             userCountTextLabel = root.findViewById(R.id.starts_user_ct_val);
+
+            TextView gameIdValLabel = root.findViewById(R.id.gameid_text_val_id);
+            if (gameIdValLabel != null) {
+                gameIdValLabel.setText(String.valueOf(gameDetails.getTempGameId()));
+            }
         }
         Button leaveButton = root.findViewById(R.id.game_starts_leave_but);
         if (leaveButton != null) {
@@ -625,10 +652,9 @@ public class QuestionFragment extends BaseFragment
             timerView.setText("0");
             progressBar.setVisibility(View.INVISIBLE);
         }
-        Toast.makeText(getContext(), joinMsg, Toast.LENGTH_SHORT).show();
-
-        //TableLayout tableLayout = Objects.requireNonNull(root).findViewById(R.id.ques_button_panel);
-        //tableLayout.removeAllViews();
+        //Toast.makeText(getContext(), joinMsg, Toast.LENGTH_SHORT).show();
+        TextView gameIdLabel = root.findViewById(R.id.gameIdLabel);
+        TextView gameIdValLabel = root.findViewById(R.id.gameid_text_val_id);
         TextView startAtLabel = root.findViewById(R.id.startAtLabel);
         TextView startAtValLabel = root.findViewById(R.id.game_starts_label);
         TextView usersAtLabel = root.findViewById(R.id.usersAtLabel);
@@ -639,6 +665,8 @@ public class QuestionFragment extends BaseFragment
         changeQues = root.findViewById(R.id.flipQuestion);
         moreOptions = root.findViewById(R.id.moreOptions);
 
+        gameIdLabel.setVisibility(View.GONE);
+        gameIdValLabel.setVisibility(View.GONE);
         startAtLabel.setVisibility(View.GONE);
         startAtValLabel.setVisibility(View.GONE);
         usersAtLabel.setVisibility(View.GONE);
@@ -649,42 +677,6 @@ public class QuestionFragment extends BaseFragment
         changeQues.setVisibility(View.VISIBLE);
         moreOptions.setVisibility(View.VISIBLE);
 
-        /*int id = 1;
-        fiftyFifty = new Button(getContext());
-        fiftyFifty.setId(id);
-        fiftyFifty.setText(R.string.fifty_fifty);
-        fiftyFifty.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
-                TableRow.LayoutParams.WRAP_CONTENT, 0.0f));
-        fiftyFifty.setBackgroundResource(R.color.quesWrong);
-
-        changeQues = new Button(getContext());
-        id++;
-        changeQues.setId(id);
-        changeQues.setText(R.string.flip_question);
-        //changeQues.setTextAppearance(R.style.button);
-        changeQues.setBackgroundResource(R.color.quesWrong);
-        changeQues.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
-                TableRow.LayoutParams.WRAP_CONTENT, 0.0f));
-        changeQues.setPadding(20,20,20,20);
-
-
-        moreOptions = new Button(getContext());
-        id++;
-        moreOptions.setId(id);
-        moreOptions.setText(R.string.more_game_options);
-        moreOptions.setBackgroundResource(R.color.quesWrong);
-        moreOptions.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
-                TableRow.LayoutParams.WRAP_CONTENT, 0.0f));
-
-        TableRow tr = new TableRow(getContext());
-        TableLayout.LayoutParams trParams = new
-                TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT,
-                TableLayout.LayoutParams.WRAP_CONTENT);
-        tr.setLayoutParams(trParams);
-        tr.addView(fiftyFifty);
-        tr.addView(changeQues);
-        tr.addView(moreOptions);
-        tableLayout.addView(tr, trParams);*/
         fiftyFifty.setOnClickListener(this);
         changeQues.setOnClickListener(this);
         moreOptions.setOnClickListener(this);
@@ -692,6 +684,7 @@ public class QuestionFragment extends BaseFragment
         for (TextView textView : buttonsView) {
             textView.setOnClickListener(this);
         }
+        displayErrorAsSnackBar(joinMsg, moreOptions);
     }
     private void quesShowing(boolean isShowing) {
         if (isShowing) {
@@ -779,6 +772,7 @@ public class QuestionFragment extends BaseFragment
             closeAllViews();
             viewLeaderboard = new ViewLeaderboard(getContext(), isGameOver, gameLeaderBoardDetails, getActivity());
             viewLeaderboard.setTotalWinnersCount(gamePrizeDetails.size());
+            viewLeaderboard.setTotalPlayersCount(gameDetails.getCurrentCount());
             FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
             if (!isVisible()) {
                 return;
@@ -793,11 +787,8 @@ public class QuestionFragment extends BaseFragment
             Utils.showMessage("Error", "Prize Details Not Found", getContext(), null);
             return;
         }
-        viewPrizeDetails = new ViewPrizeDetails(getContext());
+        viewPrizeDetails = new ViewPrizeDetails(getContext(), gameDetails.getCurrentCount());
         FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-        /*Bundle myAnswersBundle = new Bundle();
-        myAnswersBundle.putParcelableArrayList("PrizeDetails", gamePrizeDetails);
-        viewPrizeDetails.setArguments(myAnswersBundle);*/
         viewPrizeDetails.setValues(gamePrizeDetails);
         if (!isVisible()) {
             return;
@@ -849,7 +840,7 @@ public class QuestionFragment extends BaseFragment
 
     @SuppressLint("SetTextI18n")
     private void handleSetQuestion(final Question question) {
-        final Integer questionNo = question.getQuestionNumber() - 1;
+        final int questionNo = question.getQuestionNumber() - 1;
         @SuppressLint("SetTextI18n") Runnable run = () -> {
             setTagValueToUIComponents(questionNo);
             closeAllViews();

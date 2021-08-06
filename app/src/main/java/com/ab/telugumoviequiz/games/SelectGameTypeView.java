@@ -18,7 +18,6 @@ import com.ab.telugumoviequiz.main.Navigator;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class SelectGameTypeView extends BaseFragment implements View.OnClickListener {
     private final List<GameTypeModel> modelList = new ArrayList<>();
@@ -46,13 +45,13 @@ public class SelectGameTypeView extends BaseFragment implements View.OnClickList
         modelList.clear();
 
         GameTypeModel typeModel1 = new GameTypeModel();
-        typeModel1.setGameTypeName("Movie Mixture");
-        typeModel1.setCelebrityName("Quiz questions mix of all movies");
+        typeModel1.setGameTypeName("Movie Mix");
+        typeModel1.setCelebrityName("Quiz questions from mix of all movies");
         modelList.add(typeModel1);
 
         GameTypeModel typeModel2 = new GameTypeModel();
         typeModel2.setGameTypeName("Celebrity Special");
-        typeModel2.setCelebrityName("Quiz questions related to celebrity");
+        typeModel2.setCelebrityName("Quiz questions from the celebrity movies");
         modelList.add(typeModel2);
 
         SelectGameTypeAdapter mAdapter = new SelectGameTypeAdapter(modelList, this);
@@ -96,7 +95,7 @@ public class SelectGameTypeView extends BaseFragment implements View.OnClickList
             }
             Bundle params = new Bundle();
             params.putInt(Keys.GAMES_VIEW_GAME_TYPE, gameType);
-            ((Navigator) Objects.requireNonNull(getActivity())).launchView(fragmentName, params, false);
+            ((Navigator) requireActivity()).launchView(fragmentName, params, false);
         }
     }
 }

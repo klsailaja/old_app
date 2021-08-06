@@ -292,6 +292,7 @@ public class ViewMyAnswers extends DialogFragment implements View.OnClickListene
         if (dialog != null) {
             Window window = dialog.getWindow();
             if (window != null) {
+                //window.requestFeature(Window.FEATURE_CUSTOM_TITLE);
                 window.setLayout(width, height);
                 window.setTitle(title);
             }
