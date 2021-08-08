@@ -45,6 +45,7 @@ public class Request {
     public static final int WITHDRAW_RECEIPT = 115;
     public static final int CHAT_BULK_FETCH = 120;
     public static final int POST_CHAT_MSG = 121;
+    public static final int CHAT_MSG_COUNT_FETCH = 125;
     public static final int CHAT_BASIC_GAME_DETAILS_MIX_SET = 122;
     public static final int CHAT_BASIC_GAME_DETAILS_CELEBRITY_SET = 123;
     public static final int GET_USER_MONEY = 130;
@@ -230,6 +231,11 @@ public class Request {
     public static GetTask<Chat[]> getChatMessages(long statTime, long endTime) {
         String uri = baseUri + "/chat/" + statTime + "/" + endTime;
         return new GetTask<>(uri, CHAT_BULK_FETCH, null, Chat[].class, null);
+    }
+
+    public static GetTask<Integer> getChatMsgCount(long statTime, long endTime) {
+        String uri = baseUri + "/chat/count/" + statTime + "/" + endTime;
+        return new GetTask<>(uri, CHAT_MSG_COUNT_FETCH, null, Integer.class, null);
     }
     public static GetTask<ChatGameDetails[]> getMixedGameChatBasicGameDetails(int gameType) {
         String uri = baseUri + "/game/chat/" + gameType;

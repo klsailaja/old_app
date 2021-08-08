@@ -43,7 +43,8 @@
     <dimen name="heading_padding">2dp</dimen>
     <dimen name="game_icon_size">25dp</dimen>
     <dimen name="game_icon_margin_start">5dp</dimen>
-
+    <!--Tool bar Icons-->
+    <dimen name="toolvar_icon_size">40dp</dimen>
     <!-- Navigation Screen -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>

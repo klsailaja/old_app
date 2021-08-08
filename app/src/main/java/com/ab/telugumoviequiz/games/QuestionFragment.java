@@ -13,7 +13,6 @@ import android.widget.Button;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -108,6 +107,7 @@ public class QuestionFragment extends BaseFragment
             }
         }*/
         // Minimise the game screen case end
+        requireActivity().getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         return inflater.inflate(R.layout.activity_question, container, false);
     }
 
@@ -121,7 +121,6 @@ public class QuestionFragment extends BaseFragment
     public void onResume() {
         super.onResume();
         System.out.println("onResume called");
-
     }
 
     @Override
@@ -129,6 +128,7 @@ public class QuestionFragment extends BaseFragment
         System.out.println("In onDestroyView");
         super.onDestroyView();
         closeAllViews(false);
+        requireActivity().getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     private void restoreState() {
@@ -221,8 +221,6 @@ public class QuestionFragment extends BaseFragment
             GetTask<PrizeDetail[]> getPrizeDetailsReq = Request.getPrizeDetails(gameDetails.getGameId());
             getPrizeDetailsReq.setCallbackResponse(this);
             Scheduler.getInstance().submit(getPrizeDetailsReq);
-            boolean rejoin = true;
-            getPrizeDetailsReq.setHelperObject(rejoin);
 
             timerView.setText("0");
             progressBar.setVisibility(View.INVISIBLE);
@@ -314,16 +312,10 @@ public class QuestionFragment extends BaseFragment
                 }
                 MenuItem menuItem = popupMenu.getMenu().findItem(R.id.item_my_answers);
                 menuItem.setEnabled(enable);
-                enable = true;
-                if (gameLeaderBoardDetails.size() == 0) {
-                    enable = false;
-                }
+                enable = gameLeaderBoardDetails.size() != 0;
                 menuItem = popupMenu.getMenu().findItem(R.id.item_leaderboard);
                 menuItem.setEnabled(enable);
-                enable = true;
-                if (gamePrizeDetails.size() == 0) {
-                    enable = false;
-                }
+                enable = gamePrizeDetails.size() != 0;
                 menuItem = popupMenu.getMenu().findItem(R.id.item_prize_money);
                 menuItem.setEnabled(enable);
                 popupMenu.setOnMenuItemClickListener(item -> {
@@ -519,8 +511,7 @@ public class QuestionFragment extends BaseFragment
             case Request.SUBMIT_ANSWER_REQ: {
                 Integer lastAnsQuestionNo = (Integer) helperObject;
                 String submitMsg = "Successfully submitted Question:" + lastAnsQuestionNo + " answer";
-                Runnable run = () -> Toast.makeText(getContext(), submitMsg, Toast.LENGTH_SHORT).show();
-                requireActivity().runOnUiThread(run);
+                displayErrorAsToast(submitMsg);
                 break;
             }
             case Request.LEADER_BOARD: {
@@ -965,6 +956,7 @@ public class QuestionFragment extends BaseFragment
             getPrizeDetailsReq.setCallbackResponse(this);
             Scheduler.getInstance().submit(getPrizeDetailsReq);
         }
+        gameDetails.setCurrentCount(result.getCurrentCount());
         Runnable run = () -> {
             if (userCountTextLabel != null) {
                 userCountTextLabel.setText(String.valueOf(result.getCurrentCount()));

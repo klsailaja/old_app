@@ -4,10 +4,12 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -69,7 +71,8 @@ public class MainActivity extends AppCompatActivity
     public View activityView = null;
     private final Bundle appParams = new Bundle();
     private boolean stopped = false;
-    private ScheduledFuture<?> pollerTask = null;
+    private ScheduledFuture<?> allGamesStatusPollerTask = null;
+    private ScheduledFuture<?> chatMsgCountPollerTask = null;
     private NavigationView navigationView;
     private MessageListener userMoneyFetchedListener;
 
@@ -88,8 +91,11 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onStop() {
         super.onStop();
-        if (pollerTask != null) {
-            pollerTask.cancel(true);
+        if (allGamesStatusPollerTask != null) {
+            allGamesStatusPollerTask.cancel(true);
+        }
+        if (chatMsgCountPollerTask != null) {
+            chatMsgCountPollerTask.cancel(true);
         }
     }
 
@@ -257,7 +263,15 @@ public class MainActivity extends AppCompatActivity
         long initialDelay = startTime - System.currentTimeMillis() - 10 * 1000;
         GetTask<GameStatusHolder> getGamesStatusTask = Request.getFutureGamesStatusTask(-1);
         getGamesStatusTask.setCallbackResponse(this);
-        pollerTask = Scheduler.getInstance().submitRepeatedTask(getGamesStatusTask, initialDelay, 5 * 60 * 1000, TimeUnit.MILLISECONDS);
+        allGamesStatusPollerTask = Scheduler.getInstance().submitRepeatedTask(getGamesStatusTask,
+                initialDelay, 5 * 60 * 1000, TimeUnit.MILLISECONDS);
+
+        long chatEndTime = System.currentTimeMillis();
+        long chatStartTime = chatEndTime - 30 * 1000;
+        GetTask<Integer> getChatMsgCountTask = Request.getChatMsgCount(chatStartTime, chatEndTime);
+        getChatMsgCountTask.setCallbackResponse(this);
+        chatMsgCountPollerTask = Scheduler.getInstance().submitRepeatedTask(getChatMsgCountTask,
+                0, 30, TimeUnit.SECONDS);
 
         launchView(Navigator.CURRENT_GAMES, new Bundle(), false);
     }
@@ -465,7 +479,13 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void displayErrorAsToast(final String errMsg) {
-        Runnable run = () -> Toast.makeText(MainActivity.this, errMsg, Toast.LENGTH_LONG).show();
+        Runnable run = () -> {
+            Toast toast = Toast.makeText(MainActivity.this, errMsg, Toast.LENGTH_LONG);
+            View view = toast.getView();
+            TextView text = view.findViewById(android.R.id.message);
+            text.setTextColor(Color.RED);
+            toast.show();
+        };
         this.runOnUiThread(run);
     }
     public void displayErrorAsSnackBar(final String errMsg, View view) {
@@ -562,6 +582,26 @@ public class MainActivity extends AppCompatActivity
             }
             displayErrorAsToast(msg);
             fetchUpdateMoney();
+        } else if (reqId == Request.CHAT_MSG_COUNT_FETCH) {
+            final Integer msgCount = (Integer) response;
+            int chatImgResourceId = R.drawable.test_chat_bkp;
+            if (msgCount > 0) {
+                chatImgResourceId = R.drawable.new_chat_messages;
+            }
+            ActionBar mActionBar = getSupportActionBar();
+            if (mActionBar != null) {
+                View customView = mActionBar.getCustomView();
+                if (customView != null) {
+                    final ImageView menuBarChatIV = customView.findViewById(R.id.chat);
+                    final int finalImgId = chatImgResourceId;
+                    Runnable run = () -> {
+                        if (menuBarChatIV != null) {
+                            menuBarChatIV.setImageResource(finalImgId);
+                        }
+                    };
+                    this.runOnUiThread(run);
+                }
+            }
         }
     }
 

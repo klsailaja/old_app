@@ -12,8 +12,7 @@
         android:layout_height="match_parent"
         tools:ignore="UselessParent">
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            style="@style/toolbarIconStyle"
             android:layout_column="1"
             android:drawablePadding="5dp"
             android:paddingStart="1dp"
@@ -23,12 +22,11 @@
             android:text="-"
             android:id="@+id/main_refer_money"
             android:textSize="25sp"
-            app:drawableLeftCompat="@drawable/test_refer1" />
+            app:drawableLeftCompat="@drawable/refer_money" />
         <TextView
             android:text="-"
             android:textSize="25sp"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            style="@style/toolbarIconStyle"
             android:paddingStart="1dp"
             android:paddingEnd="10dp"
             android:gravity="center"
@@ -36,7 +34,7 @@
             android:id="@+id/main_win_money"
             android:drawablePadding="5dp"
             android:layout_column="2"
-            app:drawableLeftCompat="@drawable/test_win1" />
+            app:drawableLeftCompat="@drawable/win_money" />
         <TextView
             android:text="-"
             android:textSize="25sp"
@@ -45,32 +43,28 @@
             android:drawablePadding="5dp"
             android:gravity="center"
             android:layout_gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            style="@style/toolbarIconStyle"
             android:id="@+id/main_main_money"
             android:layout_column="3"
-            app:drawableLeftCompat="@drawable/test_wallet2" />
+            app:drawableLeftCompat="@drawable/wallet2_money" />
         <ImageView
-            android:src="@drawable/test_alarm"
+            android:src="@drawable/upcoming"
             android:id="@+id/celebritySchedule"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/toolbarIconStyle"
             android:layout_column="4"
             android:visibility="gone"
             android:contentDescription="@string/chat_msg" />
         <ImageView
-            android:src="@drawable/test_search"
+            android:src="@drawable/search"
             android:id="@+id/search"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/toolbarIconStyle"
             android:layout_column="5"
             android:visibility="gone"
             android:contentDescription="@string/chat_msg" />
         <ImageView
-            android:src="@drawable/test_chat3"
+            android:src="@drawable/test_chat_bkp"
+            style="@style/toolbarIconStyle"
             android:id="@+id/chat"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_column="6"
             android:contentDescription="@string/chat_msg" />
     </TableRow>

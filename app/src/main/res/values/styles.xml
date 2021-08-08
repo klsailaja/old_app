@@ -62,6 +62,11 @@
         <item name="android:colorForeground">@drawable/button_background_blue</item>
         <item name="android:importantForAccessibility">no</item>
     </style>
+    <style name="toolbarIconStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:importantForAccessibility">no</item>
+    </style>
     <style name="CustomDialog" parent="@style/Theme.AppCompat.Light.Dialog">
         <item name="android:windowNoTitle">false</item>
         <item name="android:textSize">15sp</item>
