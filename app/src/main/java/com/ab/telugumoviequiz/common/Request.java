@@ -50,6 +50,7 @@ public class Request {
     public static final int CHAT_BASIC_GAME_DETAILS_CELEBRITY_SET = 123;
     public static final int GET_USER_MONEY = 130;
     public static final int GAME_ENROLLED_STATUS = 131;
+    public static final int TIME_CHECK_ID = 135;
 
     public static final int SHOW_QUESTION = 1000;
     public static final int SHOW_USER_ANSWERS = 2000;
@@ -258,6 +259,12 @@ public class Request {
         String uri = baseUri + "/money/" + userProfileId;
         return new GetTask<>(uri, GET_USER_MONEY, null,
                 UserMoney.class, null);
+    }
+
+    public static GetTask<String> getTimeCheckTask() {
+        String uri = baseUri + "/user/time/" + System.currentTimeMillis();
+        return new GetTask<>(uri, TIME_CHECK_ID, null,
+                String.class, null);
     }
 
 }

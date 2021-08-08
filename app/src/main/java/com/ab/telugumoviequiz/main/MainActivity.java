@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -66,7 +67,7 @@ import java.util.concurrent.TimeUnit;
 
 
 public class MainActivity extends AppCompatActivity
-        implements Navigator, CallbackResponse, MessageListener {
+        implements Navigator, CallbackResponse, MessageListener, DialogAction {
 
     public View activityView = null;
     private final Bundle appParams = new Bundle();
@@ -274,6 +275,10 @@ public class MainActivity extends AppCompatActivity
                 0, 30, TimeUnit.SECONDS);
 
         launchView(Navigator.CURRENT_GAMES, new Bundle(), false);
+
+        GetTask<String> timeCheckTask = Request.getTimeCheckTask();
+        timeCheckTask.setCallbackResponse(this);
+        Scheduler.getInstance().submit(timeCheckTask);
     }
 
     @Override
@@ -291,8 +296,7 @@ public class MainActivity extends AppCompatActivity
             launchView(Navigator.ENROLLED_GAMES, params, false);
         } else if (id == R.id.nav_history_games) {
             launchView(Navigator.HISTORY_VIEW, params, false);
-        }
-        else if (id == R.id.nav_transactions) {
+        } else if (id == R.id.nav_transactions) {
             launchView(Navigator.TRANSACTIONS_VIEW, params, false);
         } else if (id == R.id.nav_referals) {
             launchView(Navigator.REFERRALS_VIEW, params, false);
@@ -306,12 +310,20 @@ public class MainActivity extends AppCompatActivity
             launchView(Navigator.ADD_MONEY_VIEW, params, false);
         } else if (id == R.id.nav_transfer_money) {
             launchView(Navigator.TRANSFER_MONEY_VIEW, params, false);
-        }
-        else if (id == R.id.logout) {
+        } else if (id == R.id.logout) {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
             finish();
+        } else if (id == R.id.share) {
+            Resources resources = getResources();
+            String shareTxt1 = resources.getString(R.string.share_text1);
+            String shareTxt2 = resources.getString(R.string.share_text2);
+            String shareBody = shareTxt1 + shareTxt2 +
+                    UserDetails.getInstance().getUserProfile().getMyReferalId();
+            Utils.showConfirmationMessage("Share with Friends", shareBody, this,
+                    this, 2000, shareBody);
         }
+
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return false;
@@ -602,6 +614,15 @@ public class MainActivity extends AppCompatActivity
                     this.runOnUiThread(run);
                 }
             }
+        } else if (Request.TIME_CHECK_ID == reqId) {
+            String result = (String) response;
+            Resources resources = getResources();
+            String errorMsg = resources.getString(R.string.time_sync_error);
+            if (result.equalsIgnoreCase("false")) {
+                Runnable run = () -> Utils.showMessage("Error", errorMsg,
+                        this, this, 1000, null);
+                this.runOnUiThread(run);
+            }
         }
     }
 
@@ -625,4 +646,21 @@ public class MainActivity extends AppCompatActivity
         System.out.println("Activity onSaveInstanceState ");
         super.onSaveInstanceState(outState);
     }*/
+
+    public void doAction(int calledId, Object userObject) {
+        if (calledId == 2000) {
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.setType("text/plain");
+            String shareSubject = "Quiz App";
+            String shareBody = (String) userObject;
+            shareIntent.putExtra(Intent.EXTRA_SUBJECT, shareSubject);
+            shareIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
+
+            startActivity(Intent.createChooser(shareIntent, "Share Using"));
+        } else if (calledId == 1000) {
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+        }
+    }
 }

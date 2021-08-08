@@ -56,12 +56,13 @@
     <string name="menu_referal" translatable="false">My Referrals</string>
     <string name="menu_history" translatable="false">My Games</string>
     <string name="menu_transactions" translatable="false">My Transactions</string>
-    <string name="nav_withdraw_view" translatable="false">Cash Withdraw</string>
+    <string name="nav_withdraw_view" translatable="false">Money Withdraw</string>
     <string name="menu_add_money" translatable="false">Add Money</string>
     <string name="menu_transfer_money" translatable="false">Transfer Money</string>
     <string name="menu_user_profile" translatable="false">My Profile</string>
     <string name="menu_logout" translatable="false">Logout</string>
     <string name="versionLabel" translatable="false">Ver 1.0.0</string>
+    <string name="share_it" translatable="false">Invite Friends</string>
     <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
     <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
     <string name="nav_header_desc" translatable="false">Navigation header</string>
@@ -284,4 +285,7 @@
     <string name="loading" translatable="false">Loading...</string>
     <string name="total_prefix" translatable="false">Showing:</string>
     <string name="receipt_desc" translatable="false">receipt</string>
+    <string name="share_text1" translatable="false">Download from: </string>
+    <string name="share_text2" translatable="false">Use my Referral Code to register which is: </string>
+    <string name="time_sync_error" translatable="false">Your device time is not in sync with server. Use Network time in clock.Logging you off</string>
 </resources>

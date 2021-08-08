@@ -47,6 +47,9 @@
     <group android:id="@+id/menu_logout"
         android:checkableBehavior="none">
         <item
+            android:id="@+id/share"
+            android:title="@string/share_it" />
+        <item
             android:id="@+id/logout"
             android:title="@string/menu_logout"/>
         <item
