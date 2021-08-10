@@ -1,8 +1,11 @@
 package com.ab.telugumoviequiz.main;
 
 import android.annotation.SuppressLint;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -279,6 +282,14 @@ public class MainActivity extends AppCompatActivity
         GetTask<String> timeCheckTask = Request.getTimeCheckTask();
         timeCheckTask.setCallbackResponse(this);
         Scheduler.getInstance().submit(timeCheckTask);
+
+        /*
+        //The below code is to enable notification. But the notification is not consistent
+        Intent intent = new Intent();
+        intent.setAction("android.intent.action.NOTIFY");
+        this.registerReceiver(new AlertReceiver(), new IntentFilter());
+        startAlarm(true);
+        */
     }
 
     @Override
@@ -661,6 +672,18 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
             finish();
+        }
+    }
+
+    private void startAlarm(boolean enable) {
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, AlertReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        if (enable) {
+            //alarmManager.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 10 * 1000, pendingIntent);
+            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 10 * 1000, pendingIntent);
+        } else {
+            alarmManager.cancel(pendingIntent);
         }
     }
 }

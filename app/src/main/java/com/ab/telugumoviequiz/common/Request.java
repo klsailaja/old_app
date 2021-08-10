@@ -51,6 +51,7 @@ public class Request {
     public static final int GET_USER_MONEY = 130;
     public static final int GAME_ENROLLED_STATUS = 131;
     public static final int TIME_CHECK_ID = 135;
+    public static final int UPCOMING_CELEBRITY_NAMES_ID = 136;
 
     public static final int SHOW_QUESTION = 1000;
     public static final int SHOW_USER_ANSWERS = 2000;
@@ -265,6 +266,12 @@ public class Request {
         String uri = baseUri + "/user/time/" + System.currentTimeMillis();
         return new GetTask<>(uri, TIME_CHECK_ID, null,
                 String.class, null);
+    }
+
+    public static GetTask<String[]> getUpcomingCelebrityNamesTask(int hour) {
+        String uri = baseUri + "/game/upcoming/" + hour;
+        return new GetTask<>(uri, UPCOMING_CELEBRITY_NAMES_ID, null,
+                String[].class, null);
     }
 
 }
