@@ -60,28 +60,29 @@ public class ViewAdapter extends RecyclerView.Adapter<ViewAdapter.MyViewHolder> 
     @Override
     public ViewAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.myreferral_table_item, parent, false);
+                .inflate(R.layout.mytransactions_table_item, parent, false);
         return new ViewAdapter.MyViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(ViewAdapter.MyViewHolder holder, int position) {
+        int cellHeight = 210;
         holder.snoView.getLayoutParams().width = w1;
-        holder.snoView.getLayoutParams().height = 200;
+        holder.snoView.getLayoutParams().height = cellHeight;
         holder.OBView.getLayoutParams().width = w2;
-        holder.OBView.getLayoutParams().height = 200;
+        holder.OBView.getLayoutParams().height = cellHeight;
         holder.accTypeView.getLayoutParams().width = w3;
-        holder.accTypeView.getLayoutParams().height = 200;
+        holder.accTypeView.getLayoutParams().height = cellHeight;
         holder.amtView.getLayoutParams().width = w4;
-        holder.amtView.getLayoutParams().height = 200;
+        holder.amtView.getLayoutParams().height = cellHeight;
         holder.dateView.getLayoutParams().width = w5;
-        holder.dateView.getLayoutParams().height = 200;
+        holder.dateView.getLayoutParams().height = cellHeight;
         holder.resultView.getLayoutParams().width = w6;
-        holder.resultView.getLayoutParams().height = 200;
+        holder.resultView.getLayoutParams().height = cellHeight;
         holder.CBView.getLayoutParams().width = w7;
-        holder.CBView.getLayoutParams().height = 200;
+        holder.CBView.getLayoutParams().height = cellHeight;
         holder.comentsView.getLayoutParams().width = w8;
-        holder.comentsView.getLayoutParams().height = 200;
+        holder.comentsView.getLayoutParams().height = cellHeight;
 
         if (position == 0) {
             holder.snoView.setText(headings[0]);
@@ -115,7 +116,7 @@ public class ViewAdapter extends RecyclerView.Adapter<ViewAdapter.MyViewHolder> 
                 accTypeName = "Referral";
             }
             holder.accTypeView.setText(accTypeName);
-
+            
             int signVal = -1;
             if ((myTransaction.getTransactionType() == 1) || (myTransaction.getTransactionType() == 4)
                     || (myTransaction.getTransactionType() == 5)) {

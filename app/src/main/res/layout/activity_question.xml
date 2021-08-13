@@ -2,7 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
-    android:layout_marginTop="50dp"
+    android:layout_marginTop="@dimen/view_gap_from_top"
     android:layout_width="match_parent">
     <LinearLayout
         android:layout_width="wrap_content"
@@ -11,15 +11,15 @@
         <TableLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="@dimen/margin_top_medium"
             android:stretchColumns="*"
             android:id="@+id/ques_button_panel"
-            android:paddingLeft="2dp"
-            android:paddingRight="2dp">
-            <TableRow android:padding="2dp"
+            android:paddingStart="@dimen/game_table_comp_left_padding"
+            android:paddingEnd="@dimen/game_table_comp_right_padding">
+            <TableRow android:padding="@dimen/game_table_comp_left_padding"
                 tools:ignore="UselessParent">
                 <LinearLayout
-                    android:layout_marginTop="25dp"
+                    android:layout_marginTop="@dimen/game_view_components_top_gap"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_column="1"
@@ -41,7 +41,7 @@
                         android:id="@+id/gameid_text_val_id" />
                 </LinearLayout>
                 <LinearLayout
-                    android:layout_marginTop="25dp"
+                    android:layout_marginTop="@dimen/game_view_components_top_gap"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_column="2"
@@ -63,7 +63,7 @@
                         android:id="@+id/game_starts_label" />
                 </LinearLayout>
                 <LinearLayout
-                    android:layout_marginTop="25dp"
+                    android:layout_marginTop="@dimen/game_view_components_top_gap"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_column="3"
@@ -85,31 +85,31 @@
                         android:id="@+id/starts_user_ct_val" />
                 </LinearLayout>
                 <Button
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="2dp"
                     style="@style/normalButton"
                     android:id="@+id/game_starts_leave_but"
                     android:layout_column="4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:background="@drawable/dialog_close"
+                    android:background="@drawable/round_button"
                     android:gravity="center"
                     android:text="@string/leave_but_text" />
                 <Button
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="@dimen/margin_top_large"
                     android:id="@+id/fiftyFifty"
                     style="@style/normalButton"
                     android:layout_column="5"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="1dp"
-                    android:background="@drawable/dialog_close"
+                    android:background="@drawable/round_button"
                     android:layout_gravity="fill_horizontal"
                     android:gravity="center"
                     android:visibility="gone"
                     android:text="@string/fifty_fifty" />
                 <Button
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="@dimen/margin_top_large"
                     android:id="@+id/flipQuestion"
                     style="@style/normalButton"
                     android:layout_column="6"
@@ -117,12 +117,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="fill_horizontal"
-                    android:background="@drawable/dialog_close"
+                    android:background="@drawable/round_button"
                     android:gravity="center"
                     android:visibility="gone"
                     android:text="@string/flip_question" />
                 <Button
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="@dimen/margin_top_large"
                     android:id="@+id/moreOptions"
                     style="@style/normalButton"
                     android:layout_column="7"
@@ -131,7 +131,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="fill_horizontal"
                     android:gravity="center"
-                    android:background="@drawable/dialog_close"
+                    android:background="@drawable/round_button"
                     android:visibility="gone"
                     android:text="@string/more_game_options" />
             </TableRow>
@@ -159,72 +159,72 @@
                 android:layout_width="wrap_content" />
         </RelativeLayout>
         <TextView
-            android:textSize="25sp"
+            android:textSize="@dimen/game_view_question_label_text_size"
             android:text="@string/ques_initial_text"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:background="@color/quesBG"
             android:textColor="@color/whiteTextColor"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="@dimen/margin_top_small"
             android:id="@+id/questionView" />
         <LinearLayout
             android:orientation="horizontal"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:layout_marginTop="2dp">
+            android:layout_marginTop="@dimen/game_view_options_top_gap">
             <TextView
                 android:gravity="center"
-                android:textSize="25sp"
+                android:textSize="@dimen/game_view_question_label_text_size"
                 android:clickable="true"
                 android:id="@+id/optionA"
                 android:layout_weight="1"
-                android:layout_height="50dp"
+                android:layout_height="@dimen/game_view_options_height"
                 android:layout_width="match_parent"
                 android:background="@color/quesBG"
                 android:textColor="@color/whiteTextColor"
-                android:layout_margin="2dp"
+                android:layout_margin="@dimen/game_view_options_margin"
                 android:focusable="true" />
             <TextView
                 android:gravity="center"
-                android:textSize="25sp"
+                android:textSize="@dimen/game_view_question_label_text_size"
                 android:clickable="true"
                 android:id="@+id/optionB"
                 android:layout_weight="1"
-                android:layout_height="50dp"
+                android:layout_height="@dimen/game_view_options_height"
                 android:layout_width="match_parent"
                 android:background="@color/quesBG"
                 android:textColor="@color/whiteTextColor"
-                android:layout_margin="2dp"
+                android:layout_margin="@dimen/game_view_options_margin"
                 android:focusable="true" />
         </LinearLayout>
         <LinearLayout
             android:orientation="horizontal"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:layout_marginTop="2dp">
+            android:layout_marginTop="@dimen/game_view_options_top_gap">
             <TextView
                 android:gravity="center"
                 android:clickable="true"
-                android:textSize="25sp"
+                android:textSize="@dimen/game_view_question_label_text_size"
                 android:textColor="@color/whiteTextColor"
                 android:id="@+id/optionC"
                 android:layout_weight="1"
-                android:layout_height="50dp"
+                android:layout_height="@dimen/game_view_options_height"
                 android:layout_width="match_parent"
                 android:background="@color/quesBG"
-                android:layout_margin="2dp"
+                android:layout_margin="@dimen/game_view_options_margin"
                 android:focusable="true" />
             <TextView
                 android:gravity="center"
                 android:clickable="true"
-                android:textSize="25sp"
+                android:textSize="@dimen/game_view_question_label_text_size"
                 android:textColor="@color/whiteTextColor"
                 android:id="@+id/optionD"
                 android:layout_weight="1"
-                android:layout_height="50dp"
+                android:layout_height="@dimen/game_view_options_height"
                 android:layout_width="match_parent"
                 android:background="@color/quesBG"
-                android:layout_margin="2dp"
+                android:layout_margin="@dimen/game_view_options_margin"
                 android:focusable="true" />
         </LinearLayout>
     </LinearLayout>

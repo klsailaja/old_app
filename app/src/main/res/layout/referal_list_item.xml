@@ -10,7 +10,7 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:text="@string/table_view_col1_xml"
-        android:textSize="15sp" />
+        android:textSize="@dimen/referral_table_data_text_size1" />
     <TextView
         android:id="@+id/col2"
         android:layout_width="200dp"
@@ -18,7 +18,7 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:text="@string/table_view_col2_xml"
-        android:textSize="15sp" />
+        android:textSize="@dimen/referral_table_data_text_size1" />
 
     <TextView
         android:id="@+id/col3"
@@ -27,7 +27,7 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:text="@string/table_view_col3_xml"
-        android:textSize="15sp" />
+        android:textSize="@dimen/referral_table_data_text_size1" />
     <TextView
         android:id="@+id/col4"
         android:layout_width="1px"
@@ -35,7 +35,7 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:text="@string/table_view_col4_xml"
-        android:textSize="15sp" />
+        android:textSize="@dimen/referral_table_data_text_size1" />
     <TextView
         android:id="@+id/col5"
         android:layout_width="1px"
@@ -43,7 +43,7 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:text="@string/table_view_col5_xml"
-        android:textSize="15sp" />
+        android:textSize="@dimen/referral_table_data_text_size1" />
     <TextView
         android:id="@+id/col6"
         android:layout_width="1px"
@@ -51,7 +51,7 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:text="@string/table_view_col6_xml"
-        android:textSize="15sp" />
+        android:textSize="@dimen/referral_table_data_text_size1" />
     <TextView
         android:id="@+id/col7"
         android:layout_width="1px"
@@ -59,7 +59,7 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:text="@string/table_view_col7_xml"
-        android:textSize="15sp" />
+        android:textSize="@dimen/referral_table_data_text_size1" />
     <TextView
         android:id="@+id/col8"
         android:layout_width="1px"
@@ -67,5 +67,5 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:text="@string/table_view_col8_xml"
-        android:textSize="15sp" />
+        android:textSize="@dimen/referral_table_data_text_size2" />
 </LinearLayout>

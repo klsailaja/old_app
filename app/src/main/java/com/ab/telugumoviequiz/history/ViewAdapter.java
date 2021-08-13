@@ -63,17 +63,18 @@ public class ViewAdapter extends RecyclerView.Adapter<ViewAdapter.MyViewHolder> 
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
+        int cellHeight = 150;
 
         holder.snoView.getLayoutParams().width = w1;
-        holder.snoView.getLayoutParams().height = 150;
+        holder.snoView.getLayoutParams().height = cellHeight;
         holder.dateView.getLayoutParams().width = w2;
-        holder.dateView.getLayoutParams().height = 150;
+        holder.dateView.getLayoutParams().height = cellHeight;
         holder.tktRateView.getLayoutParams().width = w3;
-        holder.tktRateView.getLayoutParams().height = 150;
+        holder.tktRateView.getLayoutParams().height = cellHeight;
         holder.celebrityView.getLayoutParams().width = w4;
-        holder.celebrityView.getLayoutParams().height = 150;
+        holder.celebrityView.getLayoutParams().height = cellHeight;
         holder.viewResultsView.getLayoutParams().width = w5;
-        holder.viewResultsView.getLayoutParams().height = 150;
+        holder.viewResultsView.getLayoutParams().height = cellHeight;
 
         if (position == 0) {
             holder.snoView.setText(headings[0]);

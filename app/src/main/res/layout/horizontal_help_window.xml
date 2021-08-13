@@ -10,13 +10,13 @@
         android:layout_height="match_parent">
         <WebView
             android:id="@+id/webview"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </HorizontalScrollView>
     <CheckBox
         android:id="@+id/checkbox1"
         android:layout_above="@+id/helpCloseBut"
-        android:text="Do not show me next time"
+        android:text="@string/help_check_box_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"

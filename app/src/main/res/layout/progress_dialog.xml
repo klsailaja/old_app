@@ -8,15 +8,15 @@
         style="?android:attr/progressBarStyleSmall"
         android:layout_gravity="center"
         android:gravity="center"
-        android:minHeight="50dp"
-        android:minWidth="50dp"
+        android:minHeight="@dimen/progress_bar_min_height"
+        android:minWidth="@dimen/progress_bar_min_width"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:indeterminateTint="@color/colorPrimary"
         android:indeterminate="false" />
     <TextView
         android:id="@+id/status_bar_msg"
-        android:layout_margin="10dp"
+        android:layout_margin="@dimen/progress_bar_gap_to_textiew"
         android:layout_gravity="center"
         android:gravity="center"
         android:layout_width="wrap_content"

@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="@dimen/new_user_top_padding">
+            android:padding="@dimen/user_register_main_heading_padding">
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -41,7 +41,7 @@
             <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="2dp"
+                    android:layout_margin="@dimen/user_register_comps_top_margin"
                     android:orientation="vertical">
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
@@ -108,15 +108,16 @@
                         <Button
                             android:layout_width="0dp"
                             android:layout_weight="0.3"
+                            android:background="@drawable/round_button"
                             style="@style/normalButton"
                             android:gravity="center"
                             android:layout_gravity="center"
-                            android:textSize="@dimen/small_label_left_textsize"
+                            android:textSize="@dimen/user_register_read_more_text_size"
                             android:layout_height="wrap_content"
                             android:text="@string/referral_code_more_info" />
                     </LinearLayout>
                     <LinearLayout
-                        android:layout_marginTop="@dimen/gap_in_components_medium"
+                        android:layout_marginTop="@dimen/margin_top_medium"
                         android:orientation="horizontal"
                         style="@style/parent">
                         <CheckBox
@@ -129,14 +130,15 @@
                             android:layout_height="wrap_content"
                             android:id="@+id/termsConditionsText"
                             android:text="@string/terms_conditions"
-                            android:textSize="@dimen/textBoxSize"
+                            android:textSize="@dimen/login_forgot_passwd_text_size"
                             android:textColor="@color/impInfo" />
                     </LinearLayout>
                     <Button
                         style="@style/normalButton"
-                        android:layout_marginTop="@dimen/gap_in_components_less"
+                        android:layout_marginTop="@dimen/margin_top_small"
                         android:id="@+id/registerButton"
                         android:layout_width="wrap_content"
+                        android:background="@drawable/round_button"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:gravity="center"
@@ -146,10 +148,10 @@
                         android:id="@+id/viewLoginPageBut"
                         android:textAlignment="center"
                         android:textStyle="bold"
-                        android:textSize="@dimen/textBoxSize"
+                        android:textSize="@dimen/login_forgot_passwd_text_size"
                         android:textColor="@color/colorPrimary"
                         android:text="@string/new_user_already_registered"
-                        android:layout_marginTop="@dimen/gap_in_components" />
+                        android:layout_marginTop="@dimen/margin_top_large"/>
                 </LinearLayout>
             <!--</androidx.cardview.widget.CardView>-->
             <TextView

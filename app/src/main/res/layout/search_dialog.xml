@@ -18,8 +18,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
+        android:layout_marginTop="@dimen/search_spinner_comps_top_margin"
+        android:layout_marginBottom="@dimen/search_spinner_comps_bottom_margin"
         android:gravity="center"
         android:baselineAligned="false">
         <Spinner
@@ -46,7 +46,7 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="@dimen/search_buttons_top_margin"
         android:orientation="horizontal">
 
         <Button
@@ -54,7 +54,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_margin="5dp"
+            android:layout_margin="@dimen/search_buttons_between_margin"
             android:gravity="center"
             android:text="@string/search_txt"
             tools:ignore="ButtonStyle" />
@@ -64,7 +64,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_margin="5dp"
+            android:layout_margin="@dimen/search_buttons_between_margin"
             android:gravity="center"
             android:text="@string/clear_txt"
             tools:ignore="ButtonStyle" />
@@ -74,7 +74,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_margin="5dp"
+            android:layout_margin="@dimen/search_buttons_between_margin"
             android:gravity="center"
             android:text="@string/close_but"
             tools:ignore="ButtonStyle" />

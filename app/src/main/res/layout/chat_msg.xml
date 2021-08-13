@@ -15,16 +15,16 @@
     <RelativeLayout
         android:layout_gravity="center"
         android:gravity="center"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="@dimen/chat_msg_window_top_margin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <Spinner
             android:id="@+id/gameTypeSpinner"
-            android:layout_width="250dp"
+            android:layout_width="@dimen/spinner_width"
             android:layout_height="wrap_content" />
         <Spinner
             android:id="@+id/rateSpinner"
-            android:layout_width="250dp"
+            android:layout_width="@dimen/spinner_width"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/gameTypeSpinner"
             android:layout_toEndOf="@+id/gameTypeSpinner" />
@@ -33,22 +33,22 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:layout_width="match_parent"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="@dimen/chat_msg_window_top_margin"
         android:layout_height="wrap_content">
         <Spinner
             android:id="@+id/gameTimeSpinner"
-            android:layout_width="250dp"
+            android:layout_width="@dimen/spinner_width"
             android:layout_height="wrap_content" />
         <Spinner
             android:id="@+id/gameIdSpinner"
-            android:layout_width="250dp"
+            android:layout_width="@dimen/spinner_width"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/gameTimeSpinner"
             android:layout_toEndOf="@+id/gameTimeSpinner" />
     </RelativeLayout>
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="@dimen/margin_top_large"
         android:layout_height="wrap_content">
         <Button
             android:layout_width="wrap_content"

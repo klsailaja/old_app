@@ -24,12 +24,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/gap_in_components_less"
+                android:layout_marginTop="@dimen/margin_top_small"
                 android:gravity="center_horizontal"
                 android:orientation="horizontal">
                 <TextView
                     android:id="@+id/transferFrmTxtVw"
-                    android:layout_width="200dp"
+                    android:layout_width="@dimen/transfer_money_text_box_width"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
                     android:gravity="start"
@@ -38,20 +38,20 @@
                     android:layout_gravity="center_horizontal"
                     android:gravity="center_horizontal"
                     android:id="@+id/transferFromSpin"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:layout_width="200dp"
-                    android:layout_height="60dp" />
+                    android:layout_marginStart="@dimen/margin_top_small"
+                    android:layout_marginEnd="@dimen/margin_top_small"
+                    android:layout_width="@dimen/transfer_money_spinner_width"
+                    android:layout_height="@dimen/transfer_spinner_height" />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/gap_in_components_less"
+                android:layout_marginTop="@dimen/margin_top_small"
                 android:gravity="center_horizontal"
                 android:orientation="horizontal">
                 <TextView
-                    android:layout_width="200dp"
+                    android:layout_width="@dimen/transfer_money_text_box_width"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
                     android:gravity="start"
@@ -60,10 +60,10 @@
                     android:layout_gravity="center_horizontal"
                     android:gravity="center_horizontal"
                     android:id="@+id/transferToSpin"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:layout_width="200dp"
-                    android:layout_height="60dp" />
+                    android:layout_marginStart="@dimen/margin_top_small"
+                    android:layout_marginEnd="@dimen/margin_top_small"
+                    android:layout_width="@dimen/transfer_money_spinner_width"
+                    android:layout_height="@dimen/transfer_spinner_height" />
             </LinearLayout>
             <LinearLayout
                 android:layout_margin="@dimen/gap_in_components_less"
@@ -86,14 +86,14 @@
             </LinearLayout>
             <Button
                 style="@style/normalButton"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginTop="@dimen/gap_in_components_less"
+                android:layout_marginBottom="@dimen/gap_in_components_medium"
                 android:id="@+id/transferAmtBut"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:background="@drawable/dialog_close"
+                android:background="@drawable/round_button"
                 android:text="@string/transferAmtButTxt" />
         </LinearLayout>
         <View
@@ -102,7 +102,7 @@
             android:layout_height="2dp"/>
         <androidx.recyclerview.widget.RecyclerView
             android:layout_marginTop="@dimen/gap_in_components_medium"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="@dimen/margin_top_large"
             android:layout_gravity="center_horizontal"
             android:gravity="center_horizontal"
             android:id="@+id/moneyListView"

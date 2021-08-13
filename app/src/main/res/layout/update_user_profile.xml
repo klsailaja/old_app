@@ -2,7 +2,7 @@
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/scrollView"
-    android:layout_marginTop="60dp"
+    android:layout_marginTop="@dimen/update_user_profile_gap_from_top"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <LinearLayout
@@ -19,7 +19,7 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
+                android:layout_margin="@dimen/margin_top_small"
                 android:layout_weight="0.4"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
@@ -35,7 +35,7 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="0dp"
                 android:layout_weight="0.4"
-                android:layout_margin="5dp"
+                android:layout_margin="@dimen/margin_top_small"
                 android:enabled="false"
                 android:layout_height="wrap_content"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
@@ -56,7 +56,7 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
+                android:layout_margin="@dimen/margin_top_small"
                 android:layout_weight="0.4"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
@@ -72,7 +72,7 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="0dp"
                 android:layout_weight="0.4"
-                android:layout_margin="5dp"
+                android:layout_margin="@dimen/margin_top_small"
                 android:layout_height="wrap_content"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
                 <com.google.android.material.textfield.TextInputEditText
@@ -93,7 +93,7 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="0dp"
                 android:layout_weight="1.0"
-                android:layout_margin="5dp"
+                android:layout_margin="@dimen/margin_top_small"
                 android:layout_height="wrap_content"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
                 <com.google.android.material.textfield.TextInputEditText
@@ -113,7 +113,7 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
+                android:layout_margin="@dimen/margin_top_small"
                 android:layout_weight="0.4"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
@@ -129,7 +129,7 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="0dp"
                 android:layout_weight="0.4"
-                android:layout_margin="5dp"
+                android:layout_margin="@dimen/margin_top_small"
                 android:layout_height="wrap_content"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
                 <com.google.android.material.textfield.TextInputEditText
@@ -143,7 +143,8 @@
         </LinearLayout>
         <Button
             style="@style/normalButton"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="@dimen/margin_top_small"
+            android:layout_marginBottom="@dimen/margin_top_medium"
             android:id="@+id/changeButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

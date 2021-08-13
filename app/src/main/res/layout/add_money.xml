@@ -16,7 +16,7 @@
             android:background="@color/black"
             android:layout_height="1dp"/>
         <androidx.recyclerview.widget.RecyclerView
-            android:layout_marginTop="@dimen/gap_in_components_less"
+            android:layout_marginTop="@dimen/margin_top_small"
             android:layout_gravity="center_horizontal"
             android:gravity="center_horizontal"
             android:id="@+id/moneyButtons"
@@ -24,7 +24,7 @@
             android:layout_height="wrap_content" />
 
         <LinearLayout
-            android:layout_margin="@dimen/gap_in_components_less"
+            android:layout_margin="@dimen/margin_top_small"
             android:orientation="horizontal"
             style="@style/parent">
             <com.google.android.material.textfield.TextInputLayout
@@ -42,7 +42,7 @@
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
         <LinearLayout
-            android:layout_marginTop="2dp"
+            android:layout_marginTop="@dimen/game_view_options_top_gap"
             android:orientation="horizontal"
             style="@style/parent">
             <CheckBox
@@ -50,29 +50,29 @@
                 android:text="@string/add_money_extra_fees_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/textBoxSize"
+                android:textSize="@dimen/login_forgot_passwd_text_size"
                 android:textColor="@color/impInfo"
                 android:checked="false"/>
         </LinearLayout>
         <Button
             style="@style/normalButton"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginTop="@dimen/add_money_view_margin_top"
+            android:layout_marginBottom="@dimen/add_money_view_margin_bottom"
             android:id="@+id/addBut"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
             android:enabled="false"
-            android:background="@drawable/dialog_close"
+            android:background="@drawable/round_button"
             android:text="@string/add_money_button_text" />
         <View
             android:layout_width="match_parent"
             android:background="@color/black"
             android:layout_height="1dp"/>
         <androidx.recyclerview.widget.RecyclerView
-            android:layout_marginTop="@dimen/gap_in_components_medium"
-            android:layout_marginBottom="20dp"
+            android:layout_marginTop="@dimen/list_view_margin_top"
+            android:layout_marginBottom="@dimen/list_view_margin_bottom"
             android:layout_gravity="center_horizontal"
             android:gravity="center_horizontal"
             android:id="@+id/moneyListView"

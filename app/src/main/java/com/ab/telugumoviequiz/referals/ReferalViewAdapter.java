@@ -1,7 +1,6 @@
 package com.ab.telugumoviequiz.referals;
 
 import android.annotation.SuppressLint;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,7 +59,7 @@ public class ReferalViewAdapter extends RecyclerView.Adapter<ReferalViewAdapter.
     @Override
     public ReferalViewAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.table_list_item, parent, false);
+                .inflate(R.layout.referal_list_item, parent, false);
         return new ReferalViewAdapter.MyViewHolder(itemView);
     }
 

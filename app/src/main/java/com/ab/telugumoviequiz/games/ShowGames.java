@@ -80,7 +80,8 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
             Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.list_games_view, container, false);
         recyclerView = root.findViewById(R.id.recyclerView);
-        mAdapter = new GameAdapter(adapterList);
+        mAdapter = new GameAdapter();
+        mAdapter.setGameDetailsList(adapterList);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         mLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         recyclerView.setLayoutManager(mLayoutManager);
@@ -97,7 +98,7 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
         if (R.id.card_entry_join == viewId) {
             String tagName = (String) view.getTag();
             int pos = Integer.parseInt(tagName);
-            GameDetails quesGameDetails = gameDetailsList.get(pos);
+            GameDetails quesGameDetails = adapterList.get(pos);
 
             int tktRate = quesGameDetails.getTicketRate();
             if (tktRate == 0) {
@@ -176,7 +177,11 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
             filterSet = gameDetailsList;
             adapterList.clear();
             adapterList.addAll(filterSet);
-            Runnable run = () -> mAdapter.notifyDataSetChanged();
+            final List<GameDetails> finalFilterSet = filterSet;
+            Runnable run = () -> {
+                mAdapter.setGameDetailsList(finalFilterSet);
+                mAdapter.notifyDataSetChanged();
+            };
             Activity parentActivity = getActivity();
             if (parentActivity != null) parentActivity.runOnUiThread(run);
             return;
@@ -249,6 +254,7 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
         adapterList.addAll(filterSet);
         final List<GameDetails> finalFilterSet = filterSet;
         Runnable run = () -> {
+            mAdapter.setGameDetailsList(finalFilterSet);
             mAdapter.notifyDataSetChanged();
             if (finalFilterSet.size() > 0) {
                 if (recyclerView.getLayoutManager() != null) {

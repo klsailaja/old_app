@@ -19,7 +19,7 @@ import java.util.List;
 
 public class GameAdapter extends RecyclerView.Adapter<GameAdapter.MyViewHolder> {
 
-    private final List<GameDetails> gameDetailsList;
+    private List<GameDetails> gameDetailsList;
 
     private final StringBuffer stringBuffer = new StringBuffer();
 
@@ -44,7 +44,10 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.MyViewHolder> 
         }
     }
 
-    public GameAdapter(List<GameDetails> gameDetailsList) {
+    public GameAdapter() {
+    }
+
+    public void setGameDetailsList(List<GameDetails> gameDetailsList) {
         this.gameDetailsList = gameDetailsList;
     }
 

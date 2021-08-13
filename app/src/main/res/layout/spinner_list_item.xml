@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="?android:listPreferredItemHeightLarge"
     android:textAppearance="?android:attr/textAppearanceMedium"
-    android:padding="10dp"
-    android:textSize="18sp"
+    android:padding="@dimen/spinner_row_value_padding"
+    android:textSize="@dimen/spinner_row_value_text_size"
     android:textStyle="bold"
     android:textColor="@color/black"
     android:maxLines="1" />

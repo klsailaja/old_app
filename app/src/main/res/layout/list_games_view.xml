@@ -3,10 +3,10 @@
     android:id="@+id/rlMain"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="@dimen/dialog_view_gap_from_top"
+    android:layout_marginTop="@dimen/view_gap_from_top"
     android:orientation="vertical">
     <androidx.recyclerview.widget.RecyclerView
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="@dimen/game_recyle_view_top_margin"
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

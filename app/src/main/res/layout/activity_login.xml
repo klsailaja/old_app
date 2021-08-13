@@ -17,7 +17,7 @@
         tools:ignore="UselessParent">
         <LinearLayout
             android:layout_width="match_parent"
-            android:padding="@dimen/login_screen_top_to_intro_text"
+            android:padding="@dimen/login_heading_label_padding"
             android:layout_height="wrap_content"
             android:orientation="vertical">
             <RelativeLayout
@@ -31,7 +31,7 @@
             </RelativeLayout>
             <EditText
                 android:id="@+id/editTextEmail"
-                android:layout_marginTop="@dimen/gap_in_components"
+                android:layout_marginTop="@dimen/margin_top_large"
                 style="@style/normalTextBox"
                 android:inputType="textEmailAddress"
                 android:layout_width="match_parent"
@@ -42,7 +42,7 @@
                 android:autofillHints="" />
             <EditText
                 android:id="@+id/editTextPassword"
-                android:layout_marginTop="@dimen/gap_in_components"
+                android:layout_marginTop="@dimen/margin_top_large"
                 style="@style/normalTextBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -56,11 +56,11 @@
                 android:id="@+id/forgotPasswordBut"
                 android:text="@string/login_screen_forgot_password"
                 android:textColor="@color/colorPrimary"
-                android:textSize="@dimen/textBoxSize"
+                android:textSize="@dimen/login_forgot_passwd_text_size"
                 android:layout_gravity="end"
-                android:layout_marginTop="@dimen/gap_in_components_medium"/>
+                android:layout_marginTop="@dimen/margin_top_medium"/>
             <LinearLayout
-                android:layout_marginTop="@dimen/gap_in_components"
+                android:layout_marginTop="@dimen/margin_top_large"
                 android:orientation="horizontal"
                 style="@style/parent">
                 <CheckBox
@@ -73,13 +73,14 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/termsConditionsText"
                     android:text="@string/terms_conditions"
-                    android:textSize="@dimen/textBoxSize"
+                    android:textSize="@dimen/login_forgot_passwd_text_size"
                     android:textColor="@color/impInfo" />
             </LinearLayout>
             <Button
                 style="@style/normalButton"
                 android:layout_marginTop="5dp"
                 android:id="@+id/loginBut"
+                android:background="@drawable/round_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -91,9 +92,9 @@
                 android:textAlignment="center"
                 android:textStyle="bold"
                 android:textColor="@color/colorPrimary"
-                android:textSize="@dimen/textBoxSize"
+                android:textSize="@dimen/login_forgot_passwd_text_size"
                 android:text="@string/login_screen_new_user_register_now"
-                android:layout_marginTop="@dimen/loginViewsMargin"/>
+                android:layout_marginTop="@dimen/margin_top_large"/>
             <TextView
                 android:id="@+id/winMsgs"
                 style="@style/StatusBarMsg"

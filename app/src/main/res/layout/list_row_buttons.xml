@@ -3,13 +3,13 @@
     android:id="@+id/gameCardEntry"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="5dp">
+    android:layout_margin="@dimen/game_join_button_top_margin">
     <Button
         style="@style/normalButton"
         android:id="@+id/list_money_button"
         android:layout_width="match_parent"
         android:layout_gravity="center"
-        android:background="@drawable/dialog_close"
+        android:background="@drawable/round_button"
         android:gravity="center"
         android:layout_height="wrap_content"/>
 </androidx.cardview.widget.CardView>
