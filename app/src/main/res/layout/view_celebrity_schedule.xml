@@ -10,13 +10,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="5dp"
+            android:layout_marginStart="@dimen/view_celebrity_screen_gap_between_comps_medium"
+            android:layout_marginEnd="@dimen/view_celebrity_screen_gap_between_comps_medium"
             android:text="@string/celebrity_name"/>
         <Spinner
             android:id="@+id/celebritySpinner"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="5dp"
+            android:layout_marginStart="@dimen/view_celebrity_screen_gap_between_comps_medium"
+            android:layout_marginEnd="@dimen/view_celebrity_screen_gap_between_comps_medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <Button
@@ -24,8 +24,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginStart="3dp"
-            android:layout_marginEnd="3dp"
+            android:layout_marginStart="@dimen/view_celebrity_screen_gap_between_comps_small"
+            android:layout_marginEnd="@dimen/view_celebrity_screen_gap_between_comps_small"
             android:text="@string/showNextTimeSlot"/>
     </LinearLayout>
     <RelativeLayout

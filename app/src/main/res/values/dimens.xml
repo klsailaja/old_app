@@ -13,7 +13,7 @@
     <dimen name="small_label_left_textsize">10sp</dimen>
     <dimen name="top_gap_from_action_bar">50dp</dimen>
 
-    <dimen name="tableHeaderTextBoxTextSize">15sp</dimen>
+
     <dimen name="wdCancelButTxt">12sp</dimen>
     <dimen name="next_prev_gap">5dp</dimen>
 
@@ -147,6 +147,22 @@
     <!--User Answers-->
     <dimen name="user_answers_table_header_text_size">50</dimen>
     <dimen name="user_answers_table_data_text_size">50</dimen>
-
-
+    <!--View Celebrity Schedule View-->
+    <dimen name="view_celebrity_screen_gap_between_comps_medium">5dp</dimen>
+    <dimen name="view_celebrity_screen_gap_between_comps_small">3dp</dimen>
+    <!-- View Prizes -->
+    <dimen name="view_prizes_total_label_text_size">18sp</dimen>
+    <!--Wallet View -->
+    <dimen name="wallet_view_list_view_item_text_size1">18sp</dimen>
+    <dimen name="wallet_view_list_view_item_text_size2">14sp</dimen>
+    <dimen name="wallet_view_gap_from_top">55dp</dimen>
+    <dimen name="wallet_view_add_money_start_gap">2dp</dimen>
+    <dimen name="wallet_view_gap_to_components">20dp</dimen>
+    <dimen name="wallet_view_gap_to_components_medium">10dp</dimen>
+    <dimen name="wallet_view_gap_to_components_tiny">2dp</dimen>
+    <!--Withdraw Money View-->
+    <dimen name="wd_label_text_size">18sp</dimen>
+    <dimen name="wd_label_height">70dp</dimen>
+    <dimen name="wd_money_spinner_width">200dp</dimen>
+    <dimen name="tableHeaderTextBoxTextSize">15sp</dimen>
 </resources>

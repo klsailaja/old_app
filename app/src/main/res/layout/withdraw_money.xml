@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <LinearLayout
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="@dimen/wallet_view_gap_to_components"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -19,17 +19,17 @@
                 android:gravity="start"
                 android:text="@string/wdTransferTo"
                 android:textStyle="bold"
-                android:textSize="18sp"
+                android:textSize="@dimen/wd_label_text_size"
                 android:layout_width="wrap_content"
-                android:layout_height="70dp"/>
+                android:layout_height="@dimen/wd_label_height"/>
             <Spinner
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginLeft="@dimen/margin_top_medium"
+                android:layout_marginRight="@dimen/margin_top_medium"
                 android:id="@+id/wdTransferTypes"
-                android:layout_width="200dp"
-                android:layout_height="70dp" />
+                android:layout_width="@dimen/wd_money_spinner_width"
+                android:layout_height="@dimen/wd_label_height" />
         </LinearLayout>
         <FrameLayout
             android:id="@+id/content1"

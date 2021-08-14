@@ -62,7 +62,7 @@
             app:backgroundTint="@color/colorPrimary"
             android:src="@drawable/add"
             android:contentDescription="@string/submit"
-            android:layout_margin="10dp" />
+            android:layout_margin="@dimen/margin_top_medium" />
         <TextView
             android:id="@+id/winMsgs"
             style="@style/StatusBarMsg"
