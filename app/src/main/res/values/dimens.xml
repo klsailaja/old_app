@@ -150,6 +150,8 @@
     <!--View Celebrity Schedule View-->
     <dimen name="view_celebrity_screen_gap_between_comps_medium">5dp</dimen>
     <dimen name="view_celebrity_screen_gap_between_comps_small">3dp</dimen>
+    <dimen name="view_celebrity_screen_header_text_size">50</dimen>
+    <dimen name="view_celebrity_screen_data_text_size">30</dimen>
     <!-- View Prizes -->
     <dimen name="view_prizes_total_label_text_size">18sp</dimen>
     <!--Wallet View -->

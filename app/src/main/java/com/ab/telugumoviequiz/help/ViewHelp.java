@@ -113,12 +113,16 @@ public class ViewHelp extends DialogFragment implements MessageListener {
 
         String colorName = "black";
         for (HelpTopic topic : topics) {
+            stringBuilder.append("<font size=\"3\" face=\"arial\" color=\"");
+            stringBuilder.append("black");
+            stringBuilder.append("\"");
+            stringBuilder.append("</font>");
             stringBuilder.append("<h3>");
             stringBuilder.append(topic.getTopicHeading());
             stringBuilder.append("</h3>");
             stringBuilder.append("<ul>");
             for (HelpMessage helpMessage : topic.getTopicMessages()) {
-                //colorName = "black";
+                colorName = "black";
                 if (helpMessage.getMsgSeverity() == 1) {
                     colorName = "black";
                 }
@@ -128,6 +132,20 @@ public class ViewHelp extends DialogFragment implements MessageListener {
                 stringBuilder.append("</font>");
                 stringBuilder.append("<li>");
                 stringBuilder.append(helpMessage.getMessage());
+                if (helpMessage.getSecondLevelMessages().size() > 0) {
+                    System.out.println("Rajasekhar second.....");
+                    stringBuilder.append("<ul>");
+                    for (HelpMessage secondLevelMsgs : helpMessage.getSecondLevelMessages()) {
+                        stringBuilder.append("<font size=\"3\" face=\"arial\" color=\"");
+                        stringBuilder.append("red");
+                        stringBuilder.append("\"");
+                        stringBuilder.append("</font>");
+                        stringBuilder.append("<li>");
+                        stringBuilder.append(secondLevelMsgs.getMessage());
+                        stringBuilder.append("</li>");
+                    }
+                    stringBuilder.append("</ul>");
+                }
                 stringBuilder.append("</li>");
             }
             stringBuilder.append("</ul>");

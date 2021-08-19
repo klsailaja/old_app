@@ -97,13 +97,20 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             List<String> helpKeys = new ArrayList<>();
             helpKeys.add("topic_name1");
             helpKeys.add("topic_name2");
+            helpKeys.add("topic_name3");
+            helpKeys.add("topic_name4");
+            helpKeys.add("topic_name5");
+            helpKeys.add("topic_name6");
+            helpKeys.add("topic_name7");
+            helpKeys.add("topic_name8");
+            helpKeys.add("topic_name9");
             List<HelpTopic> loginHelpLocalTopics = Utils.getHelpTopics(helpKeys, 1);
             List<HelpTopic> loginHelpEnglishTopics = Utils.getHelpTopics(helpKeys, 2);
 
             ViewHelp viewHelp = new ViewHelp(loginHelpLocalTopics,
                     loginHelpEnglishTopics, ViewHelp.HORIZONTAL, HelpPreferences.TERMS_CONDITIONS);
             viewHelp.setLocalMainHeading("Main Heading Telugu");
-            viewHelp.setEnglishMainHeading("Main Heading English");
+            viewHelp.setEnglishMainHeading("Terms And Conditions");
             Utils.clearState();
             FragmentManager fragmentManager = this.getSupportFragmentManager();
             viewHelp.show(fragmentManager, "dialog");

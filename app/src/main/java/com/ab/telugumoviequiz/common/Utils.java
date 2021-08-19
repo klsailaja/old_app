@@ -224,7 +224,26 @@ public class Utils {
                 } catch (NumberFormatException ex) {
                     pointSeverityValueInt = 1;
                 }
+                int secondIndex = 1;
+                List<HelpMessage> secondLevelMsgs = new ArrayList<>();
+                while (secondIndex <= 100) {
+                   String subPointStrKey = pointStrKey + "_second" + secondIndex;
+                   System.out.println("subPointStrKey is : " + subPointStrKey);
+                   String subPointStrValue = getHelpMessage(subPointStrKey, localeType);
+                   if (subPointStrValue.length() == 0) {
+                       System.out.println("subPointStrKey is break: " + subPointStrKey);
+                       break;
+                   }
+                   HelpMessage topicSecondLevelMessages = new HelpMessage(subPointStrValue, 1);
+                   secondLevelMsgs.add(topicSecondLevelMessages);
+                   secondIndex++;
+                }
                 HelpMessage topicHelpMsg = new HelpMessage(pointStrValue, pointSeverityValueInt);
+                topicHelpMsg.setSecondLevelMessages(secondLevelMsgs);
+                System.out.println("Raj Sailu Hasini..." + secondLevelMsgs);
+                if (secondLevelMsgs.size() > 0) {
+                    System.out.println("Raj Sailu Hasini..." + secondLevelMsgs);
+                }
                 topicHelpMessages.add(topicHelpMsg);
                 index++;
             }

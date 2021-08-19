@@ -26,6 +26,8 @@
             android:layout_gravity="center"
             android:layout_marginStart="@dimen/view_celebrity_screen_gap_between_comps_small"
             android:layout_marginEnd="@dimen/view_celebrity_screen_gap_between_comps_small"
+            style="@style/normalButton"
+            android:background="@drawable/round_button"
             android:text="@string/showNextTimeSlot"/>
     </LinearLayout>
     <RelativeLayout
@@ -49,6 +51,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/dialog_close"
+            android:background="@drawable/round_button"
             android:id="@+id/user_answers_close_but"
             android:layout_centerInParent="true"
             android:layout_alignParentBottom="true" />

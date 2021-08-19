@@ -236,7 +236,7 @@
     <string name="col1" translatable="false">Game Time#</string>
     <string name="col2" translatable="false">Celebrities List</string>
     <string name="celebrity_name" translatable="false">Celebrity Name</string>
-    <string name="showNextTimeSlot" translatable="false">Show Next ComingUp Game Time</string>
+    <string name="showNextTimeSlot" translatable="false">Show Next Game Time</string>
 
     <!-- Search Dialog-->
     <string-array name="search_options">
@@ -293,5 +293,5 @@
     <string name="chat_ex_msg_time" translatable="false">10:05 pm</string>
     <string name="chat_heading_msg_time" translatable="false">10:10 am</string>
     <string name="chat_formed_chat_msg" translatable="false">Your Chat Message Appears Here</string>
-    <string name="help_check_box_text">Do not show me next time</string>
+    <string name="help_check_box_text" translatable="false">Do not show me next time</string>
 </resources>
