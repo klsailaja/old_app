@@ -14,6 +14,7 @@ import androidx.fragment.app.FragmentManager;
 import com.ab.telugumoviequiz.R;
 import com.ab.telugumoviequiz.common.CallbackResponse;
 import com.ab.telugumoviequiz.common.DialogAction;
+import com.ab.telugumoviequiz.common.Keys;
 import com.ab.telugumoviequiz.common.MessageListener;
 import com.ab.telugumoviequiz.common.NotifyTextChanged;
 import com.ab.telugumoviequiz.common.PATextWatcher;
@@ -42,6 +43,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         setContentView(R.layout.activity_login);
         Request.baseUri = getString(R.string.base_url);
+        int isCalledFromMain = getIntent().getIntExtra(Keys.LOGIN_SCREEN_CALLED_FROM_LOGOUT, 0);
+        if (isCalledFromMain == 1) {
+            showHelpWindow();
+        }
     }
 
     @Override
@@ -200,6 +205,27 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         } else if (viewId == R.id.editTextPassword) {
             validatePasswd();
         }
+    }
+
+    private void showHelpWindow() {
+        int isSet = HelpPreferences.getInstance().readPreference(getBaseContext(), HelpPreferences.LOGOUT_TIPS);
+        if (isSet == 1) {
+            return;
+        }
+        List<String> helpKeys = new ArrayList<>();
+        helpKeys.add("topic_name1");
+        helpKeys.add("topic_name2");
+        helpKeys.add("topic_name3");
+        List<HelpTopic> loginHelpLocalTopics = Utils.getHelpTopics(helpKeys, 1);
+        List<HelpTopic> loginHelpEnglishTopics = Utils.getHelpTopics(helpKeys, 2);
+
+        ViewHelp viewHelp = new ViewHelp(loginHelpLocalTopics,
+                loginHelpEnglishTopics, ViewHelp.HORIZONTAL, HelpPreferences.WITHDRAW_TIPS);
+        viewHelp.setLocalMainHeading("Main Heading Telugu");
+        viewHelp.setEnglishMainHeading("Terms And Conditions");
+        Utils.clearState();
+        FragmentManager fragmentManager = this.getSupportFragmentManager();
+        viewHelp.show(fragmentManager, "dialog");
     }
 
     private boolean validateTermsConditions() {

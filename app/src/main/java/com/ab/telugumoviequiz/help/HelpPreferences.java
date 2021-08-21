@@ -8,11 +8,12 @@ public class HelpPreferences {
     private static HelpPreferences instance;
     private final String fileName = "HelpPreferences";
 
-    public static final String TERMS_CONDITIONS = "termsconditions";
-    public static final String REFERRAL_INFO = "referral_info";
-    public static final String BEFORE_GAME_INFO = "before_game_info";
-    public static final String WITHDRAW_INFO = "withdraw_info";
-
+    public static final String TERMS_CONDITIONS = "TermsConditions";
+    public static final String HOME_SCREEN_GENERAL_GAME_RULES = "HomeScreenGameRules";
+    public static final String GAME_TIPS = "GameTips";
+    public static final String WITHDRAW_TIPS = "WithdrawTips";
+    public static final String REFERRAL_INFO = "ReferralInfo";
+    public static final String LOGOUT_TIPS = "LogoutTips";
 
     private HelpPreferences() {
     }

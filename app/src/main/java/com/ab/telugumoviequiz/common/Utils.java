@@ -211,8 +211,8 @@ public class Utils {
             int index = 1;
             List<HelpMessage> topicHelpMessages = new ArrayList<>();
             while (index <= 100) {
-                String pointStrKey = helpTopicKeyStr + "_point" + index;
-                String pointSeverityKey = helpTopicKeyStr + "_point" + index + "_severity";
+                String pointStrKey = helpTopicKeyStr + "_pt" + index;
+                String pointSeverityKey = helpTopicKeyStr + "_pt" + index + "_s";
                 String pointStrValue = getHelpMessage(pointStrKey, localeType);
                 if (pointStrValue.length() == 0) {
                     break;
@@ -227,14 +227,22 @@ public class Utils {
                 int secondIndex = 1;
                 List<HelpMessage> secondLevelMsgs = new ArrayList<>();
                 while (secondIndex <= 100) {
-                   String subPointStrKey = pointStrKey + "_second" + secondIndex;
+                   String subPointStrKey = pointStrKey + "_sec" + secondIndex;
+                   String subPointSeverityKey = subPointStrKey + index + "_s";
                    System.out.println("subPointStrKey is : " + subPointStrKey);
                    String subPointStrValue = getHelpMessage(subPointStrKey, localeType);
                    if (subPointStrValue.length() == 0) {
                        System.out.println("subPointStrKey is break: " + subPointStrKey);
                        break;
                    }
-                   HelpMessage topicSecondLevelMessages = new HelpMessage(subPointStrValue, 1);
+                   String secondSeverityValue = getHelpMessage(subPointSeverityKey, localeType);
+                   int secondSeverityValueInt;
+                   try {
+                       secondSeverityValueInt = Integer.parseInt(secondSeverityValue);
+                   } catch (NumberFormatException ex) {
+                       secondSeverityValueInt = 1;
+                   }
+                   HelpMessage topicSecondLevelMessages = new HelpMessage(subPointStrValue, secondSeverityValueInt);
                    secondLevelMsgs.add(topicSecondLevelMessages);
                    secondIndex++;
                 }

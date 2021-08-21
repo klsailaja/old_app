@@ -52,9 +52,11 @@ public class HelpFragment extends Fragment implements View.OnClickListener {
         Context context = getContext();
         if (context != null) {
             CheckBox checkBox = view.findViewById(R.id.checkbox1);
-            int state = HelpPreferences.getInstance().readPreference(context,
-                    helpPreferencesKey);
-            checkBox.setChecked(state == 1);
+            if (helpPreferencesKey.equals(HelpPreferences.TERMS_CONDITIONS)) {
+                checkBox.setVisibility(View.GONE);
+            } else {
+                checkBox.setVisibility(View.VISIBLE);
+            }
         }
         return view;
     }

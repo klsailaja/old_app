@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 import com.ab.telugumoviequiz.R;
 import com.ab.telugumoviequiz.common.CallbackResponse;
@@ -23,8 +24,12 @@ import com.ab.telugumoviequiz.common.Scheduler;
 import com.ab.telugumoviequiz.common.UserDetails;
 import com.ab.telugumoviequiz.common.Utils;
 import com.ab.telugumoviequiz.common.WinMsgHandler;
+import com.ab.telugumoviequiz.help.HelpPreferences;
+import com.ab.telugumoviequiz.help.HelpTopic;
+import com.ab.telugumoviequiz.help.ViewHelp;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.ab.telugumoviequiz.R.*;
@@ -98,6 +103,25 @@ public class NewUserActivity extends AppCompatActivity
             createUserReq.setPostObject(userProfile);
             createUserReq.setActivity(NewUserActivity.this, null);
             Scheduler.getInstance().submit(createUserReq);
+        } else if (viewId == id.referralReadMore) {
+            int isSet = HelpPreferences.getInstance().readPreference(getBaseContext(), HelpPreferences.REFERRAL_INFO);
+            if (isSet == 1) {
+                return;
+            }
+            List<String> helpKeys = new ArrayList<>();
+            helpKeys.add("topic_name1");
+            helpKeys.add("topic_name2");
+            helpKeys.add("topic_name3");
+            List<HelpTopic> loginHelpLocalTopics = Utils.getHelpTopics(helpKeys, 1);
+            List<HelpTopic> loginHelpEnglishTopics = Utils.getHelpTopics(helpKeys, 2);
+
+            ViewHelp viewHelp = new ViewHelp(loginHelpLocalTopics,
+                    loginHelpEnglishTopics, ViewHelp.HORIZONTAL, HelpPreferences.REFERRAL_INFO);
+            viewHelp.setLocalMainHeading("Main Heading Telugu");
+            viewHelp.setEnglishMainHeading("Terms And Conditions");
+            Utils.clearState();
+            FragmentManager fragmentManager = this.getSupportFragmentManager();
+            viewHelp.show(fragmentManager, "dialog");
         }
     }
 
@@ -251,6 +275,9 @@ public class NewUserActivity extends AppCompatActivity
 
         TextView viewLoginPageBut = findViewById(id.viewLoginPageBut);
         viewLoginPageBut.setOnClickListener(listener);
+
+        Button referralReadMore = findViewById(id.referralReadMore);
+        referralReadMore.setOnClickListener(listener);
     }
 
     private boolean validateReferalCode() {

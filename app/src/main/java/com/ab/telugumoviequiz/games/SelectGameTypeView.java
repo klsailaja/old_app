@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,6 +15,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.ab.telugumoviequiz.R;
 import com.ab.telugumoviequiz.common.BaseFragment;
 import com.ab.telugumoviequiz.common.Keys;
+import com.ab.telugumoviequiz.common.Utils;
+import com.ab.telugumoviequiz.help.HelpPreferences;
+import com.ab.telugumoviequiz.help.HelpTopic;
+import com.ab.telugumoviequiz.help.ViewHelp;
 import com.ab.telugumoviequiz.main.Navigator;
 
 import java.util.ArrayList;
@@ -68,7 +73,29 @@ public class SelectGameTypeView extends BaseFragment implements View.OnClickList
                 Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
             }
         }
+        showHelpWindow();
         return root;
+    }
+
+    private void showHelpWindow() {
+        int isSet = HelpPreferences.getInstance().readPreference(requireContext(), HelpPreferences.HOME_SCREEN_GENERAL_GAME_RULES);
+        if (isSet == 1) {
+            return;
+        }
+        List<String> helpKeys = new ArrayList<>();
+        helpKeys.add("topic_name1");
+        helpKeys.add("topic_name2");
+        helpKeys.add("topic_name3");
+        List<HelpTopic> loginHelpLocalTopics = Utils.getHelpTopics(helpKeys, 1);
+        List<HelpTopic> loginHelpEnglishTopics = Utils.getHelpTopics(helpKeys, 2);
+
+        ViewHelp viewHelp = new ViewHelp(loginHelpLocalTopics,
+                loginHelpEnglishTopics, ViewHelp.HORIZONTAL, HelpPreferences.HOME_SCREEN_GENERAL_GAME_RULES);
+        viewHelp.setLocalMainHeading("Main Heading Telugu");
+        viewHelp.setEnglishMainHeading("Terms And Conditions");
+        Utils.clearState();
+        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+        viewHelp.show(fragmentManager, "dialog");
     }
 
     @Override

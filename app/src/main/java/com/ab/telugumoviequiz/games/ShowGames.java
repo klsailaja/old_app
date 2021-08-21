@@ -26,7 +26,11 @@ import com.ab.telugumoviequiz.common.Request;
 import com.ab.telugumoviequiz.common.Scheduler;
 import com.ab.telugumoviequiz.common.ShowHomeScreen;
 import com.ab.telugumoviequiz.common.UserDetails;
+import com.ab.telugumoviequiz.common.Utils;
 import com.ab.telugumoviequiz.constants.UserMoneyAccountType;
+import com.ab.telugumoviequiz.help.HelpPreferences;
+import com.ab.telugumoviequiz.help.HelpTopic;
+import com.ab.telugumoviequiz.help.ViewHelp;
 import com.ab.telugumoviequiz.main.MainActivity;
 import com.ab.telugumoviequiz.main.Navigator;
 import com.ab.telugumoviequiz.main.UserMoney;
@@ -89,6 +93,7 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
         recyclerView.setAdapter(mAdapter);
         mAdapter.setClickListener(this);
         setBaseParams(false);
+        showHelpWindow();
         return root;
     }
 
@@ -493,6 +498,26 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
                 throw new IllegalStateException("Unexpected value: " + reqId);
         }
     }
+
+    private void showHelpWindow() {
+        int isSet = HelpPreferences.getInstance().readPreference(requireContext(), HelpPreferences.GAME_TIPS);
+        if (isSet == 1) {
+            return;
+        }
+        List<String> helpKeys = new ArrayList<>();
+        helpKeys.add("game_tips");
+        List<HelpTopic> loginHelpLocalTopics = Utils.getHelpTopics(helpKeys, 1);
+        List<HelpTopic> loginHelpEnglishTopics = Utils.getHelpTopics(helpKeys, 2);
+
+        ViewHelp viewHelp = new ViewHelp(loginHelpLocalTopics,
+                loginHelpEnglishTopics, ViewHelp.HORIZONTAL, HelpPreferences.GAME_TIPS);
+        viewHelp.setLocalMainHeading("Game Time Useful Tips");
+        viewHelp.setEnglishMainHeading("Game Time Useful Tips");
+        Utils.clearState();
+        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+        viewHelp.show(fragmentManager, "dialog");
+    }
+
     private void enableCelebrityButton(boolean enable) {
         Activity activity = getActivity();
         if (activity instanceof MainActivity) {

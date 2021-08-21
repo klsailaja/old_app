@@ -107,9 +107,9 @@ public class ViewHelp extends DialogFragment implements MessageListener {
 
         StringBuilder stringBuilder = new StringBuilder("<HTML>");
         stringBuilder.append("<body>");
-        stringBuilder.append("<h1>");
+        stringBuilder.append("<h2>");
         stringBuilder.append(mainHeading);
-        stringBuilder.append("</h1>");
+        stringBuilder.append("</h2>");
 
         String colorName = "black";
         for (HelpTopic topic : topics) {
@@ -123,8 +123,8 @@ public class ViewHelp extends DialogFragment implements MessageListener {
             stringBuilder.append("<ul>");
             for (HelpMessage helpMessage : topic.getTopicMessages()) {
                 colorName = "black";
-                if (helpMessage.getMsgSeverity() == 1) {
-                    colorName = "black";
+                if (helpMessage.getMsgSeverity() == 2) {
+                    colorName = "red";
                 }
                 stringBuilder.append("<font size=\"3\" face=\"arial\" color=\"");
                 stringBuilder.append(colorName);
@@ -133,11 +133,14 @@ public class ViewHelp extends DialogFragment implements MessageListener {
                 stringBuilder.append("<li>");
                 stringBuilder.append(helpMessage.getMessage());
                 if (helpMessage.getSecondLevelMessages().size() > 0) {
-                    System.out.println("Rajasekhar second.....");
                     stringBuilder.append("<ul>");
                     for (HelpMessage secondLevelMsgs : helpMessage.getSecondLevelMessages()) {
+                        colorName = "black";
+                        if (secondLevelMsgs.getMsgSeverity() == 2) {
+                            colorName = "red";
+                        }
                         stringBuilder.append("<font size=\"3\" face=\"arial\" color=\"");
-                        stringBuilder.append("red");
+                        stringBuilder.append(colorName);
                         stringBuilder.append("\"");
                         stringBuilder.append("</font>");
                         stringBuilder.append("<li>");

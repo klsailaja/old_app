@@ -28,6 +28,9 @@ import com.ab.telugumoviequiz.common.UserDetails;
 import com.ab.telugumoviequiz.common.Utils;
 import com.ab.telugumoviequiz.constants.WithdrawReqState;
 import com.ab.telugumoviequiz.constants.WithdrawReqType;
+import com.ab.telugumoviequiz.help.HelpPreferences;
+import com.ab.telugumoviequiz.help.HelpTopic;
+import com.ab.telugumoviequiz.help.ViewHelp;
 import com.ab.telugumoviequiz.main.MainActivity;
 import com.ab.telugumoviequiz.main.Navigator;
 import com.ab.telugumoviequiz.main.UserProfile;
@@ -154,6 +157,7 @@ public class WithdrawReqsView extends BaseFragment implements PopupMenu.OnMenuIt
         recyclerView.setAdapter(tableAdapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         fetchRecords();
+        showHelpWindow();
         return root;
     }
 
@@ -272,6 +276,27 @@ public class WithdrawReqsView extends BaseFragment implements PopupMenu.OnMenuIt
             }
         }
         return true;
+    }
+
+    private void showHelpWindow() {
+        int isSet = HelpPreferences.getInstance().readPreference(requireContext(), HelpPreferences.WITHDRAW_TIPS);
+        if (isSet == 1) {
+            return;
+        }
+        List<String> helpKeys = new ArrayList<>();
+        helpKeys.add("topic_name1");
+        helpKeys.add("topic_name2");
+        helpKeys.add("topic_name3");
+        List<HelpTopic> loginHelpLocalTopics = Utils.getHelpTopics(helpKeys, 1);
+        List<HelpTopic> loginHelpEnglishTopics = Utils.getHelpTopics(helpKeys, 2);
+
+        ViewHelp viewHelp = new ViewHelp(loginHelpLocalTopics,
+                loginHelpEnglishTopics, ViewHelp.HORIZONTAL, HelpPreferences.WITHDRAW_TIPS);
+        viewHelp.setLocalMainHeading("Main Heading Telugu");
+        viewHelp.setEnglishMainHeading("Terms And Conditions");
+        Utils.clearState();
+        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+        viewHelp.show(fragmentManager, "dialog");
     }
 
     private String getBenefeciaryAccountDetails(WithdrawRequest wdRequest) {

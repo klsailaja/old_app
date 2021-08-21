@@ -13,4 +13,5 @@ public class Keys {
     public static final String QUESTION_VIEW_USER_ANS_TIME_PREFIX = "TIME";
     public static final String QUESTION_VIEW_GAME_START_TIME = "GAMESTARTTIME";
 
+    public static final String LOGIN_SCREEN_CALLED_FROM_LOGOUT = "LOGOUT";
 }
