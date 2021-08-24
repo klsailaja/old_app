@@ -93,7 +93,6 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
         recyclerView.setAdapter(mAdapter);
         mAdapter.setClickListener(this);
         setBaseParams(false);
-        showHelpWindow();
         return root;
     }
 
@@ -408,6 +407,9 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
                 gameDetailsList.addAll(result);
                 lock.writeLock().unlock();
                 applyFilterCriteria();
+                if (reqId == Request.GET_FUTURE_GAMES) {
+                    showHelpWindow();
+                }
                 break;
             }
             case Request.GET_FUTURE_GAMES_STATUS:
@@ -509,13 +511,16 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
         List<HelpTopic> loginHelpLocalTopics = Utils.getHelpTopics(helpKeys, 1);
         List<HelpTopic> loginHelpEnglishTopics = Utils.getHelpTopics(helpKeys, 2);
 
-        ViewHelp viewHelp = new ViewHelp(loginHelpLocalTopics,
-                loginHelpEnglishTopics, ViewHelp.HORIZONTAL, HelpPreferences.GAME_TIPS);
-        viewHelp.setLocalMainHeading("Game Time Useful Tips");
-        viewHelp.setEnglishMainHeading("Game Time Useful Tips");
-        Utils.clearState();
-        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-        viewHelp.show(fragmentManager, "dialog");
+        Runnable run = () -> {
+            ViewHelp viewHelp = new ViewHelp(loginHelpLocalTopics,
+                    loginHelpEnglishTopics, ViewHelp.HORIZONTAL, HelpPreferences.GAME_TIPS);
+            viewHelp.setLocalMainHeading("Game Time Useful Tips");
+            viewHelp.setEnglishMainHeading("Game Time Useful Tips");
+            Utils.clearState();
+            FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+            viewHelp.show(fragmentManager, "dialog");
+        };
+        requireActivity().runOnUiThread(run);
     }
 
     private void enableCelebrityButton(boolean enable) {

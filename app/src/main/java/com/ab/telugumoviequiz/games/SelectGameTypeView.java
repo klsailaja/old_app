@@ -56,7 +56,7 @@ public class SelectGameTypeView extends BaseFragment implements View.OnClickList
 
         GameTypeModel typeModel2 = new GameTypeModel();
         typeModel2.setGameTypeName("Celebrity Special");
-        typeModel2.setCelebrityName("Quiz questions from the celebrity movies");
+        typeModel2.setCelebrityName("Questions related to celebrity acted movies");
         modelList.add(typeModel2);
 
         SelectGameTypeAdapter mAdapter = new SelectGameTypeAdapter(modelList, this);

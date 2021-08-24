@@ -5,4 +5,5 @@
     <string name="login_password_hint">మీ పాస్‌వర్డ్‌ను ఇక్కడ టైప్ చేయండి</string>
     <string name="login_screen_login_text">ప్రవేశించండి</string>
     <string name="login_screen_forgot_password">పాస్వర్డ్ మర్చిపోయారా?</string>
+    <string name="help_do_not_show_next_time">Do not show next time</string>
 </resources>

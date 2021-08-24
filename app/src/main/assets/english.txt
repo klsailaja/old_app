@@ -1,7 +1,22 @@
-game_tips=Tips to check before you play a game
-game_tips_pt1=Enable Do Not Disturb Mode in Phone during the game time
-game_tips_pt1_s=1
-game_tips_pt2=Set the sleep timer or equivalent setting to Never so that phone display does not go to sleep mode during game time.
+game_tips=Tips to follow before you play a game
+game_tips_pt1=I hope you played a free game in Movie Mix Category to understand game flow screens and other options. If not, please play before you play a game with real money.
+game_tips_pt1_s=2
+game_tips_pt2=Enable Do Not Disturb Mode in Phone so that no calls will disturb during game time.
 game_tips_pt2_s=2
-game_tips_pt3=Play the game from a place where the network signal is at best.
+game_tips_pt3=Set the sleep settings or equivalent setting to Never so that phone display does not go to sleep mode during game time.
 game_tips_pt3_s=2
+game_tips_pt4=Play the game from a place where the network signal is at best.
+game_tips_pt4_s=2
+general_game_details=Games Details
+general_game_details_pt1=All the quiz questions in the quiz games played here are related to Telugu Movies. So If you cannot read telugu script or have no knowledge about Telugu movies, please don't waste your money and time playing these games.
+general_game_details_pt1_s=2
+general_game_details_pt2=Please play a free game that is scheduled every 10 minutes in Movie mix category alone to understand the game details, game flow of the screens, check if your phone speed is suited to play this game. Once you understand all the above factors, you may play the real game with real money.
+general_game_details_pt2_s=2
+general_game_details_pt3=There are 2 types of games. Movie Mix and Celebrity Special. Movie mix will have questions from mix of all Telugu Movies. Celebrity special will have questions related to selected celebrity acted movies only.
+general_game_details_pt3_s=2
+general_game_details_pt4=Game Rules
+general_game_details_pt3_sec1=
+
+
+
+

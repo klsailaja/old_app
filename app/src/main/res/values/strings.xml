@@ -294,4 +294,5 @@
     <string name="chat_heading_msg_time" translatable="false">10:10 am</string>
     <string name="chat_formed_chat_msg" translatable="false">Your Chat Message Appears Here</string>
     <string name="help_check_box_text" translatable="false">Do not show me next time</string>
+    <string name="help_do_not_show_next_time">Do not show next time</string>
 </resources>
