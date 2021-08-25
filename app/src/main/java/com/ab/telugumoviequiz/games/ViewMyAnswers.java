@@ -83,6 +83,8 @@ public class ViewMyAnswers extends DialogFragment implements View.OnClickListene
         int textSize, smallTextSize;
         textSize = R.dimen.user_answers_table_header_text_size;
         smallTextSize = R.dimen.user_answers_table_data_text_size;
+        textSize = 50;
+        smallTextSize = 50;
         int rows = list.size();
         tableLayout.removeAllViews();
 

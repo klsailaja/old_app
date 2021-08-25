@@ -15,7 +15,7 @@ general_game_details_pt2_s=2
 general_game_details_pt3=There are 2 types of games. Movie Mix and Celebrity Special. Movie mix will have questions from mix of all Telugu Movies. Celebrity special will have questions related to selected celebrity acted movies only.
 general_game_details_pt3_s=2
 general_game_details_pt4=Game Rules
-general_game_details_pt3_sec1=
+
 
 
 
