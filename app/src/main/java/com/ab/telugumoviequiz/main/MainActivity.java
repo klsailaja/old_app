@@ -560,6 +560,9 @@ public class MainActivity extends AppCompatActivity
                 referMoney.setText(String.valueOf(userMoney.getReferalAmount()));
                 winMoney.setText(String.valueOf(userMoney.getWinningAmount()));
                 mainMoney.setText(String.valueOf(userMoney.getLoadedAmount()));
+                if (isGameOverBoolean) {
+                    displayErrorAsToast("Winning Money is updated for winners");
+                }
             };
             this.runOnUiThread(run);
         } else if (reqId == Request.GET_FUTURE_GAMES_STATUS) {

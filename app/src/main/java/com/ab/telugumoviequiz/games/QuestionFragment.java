@@ -919,7 +919,7 @@ public class QuestionFragment extends BaseFragment
             actualStartTime = questionStartTime + Constants.SCHEDULE_USER_MONEY_FETCH - System.currentTimeMillis();
             MainActivity mainActivity = (MainActivity) getActivity();
             assert mainActivity != null;
-            mainActivity.setUserMoneyFetchedListener(this);
+            //mainActivity.setUserMoneyFetchedListener(this);
             scheduler.submit(new FetchUserMoneyTask((MainActivity) getActivity()), actualStartTime, TimeUnit.MILLISECONDS);
         }
     }
@@ -969,7 +969,7 @@ public class QuestionFragment extends BaseFragment
         boolean gameInProgress = false;
         long currentTime = System.currentTimeMillis();
         long gameStartTime = gameDetails.getStartTime() - GAME_BEFORE_LOCK_PERIOD_IN_MILLIS;
-        long gameEndTime = gameStartTime + 10 * 60 * 1000;
+        long gameEndTime = gameStartTime + 10 * 60 * 1000 - Constants.TRIGGER_FETCH_MONEY_AFTER_LAST_QUES_IN_MILLIS;
         if ((currentTime >= gameStartTime) && (currentTime <= gameEndTime)) {
             gameInProgress = true;
         }

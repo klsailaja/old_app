@@ -308,7 +308,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private boolean validatePasswd() {
         TextView passwdText = findViewById(R.id.editTextPassword);
         String str = passwdText.getText().toString().trim();
-        String result = Utils.fullValidate(str, "Password", false, 4, 8, false);
+        String result = Utils.fullValidate(str, "Password", false, 8, 32, false);
         if (result != null) {
             passwdText.setError(result);
             passwdText.requestFocus();

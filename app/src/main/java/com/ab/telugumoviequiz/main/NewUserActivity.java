@@ -307,7 +307,7 @@ public class NewUserActivity extends AppCompatActivity
     private boolean validatePasswd() {
         TextView passwdText = findViewById(id.editTextPassword);
         String str = passwdText.getText().toString().trim();
-        String result = Utils.fullValidate(str, "Password", false, 4, 8, false);
+        String result = Utils.fullValidate(str, "Password", false, 8, 25, false);
         if (result != null) {
             passwdText.setError(result);
             passwdText.requestFocus();
