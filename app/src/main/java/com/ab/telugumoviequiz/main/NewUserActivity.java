@@ -283,7 +283,7 @@ public class NewUserActivity extends AppCompatActivity
     private boolean validateReferalCode() {
         TextView referalText = findViewById(id.editReferalCode);
         String str = referalText.getText().toString().trim();
-        String result = Utils.fullValidate(str, "Referral Code", true, -1, -1, false);
+        String result = Utils.fullValidate(str, "Referral Code", false, -1, -1, false);
         if (result != null) {
             referalText.setError(result);
             referalText.requestFocus();
