@@ -8,9 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -32,8 +30,6 @@ import com.ab.telugumoviequiz.main.UserMoney;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 public class TransferBankAccount extends BaseFragment
@@ -44,8 +40,6 @@ public class TransferBankAccount extends BaseFragment
     private PATextWatcher accNumTextWatcher, confirmAccNumTextWatcher;
     private PATextWatcher bankNameTextWatcher, ifscCodeTextWatcher;
     private PATextWatcher wdAmtTextWatcher;
-
-    private Spinner accountsSpinner;
 
     public TransferBankAccount() {
         super();
@@ -62,20 +56,6 @@ public class TransferBankAccount extends BaseFragment
             Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.wd_transfer_bank, container, false);
-        List<String> userAccountNames = new ArrayList<>();
-        userAccountNames.add("Withdraw From Referral Money");
-        userAccountNames.add("Withdraw From Winning Money");
-        userAccountNames.add("Withdraw From Main Money");
-
-
-        ArrayAdapter<String> userAccountsAdapter = new ArrayAdapter<>(getContext(), R.layout.spinner_list_item, userAccountNames);
-        userAccountsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        userAccountsAdapter.setNotifyOnChange(false);
-
-        accountsSpinner = view.findViewById(R.id.bankMoneyAccounts);
-
-        accountsSpinner.setAdapter(userAccountsAdapter);
-        accountsSpinner.setSelection(0);
 
         TextInputLayout textInputLayout = view.findViewById(R.id.accNumIL);
         textInputLayout.setHelperTextEnabled(true);
@@ -149,17 +129,7 @@ public class TransferBankAccount extends BaseFragment
 
         WDUserInput wdUserInput = new WDUserInput();
         wdUserInput.setUserProfileId(UserDetails.getInstance().getUserProfile().getId());
-        // 0 - 3, 1 - 2, 2 - 1
-        int uiaccountType = accountsSpinner.getSelectedItemPosition();
-        int serverAccountType;
-        if (uiaccountType == 0) {
-            serverAccountType = 3;
-        } else if (uiaccountType == 1) {
-            serverAccountType = 2;
-        } else {
-            serverAccountType = 1;
-        }
-        wdUserInput.setFromAccType(serverAccountType);
+
         wdUserInput.setOpenedTime(System.currentTimeMillis());
         wdUserInput.setAmount(Integer.parseInt(str));
         wdRequestBankType.setWithdrawUserInput(wdUserInput);
@@ -196,15 +166,7 @@ public class TransferBankAccount extends BaseFragment
             return false;
         }
         UserMoney userMoney = UserDetails.getInstance().getUserMoney();
-        int accountSelected = accountsSpinner.getSelectedItemPosition();
-        long currentBalance;
-        if (accountSelected == 0) {
-            currentBalance = userMoney.getReferalAmount();
-        } else if (accountSelected == 1) {
-            currentBalance = userMoney.getWinningAmount();
-        } else {
-            currentBalance = userMoney.getLoadedAmount();
-        }
+        long currentBalance = userMoney.getAmount();
         TextInputLayout textInputLayout = view.findViewById(R.id.bankWithdrawAmtIL);
         textInputLayout.setHelperTextEnabled(true);
         textInputLayout.setHelperText("Current Balance is: " + currentBalance);
@@ -386,10 +348,6 @@ public class TransferBankAccount extends BaseFragment
 
         Button createNewBut = view.findViewById(R.id.wdBankCreateBut);
         createNewBut.setOnClickListener(listener);
-
-        accountsSpinner = view.findViewById(R.id.bankMoneyAccounts);
-        accountsSpinner.setOnItemSelectedListener(this);
-
     }
 
     private void handleFocusListener(View.OnFocusChangeListener listener) {

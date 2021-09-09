@@ -14,13 +14,6 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:baselineAligned="false">
-
-            <Spinner
-                android:id="@+id/bankMoneyAccounts"
-                android:layout_weight="0.4"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content" />
-
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/bankWithdrawAmtIL"
                 android:layout_width="0dp"

@@ -183,20 +183,20 @@ public class AddMoney extends BaseFragment
         final List<PayGameModel> modelList = new ArrayList<>();
         PayGameModel referralMoney = new PayGameModel();
         referralMoney.setAccountName("Referral Money");
-        referralMoney.setAccountBalance(String.valueOf(userMoney.getReferalAmount()));
+        referralMoney.setAccountBalance(String.valueOf(userMoney.getAmount()));
         referralMoney.setAccountNumber(UserMoneyAccountType.findById(3).getId());
         modelList.add(referralMoney);
 
         PayGameModel winningMoney = new PayGameModel();
         winningMoney.setAccountName("Winning Money");
-        winningMoney.setAccountBalance(String.valueOf(userMoney.getWinningAmount()));
+        winningMoney.setAccountBalance(String.valueOf(userMoney.getAmount()));
         assert UserMoneyAccountType.findById(2) != null;
         winningMoney.setAccountNumber(UserMoneyAccountType.findById(2).getId());
         modelList.add(winningMoney);
 
         PayGameModel mainMoney = new PayGameModel();
         mainMoney.setAccountName("Main Money");
-        mainMoney.setAccountBalance(String.valueOf(userMoney.getLoadedAmount()));
+        mainMoney.setAccountBalance(String.valueOf(userMoney.getAmount()));
         assert UserMoneyAccountType.findById(1) != null;
         mainMoney.setAccountNumber(UserMoneyAccountType.findById(1).getId());
         modelList.add(mainMoney);

@@ -8,9 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -31,16 +29,12 @@ import com.ab.telugumoviequiz.main.Navigator;
 import com.ab.telugumoviequiz.main.UserMoney;
 import com.google.android.material.textfield.TextInputLayout;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class TransferByPhonePe extends BaseFragment implements CallbackResponse, View.OnClickListener, NotifyTextChanged,
         AdapterView.OnItemSelectedListener, DialogAction {
 
     private PATextWatcher phoneNumberWatcher, confirmPhoneNumberWatcher;
     private PATextWatcher userNameTextWatcher;
     private PATextWatcher wdAmtTextWatcher;
-    private Spinner accountsSpinner;
 
     public TransferByPhonePe() {
         super();
@@ -57,19 +51,6 @@ public class TransferByPhonePe extends BaseFragment implements CallbackResponse,
             Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.wd_transfer_phonepe, container, false);
-        List<String> userAccountNames = new ArrayList<>();
-        userAccountNames.add("Withdraw From Referral Money");
-        userAccountNames.add("Withdraw From Winning Money");
-        userAccountNames.add("Withdraw From Main Money");
-
-        ArrayAdapter<String> userAccountsAdapter = new ArrayAdapter<>(getContext(), R.layout.spinner_list_item, userAccountNames);
-        userAccountsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        userAccountsAdapter.setNotifyOnChange(false);
-
-        accountsSpinner = view.findViewById(R.id.bankMoneyAccounts);
-
-        accountsSpinner.setAdapter(userAccountsAdapter);
-        accountsSpinner.setSelection(0);
 
         TextInputLayout textInputLayout = view.findViewById(R.id.phNumberIL);
         textInputLayout.setHelperTextEnabled(true);
@@ -121,17 +102,6 @@ public class TransferByPhonePe extends BaseFragment implements CallbackResponse,
 
         WDUserInput wdUserInput = new WDUserInput();
         wdUserInput.setUserProfileId(UserDetails.getInstance().getUserProfile().getId());
-        // 0 - 3, 1 - 2, 2 - 1
-        int uiaccountType = accountsSpinner.getSelectedItemPosition();
-        int serverAccountType;
-        if (uiaccountType == 0) {
-            serverAccountType = 3;
-        } else if (uiaccountType == 1) {
-            serverAccountType = 2;
-        } else {
-            serverAccountType = 1;
-        }
-        wdUserInput.setFromAccType(serverAccountType);
         wdUserInput.setOpenedTime(System.currentTimeMillis());
         wdUserInput.setAmount(Integer.parseInt(str));
         wdRequestBankType.setWithdrawUserInput(wdUserInput);
@@ -169,15 +139,7 @@ public class TransferByPhonePe extends BaseFragment implements CallbackResponse,
             return false;
         }
         UserMoney userMoney = UserDetails.getInstance().getUserMoney();
-        int accountSelected = accountsSpinner.getSelectedItemPosition();
-        long currentBalance;
-        if (accountSelected == 0) {
-            currentBalance = userMoney.getReferalAmount();
-        } else if (accountSelected == 1) {
-            currentBalance = userMoney.getWinningAmount();
-        } else {
-            currentBalance = userMoney.getLoadedAmount();
-        }
+        long currentBalance = userMoney.getAmount();
         TextInputLayout textInputLayout = view.findViewById(R.id.bankWithdrawAmtIL);
         textInputLayout.setHelperTextEnabled(true);
         textInputLayout.setHelperText("Current Balance is: " + currentBalance);
@@ -333,9 +295,6 @@ public class TransferByPhonePe extends BaseFragment implements CallbackResponse,
 
         Button createNewBut = view.findViewById(R.id.wdPhoneCreate);
         createNewBut.setOnClickListener(listener);
-
-        accountsSpinner = view.findViewById(R.id.bankMoneyAccounts);
-        accountsSpinner.setOnItemSelectedListener(this);
     }
 
     private void handleTextWatchers(boolean add) {

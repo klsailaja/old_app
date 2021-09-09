@@ -12,30 +12,6 @@
         android:layout_height="match_parent"
         tools:ignore="UselessParent">
         <TextView
-            style="@style/toolbarIconStyle"
-            android:layout_column="1"
-            android:drawablePadding="@dimen/action_bar_icon_padding"
-            android:paddingStart="@dimen/action_bar_icon_start_padding"
-            android:paddingEnd="@dimen/action_bar_icon_end_padding"
-            android:gravity="center"
-            android:layout_gravity="center"
-            android:text="-"
-            android:id="@+id/main_refer_money"
-            android:textSize="@dimen/action_bar_text_size"
-            app:drawableLeftCompat="@drawable/refer_money" />
-        <TextView
-            android:text="-"
-            android:textSize="@dimen/action_bar_text_size"
-            style="@style/toolbarIconStyle"
-            android:paddingStart="@dimen/action_bar_icon_start_padding"
-            android:paddingEnd="@dimen/action_bar_icon_end_padding"
-            android:gravity="center"
-            android:layout_gravity="center"
-            android:id="@+id/main_win_money"
-            android:drawablePadding="@dimen/action_bar_icon_padding"
-            android:layout_column="2"
-            app:drawableLeftCompat="@drawable/win_money" />
-        <TextView
             android:text="-"
             android:textSize="@dimen/action_bar_text_size"
             android:paddingStart="@dimen/action_bar_icon_start_padding"
@@ -45,27 +21,27 @@
             android:layout_gravity="center"
             style="@style/toolbarIconStyle"
             android:id="@+id/main_main_money"
-            android:layout_column="3"
+            android:layout_column="1"
             app:drawableLeftCompat="@drawable/wallet2_money" />
         <ImageView
             android:src="@drawable/upcoming"
             android:id="@+id/celebritySchedule"
             style="@style/toolbarIconStyle"
-            android:layout_column="4"
+            android:layout_column="2"
             android:visibility="gone"
             android:contentDescription="@string/chat_msg" />
         <ImageView
             android:src="@drawable/search"
             android:id="@+id/search"
             style="@style/toolbarIconStyle"
-            android:layout_column="5"
+            android:layout_column="3"
             android:visibility="gone"
             android:contentDescription="@string/chat_msg" />
         <ImageView
             android:src="@drawable/test_chat_bkp"
             style="@style/toolbarIconStyle"
             android:id="@+id/chat"
-            android:layout_column="6"
+            android:layout_column="4"
             android:contentDescription="@string/chat_msg" />
     </TableRow>
 </TableLayout>

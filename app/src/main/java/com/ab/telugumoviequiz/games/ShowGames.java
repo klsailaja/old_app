@@ -33,7 +33,6 @@ import com.ab.telugumoviequiz.help.HelpTopic;
 import com.ab.telugumoviequiz.help.ViewHelp;
 import com.ab.telugumoviequiz.main.MainActivity;
 import com.ab.telugumoviequiz.main.Navigator;
-import com.ab.telugumoviequiz.main.UserMoney;
 import com.ab.telugumoviequiz.main.UserProfile;
 
 import java.text.SimpleDateFormat;
@@ -104,24 +103,26 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
             int pos = Integer.parseInt(tagName);
             GameDetails quesGameDetails = adapterList.get(pos);
 
-            int tktRate = quesGameDetails.getTicketRate();
-            if (tktRate == 0) {
-                PostTask<GameOperation, Boolean> joinTask = Request.gameJoinTask(quesGameDetails.getGameId());
-                joinTask.setCallbackResponse(this);
+            PostTask<GameOperation, Boolean> joinTask = Request.gameJoinTask(quesGameDetails.getGameId());
+            joinTask.setCallbackResponse(this);
 
-                GameOperation gm = new GameOperation();
-                gm.setUserProfileId(UserDetails.getInstance().getUserProfile().getId());
-                gm.setUserAccountType(UserMoneyAccountType.LOADED_MONEY.getId());
-                joinTask.setPostObject(gm);
-                joinTask.setHelperObject(quesGameDetails);
-                Scheduler.getInstance().submit(joinTask);
+            GameOperation gm = new GameOperation();
+            gm.setUserProfileId(UserDetails.getInstance().getUserProfile().getId());
+            gm.setUserAccountType(UserMoneyAccountType.LOADED_MONEY.getId());
+            joinTask.setPostObject(gm);
+            joinTask.setHelperObject(quesGameDetails);
+            Scheduler.getInstance().submit(joinTask);
+
+            /*int tktRate = quesGameDetails.getTicketRate();
+            if (tktRate == 0) {
+
             } else {
                 long userProfileId = UserDetails.getInstance().getUserProfile().getId();
                 GetTask<String> enrolledStatus = Request.getEnrolledStatus(quesGameDetails.getGameId(), userProfileId);
                 enrolledStatus.setCallbackResponse(this);
                 enrolledStatus.setHelperObject(quesGameDetails);
                 Scheduler.getInstance().submit(enrolledStatus);
-            }
+            }*/
         } else if (R.id.celebritySchedule == viewId) {
             GetTask<CelebrityFullDetails> celebrityFullDetailsGetTask = Request.getCelebrityScheduleTask();
             celebrityFullDetailsGetTask.setCallbackResponse(this);
@@ -442,12 +443,12 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
                     ((Navigator) requireActivity()).launchView(Navigator.QUESTION_VIEW, params, false);
                     return;
                 }
-                GameDetails quesGameDetails = (GameDetails) helperObject;
-                int tktRate = quesGameDetails.getTicketRate();
+                //GameDetails quesGameDetails = (GameDetails) helperObject;
+                //int tktRate = quesGameDetails.getTicketRate();
 
-                UserMoney userMoney = UserDetails.getInstance().getUserMoney();
+                //UserMoney userMoney = UserDetails.getInstance().getUserMoney();
 
-                final List<PayGameModel> modelList = new ArrayList<>();
+                /*final List<PayGameModel> modelList = new ArrayList<>();
                 PayGameModel referralMoney = new PayGameModel();
                 referralMoney.setAccountName("Referral Money");
                 referralMoney.setAccountBalance(String.valueOf(userMoney.getReferalAmount()));
@@ -480,7 +481,7 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
                 Activity activity = getActivity();
                 if (activity != null) {
                     activity.runOnUiThread(run);
-                }
+                }*/
                 break;
             }
             case Request.CELEBRITY_SCHEDULE_DETAIS: {

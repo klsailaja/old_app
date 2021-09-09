@@ -38,7 +38,7 @@
 
     <!-- New user Screen -->
     <string name="new_user_email_hint" translatable="false">Register with Frequently Used E-Mail Id</string>
-    <string name="new_user_password" translatable="false">Configure Password with 4 to 8 chars length</string>
+    <string name="new_user_password" translatable="false">Configure Password with 8 or more chars</string>
     <string name="new_user_user_name" translatable="false">Enter Your Name with 2 to 20 chars length</string>
     <string name="newuser_referal_code_hint" translatable="false">Enter Referral Code</string>
     <string name="newuser_register_text" translatable="false">Register</string>
@@ -139,7 +139,7 @@
     <string name="view_leadership_amount" translatable="false">Amt Won</string>
 
     <string name="test_user_name" translatable="false">ggraj.pec@gmail.com</string>
-    <string name="test_passwd" translatable="false">12345</string>
+    <string name="test_passwd" translatable="false">Testing12345</string>
     <!-- Referal View -->
     <string name="myreferal_intro" translatable="false">This view shows the users registered with your referral code. When they play and win, you earn money</string>
     <string name="myreferal_more_view_options" translatable="false">Filter on Account Type</string>

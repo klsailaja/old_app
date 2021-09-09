@@ -181,11 +181,11 @@ public class WalletView extends BaseFragment implements CallbackResponse, View.O
             }
 
             UserMoney userMoney = UserDetails.getInstance().getUserMoney();
-            long currentBalance = userMoney.getLoadedAmount();
+            long currentBalance = userMoney.getAmount();
             if (sourceAccType == 2) {
-                currentBalance = userMoney.getWinningAmount();
+                currentBalance = userMoney.getAmount();
             } else if (sourceAccType == 3) {
-                currentBalance = userMoney.getReferalAmount();
+                currentBalance = userMoney.getAmount();
             }
             if (amtInt > currentBalance) {
                 displayError("Amount is more than the current balance", null);
@@ -218,20 +218,20 @@ public class WalletView extends BaseFragment implements CallbackResponse, View.O
         final List<PayGameModel> modelList = new ArrayList<>();
         PayGameModel referralMoney = new PayGameModel();
         referralMoney.setAccountName("Referral Money");
-        referralMoney.setAccountBalance(String.valueOf(userMoney.getReferalAmount()));
+        referralMoney.setAccountBalance(String.valueOf(userMoney.getAmount()));
         referralMoney.setAccountNumber(UserMoneyAccountType.findById(3).getId());
         modelList.add(referralMoney);
 
         PayGameModel winningMoney = new PayGameModel();
         winningMoney.setAccountName("Winning Money");
-        winningMoney.setAccountBalance(String.valueOf(userMoney.getWinningAmount()));
+        winningMoney.setAccountBalance(String.valueOf(userMoney.getAmount()));
         assert UserMoneyAccountType.findById(2) != null;
         winningMoney.setAccountNumber(UserMoneyAccountType.findById(2).getId());
         modelList.add(winningMoney);
 
         PayGameModel mainMoney = new PayGameModel();
         mainMoney.setAccountName("Main Money");
-        mainMoney.setAccountBalance(String.valueOf(userMoney.getLoadedAmount()));
+        mainMoney.setAccountBalance(String.valueOf(userMoney.getAmount()));
         assert UserMoneyAccountType.findById(1) != null;
         mainMoney.setAccountNumber(UserMoneyAccountType.findById(1).getId());
         modelList.add(mainMoney);

@@ -20,9 +20,6 @@
             android:id="@+id/nav_add_money"
             android:title="@string/menu_add_money" />
         <item
-            android:id="@+id/nav_transfer_money"
-            android:title="@string/menu_transfer_money" />
-        <item
             android:id="@+id/nav_withdraw_view"
             android:title="@string/nav_withdraw_view" />
     </group>

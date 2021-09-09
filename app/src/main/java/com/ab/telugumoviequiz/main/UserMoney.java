@@ -2,67 +2,41 @@ package com.ab.telugumoviequiz.main;
 
 public class UserMoney {
 	private long id;
-	private long userProfileId;
-	private long loadedAmount;
-	private long winningAmount;
-	private long referalAmount;
-	private long loadedAmtLocked;
-	private long winningAmtLocked;
-	private long referalAmtLocked;
+	private long amount;
+	private long amtLocked;
 	
-	public long getLoadedAmtLocked() {
-		return loadedAmtLocked;
+	public UserMoney() {
 	}
-	public void setLoadedAmtLocked(long loadedAmtLocked) {
-		this.loadedAmtLocked = loadedAmtLocked;
+	
+	public UserMoney(long id, long amount, long amtLocked) {
+		super();
+		this.id = id;
+		this.amount = amount;
+		this.amtLocked = amtLocked;
 	}
-	public long getWinningAmtLocked() {
-		return winningAmtLocked;
-	}
-	public void setWinningAmtLocked(long winningAmtLocked) {
-		this.winningAmtLocked = winningAmtLocked;
-	}
-	public long getReferalAmtLocked() {
-		return referalAmtLocked;
-	}
-	public void setReferalAmtLocked(long referalAmtLocked) {
-		this.referalAmtLocked = referalAmtLocked;
-	}
+
 	public long getId() {
 		return id;
 	}
+
 	public void setId(long id) {
 		this.id = id;
 	}
-	public long getUserProfileId() {
-		return userProfileId;
-	}
-	public void setUserId(long userProfileId) {
-		this.userProfileId = userProfileId;
-	}
-	public long getLoadedAmount() {
-		return loadedAmount;
-	}
-	public void setLoadedAmount(long loadedAmount) {
-		this.loadedAmount = loadedAmount;
-	}
-	public long getWinningAmount() {
-		return winningAmount;
-	}
-	public void setWinningAmount(long winningAmount) {
-		this.winningAmount = winningAmount;
-	}
-	public long getReferalAmount() {
-		return referalAmount;
-	}
-	public void setReferalAmount(long referalAmount) {
-		this.referalAmount = referalAmount;
-	}
-	
-	@Override
-	public String toString() {
-		return "UserMoney [id=" + id + ", userProfileId=" + userProfileId + ", loadedAmount=" + loadedAmount
-				+ ", winningAmount=" + winningAmount + ", referalAmount=" + referalAmount + "]";
+
+	public long getAmount() {
+		return amount;
 	}
 
+	public void setAmount(long amount) {
+		this.amount = amount;
+	}
+
+	public long getAmtLocked() {
+		return amtLocked;
+	}
+
+	public void setAmtLocked(long amtLocked) {
+		this.amtLocked = amtLocked;
+	}
+	
 }

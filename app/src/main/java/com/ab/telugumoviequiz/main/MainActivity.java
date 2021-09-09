@@ -50,7 +50,6 @@ import com.ab.telugumoviequiz.games.ShowGames;
 import com.ab.telugumoviequiz.games.UserAnswer;
 import com.ab.telugumoviequiz.history.HistoryView;
 import com.ab.telugumoviequiz.money.AddMoney;
-import com.ab.telugumoviequiz.money.TransferMoney;
 import com.ab.telugumoviequiz.referals.MyReferralsView;
 import com.ab.telugumoviequiz.transactions.TransactionsView;
 import com.ab.telugumoviequiz.userprofile.UpdateUserProfile;
@@ -318,8 +317,6 @@ public class MainActivity extends AppCompatActivity
             launchView(Navigator.PROFILE_VIEW, params, false);
         } else if (id == R.id.nav_add_money) {
             launchView(Navigator.ADD_MONEY_VIEW, params, false);
-        } else if (id == R.id.nav_transfer_money) {
-            launchView(Navigator.TRANSFER_MONEY_VIEW, params, false);
         } else if (id == R.id.logout) {
             Intent intent = new Intent(this, LoginActivity.class);
             intent.putExtra(Keys.LOGIN_SCREEN_CALLED_FROM_LOGOUT, 1);
@@ -430,11 +427,6 @@ public class MainActivity extends AppCompatActivity
             case Navigator.ADD_MONEY_VIEW: {
                 stopped = true;
                 fragment = new AddMoney();
-                break;
-            }
-            case Navigator.TRANSFER_MONEY_VIEW: {
-                stopped = true;
-                fragment = new TransferMoney();
                 break;
             }
             case Navigator.NEW_WITHDRAW_REQUEST: {
@@ -553,13 +545,9 @@ public class MainActivity extends AppCompatActivity
                 if (view == null) {
                     return;
                 }
-                TextView referMoney = view.findViewById(R.id.main_refer_money);
-                TextView winMoney = view.findViewById(R.id.main_win_money);
                 TextView mainMoney = view.findViewById(R.id.main_main_money);
 
-                referMoney.setText(String.valueOf(userMoney.getReferalAmount()));
-                winMoney.setText(String.valueOf(userMoney.getWinningAmount()));
-                mainMoney.setText(String.valueOf(userMoney.getLoadedAmount()));
+                mainMoney.setText(String.valueOf(userMoney.getAmount()));
                 if (isGameOverBoolean) {
                     displayErrorAsToast("Winning Money is updated for winners");
                 }
