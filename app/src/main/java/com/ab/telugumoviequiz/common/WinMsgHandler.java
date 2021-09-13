@@ -28,7 +28,7 @@ public class WinMsgHandler implements CallbackResponse {
     public void start() {
         isStopped = false;
         count = 0;
-        fetchData();
+        fetchData(20);
     }
 
     public void stop() {
@@ -38,11 +38,11 @@ public class WinMsgHandler implements CallbackResponse {
     public void setUserProfileId(long userProfileId1) {
         System.out.println("In setUserProfileId" + userProfileId1);
         this.userProfileId = userProfileId1;
-        fetchData();
+        fetchData(10);
     }
 
-    private void fetchData() {
-        GetTask<String[]> getMsgTask = Request.getWinWdMessages(userProfileId);
+    private void fetchData(int maxClosedGroupUserCount) {
+        GetTask<String[]> getMsgTask = Request.getWinWdMessages(userProfileId, maxClosedGroupUserCount);
         getMsgTask.setCallbackResponse(this);
         Scheduler.getInstance().submit(getMsgTask);
     }
@@ -82,7 +82,7 @@ public class WinMsgHandler implements CallbackResponse {
             System.out.println("size is " + size);
             String errMessage;
             if (size == 0) {
-                errMessage = "No Data";
+                errMessage = "Recent Win messages shown here";
             } else {
                 errMessage = winWdMessages.get(0);
                 lastFetchTime = System.currentTimeMillis();

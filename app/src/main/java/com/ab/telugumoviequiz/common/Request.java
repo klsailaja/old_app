@@ -75,8 +75,8 @@ public class Request {
                 null, null, Boolean.class);
     }
 
-    public static GetTask<String[]> getWinWdMessages(long userProfileId) {
-        String uri = baseUri + "/wd/messages/" + userProfileId;
+    public static GetTask<String[]> getWinWdMessages(long userProfileId, int maxUserCount) {
+        String uri = baseUri + "/wd/messages/" + userProfileId + "/" + maxUserCount;
         return new GetTask<>(uri, WIN_WD_MSGS, null,
                 String[].class, null);
     }
