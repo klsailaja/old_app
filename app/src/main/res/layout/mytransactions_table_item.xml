@@ -60,12 +60,13 @@
         android:gravity="center"
         android:text="@string/table_view_col7_xml"
         android:textSize="@dimen/transactions_table_data_text_size" />
-    <TextView
+    <ImageButton
         android:id="@+id/col8"
         android:layout_width="1px"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
-        android:text="@string/table_view_col8_xml"
-        android:textSize="@dimen/transactions_table_data_text_size" />
+        android:scaleType="center"
+        android:src="@drawable/ic_more"
+        android:contentDescription="@string/more_content" />
 </LinearLayout>

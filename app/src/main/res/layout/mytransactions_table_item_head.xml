@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+    <TextView
+        android:id="@+id/col1"
+        android:text="@string/table_view_col1_xml"
+        style="@style/tableHeaderTextBox" />
+    <TextView
+        android:id="@+id/col2"
+        style="@style/tableHeaderTextBox"
+        android:text="@string/table_view_col2_xml" />
+    <TextView
+        android:id="@+id/col3"
+        style="@style/tableHeaderTextBox"
+        android:text="@string/table_view_col3_xml"/>
+    <TextView
+        android:id="@+id/col4"
+        style="@style/tableHeaderTextBox"
+        android:text="@string/table_view_col4_xml"/>
+    <TextView
+        android:id="@+id/col5"
+        style="@style/tableHeaderTextBox"
+        android:text="@string/table_view_col5_xml" />
+    <TextView
+        android:id="@+id/col6"
+        style="@style/tableHeaderTextBox"
+        android:text="@string/table_view_col6_xml"/>
+    <TextView
+        android:id="@+id/col7"
+        style="@style/tableHeaderTextBox"
+        android:text="@string/table_view_col7_xml"/>
+    <TextView
+        android:id="@+id/col8"
+        style="@style/tableHeaderTextBox"
+        android:text="@string/table_view_col7_xml" />
+</LinearLayout>

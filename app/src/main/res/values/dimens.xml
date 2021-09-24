@@ -8,6 +8,8 @@
     <dimen name="login_screen_top_to_intro_text">10dp</dimen>
     <!-- New User Screen related-->
     <dimen name="new_user_top_padding">10dp</dimen>
+    <dimen name="new_user_code_height">40dp</dimen>
+    <dimen name="new_user_code_space">13dp</dimen>
     <!-- Status bar related -->
     <dimen name="statusBarMargin">20dp</dimen>
     <dimen name="small_label_left_textsize">10sp</dimen>
@@ -113,7 +115,7 @@
     <dimen name="action_bar_icon_padding">5dp</dimen>
     <dimen name="action_bar_icon_start_padding">1dp</dimen>
     <dimen name="action_bar_icon_end_padding">10dp</dimen>
-    <dimen name="action_bar_text_size">25sp</dimen>
+    <dimen name="action_bar_text_size">20sp</dimen>
     <!--Transactions View-->
     <dimen name="transactions_table_data_text_size">15sp</dimen>
 

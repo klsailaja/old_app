@@ -6,6 +6,9 @@ import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -15,6 +18,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.ab.telugumoviequiz.R;
 import com.ab.telugumoviequiz.common.CallbackResponse;
+import com.ab.telugumoviequiz.common.DialogAction;
 import com.ab.telugumoviequiz.common.MessageListener;
 import com.ab.telugumoviequiz.common.NotifyTextChanged;
 import com.ab.telugumoviequiz.common.PATextWatcher;
@@ -32,14 +36,20 @@ import com.google.android.material.textfield.TextInputLayout;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.ab.telugumoviequiz.R.*;
+import static com.ab.telugumoviequiz.R.id;
+import static com.ab.telugumoviequiz.R.layout;
+import static com.ab.telugumoviequiz.R.string;
 
 public class NewUserActivity extends AppCompatActivity
-        implements View.OnClickListener, NotifyTextChanged, CallbackResponse, MessageListener {
+        implements View.OnClickListener, NotifyTextChanged, CallbackResponse, MessageListener, TextWatcher, DialogAction {
+
     private PATextWatcher mailTextWatcher;
     private PATextWatcher passwordTextWatcher;
     private PATextWatcher nameTextWatcher;
     private PATextWatcher referralTextWatcher;
+    private final ArrayList<TextView> verifyCodeTextViewList = new ArrayList<>(4);
+    public static int NEW_USER_SEND_CODE = 100;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +65,31 @@ public class NewUserActivity extends AppCompatActivity
         textInputLayout.setHelperText(resources.getText(R.string.referral_code_helper_text));
         textInputLayout.setHelperTextColor(ColorStateList.valueOf(Color.RED));
         Request.baseUri = getString(string.base_url);
+
+        verifyCodeTextViewList.clear();
+        verifyCodeTextViewList.add(findViewById(id.digit1));
+        verifyCodeTextViewList.add(findViewById(id.digit2));
+        verifyCodeTextViewList.add(findViewById(id.digit3));
+        verifyCodeTextViewList.add(findViewById(id.digit4));
+
+        for (int index = 0; index < verifyCodeTextViewList.size(); index ++) {
+            TextView textView = verifyCodeTextViewList.get(index);
+            textView.setOnKeyListener((view, i, keyEvent) -> {
+                if ((i == KeyEvent.KEYCODE_DEL) &&
+                        (keyEvent.getAction() == KeyEvent.ACTION_DOWN)) {
+                    int componentPosition = 0;
+                    if (view.getId() == id.digit3) {
+                        componentPosition = 1;
+                    } else if (view.getId() == id.digit4) {
+                        componentPosition = 2;
+                    }
+                    verifyCodeTextViewList.get(componentPosition).requestFocus();
+                    return true;
+                }
+                return false;
+            });
+        }
+        stepsPostValidMailId(false);
     }
 
     @Override
@@ -85,7 +120,31 @@ public class NewUserActivity extends AppCompatActivity
 
     public void onClick(View view) {
         int viewId = view.getId();
-        if (viewId == id.viewLoginPageBut) {
+        if (viewId == id.sendCode) {
+            TextView mailIdTextView = findViewById(id.editTextEmail);
+            String mailIdEntered = mailIdTextView.getText().toString().trim();
+            String confirmMsg = "The Mail id is : " + mailIdEntered + ". Please verify if this is correct?";
+            Utils.showConfirmationMessage("Confirmation", confirmMsg,
+                    this, this, NEW_USER_SEND_CODE, null);
+        } else if (viewId == id.verifyCode) {
+            String otpText = getEnteredCode();
+            if (otpText == null) {
+                Utils.showMessage("Error", "Please enter a valid 4-digit code",
+                        this, null);
+                return;
+            }
+            PostTask<OTPDetails, String> verifyCodeTask = Request.verifyCodeTask();
+            OTPDetails otpDetails = new OTPDetails();
+
+            TextView mailTextView = findViewById(id.editTextEmail);
+            String mailIdStr = mailTextView.getText().toString().trim();
+            otpDetails.setMailId(mailIdStr);
+            otpDetails.setOtp_hash(Utils.getPasswordHash(otpText));
+
+            verifyCodeTask.setPostObject(otpDetails);
+            verifyCodeTask.setCallbackResponse(this);
+            Scheduler.getInstance().submit(verifyCodeTask);
+        } else if (viewId == id.viewLoginPageBut) {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
             finish();
@@ -137,12 +196,6 @@ public class NewUserActivity extends AppCompatActivity
 
     @Override
     public void handleResponse(int reqId, boolean exceptionThrown, boolean isAPIException, final Object response, Object helperObj) {
-        Runnable enableButtons = () -> {
-            Button button = findViewById(id.registerButton);
-            button.setEnabled(true);
-        };
-        this.runOnUiThread(enableButtons);
-
         if((exceptionThrown) && (!isAPIException)) {
             Runnable run = () -> {
                 String error = (String) response;
@@ -151,38 +204,91 @@ public class NewUserActivity extends AppCompatActivity
             runOnUiThread(run);
             return;
         }
+        if (isAPIException) {
+            Runnable run = () -> {
+                String error = (String) response;
+                Utils.showMessage("Error", error, NewUserActivity.this, null);
+            };
+            runOnUiThread(run);
+            return;
+        }
         if (reqId == Request.CREATE_USER_PROFILE) {
-            if (isAPIException) {
-                Runnable run = () -> {
-                    String error = (String) response;
-                    Utils.showMessage("Error", error, NewUserActivity.this, null);
-                };
-                runOnUiThread(run);
-            } else {
-                UserProfile dbUserProfile = (UserProfile) response;
-                UserDetails.getInstance().setUserProfile(dbUserProfile);
-                Resources resources = getResources();
-                final String msg = resources.getString(string.new_user_register_success);
-                Runnable run = () -> {
-                    Intent intent = new Intent(NewUserActivity.this, MainActivity.class);
-                    intent.putExtra("msg", msg);
-                    startActivity(intent);
-                    finish();
-                };
-                runOnUiThread(run);
-            }
+            UserProfile dbUserProfile = (UserProfile) response;
+            UserDetails.getInstance().setUserProfile(dbUserProfile);
+            Resources resources = getResources();
+            final String msg = resources.getString(string.new_user_register_success);
+            Runnable run = () -> {
+                Intent intent = new Intent(NewUserActivity.this, MainActivity.class);
+                intent.putExtra("msg", msg);
+                startActivity(intent);
+                finish();
+            };
+            runOnUiThread(run);
+        } else if (reqId == Request.SEND_OTP_CODE) {
+            Runnable run = () -> {
+                String error = (String) response;
+                if (error.toLowerCase().equals("true")) {
+                    TextView mailidTextView = findViewById(id.editTextEmail);
+                    mailidTextView.setEnabled(false);
+
+                    Button sendCodeButton = findViewById(id.sendCode);
+                    sendCodeButton.setText(string.resend_code);
+
+                    String mailId = mailidTextView.getText().toString().trim();
+                    for (int index = 0; index < verifyCodeTextViewList.size(); index ++) {
+                        TextView textView = verifyCodeTextViewList.get(index);
+                        textView.setEnabled(true);
+                    }
+                    Button verifyCodeButton = findViewById(id.verifyCode);
+                    verifyCodeButton.setEnabled(true);
+                    String successMsg = "Verification Code Sent to : " + mailId + ".Please Check mail and enter code";
+                    Utils.showMessage("Information", successMsg, this, null);
+                }
+            };
+            runOnUiThread(run);
+        } else if (reqId == Request.VERIFY_OTP_CODE) {
+            Runnable run = () -> {
+                String error = (String) response;
+                String msg = "Verification Code mismatch. Please try again";
+                if (error.toLowerCase().equals("true")) {
+                    msg = "Verification Code matched. Please configure password";
+
+                    TextView passwdTextBox = findViewById(id.editTextPassword);
+                    passwdTextBox.setEnabled(true);
+
+                    TextView confirmTextBox = findViewById(id.confirmTextPassword);
+                    confirmTextBox.setEnabled(true);
+
+                    TextView nameTextBox = findViewById(id.editTextName);
+                    nameTextBox.setEnabled(true);
+
+                    TextView referalTextBox = findViewById(id.editReferalCode);
+                    referalTextBox.setEnabled(true);
+
+                    Button registerButton = findViewById(id.registerButton);
+                    registerButton.setEnabled(true);
+                }
+                Utils.showMessage("Information", msg, this, null);
+            };
+            runOnUiThread(run);
         }
     }
 
     @SuppressLint("NonConstantResourceId")
     public void textChanged(int viewId) {
+        boolean result;
         switch (viewId) {
             case id.editTextEmail: {
-                validateMailId();
+                result = validateMailId();
+                stepsPostValidMailId(result);
                 break;
             }
             case id.editTextPassword: {
                 validatePasswd();
+                break;
+            }
+            case id.confirmTextPassword: {
+                validateConfirmPasswd();
                 break;
             }
             case id.editTextName: {
@@ -191,8 +297,60 @@ public class NewUserActivity extends AppCompatActivity
             }
             case id.editReferalCode: {
                 validateReferalCode();
+                break;
             }
         }
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+        for (int index = 0; index < verifyCodeTextViewList.size(); index ++) {
+            TextView textView = verifyCodeTextViewList.get(index);
+            if (textView.getEditableText() == s) {
+                 if (s.length() == 0) {
+                     break;
+                 }
+                 if (index != 3) {
+                    verifyCodeTextViewList.get(index + 1).requestFocus();
+                    break;
+                }
+            }
+        }
+    }
+    private void stepsPostValidMailId(boolean isValid) {
+        Button sendCodeBut = findViewById(R.id.sendCode);
+        sendCodeBut.setEnabled(isValid);
+
+        for (int index = 0; index < verifyCodeTextViewList.size(); index ++) {
+            TextView textView = verifyCodeTextViewList.get(index);
+            textView.setEnabled(isValid);
+        }
+    }
+    private String getEnteredCode() {
+        StringBuilder stringBuilder = new StringBuilder();
+        int digitsEntered = 0;
+        for (int index = 0; index < verifyCodeTextViewList.size(); index ++) {
+            TextView textView = verifyCodeTextViewList.get(index);
+            String strValue = textView.getText().toString().trim();
+            if (strValue.length() > 0) {
+                digitsEntered++;
+                stringBuilder.append(strValue);
+            }
+        }
+        Button checkCode = findViewById(id.verifyCode);
+        checkCode.setEnabled(digitsEntered == 4);
+        if (digitsEntered != 4) {
+            return null;
+        }
+        return stringBuilder.toString();
     }
 
     private UserProfile getFromUI() {
@@ -203,6 +361,7 @@ public class NewUserActivity extends AppCompatActivity
 
     private boolean validateData() {
         boolean result = validateMailId();
+        stepsPostValidMailId(result);
         if (!result) {
             return false;
         }
@@ -212,6 +371,19 @@ public class NewUserActivity extends AppCompatActivity
         }
         result = validateName();
         if (!result) {
+            return false;
+        }
+        result = validateConfirmPasswd();
+        if (!result) {
+            return false;
+        }
+        TextView passwdTextBox = findViewById(id.editTextPassword);
+        TextView confirmPasswdTextBox = findViewById(id.confirmTextPassword);
+        String passwd = passwdTextBox.getText().toString().trim();
+        String confirmPasswd = confirmPasswdTextBox.getText().toString().trim();
+        if (!passwd.equals(confirmPasswd)) {
+            confirmPasswdTextBox.setError("Password and Confirm Password are not same");
+            confirmPasswdTextBox.requestFocus();
             return false;
         }
         result = validateReferalCode();
@@ -261,11 +433,20 @@ public class NewUserActivity extends AppCompatActivity
             nameTextView.addTextChangedListener(nameTextWatcher);
             referralCodeTextView.addTextChangedListener(referralTextWatcher);
 
-        } else {
+            verifyCodeTextViewList.get(0).addTextChangedListener(this);
+            verifyCodeTextViewList.get(1).addTextChangedListener(this);
+            verifyCodeTextViewList.get(2).addTextChangedListener(this);
+            verifyCodeTextViewList.get(3).addTextChangedListener(this);
+       } else {
             mailTextView.removeTextChangedListener(mailTextWatcher);
             passwdTextView.removeTextChangedListener(passwordTextWatcher);
             referralCodeTextView.removeTextChangedListener(nameTextWatcher);
             nameTextView.removeTextChangedListener(referralTextWatcher);
+
+            verifyCodeTextViewList.get(0).removeTextChangedListener(this);
+            verifyCodeTextViewList.get(1).removeTextChangedListener(this);
+            verifyCodeTextViewList.get(2).removeTextChangedListener(this);
+            verifyCodeTextViewList.get(3).removeTextChangedListener(this);
         }
     }
 
@@ -278,6 +459,12 @@ public class NewUserActivity extends AppCompatActivity
 
         Button referralReadMore = findViewById(id.referralReadMore);
         referralReadMore.setOnClickListener(listener);
+
+        Button sendCodeButton = findViewById(id.sendCode);
+        sendCodeButton.setOnClickListener(listener);
+
+        Button verifyCodeButton = findViewById(id.verifyCode);
+        verifyCodeButton.setOnClickListener(listener);
     }
 
     private boolean validateReferalCode() {
@@ -299,6 +486,18 @@ public class NewUserActivity extends AppCompatActivity
         if (result != null) {
             nameText.setError(result);
             nameText.requestFocus();
+            return false;
+        }
+        return true;
+    }
+
+    private boolean validateConfirmPasswd() {
+        TextView confirmPasswdText = findViewById(id.confirmTextPassword);
+        String str = confirmPasswdText.getText().toString().trim();
+        String result = Utils.fullValidate(str, "Confirm Password", false, 8, 25, false);
+        if (result != null) {
+            confirmPasswdText.setError(result);
+            confirmPasswdText.requestFocus();
             return false;
         }
         return true;
@@ -333,5 +532,18 @@ public class NewUserActivity extends AppCompatActivity
             return false;
         }
         return true;
+    }
+
+    @Override
+    public void doAction(int calledId, Object userObject) {
+        if (calledId == NEW_USER_SEND_CODE) {
+            TextView mailIdTxtView = findViewById(id.editTextEmail);
+            String mailId = mailIdTxtView.getText().toString().trim();
+            System.out.println("mailId :" + mailId);
+            PostTask<String,String> sendCodeTask = Request.sendCodeTask();
+            sendCodeTask.setPostObject(mailId);
+            sendCodeTask.setCallbackResponse(this);
+            Scheduler.getInstance().submit(sendCodeTask);
+        }
     }
 }

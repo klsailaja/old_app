@@ -1,47 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableLayout xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/tableInvoices"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="0dp"
-    android:stretchColumns="*"
-    xmlns:android="http://schemas.android.com/apk/res/android">
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:ignore="UselessParent">
-        <TextView
-            android:text="-"
-            android:textSize="@dimen/action_bar_text_size"
-            android:paddingStart="@dimen/action_bar_icon_start_padding"
-            android:paddingEnd="@dimen/action_bar_icon_end_padding"
-            android:drawablePadding="@dimen/action_bar_icon_padding"
-            android:gravity="center"
-            android:layout_gravity="center"
-            style="@style/toolbarIconStyle"
-            android:id="@+id/main_main_money"
-            android:layout_column="1"
-            app:drawableLeftCompat="@drawable/wallet2_money" />
-        <ImageView
-            android:src="@drawable/upcoming"
-            android:id="@+id/celebritySchedule"
-            style="@style/toolbarIconStyle"
-            android:layout_column="2"
-            android:visibility="gone"
-            android:contentDescription="@string/chat_msg" />
-        <ImageView
-            android:src="@drawable/search"
-            android:id="@+id/search"
-            style="@style/toolbarIconStyle"
-            android:layout_column="3"
-            android:visibility="gone"
-            android:contentDescription="@string/chat_msg" />
-        <ImageView
-            android:src="@drawable/test_chat_bkp"
-            style="@style/toolbarIconStyle"
-            android:id="@+id/chat"
-            android:layout_column="4"
-            android:contentDescription="@string/chat_msg" />
-    </TableRow>
-</TableLayout>
+    android:layout_height="match_parent">
+    <TextView
+        android:layout_alignParentStart="true"
+        android:layout_centerInParent="true"
+        style="@style/toolbarIconStyle"
+        android:text="@string/toolbar_ob"
+        android:textSize="@dimen/action_bar_text_size"
+        android:paddingStart="@dimen/action_bar_icon_start_padding"
+        android:paddingEnd="@dimen/action_bar_icon_end_padding"
+        android:gravity="start"
+        android:layout_gravity="start"
+        android:id="@+id/main_main_money_label"/>
+    <TextView
+        android:layout_toEndOf="@+id/main_main_money_label"
+        android:layout_centerInParent="true"
+        style="@style/toolbarIconStyle"
+        android:text="@string/toolbar_ob_default"
+        android:textSize="@dimen/action_bar_text_size"
+        android:paddingStart="@dimen/action_bar_icon_start_padding"
+        android:paddingEnd="@dimen/action_bar_icon_end_padding"
+        android:gravity="start"
+        android:layout_gravity="start"
+        android:id="@+id/main_main_money"/>
+    <ImageView
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/upcoming"
+        android:id="@+id/celebritySchedule"
+        android:layout_marginStart="@dimen/margin_top_medium"
+        android:layout_marginEnd="@dimen/margin_top_medium"
+        android:paddingStart="@dimen/action_bar_icon_start_padding"
+        android:paddingEnd="@dimen/action_bar_icon_end_padding"
+        style="@style/toolbarIconStyle"
+        android:visibility="invisible"
+        android:contentDescription="@string/chat_msg" />
+    <ImageView
+        android:layout_toStartOf="@+id/celebritySchedule"
+        android:src="@drawable/test_chat_bkp"
+        android:id="@+id/chat"
+        android:visibility="visible"
+        android:layout_marginStart="@dimen/margin_top_medium"
+        android:layout_marginEnd="@dimen/margin_top_medium"
+        android:paddingStart="@dimen/action_bar_icon_start_padding"
+        android:paddingEnd="@dimen/action_bar_icon_end_padding"
+        style="@style/toolbarIconStyle"
+        android:contentDescription="@string/chat_msg" />
+    <ImageView
+        android:layout_toStartOf="@+id/chat"
+        android:src="@drawable/search"
+        android:id="@+id/search"
+        android:layout_marginStart="@dimen/margin_top_medium"
+        android:layout_marginEnd="@dimen/margin_top_medium"
+        android:paddingStart="@dimen/action_bar_icon_start_padding"
+        android:paddingEnd="@dimen/action_bar_icon_end_padding"
+        style="@style/toolbarIconStyle"
+        android:contentDescription="@string/chat_msg" />
+</RelativeLayout>

@@ -13,6 +13,7 @@ import com.ab.telugumoviequiz.games.PlayerSummary;
 import com.ab.telugumoviequiz.games.PrizeDetail;
 import com.ab.telugumoviequiz.history.UserHistoryGameDetails;
 import com.ab.telugumoviequiz.main.LoginData;
+import com.ab.telugumoviequiz.main.OTPDetails;
 import com.ab.telugumoviequiz.main.UserMoney;
 import com.ab.telugumoviequiz.main.UserProfile;
 import com.ab.telugumoviequiz.money.TransferRequest;
@@ -52,6 +53,8 @@ public class Request {
     public static final int GAME_ENROLLED_STATUS = 131;
     public static final int TIME_CHECK_ID = 135;
     public static final int UPCOMING_CELEBRITY_NAMES_ID = 136;
+    public static final int SEND_OTP_CODE = 140;
+    public static final int VERIFY_OTP_CODE = 141;
 
     public static final int SHOW_QUESTION = 1000;
     public static final int SHOW_USER_ANSWERS = 2000;
@@ -274,4 +277,14 @@ public class Request {
                 String[].class, null);
     }
 
+    public static PostTask<String, String> sendCodeTask() {
+        String uri = baseUri + "/user/sendcode";
+        return new PostTask<>(uri, SEND_OTP_CODE, null, null, String.class);
+    }
+
+    public static PostTask<OTPDetails, String> verifyCodeTask() {
+        String uri = baseUri + "/user/verify";
+        return new PostTask<>(uri, VERIFY_OTP_CODE,
+                null, null, String.class);
+    }
 }

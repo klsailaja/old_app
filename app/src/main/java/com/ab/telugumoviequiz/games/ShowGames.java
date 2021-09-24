@@ -536,7 +536,7 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
                         searchButton.setVisibility(View.VISIBLE);
                         searchButton.setOnClickListener(this);
                     } else {
-                        searchButton.setVisibility(View.GONE);
+                        searchButton.setVisibility(View.INVISIBLE);
                         searchButton.setOnClickListener(null);
                     }
                     if ((fragmentIndex == 2) || (fragmentIndex == 4)) {
@@ -545,7 +545,7 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
                             viewCelebritySchedules.setVisibility(View.VISIBLE);
                             viewCelebritySchedules.setOnClickListener(this);
                         } else {
-                            viewCelebritySchedules.setVisibility(View.GONE);
+                            viewCelebritySchedules.setVisibility(View.INVISIBLE);
                             viewCelebritySchedules.setOnClickListener(null);
                         }
                     }

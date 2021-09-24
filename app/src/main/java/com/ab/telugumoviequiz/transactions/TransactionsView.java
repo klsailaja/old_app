@@ -36,6 +36,8 @@ public class TransactionsView extends BaseFragment implements PopupMenu.OnMenuIt
     private ViewAdapter tableAdapter;
     private final List<MyTransaction> tableData = new ArrayList<>();
     private int accountType = -1;
+    public final static int MORE_OPTIONS_BUTTON_ID = 1;
+    private final static int VIEW_MORE_DETAILS = 10;
 
     private void handleListeners(View.OnClickListener listener) {
         View view = getView();
@@ -106,8 +108,8 @@ public class TransactionsView extends BaseFragment implements PopupMenu.OnMenuIt
         String [] tableHeadings = new String[8];
         Resources resources = getResources();
         tableHeadings[0] = resources.getString(R.string.transactionview_col1);
-        tableHeadings[1] = resources.getString(R.string.transactionview_col2);
         tableHeadings[2] = resources.getString(R.string.transactionview_col3);
+        tableHeadings[1] = resources.getString(R.string.transactionview_col2);
         tableHeadings[3] = resources.getString(R.string.transactionview_col4);
         tableHeadings[4] = resources.getString(R.string.transactionview_col5);
         tableHeadings[5] = resources.getString(R.string.transactionview_col6);
@@ -123,6 +125,7 @@ public class TransactionsView extends BaseFragment implements PopupMenu.OnMenuIt
         tableAdapter = new ViewAdapter(tableData, tableHeadings);
         recyclerView.setAdapter(tableAdapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
+        tableAdapter.setClickListener(this);
         fetchRecords();
         return root;
     }
@@ -159,11 +162,39 @@ public class TransactionsView extends BaseFragment implements PopupMenu.OnMenuIt
             }
             popupMenu.setOnMenuItemClickListener(this);
             popupMenu.show();
+        } else if (id == MORE_OPTIONS_BUTTON_ID) {
+            MyTransaction selectedTransaction = (MyTransaction) view.getTag();
+            Resources resources = requireActivity().getResources();
+            CharSequence[] accTypes = resources.getTextArray(R.array.transactions_more_options);
+            PopupMenu popupMenu = new PopupMenu(getActivity(), view);
+            int counter = 10;
+            for (CharSequence s : accTypes) {
+                MenuItem item = popupMenu.getMenu().add(0,counter++, 0, s);
+                view.setTag(selectedTransaction);
+                item.setActionView(view);
+            }
+            popupMenu.setOnMenuItemClickListener(this);
+            popupMenu.show();
         }
     }
 
     @Override
     public boolean onMenuItemClick (MenuItem item) {
+        int id = item.getItemId();
+        if (id == VIEW_MORE_DETAILS) {
+            MyTransaction selectedTransaction = (MyTransaction) item.getActionView().getTag();
+            StringBuilder stringBuilder = new StringBuilder("Transaction Id: ");
+            stringBuilder.append(selectedTransaction.getTransactionId());
+            stringBuilder.append("\n");
+            stringBuilder.append("Transaction Result: ");
+            String operResult = "Fail";
+            if (selectedTransaction.getOperResult() == 1) {
+                operResult = "Success";
+            }
+            stringBuilder.append(operResult);
+            Utils.showMessage("", stringBuilder.toString(), this.getContext(), null);
+            return true;
+        }
         String text = (String) item.getTitle();
         accountType = -1;
         if (text.contains("Main")) {
