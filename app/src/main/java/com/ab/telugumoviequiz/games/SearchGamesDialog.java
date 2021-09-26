@@ -87,7 +87,6 @@ public class SearchGamesDialog extends DialogFragment
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.spinner_list_item, searchCols);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         searchColsSpinner.setAdapter(adapter);
-        searchColsSpinner.setSelection(0);
 
         gameIdsAdapter = new ArrayAdapter<>(getContext(), R.layout.spinner_list_item, gameIds);
         gameIdsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -108,6 +107,9 @@ public class SearchGamesDialog extends DialogFragment
         gameRatesAdapter.setNotifyOnChange(false);
 
         searchColsSpinner.setOnItemSelectedListener(this);
+
+        searchColsSpinner.setSelection(2);
+        box.setSelected(true);
         return root;
     }
 

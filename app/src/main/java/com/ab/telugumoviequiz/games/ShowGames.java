@@ -97,6 +97,10 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
 
     @Override
     public void onClick(View view) {
+        if (view == null) {
+            showSearchView();
+            return;
+        }
         int viewId = view.getId();
         if (R.id.card_entry_join == viewId) {
             String tagName = (String) view.getTag();
@@ -129,51 +133,55 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
             celebrityFullDetailsGetTask.setActivity(getActivity(), "Processing.Please Wait!");
             Scheduler.getInstance().submit(celebrityFullDetailsGetTask);
         } else if (R.id.search == viewId) {
-            int gameMode = 2;
-            if ((fragmentIndex == 1) || (fragmentIndex == 3)) {
-                gameMode = 1;
-            }
-            List<String> searchGameIds = new ArrayList<>();
-            List<String> celebrityNames = new ArrayList<>();
-            List<String> searchRates = new ArrayList<>();
-
-            gameStartTimeLongValues.clear();
-            gameStartTimeStrValues.clear();
-
-            lock.readLock().lock();
-            for (GameDetails gameDetails : gameDetailsList) {
-                searchGameIds.add(String.valueOf(gameDetails.getTempGameId()));
-                if (!searchRates.contains(String.valueOf(gameDetails.getTicketRate()))) {
-                    searchRates.add(String.valueOf(gameDetails.getTicketRate()));
-                }
-
-                Long searchStartTime = gameDetails.getStartTime();
-                if (!gameStartTimeLongValues.contains(searchStartTime)) {
-                    gameStartTimeLongValues.add(searchStartTime);
-                }
-                @SuppressLint("SimpleDateFormat")
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
-                String datePattern = "hh:mm";
-                Date date = new Date(searchStartTime);
-                simpleDateFormat.applyPattern(datePattern);
-                String timeStr = simpleDateFormat.format(date);
-                if (!gameStartTimeStrValues.contains(timeStr)) {
-                    gameStartTimeStrValues.add(timeStr);
-                }
-                if (gameMode == 2) {
-                    if (!celebrityNames.contains(gameDetails.getCelebrityName())) {
-                        celebrityNames.add(gameDetails.getCelebrityName());
-                    }
-                }
-            }
-            lock.readLock().unlock();
-
-            SearchGamesDialog searchGamesDialog = new SearchGamesDialog(gameMode);
-            searchGamesDialog.setData(searchGameIds, celebrityNames, gameStartTimeStrValues, searchRates);
-            searchGamesDialog.setListener(this);
-            FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-            searchGamesDialog.show(fragmentManager, "dialog");
+            showSearchView();
         }
+    }
+
+    private void showSearchView() {
+        int gameMode = 2;
+        if ((fragmentIndex == 1) || (fragmentIndex == 3)) {
+            gameMode = 1;
+        }
+        List<String> searchGameIds = new ArrayList<>();
+        List<String> celebrityNames = new ArrayList<>();
+        List<String> searchRates = new ArrayList<>();
+
+        gameStartTimeLongValues.clear();
+        gameStartTimeStrValues.clear();
+
+        lock.readLock().lock();
+        for (GameDetails gameDetails : gameDetailsList) {
+            searchGameIds.add(String.valueOf(gameDetails.getTempGameId()));
+            if (!searchRates.contains(String.valueOf(gameDetails.getTicketRate()))) {
+                searchRates.add(String.valueOf(gameDetails.getTicketRate()));
+            }
+
+            Long searchStartTime = gameDetails.getStartTime();
+            if (!gameStartTimeLongValues.contains(searchStartTime)) {
+                gameStartTimeLongValues.add(searchStartTime);
+            }
+            @SuppressLint("SimpleDateFormat")
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
+            String datePattern = "hh:mm";
+            Date date = new Date(searchStartTime);
+            simpleDateFormat.applyPattern(datePattern);
+            String timeStr = simpleDateFormat.format(date);
+            if (!gameStartTimeStrValues.contains(timeStr)) {
+                gameStartTimeStrValues.add(timeStr);
+            }
+            if (gameMode == 2) {
+                if (!celebrityNames.contains(gameDetails.getCelebrityName())) {
+                    celebrityNames.add(gameDetails.getCelebrityName());
+                }
+            }
+        }
+        lock.readLock().unlock();
+
+        SearchGamesDialog searchGamesDialog = new SearchGamesDialog(gameMode);
+        searchGamesDialog.setData(searchGameIds, celebrityNames, gameStartTimeStrValues, searchRates);
+        searchGamesDialog.setListener(this);
+        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+        searchGamesDialog.show(fragmentManager, "dialog");
     }
 
     private void applyFilterCriteria() {
@@ -505,6 +513,7 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
     private void showHelpWindow() {
         int isSet = HelpPreferences.getInstance().readPreference(requireContext(), HelpPreferences.GAME_TIPS);
         if (isSet == 1) {
+            showSearchView();
             return;
         }
         List<String> helpKeys = new ArrayList<>();
@@ -517,6 +526,7 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
                     loginHelpEnglishTopics, ViewHelp.HORIZONTAL, HelpPreferences.GAME_TIPS);
             viewHelp.setLocalMainHeading("Game Time Useful Tips");
             viewHelp.setEnglishMainHeading("Game Time Useful Tips");
+            viewHelp.setOnClickListener(this);
             Utils.clearState();
             FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
             viewHelp.show(fragmentManager, "dialog");

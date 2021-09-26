@@ -31,6 +31,7 @@ public class ViewHelp extends DialogFragment implements MessageListener {
     public static final int HORIZONTAL = 1;
     public static final int VERTICAL = 2;
     private final String helpPreferencesKey;
+    private View.OnClickListener onClickListener;
 
 
     public ViewHelp(List<HelpTopic> localTopics, List<HelpTopic> englishTopics,
@@ -45,6 +46,9 @@ public class ViewHelp extends DialogFragment implements MessageListener {
     }
     public void setLocalMainHeading(String localMainHeading) {
         this.localMainHeading = localMainHeading;
+    }
+    public void setOnClickListener(View.OnClickListener listener) {
+        this.onClickListener = listener;
     }
 
     @Override
@@ -95,6 +99,9 @@ public class ViewHelp extends DialogFragment implements MessageListener {
         if (context != null) {
             HelpPreferences.getInstance().writePreference(context,
                     helpPreferencesKey, stateInt);
+        }
+        if (onClickListener != null) {
+            this.onClickListener.onClick(null);
         }
     }
 
