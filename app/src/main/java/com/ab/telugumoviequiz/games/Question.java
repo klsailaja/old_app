@@ -1,8 +1,6 @@
 package com.ab.telugumoviequiz.games;
 
-import java.io.Serializable;
-
-public class Question implements Serializable {
+public class Question {
 	
 	private int questionNumber;
 	private long category;
@@ -12,6 +10,10 @@ public class Question implements Serializable {
 	private String nOptionB;
 	private String nOptionC;
 	private String nOptionD;
+	private String nOptionE;
+	private String nOptionF;
+	private String nOptionG;
+	private String nOptionH;
 	private int correctOption;
 	private long questionStartTime;
 	private boolean isFlipUsed;
@@ -71,6 +73,30 @@ public class Question implements Serializable {
 	public void setnOptionD(String nOptionD) {
 		this.nOptionD = nOptionD;
 	}
+	public String getnOptionE() {
+		return nOptionE;
+	}
+	public void setnOptionE(String nOptionE) {
+		this.nOptionE = nOptionE;
+	}
+	public String getnOptionF() {
+		return nOptionF;
+	}
+	public void setnOptionF(String nOptionF) {
+		this.nOptionF = nOptionF;
+	}
+	public String getnOptionG() {
+		return nOptionG;
+	}
+	public void setnOptionG(String nOptionG) {
+		this.nOptionG = nOptionG;
+	}
+	public String getnOptionH() {
+		return nOptionH;
+	}
+	public void setnOptionH(String nOptionH) {
+		this.nOptionH = nOptionH;
+	}
 	public int getCorrectOption() {
 		return correctOption;
 	}
@@ -83,10 +109,13 @@ public class Question implements Serializable {
 	public void setQuestionStartTime(long questionStartTime) {
 		this.questionStartTime = questionStartTime;
 	}
+
 	@Override
 	public String toString() {
-		return "Question [category=" + category + ", timeLine=" + timeLine + ", nStatement=" + nStatement
-				+ ", nOptionA=" + nOptionA + ", nOptionB=" + nOptionB + ", nOptionC=" + nOptionC + ", nOptionD="
-				+ nOptionD + ", correctOption=" + correctOption + "]";
+		return "Question [questionNumber=" + questionNumber + ", category=" + category + ", timeLine=" + timeLine
+				+ ", nStatement=" + nStatement + ", nOptionA=" + nOptionA + ", nOptionB=" + nOptionB + ", nOptionC="
+				+ nOptionC + ", nOptionD=" + nOptionD + ", nOptionE=" + nOptionE + ", nOptionF=" + nOptionF
+				+ ", nOptionG=" + nOptionG + ", nOptionH=" + nOptionH + ", correctOption=" + correctOption
+				+ ", questionStartTime=" + questionStartTime + ", isFlipUsed=" + isFlipUsed + "]";
 	}
 }

@@ -1,9 +1,11 @@
 package com.ab.telugumoviequiz.games;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -14,7 +16,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.telugumoviequiz.R;
 import com.ab.telugumoviequiz.common.BaseFragment;
+import com.ab.telugumoviequiz.common.CallbackResponse;
+import com.ab.telugumoviequiz.common.GetTask;
 import com.ab.telugumoviequiz.common.Keys;
+import com.ab.telugumoviequiz.common.Request;
+import com.ab.telugumoviequiz.common.Scheduler;
 import com.ab.telugumoviequiz.common.Utils;
 import com.ab.telugumoviequiz.help.HelpPreferences;
 import com.ab.telugumoviequiz.help.HelpTopic;
@@ -24,7 +30,7 @@ import com.ab.telugumoviequiz.main.Navigator;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SelectGameTypeView extends BaseFragment implements View.OnClickListener {
+public class SelectGameTypeView extends BaseFragment implements View.OnClickListener, CallbackResponse {
     private final List<GameTypeModel> modelList = new ArrayList<>();
     public static final int FUTURE_GAMES = 1; //
     public static final int ENROLLED_GAMES = 2; //
@@ -73,6 +79,13 @@ public class SelectGameTypeView extends BaseFragment implements View.OnClickList
                 Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
             }
         }
+
+        TextView userCountsLabel = root.findViewById(R.id.winMsgs);
+        userCountsLabel.setVisibility(View.GONE);
+
+        GetTask<Long> loggedInUserCtTask = Request.getLoggedInUserCount();
+        loggedInUserCtTask.setCallbackResponse(this);
+        Scheduler.getInstance().submit(loggedInUserCtTask);
         showHelpWindow();
         return root;
     }
@@ -97,7 +110,35 @@ public class SelectGameTypeView extends BaseFragment implements View.OnClickList
         FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
         viewHelp.show(fragmentManager, "dialog");
     }
-
+    @Override
+    public void handleResponse(int reqId, boolean exceptionThrown, boolean isAPIException, final Object response, Object helperObject) {
+        boolean isHandled = handleServerError(exceptionThrown, isAPIException, response);
+        if (isHandled) {
+            return;
+        }
+        if (reqId == Request.GET_LOGGEG_IN_USER_COUNT) {
+            isHandled = handleAPIError(isAPIException, response, 1, null, null);
+            if (isHandled) {
+                return;
+            }
+            Long count = (Long) response;
+            String loggedUserCtText = getResources().getString(R.string.logged_userCount_txt);
+            loggedUserCtText = loggedUserCtText + count;
+            String finalLoggedUserCtText = loggedUserCtText;
+            Runnable run = () -> {
+                View view = getView();
+                if (view == null) {
+                    return;
+                }
+                TextView userCount = view.findViewById(R.id.loggedUserCount);
+                userCount.setText(finalLoggedUserCtText);
+            };
+            Activity activity = getActivity();
+            if (activity != null) {
+                activity.runOnUiThread(run);
+            }
+        }
+    }
     @Override
     public void onClick(View view) {
         int viewId = view.getId();

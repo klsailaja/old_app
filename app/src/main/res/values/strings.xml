@@ -279,6 +279,8 @@
     <string name="wdPhonePeHolderName" translatable="false">Enter PhonePe User Name</string>
 
     <string name="status_bar_msg" translatable="false">Recent Winning Messages</string>
+    <string name="logged_userCount" translatable="false">-</string>
+    <string name="logged_userCount_txt" translatable="false">Currently Logged In Users Count: </string>
     <string name="tab_text_1" translatable="false">In Telugu</string>
     <string name="tab_text_2" translatable="false">In English</string>
     <string name="game_day_icon_desc" translatable="false">game_day_icon_dec</string>

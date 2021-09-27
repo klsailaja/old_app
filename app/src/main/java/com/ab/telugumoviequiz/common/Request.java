@@ -70,6 +70,7 @@ public class Request {
     public static final int TRANSFER_MONEY_REQ = 4030;
     public static final int CREATE_NEW_WD_REQ = 4040;
     public static final int ADD_MONEY_REQ = 4050;
+    public static final int GET_LOGGEG_IN_USER_COUNT = 4051;
 
 
     public static PostTask<WithdrawRequestInput, Boolean> createNewWDRequest() {
@@ -86,6 +87,11 @@ public class Request {
 
 
     /* Games related Tasks */
+    public static GetTask<Long> getLoggedInUserCount() {
+        String uri = baseUri + "/loggedin/count";
+        return new GetTask<>(uri, GET_LOGGEG_IN_USER_COUNT, null,
+                Long.class, null);
+    }
     public static GetTask<CelebrityFullDetails> getCelebrityScheduleTask() {
         String uri = baseUri + "/game/celebrityschedule";
         return new GetTask<>(uri, CELEBRITY_SCHEDULE_DETAIS, null,

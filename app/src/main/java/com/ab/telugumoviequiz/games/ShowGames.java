@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -92,6 +93,8 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
         recyclerView.setAdapter(mAdapter);
         mAdapter.setClickListener(this);
         setBaseParams(false);
+        TextView userCountsLabel = root.findViewById(R.id.loggedUserCount);
+        userCountsLabel.setVisibility(View.GONE);
         return root;
     }
 
