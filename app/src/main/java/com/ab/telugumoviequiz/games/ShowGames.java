@@ -116,6 +116,9 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
             GameOperation gm = new GameOperation();
             gm.setUserProfileId(UserDetails.getInstance().getUserProfile().getId());
             gm.setUserAccountType(UserMoneyAccountType.LOADED_MONEY.getId());
+            gm.setUserName(UserDetails.getInstance().getUserProfile().getName());
+            gm.setUserBossId(UserDetails.getInstance().getUserProfile().getBossId());
+
             joinTask.setPostObject(gm);
             joinTask.setHelperObject(quesGameDetails);
             Scheduler.getInstance().submit(joinTask);

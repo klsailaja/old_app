@@ -214,6 +214,7 @@ public class NewUserActivity extends AppCompatActivity
         }
         if (reqId == Request.CREATE_USER_PROFILE) {
             UserProfile dbUserProfile = (UserProfile) response;
+            Request.baseUri = dbUserProfile.getServerIpAddress();
             UserDetails.getInstance().setUserProfile(dbUserProfile);
             Resources resources = getResources();
             final String msg = resources.getString(string.new_user_register_success);

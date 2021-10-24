@@ -163,6 +163,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             String msg = resources.getString(R.string.user_login_fail_msg);
 
             if ((userProfile != null) && (userProfile.getId() > 0)) {
+                Request.baseUri = userProfile.getServerIpAddress();
                 UserDetails.getInstance().setUserProfile(userProfile);
                 msg = resources.getString(R.string.user_login_success_msg);
                 final String successMsg  = msg;
