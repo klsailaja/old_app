@@ -582,6 +582,27 @@ public class QuestionFragment extends BaseFragment
                 }
                 break;
             }
+            case Request.MONEY_TASK_STATUS: {
+                String errosMsg;
+                if (isAPIException) {
+                    errosMsg = (String) response;
+                    displayError(errosMsg, null);
+                    return;
+                }
+                Integer result = (Integer)response;
+                if (result == 1) {
+                    MainActivity mainActivity = (MainActivity) getActivity();
+                    assert mainActivity != null;
+                    Scheduler.getInstance().submit(new FetchUserMoneyTask((MainActivity) getActivity()));
+                    return;
+                }
+                Integer reqCount = (Integer) helperObject;
+                if (reqCount < 11) {
+                    GetTask<Integer> moneyUpdatedTask = Request.getMoneyStatusTask(this.gameDetails.getStartTime());
+                    moneyUpdatedTask.setCallbackResponse(this);
+                    moneyUpdatedTask.setHelperObject(++reqCount);
+                }
+            }
             default:
                 throw new IllegalStateException("Unexpected value: " + reqId);
         }
@@ -917,10 +938,10 @@ public class QuestionFragment extends BaseFragment
 
         if (currentTime < (questionStartTime + Constants.SCHEDULE_USER_MONEY_FETCH)) {
             actualStartTime = questionStartTime + Constants.SCHEDULE_USER_MONEY_FETCH - System.currentTimeMillis();
-            MainActivity mainActivity = (MainActivity) getActivity();
-            assert mainActivity != null;
-            //mainActivity.setUserMoneyFetchedListener(this);
-            scheduler.submit(new FetchUserMoneyTask((MainActivity) getActivity()), actualStartTime, TimeUnit.MILLISECONDS);
+            GetTask<Integer> moneyUpdatedTask = Request.getMoneyStatusTask(this.gameDetails.getStartTime());
+            moneyUpdatedTask.setCallbackResponse(this);
+            moneyUpdatedTask.setHelperObject(1);
+            scheduler.submit(moneyUpdatedTask, actualStartTime, TimeUnit.MILLISECONDS);
         }
     }
 

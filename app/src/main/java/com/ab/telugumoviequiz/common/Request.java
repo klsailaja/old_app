@@ -71,6 +71,7 @@ public class Request {
     public static final int CREATE_NEW_WD_REQ = 4040;
     public static final int ADD_MONEY_REQ = 4050;
     public static final int GET_LOGGEG_IN_USER_COUNT = 4051;
+    public static final int MONEY_TASK_STATUS = 5000;
 
 
     public static PostTask<WithdrawRequestInput, Boolean> createNewWDRequest() {
@@ -292,5 +293,9 @@ public class Request {
         String uri = baseUri + "/user/verify";
         return new PostTask<>(uri, VERIFY_OTP_CODE,
                 null, null, String.class);
+    }
+    public static GetTask<Integer> getMoneyStatusTask(long gameStartTime) {
+        String uri = baseUri + "/money/update/" + String.valueOf(gameStartTime);
+        return new GetTask<>(uri, MONEY_TASK_STATUS, null, Integer.class, null);
     }
 }

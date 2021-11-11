@@ -2,6 +2,7 @@ package com.ab.telugumoviequiz.common;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -31,12 +32,7 @@ public class WinMsgHandler implements CallbackResponse {
         fetchData(20);
     }
 
-    public void stop() {
-        isStopped = true;
-    }
-
     public void setUserProfileId(long userProfileId1) {
-        System.out.println("In setUserProfileId" + userProfileId1);
         this.userProfileId = userProfileId1;
         fetchData(10);
     }
@@ -44,7 +40,13 @@ public class WinMsgHandler implements CallbackResponse {
     private void fetchData(int maxClosedGroupUserCount) {
         GetTask<String[]> getMsgTask = Request.getWinWdMessages(userProfileId, maxClosedGroupUserCount);
         getMsgTask.setCallbackResponse(this);
-        Scheduler.getInstance().submit(getMsgTask);
+        Calendar calendar = Calendar.getInstance();
+        int minutes = calendar.get(Calendar.MINUTE);
+        int offset = 0;
+        if ((minutes % 5) == 0) {
+            offset = 2;
+        }
+        Scheduler.getInstance().submit(getMsgTask, offset, TimeUnit.MINUTES);
     }
 
     public void setListener(MessageListener messageListener) {
@@ -97,7 +99,6 @@ public class WinMsgHandler implements CallbackResponse {
             count++;
             if (count >= 120) {
                 start();
-                return;
             }
             Integer currentIndex = (Integer) helperObject;
             if (currentIndex >= winWdMessages.size()) {
