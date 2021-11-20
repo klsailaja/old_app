@@ -197,7 +197,7 @@ public class TransactionsView extends BaseFragment implements PopupMenu.OnMenuIt
         }
         String text = (String) item.getTitle();
         accountType = -1;
-        if (text.contains("Main")) {
+        if (text.contains("Others")) {
             accountType = 1;
         } else if (text.contains("Win")) {
             accountType = 2;

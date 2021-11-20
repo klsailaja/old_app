@@ -206,6 +206,8 @@ public class NewUserActivity extends AppCompatActivity
         }
         if (isAPIException) {
             Runnable run = () -> {
+                Button loginButton = findViewById(R.id.registerButton);
+                loginButton.setEnabled(true);
                 String error = (String) response;
                 Utils.showMessage("Error", error, NewUserActivity.this, null);
             };

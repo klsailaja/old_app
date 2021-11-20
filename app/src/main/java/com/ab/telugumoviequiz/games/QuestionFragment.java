@@ -367,39 +367,19 @@ public class QuestionFragment extends BaseFragment
                 if (currentQuesPos == null) {
                     break;
                 }
-                int randomNumber = 1 + (int) (Math.random() * (101 - 1));
-                boolean forward = true;
-                if (randomNumber % 2 == 0) {
-                    forward = false;
-                }
                 List<Question> questions = gameDetails.getGameQuestions();
                 Question question = questions.get(currentQuesPos);
                 int correctOption = question.getCorrectOption();
                 int count = 0;
-                if (forward) {
-                    for (int index = 1; index <= 4; index ++) {
-                        if (index != correctOption) {
-                            TextView optionButton = getViewCorrespondingToNumber(index);
-                            if (optionButton != null) {
-                                optionButton.setText("");
-                            }
-                            count++;
-                            if (count == 2) {
-                                break;
-                            }
+                for (int index = 1; index <= 4; index ++) {
+                    if (index != correctOption) {
+                        TextView optionButton = getViewCorrespondingToNumber(index);
+                        if (optionButton != null) {
+                            optionButton.setText("");
                         }
-                    }
-                } else {
-                    for (int index = 4; index >= 1; index --) {
-                        if (index != correctOption) {
-                            TextView optionButton = getViewCorrespondingToNumber(index);
-                            if (optionButton != null) {
-                                optionButton.setText("");
-                            }
-                            count++;
-                            if (count == 2) {
-                                break;
-                            }
+                        count++;
+                        if (count == 2) {
+                            break;
                         }
                     }
                 }

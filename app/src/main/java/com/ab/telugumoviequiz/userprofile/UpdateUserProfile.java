@@ -37,13 +37,9 @@ public class UpdateUserProfile extends BaseFragment implements View.OnClickListe
     public View onCreateView(
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.update_user_profile, container, false);
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedBundle) {
-        super.onActivityCreated(savedBundle);
-        populateUI();
+        View view = inflater.inflate(R.layout.update_user_profile, container, false);
+        populateUI(view);
+        return view;
     }
 
     @Override
@@ -185,7 +181,7 @@ public class UpdateUserProfile extends BaseFragment implements View.OnClickListe
         }
         TextView nameText = view.findViewById(R.id.profileName);
         String str = nameText.getText().toString().trim();
-        String result = Utils.fullValidate(str, "Name", false, 4, 8, false);
+        String result = Utils.fullValidate(str, "Name", false, 2, 20, false);
         if (result != null) {
             nameText.setError(result);
             nameText.requestFocus();
@@ -206,7 +202,7 @@ public class UpdateUserProfile extends BaseFragment implements View.OnClickListe
             compName = "Confirm Password";
         }
         String str = passwdText.getText().toString().trim();
-        String result = Utils.fullValidate(str, compName, false, 4, 8, false);
+        String result = Utils.fullValidate(str, compName, false, 8, 25, false);
         if (result != null) {
             passwdText.setError(result);
             passwdText.requestFocus();
@@ -224,8 +220,7 @@ public class UpdateUserProfile extends BaseFragment implements View.OnClickListe
         Button loginButton = view.findViewById(R.id.changeButton);
         loginButton.setOnClickListener(listener);
     }
-    private void populateUI() {
-        View view = getView();
+    private void populateUI(View view) {
         if (view == null) {
             return;
         }

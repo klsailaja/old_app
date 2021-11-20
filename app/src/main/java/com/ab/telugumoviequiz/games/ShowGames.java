@@ -418,12 +418,16 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
                 }
 
                 lock.writeLock().lock();
+                boolean firstTime = (gameDetailsList.size() == 0);
                 gameDetailsList.clear();
                 gameDetailsList.addAll(result);
                 lock.writeLock().unlock();
                 applyFilterCriteria();
                 if (reqId == Request.GET_FUTURE_GAMES) {
-                    showHelpWindow();
+                    if (firstTime) {
+                        showHelpWindow();
+                        showSearchView();
+                    }
                 }
                 break;
             }
@@ -519,7 +523,6 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
     private void showHelpWindow() {
         int isSet = HelpPreferences.getInstance().readPreference(requireContext(), HelpPreferences.GAME_TIPS);
         if (isSet == 1) {
-            showSearchView();
             return;
         }
         List<String> helpKeys = new ArrayList<>();

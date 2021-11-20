@@ -15,6 +15,7 @@ public class UserProfile {
 	private int loggedIn;
 	private int forgotPasswdUsed;
 	private String serverIpAddress;
+	private int serverPortNumber;
 	
 		
 	public int getLoggedIn() {
@@ -96,5 +97,11 @@ public class UserProfile {
 	}
 	public void setServerIpAddress(String serverIpAddress) {
 		this.serverIpAddress = serverIpAddress;
+	}
+	public int getServerPortNumber() {
+		return serverPortNumber;
+	}
+	public void setServerPortNumber(int serverPortNumber) {
+		this.serverPortNumber = serverPortNumber;
 	}
 }

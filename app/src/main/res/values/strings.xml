@@ -147,10 +147,10 @@
     <string name="myreferal_intro" translatable="false">This view shows the users registered with your referral code. When they play and win, you earn money</string>
     <string name="myreferal_more_view_options" translatable="false">Filter on Transaction Types</string>
     <string-array name="myreferal_acc_options">
-        <item>All Transactions</item>
-        <item>Main Transactions</item>
-        <item>Win Transactions</item>
-        <item>Referral Transactions</item>
+        <item>All</item>
+        <item>Win</item>
+        <item>Referral</item>
+        <item>Others</item>
     </string-array>
     <string name="prev_data_set" translatable="false">Previous Set</string>
     <string name="next_data_set" translatable="false">Next Set</string>
