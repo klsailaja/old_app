@@ -1,14 +1,16 @@
 package com.ab.telugumoviequiz.main;
 
 import android.annotation.SuppressLint;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,6 +43,8 @@ import com.ab.telugumoviequiz.common.SwitchScreen;
 import com.ab.telugumoviequiz.common.UserDetails;
 import com.ab.telugumoviequiz.common.Utils;
 import com.ab.telugumoviequiz.common.WinMsgHandler;
+import com.ab.telugumoviequiz.customercare.CCTableView;
+import com.ab.telugumoviequiz.customercare.NewCCReq;
 import com.ab.telugumoviequiz.games.GameDetails;
 import com.ab.telugumoviequiz.games.GameStatus;
 import com.ab.telugumoviequiz.games.GameStatusHolder;
@@ -58,6 +62,7 @@ import com.ab.telugumoviequiz.withdraw.WithdrawReqsView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -317,7 +322,10 @@ public class MainActivity extends AppCompatActivity
             launchView(Navigator.PROFILE_VIEW, params, false);
         } else if (id == R.id.nav_add_money) {
             launchView(Navigator.ADD_MONEY_VIEW, params, false);
-        } else if (id == R.id.logout) {
+        } else if (id == R.id.nav_customercare) {
+            launchView(Navigator.CC_REQ_VIEW, params, false);
+        }
+        else if (id == R.id.logout) {
             Request.baseUri = getString(R.string.base_url);
             Intent intent = new Intent(this, LoginActivity.class);
             intent.putExtra(Keys.LOGIN_SCREEN_CALLED_FROM_LOGOUT, 1);
@@ -433,6 +441,17 @@ public class MainActivity extends AppCompatActivity
             case Navigator.NEW_WITHDRAW_REQUEST: {
                 stopped = true;
                 fragment = new NewWithdrawReq();
+                break;
+            }
+            case Navigator.CC_REQ_VIEW: {
+                stopped = true;
+                fragment = new CCTableView();
+                break;
+            }
+            case Navigator.NEW_CC_REQUEST: {
+                stopped = true;
+                fragment = new NewCCReq();
+                break;
             }
         }
         if (stopped) {
@@ -667,7 +686,14 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private void startAlarm(boolean enable) {
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        System.out.println("In onActivityResult" + requestCode);
+    }
+
+
+    /*private void startAlarm(boolean enable) {
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this, AlertReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
@@ -677,5 +703,5 @@ public class MainActivity extends AppCompatActivity
         } else {
             alarmManager.cancel(pendingIntent);
         }
-    }
+    }*/
 }

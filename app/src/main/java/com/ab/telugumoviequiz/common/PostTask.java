@@ -87,7 +87,7 @@ public class PostTask<T,R> implements Runnable {
         return new HttpEntity<>(postObject, requestHeaders);
     }
 
-    private ClientHttpRequestFactory getReqFactory() {
+    protected ClientHttpRequestFactory getReqFactory() {
         HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
         requestFactory.setReadTimeout(reqTimeOut);
         return requestFactory;

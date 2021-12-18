@@ -2,6 +2,9 @@ package com.ab.telugumoviequiz.common;
 
 import com.ab.telugumoviequiz.chat.Chat;
 import com.ab.telugumoviequiz.chat.ChatGameDetails;
+import com.ab.telugumoviequiz.customercare.CCTicketsHolder;
+import com.ab.telugumoviequiz.customercare.CustomerTicketHolder;
+import com.ab.telugumoviequiz.customercare.PostPictureTask;
 import com.ab.telugumoviequiz.games.CelebrityFullDetails;
 import com.ab.telugumoviequiz.games.GameDetails;
 import com.ab.telugumoviequiz.games.GameOperation;
@@ -22,6 +25,8 @@ import com.ab.telugumoviequiz.transactions.TransactionsHolder;
 import com.ab.telugumoviequiz.withdraw.GetReceiptTask;
 import com.ab.telugumoviequiz.withdraw.WithdrawRequestInput;
 import com.ab.telugumoviequiz.withdraw.WithdrawRequestsHolder;
+
+import org.springframework.util.LinkedMultiValueMap;
 
 public class Request {
     public static String baseUri = null;
@@ -56,6 +61,10 @@ public class Request {
     public static final int SEND_OTP_CODE = 140;
     public static final int VERIFY_OTP_CODE = 141;
 
+    public static final int USER_CC_LIST = 150;
+    public static final int CC_CANCEL = 151;
+    public static final int CC_RECEIPT = 152;
+
     public static final int SHOW_QUESTION = 1000;
     public static final int SHOW_USER_ANSWERS = 2000;
     public static final int SHOW_LEADER_BOARD = 2001;
@@ -72,6 +81,7 @@ public class Request {
     public static final int ADD_MONEY_REQ = 4050;
     public static final int GET_LOGGEG_IN_USER_COUNT = 4051;
     public static final int MONEY_TASK_STATUS = 5000;
+    public static final int CREATE_CC_ISSUE = 6000;
 
 
     public static PostTask<WithdrawRequestInput, Boolean> createNewWDRequest() {
@@ -221,6 +231,23 @@ public class Request {
                 UserHistoryGameDetails.class, null);
     }
 
+    /* Customer Care */
+    public static GetTask<CCTicketsHolder> getCCReqs(long userProfileId, int startRowNo, int status) {
+        String uri = baseUri + "/cc/" + userProfileId + "/" + startRowNo + "/" + status;
+        System.out.println("uri is : " + uri);
+        return new GetTask<>(uri, USER_CC_LIST, null,
+                CCTicketsHolder.class, null);
+    }
+    public static GetTask<Boolean> getCCReqCancel(long userProfileId, String refId) {
+        String uri = baseUri + "/cc/cancel/" + userProfileId + "/" + refId;
+        return new GetTask<>(uri, CC_CANCEL, null, Boolean.class, null);
+    }
+    public static GetTask<byte[]> getCCReceiptTask(long receiptId) {
+        String uri = baseUri + "/cc/receipt/" + receiptId;
+        return new GetReceiptTask<>(uri, CC_RECEIPT, null, byte[].class, null);
+    }
+
+
     /* Withdraw Operations Related */
     public static GetTask<WithdrawRequestsHolder> getWDReqs(long userProfileId, int startRowNo, int status) {
         String uri = baseUri + "/wd/" + userProfileId + "/" + startRowNo + "/" + status;
@@ -230,7 +257,6 @@ public class Request {
 
     public static GetTask<Boolean> getCancelReq(long userProfileId, String refId) {
         String uri = baseUri + "/wd/cancel/" + userProfileId + "/" + refId;
-        System.out.println("Cancel Task " + uri);
         return new GetTask<>(uri, WITHDRAW_CANCEL, null, Boolean.class, null);
     }
 
@@ -297,5 +323,10 @@ public class Request {
     public static GetTask<Integer> getMoneyStatusTask(long gameStartTime) {
         String uri = baseUri + "/money/update/" + String.valueOf(gameStartTime);
         return new GetTask<>(uri, MONEY_TASK_STATUS, null, Integer.class, null);
+    }
+    public static PostPictureTask getCreateCCTask() {
+        String uri = baseUri + "/cc";
+        return new PostPictureTask(uri, CREATE_CC_ISSUE,
+                null, null);
     }
 }

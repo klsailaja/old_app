@@ -22,6 +22,13 @@ public interface Navigator {
     String NEW_WITHDRAW_REQUEST = "NewWithdrawReqView";
     String TRANSFER_TO_BANK_ACCOUNT = "TransferToBankAccount";
     String TRANSFER_TO_PHONEPE_ACCOUNT = "TransferToPhonePeAccount";
+    String CC_REQ_VIEW = "CustomerCareView";
+    String NEW_CC_REQUEST = "NewCustomerCareReqView";
+    String ADDED_MONEY_NOT_UPDATED = "AddedMoneyNotUpdated";
+    String WIN_MONEY_NOT_UPDATED = "WinMoneyNotUpdated";
+    String WD_REQ_NOT_PROCESSED = "WithdrawRequestNotProcessed";
+    String QUESTION_ANSWER_WRONG = "ReportQuestionAnswerWrong";
+    String CC_OTHERS = "CC_OTHERS";
 
     void launchView(String viewId, Bundle params, boolean storeState);
 }

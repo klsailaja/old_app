@@ -1,7 +1,7 @@
 <resources>
     <!-- Main App -->
     <string name="app_name">TeluguMovieQuiz</string>
-    <string name="base_url" translatable="false">http://192.168.1.2:8888</string>
+    <string name="base_url" translatable="false">http://192.168.1.4:8888</string>
 
     <string name="quiz_screen_server_err" translatable="false">Server Error. Please try after some time</string>
 
@@ -63,8 +63,10 @@
     <string name="menu_add_money" translatable="false">Add Money</string>
     <string name="menu_transfer_money" translatable="false">Transfer Money</string>
     <string name="menu_user_profile" translatable="false">My Profile</string>
+    <string name="menu_customercare" translatable="false">Customer Care</string>
     <string name="menu_logout" translatable="false">Logout</string>
     <string name="versionLabel" translatable="false">Ver 1.0.0</string>
+    <string name="customer_care" translatable="false">Customer Care</string>
     <string name="share_it" translatable="false">Invite Friends</string>
     <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
     <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
@@ -189,6 +191,30 @@
     <string name="history_games_col4" translatable="false">Celebrity</string>
     <string name="history_games_col5" translatable="false">View Result</string>
 
+    <!--Customer Care View-->
+    <string name="cc_intro" translatable="false">This view shows the games played the you.</string>
+    <string name="cc_more_view_options" translatable="false">Filter on Request Status</string>
+    <string name="cc_col1" translatable="false">S.No</string>
+    <string name="cc_col2" translatable="false">Reference Id#</string>
+    <string name="cc_col3" translatable="false">Request Type#</string>
+    <string name="cc_col4" translatable="false">Request Status</string>
+    <string name="cc_col5" translatable="false">Opened Date</string>
+    <string name="cc_col6" translatable="false">Cancel Request</string>
+    <string name="cc_col7" translatable="false">More Options</string>
+    <string-array name="cc_options">
+        <item>All</item>
+        <item>Opened</item>
+        <item>Closed</item>
+        <item>NotAnIssue</item>
+        <item>Cancelled</item>
+    </string-array>
+    <string-array name="cc_more_options">
+        <item>View Details</item>
+        <item>View Problem Picture</item>
+        <item>View Resolution Picture</item>
+        <item>View Closed Comments</item>
+    </string-array>
+
     <!-- Withdraw View -->
     <string name="wd_intro" translatable="false">This view shows the games played the you.</string>
     <string name="wd_more_view_options" translatable="false">Filter on Request Status</string>
@@ -265,6 +291,11 @@
     <string name="transferAmtButTxt" translatable="false">Transfer</string>
     <string name="enter_transfer_amount" translatable="false">Enter Transfer Amount</string>
 
+    <!-- Customer Care -->
+    <!-- Customer Care Added Money Not Added Issue -->
+    <string name="ccAddedMoneyAmt" translatable="false">Enter the Added Money Amount</string>
+    <string name="ccAddedMoneySetDate" translatable="false">Set Date</string>
+
     <!--Withdraw Request View-->
     <string name="wdTransferTo" translatable="false">Select Transfer To:</string>
     <string name="wdBankTransferAccNum" translatable="false">Beneficiary Account Number</string>
@@ -306,4 +337,5 @@
     <string name="resend_code" translatable="false">Resend Code</string>
     <string name="toolbar_ob" translatable="false">Current Balance in Indian Rupees:</string>
     <string name="toolbar_ob_default" translatable="false">-</string>
+    <string name="cc_added_money_issue_intro" translatable="false">CC Added Money Intro</string>>
 </resources>
