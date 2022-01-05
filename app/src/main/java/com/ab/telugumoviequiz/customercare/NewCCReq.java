@@ -94,12 +94,36 @@ public class NewCCReq extends BaseFragment implements AdapterView.OnItemSelected
                 fragment = new CCAddedMoneyIssue();
                 break;
             }
+            case Navigator.WIN_MONEY_NOT_UPDATED: {
+                fragment = new CCWinMoneyNotAdded();
+                break;
+            }
+            case Navigator.WD_REQ_NOT_PROCESSED: {
+                break;
+            }
+            case Navigator.QUESTION_ANSWER_WRONG: {
+                break;
+            }
+            case Navigator.CC_OTHERS: {
+                break;
+            }
         }
         return fragment;
     }
 
     @Override
     public void onItemSelected(AdapterView<?> arg0, View arg1, int position,long id) {
+        String viewName = Navigator.ADDED_MONEY_NOT_UPDATED;
+        if (position == 1) {
+            viewName = Navigator.WIN_MONEY_NOT_UPDATED;
+        } else if (position == 2) {
+            viewName = Navigator.WD_REQ_NOT_PROCESSED;
+        } else if (position == 3) {
+            viewName = Navigator.QUESTION_ANSWER_WRONG;
+        } else if (position == 4) {
+            viewName = Navigator.CC_OTHERS;
+        }
+        showView(viewName);
     }
 
     @Override

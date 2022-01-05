@@ -17,7 +17,7 @@
             <TextView
                 android:layout_gravity="center_horizontal"
                 android:gravity="start"
-                android:text="@string/wdTransferTo"
+                android:text="@string/ccIssueType"
                 android:textStyle="bold"
                 android:textSize="@dimen/wd_label_text_size"
                 android:layout_width="wrap_content"

@@ -171,5 +171,5 @@
     <dimen name="wd_money_spinner_width">200dp</dimen>
     <dimen name="tableHeaderTextBoxTextSize">15sp</dimen>
     <!-- Customer Care View -->
-    <dimen name="cc_money_spinner_width">250dp</dimen>
+    <dimen name="cc_money_spinner_width">300dp</dimen>
 </resources>

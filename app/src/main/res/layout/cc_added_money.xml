@@ -42,12 +42,15 @@
                 android:id="@+id/ccAddedDateText"
                 android:inputType="text"
                 android:enabled="false"
+                android:hint="@string/ccAddedMoneyDateHint"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </com.google.android.material.textfield.TextInputLayout>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
             android:id="@+id/ccAddedMoneySetDate"
             android:text="@string/ccAddedMoneySetDate"/>
     </LinearLayout>
@@ -70,16 +73,18 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/margin_top_small"
             android:layout_toEndOf="@+id/addBtn"
-            android:text="Add" />
+            android:text="@string/screenshot_add" />
         <Button
             android:id="@+id/removeScreenShot"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_top_small"
             android:layout_alignParentBottom="true"
             android:layout_centerVertical="true"
             android:layout_toEndOf="@+id/addBtn"
-            android:text="Clear" />
+            android:text="@string/screenshot_remove" />
     </RelativeLayout>
     <Button
         style="@style/normalButton"
@@ -89,5 +94,5 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
-        android:text="@string/wdBankNewReqBut"/>
+        android:text="@string/ccCreateTicketBut"/>
 </LinearLayout>

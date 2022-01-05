@@ -7,7 +7,6 @@ import androidx.appcompat.app.AlertDialog;
 import com.ab.telugumoviequiz.common.CallbackResponse;
 import com.ab.telugumoviequiz.common.Utils;
 
-
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -23,7 +22,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Arrays;
+import java.util.Collections;
 
 public class PostPictureTask implements Runnable {
     private final String reqUri;
@@ -32,19 +31,17 @@ public class PostPictureTask implements Runnable {
 
     private int reqTimeOut = 20 * 1000;
 
-    private MultiValueMap<String, Object> formData;
-
     private Object helperObject;
     private Activity activity;
     private AlertDialog alertDialog;
     private String waitingMessage;
     private byte[] fileContents;
+    private String filename;
 
-    public PostPictureTask(String reqUri, int reqId, MultiValueMap<String, Object> formData,
+    public PostPictureTask(String reqUri, int reqId,
                            CallbackResponse callbackResponse) {
         this.reqUri = reqUri;
         this.requestId = reqId;
-        this.formData = formData;
         this.callbackResponse = callbackResponse;
     }
 
@@ -80,15 +77,11 @@ public class PostPictureTask implements Runnable {
         return this.helperObject;
     }
 
-    public MultiValueMap<String, Object> getFormData() {
-        return formData;
-    }
-    public void setFormData(MultiValueMap<String, Object> formData) {
-        this.formData = formData;
-    }
-
     public void setByteArray(byte[] fileContents) {
         this.fileContents = fileContents;
+    }
+    public void setFilename(String filename) {
+        this.filename = filename;
     }
 
     @Override
@@ -100,19 +93,19 @@ public class PostPictureTask implements Runnable {
             };
             activity.runOnUiThread(run);
         }
-        String fileName = "test.txt";
         HttpHeaders parts = new HttpHeaders();
         parts.setContentType(MediaType.TEXT_PLAIN);
+        String localFileName = filename;
         final ByteArrayResource byteArrayResource = new ByteArrayResource(this.fileContents) {
             @Override
             public String getFilename() {
-                return fileName;
+                return localFileName;
             }
         };
         final HttpEntity<ByteArrayResource> partsEntity = new HttpEntity<>(byteArrayResource, parts);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
         MultiValueMap<String, Object> requestMap = new LinkedMultiValueMap<>();
@@ -120,24 +113,10 @@ public class PostPictureTask implements Runnable {
 
 
         // **************************
-        //HttpHeaders requestHeaders = new HttpHeaders();
-        //requestHeaders.setContentType(MediaType.IMAGE_PNG);
-
-        //HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(
-                //formData, requestHeaders);
         try {
-        // Create a new RestTemplate instance
-        //RestTemplate restTemplate = getRestTemplate();
-        RestTemplate restTemplate = new RestTemplate(true);
-        // Make the network request, posting the message, expecting a String in response from the server
-        System.out.println("B4 sending " + reqUri);
-        System.out.println(formData);
-        /*ResponseEntity<Boolean> response = restTemplate.exchange(reqUri, HttpMethod.POST, requestEntity,
-                Boolean.class);*/
-        final ResponseEntity<Boolean> exchange = restTemplate.exchange(getReqUri(), HttpMethod.POST,
-                new HttpEntity<>(requestMap, headers), Boolean.class);
-        System.out.println("response is " + exchange);
-
+            RestTemplate restTemplate = new RestTemplate(true);
+            final ResponseEntity<Boolean> exchange = restTemplate.exchange(getReqUri(), HttpMethod.POST,
+                    new HttpEntity<>(requestMap, headers), Boolean.class);
             Object result = exchange.getBody();
             if (activity != null) {
                 Runnable run = () -> alertDialog.dismiss();
@@ -175,7 +154,7 @@ public class PostPictureTask implements Runnable {
         RestTemplate restTemplate = new RestTemplate(getReqFactory());
         MappingJackson2HttpMessageConverter converter =
                 new MappingJackson2HttpMessageConverter();
-        converter.setSupportedMediaTypes(Arrays.asList(
+        converter.setSupportedMediaTypes(Collections.singletonList(
                 MediaType.APPLICATION_OCTET_STREAM));
         restTemplate.getMessageConverters().add(converter);
         return restTemplate;

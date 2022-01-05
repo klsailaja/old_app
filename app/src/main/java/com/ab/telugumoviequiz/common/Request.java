@@ -3,7 +3,7 @@ package com.ab.telugumoviequiz.common;
 import com.ab.telugumoviequiz.chat.Chat;
 import com.ab.telugumoviequiz.chat.ChatGameDetails;
 import com.ab.telugumoviequiz.customercare.CCTicketsHolder;
-import com.ab.telugumoviequiz.customercare.CustomerTicketHolder;
+import com.ab.telugumoviequiz.customercare.CustomerTicket;
 import com.ab.telugumoviequiz.customercare.PostPictureTask;
 import com.ab.telugumoviequiz.games.CelebrityFullDetails;
 import com.ab.telugumoviequiz.games.GameDetails;
@@ -25,8 +25,6 @@ import com.ab.telugumoviequiz.transactions.TransactionsHolder;
 import com.ab.telugumoviequiz.withdraw.GetReceiptTask;
 import com.ab.telugumoviequiz.withdraw.WithdrawRequestInput;
 import com.ab.telugumoviequiz.withdraw.WithdrawRequestsHolder;
-
-import org.springframework.util.LinkedMultiValueMap;
 
 public class Request {
     public static String baseUri = null;
@@ -82,6 +80,7 @@ public class Request {
     public static final int GET_LOGGEG_IN_USER_COUNT = 4051;
     public static final int MONEY_TASK_STATUS = 5000;
     public static final int CREATE_CC_ISSUE = 6000;
+    public static final int POST_PIC_ISSUE = 6001;
 
 
     public static PostTask<WithdrawRequestInput, Boolean> createNewWDRequest() {
@@ -324,9 +323,15 @@ public class Request {
         String uri = baseUri + "/money/update/" + String.valueOf(gameStartTime);
         return new GetTask<>(uri, MONEY_TASK_STATUS, null, Integer.class, null);
     }
-    public static PostPictureTask getCreateCCTask() {
-        String uri = baseUri + "/cc";
-        return new PostPictureTask(uri, CREATE_CC_ISSUE,
-                null, null);
+
+    public static PostTask<CustomerTicket, Long> getCreateCCTask() {
+        String uri = baseUri + "/ccticket";
+        return new PostTask<>(uri, CREATE_CC_ISSUE, null,
+                null, Long.class);
+    }
+
+    public static PostPictureTask getPostPictureTask() {
+        String uri = baseUri + "/ccimg";
+        return new PostPictureTask(uri, POST_PIC_ISSUE, null);
     }
 }
