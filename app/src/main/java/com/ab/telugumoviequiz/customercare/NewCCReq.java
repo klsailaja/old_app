@@ -99,12 +99,14 @@ public class NewCCReq extends BaseFragment implements AdapterView.OnItemSelected
                 break;
             }
             case Navigator.WD_REQ_NOT_PROCESSED: {
+                fragment = new CCWDReqNotProcessed();
                 break;
             }
             case Navigator.QUESTION_ANSWER_WRONG: {
                 break;
             }
             case Navigator.CC_OTHERS: {
+                fragment = new CCOthersIssue();
                 break;
             }
         }

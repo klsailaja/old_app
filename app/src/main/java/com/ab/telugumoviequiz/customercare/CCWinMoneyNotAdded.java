@@ -128,9 +128,9 @@ public class CCWinMoneyNotAdded extends BaseFragment implements View.OnClickList
             return;
         }
         if (reqId == Request.CREATE_CC_ISSUE) {
-            Boolean result = (Boolean) response;
+            Long id = (Long) response;
             String msg = "Successfully created Ticket";
-            if (!result) {
+            if (id == -1) {
                 msg = "Failed to create ticket. Please retry";
             }
             displayInfo(msg, this);

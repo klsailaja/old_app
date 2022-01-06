@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/intro"
+            style="@style/viewIntroText"
+            android:text="@string/ccWDReqIntro" />
+        <View
+            android:layout_width="match_parent"
+            android:background="@color/black"
+            android:layout_height="1dp"/>
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/ccOthersET"
+            android:hint="@string/ccOthersHint"
+            android:gravity="start"
+            android:inputType="textMultiLine"
+            android:ellipsize="end"
+            android:maxLines="6"
+            android:singleLine="false"
+            android:lines="6"
+            android:scrollHorizontally="false"
+            android:scrollbars="vertical"
+            android:background="@drawable/textbox_border"
+            android:layout_width="match_parent"
+            android:layout_height="100dp" />
+        <Button
+            style="@style/normalButton"
+            android:layout_marginTop="@dimen/margin_top_small"
+            android:id="@+id/ccCreateBut"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/ccCreateTicketBut"/>
+    </LinearLayout>
+</ScrollView>

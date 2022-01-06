@@ -296,17 +296,27 @@
     <string name="ccIssueType" translatable="false">Issue Type</string>
 
     <!-- Customer Care Added Money Not Added Issue -->
+    <string name="ccAddedMoneyIntro" translatable="false">If the added money is not reflected then raise issue here with date and amount details here</string>
     <string name="ccAddedMoneyAmt" translatable="false">Enter Added Money Amount</string>
     <string name="ccAddedMoneySetDate" translatable="false">Set Date</string>
     <string name="ccAddedMoneyDateHint" translatable="false">Enter Added Money Date</string>
-    <string name="screenshot_add" translatable="false">Add Image</string>
-    <string name="screenshot_remove" translatable="false">Remove Image</string>
+    <string name="screenshot_add" translatable="false">Add</string>
+    <string name="screenshot_remove" translatable="false">Remove</string>
     <string name="ccCreateTicketBut" translatable="false">Create Ticket</string>
+    <string name="screenshot_title" translatable="false">Added Money Payment Screenshot:</string>
 
     <!-- Customer Care Win Money Not Added Issue -->
+    <string name="ccWinMoneyIntro" translatable="false">If you are a winner and money is not credited in mytransactions then you can raise a ticket here</string>
     <string name="ccWinMoneySetDate" translatable="false">Set Date</string>>
     <string name="ccWinMoneyGameId" translatable="false">Enter Game Id for which the win money not credited</string>
     <string name="ccWinMoneyPlayedDate" translatable="false">Enter game played date</string>
+
+    <!-- Customer Care Withdraw Request Not Processed View -->
+    <string name="ccWDReqIntro" translatable="false">If the withdraw request is open for more than 4 days then issue can be raised here</string>
+    <string name="ccWDReqHint" translatable="false">Enter the withdraw request reference number open for more than 4 days</string>
+
+    <!-- Customer Care Others View -->
+    <string name="ccOthersHint" translatable="false">Enter the issue description in less than 250 chars</string>
 
 
     <!--Withdraw Request View-->
