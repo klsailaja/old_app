@@ -51,10 +51,7 @@ public class CCUtils {
         Calendar calendar = Calendar.getInstance();
         calendar.set(year, monthOfYear - 1, dayOfMonth, 0, 0, 0);
         long loadedTime = calendar.getTimeInMillis();
-        if ((System.currentTimeMillis() - loadedTime) > (hours * 60 * 60 * 1000)) {
-            return false;
-        }
-        return true;
+        return (System.currentTimeMillis() - loadedTime) <= (hours * 60 * 60 * 1000);
     }
 
     public static void showDateChooser(Context context,

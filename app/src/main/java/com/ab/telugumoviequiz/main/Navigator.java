@@ -29,6 +29,7 @@ public interface Navigator {
     String WD_REQ_NOT_PROCESSED = "WithdrawRequestNotProcessed";
     String QUESTION_ANSWER_WRONG = "ReportQuestionAnswerWrong";
     String CC_OTHERS = "CC_OTHERS";
+    String KYC_VIEW = "KYC_VIEW";
 
     void launchView(String viewId, Bundle params, boolean storeState);
 }

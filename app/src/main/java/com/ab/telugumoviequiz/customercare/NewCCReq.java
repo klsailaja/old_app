@@ -103,6 +103,7 @@ public class NewCCReq extends BaseFragment implements AdapterView.OnItemSelected
                 break;
             }
             case Navigator.QUESTION_ANSWER_WRONG: {
+                fragment = new CCQuestionWrong();
                 break;
             }
             case Navigator.CC_OTHERS: {

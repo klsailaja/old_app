@@ -68,6 +68,7 @@
     <string name="versionLabel" translatable="false">Ver 1.0.0</string>
     <string name="customer_care" translatable="false">Customer Care</string>
     <string name="share_it" translatable="false">Invite Friends</string>
+    <string name="kyc" translatable="false">KYC</string>
     <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
     <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
     <string name="nav_header_desc" translatable="false">Navigation header</string>
@@ -317,6 +318,14 @@
 
     <!-- Customer Care Others View -->
     <string name="ccOthersHint" translatable="false">Enter the issue description in less than 250 chars</string>
+
+    <!-- KYC View -->
+    <string name="kycStatusLabel" translatable="false">Status:</string>
+    <string name="aadharPages" translatable="false">Submit Aadhar Front and Back pages here</string>
+    <string name="panPages" translatable="false">Submit PAN Front Page here</string>
+    <string name="kycIntro" translatable="false">This is needed for TAX purpose when your profit amounts are huge. Once these documents are approved cannot edit further</string>
+    <string name="submitKYC" translatable="false">Submit KYC</string>
+    <string name="viewKyc" translatable="false">View Saved</string>
 
 
     <!--Withdraw Request View-->

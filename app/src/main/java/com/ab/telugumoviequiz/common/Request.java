@@ -15,6 +15,7 @@ import com.ab.telugumoviequiz.games.PlayerAnswer;
 import com.ab.telugumoviequiz.games.PlayerSummary;
 import com.ab.telugumoviequiz.games.PrizeDetail;
 import com.ab.telugumoviequiz.history.UserHistoryGameDetails;
+import com.ab.telugumoviequiz.kyc.KYCEntry;
 import com.ab.telugumoviequiz.main.LoginData;
 import com.ab.telugumoviequiz.main.OTPDetails;
 import com.ab.telugumoviequiz.main.UserMoney;
@@ -81,6 +82,9 @@ public class Request {
     public static final int MONEY_TASK_STATUS = 5000;
     public static final int CREATE_CC_ISSUE = 6000;
     public static final int POST_PIC_ISSUE = 6001;
+    public static final int KYC_GET_OBJECT = 7000;
+    public static final int KYC_CREATE = 7001;
+    public static final int KYC_POST_PIC = 7002;
 
 
     public static PostTask<WithdrawRequestInput, Boolean> createNewWDRequest() {
@@ -162,12 +166,15 @@ public class Request {
                 null, null, Boolean.class);
     }
 
+    /*
     // This API tells whether the given user id is enrolled in the given gameId.
     public static GetTask<String> getEnrolledStatus(long gameId, long userProfileId) {
         String uri = baseUri + "/game/" + gameId + "/" + userProfileId + "/enrolledstatus";
         return new GetTask<>(uri, GAME_ENROLLED_STATUS, null,
                 String.class, null);
     }
+    */
+
     public static PostTask<PlayerAnswer, String> submitAnswerTask(long gameId) {
         String uri = baseUri + "/game/" + gameId + "/submit";
         return new PostTask<>(uri, SUBMIT_ANSWER_REQ,
@@ -320,7 +327,7 @@ public class Request {
                 null, null, String.class);
     }
     public static GetTask<Integer> getMoneyStatusTask(long gameStartTime) {
-        String uri = baseUri + "/money/update/" + String.valueOf(gameStartTime);
+        String uri = baseUri + "/money/update/" + gameStartTime;
         return new GetTask<>(uri, MONEY_TASK_STATUS, null, Integer.class, null);
     }
 
@@ -333,5 +340,20 @@ public class Request {
     public static PostPictureTask getPostPictureTask() {
         String uri = baseUri + "/ccimg";
         return new PostPictureTask(uri, POST_PIC_ISSUE, null);
+    }
+
+    public static GetTask<KYCEntry> getKYV(long uid) {
+        String uri = baseUri + "/kyc/" + uid;
+        return new GetTask<>(uri, KYC_GET_OBJECT, null,
+                KYCEntry.class, null);
+    }
+    public static PostTask<KYCEntry, Long> getCreateKYCTask() {
+        String uri = baseUri + "/kyc";
+        return new PostTask<>(uri, KYC_CREATE, null,
+                null, Long.class);
+    }
+    public static PostPictureTask getKYCPostPictureTask() {
+        String uri = baseUri + "/kycimg";
+        return new PostPictureTask(uri, KYC_POST_PIC, null);
     }
 }

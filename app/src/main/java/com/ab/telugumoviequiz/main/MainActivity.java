@@ -1,16 +1,12 @@
 package com.ab.telugumoviequiz.main;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -53,6 +49,7 @@ import com.ab.telugumoviequiz.games.SelectGameTypeView;
 import com.ab.telugumoviequiz.games.ShowGames;
 import com.ab.telugumoviequiz.games.UserAnswer;
 import com.ab.telugumoviequiz.history.HistoryView;
+import com.ab.telugumoviequiz.kyc.KYCView;
 import com.ab.telugumoviequiz.money.AddMoney;
 import com.ab.telugumoviequiz.referals.MyReferralsView;
 import com.ab.telugumoviequiz.transactions.TransactionsView;
@@ -62,7 +59,6 @@ import com.ab.telugumoviequiz.withdraw.WithdrawReqsView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -324,6 +320,8 @@ public class MainActivity extends AppCompatActivity
             launchView(Navigator.ADD_MONEY_VIEW, params, false);
         } else if (id == R.id.nav_customercare) {
             launchView(Navigator.CC_REQ_VIEW, params, false);
+        } else if (id == R.id.nav_kyc) {
+            launchView(Navigator.KYC_VIEW, params, false);
         }
         else if (id == R.id.logout) {
             Request.baseUri = getString(R.string.base_url);
@@ -452,6 +450,10 @@ public class MainActivity extends AppCompatActivity
                 stopped = true;
                 fragment = new NewCCReq();
                 break;
+            }
+            case Navigator.KYC_VIEW: {
+                stopped = true;
+                fragment = new KYCView();
             }
         }
         if (stopped) {

@@ -16,6 +16,10 @@ public class GameDetails implements Serializable {
 	private int tempGameId;
 	private List<Question> gameQuestions;
 	private Question flipQuestion;
+
+	// int questionType;
+	//byte[]
+	//flip
 	
 	
 	public String getCelebrityName() {

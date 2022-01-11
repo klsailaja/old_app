@@ -355,10 +355,8 @@ public class WithdrawReqsView extends BaseFragment implements PopupMenu.OnMenuIt
         } else if (reqId == Request.WITHDRAW_RECEIPT) {
             final byte[] contents = (byte[]) response;
             if (contents == null) {
-                System.out.println("Bytes is null");
                 return;
             }
-            System.out.println("This is in receipt view" + contents.length);
             Runnable run = () -> {
                 ViewReceipt viewReceipt = new ViewReceipt((getContext()), contents, "Transferred Receipt");
                 FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
