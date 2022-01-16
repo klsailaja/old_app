@@ -5,6 +5,10 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,6 +40,7 @@ import com.ab.telugumoviequiz.constants.UserMoneyAccountType;
 import com.ab.telugumoviequiz.main.MainActivity;
 import com.ab.telugumoviequiz.main.Navigator;
 import com.ab.telugumoviequiz.money.FetchUserMoneyTask;
+import com.ab.telugumoviequiz.withdraw.ViewReceipt;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -840,11 +845,33 @@ public class QuestionFragment extends BaseFragment
             quesShowing(true);
             updateLifelines(true);
             int qNo = question.getQuestionNumber();
-            questionView.setText(qNo + ") " + question.getnStatement());
+            String linkText = qNo + ") " + question.getnStatement();
+            if (question.getQuestionType() == 2) {
+                linkText = "Click Here" + qNo + ") " + question.getnStatement();
+                SpannableString ss = new SpannableString(linkText);
+                ClickableSpan clickableSpan = new ClickableSpan() {
+                    @Override
+                    public void onClick(@NonNull View view) {
+                        ViewReceipt viewReceipt = new ViewReceipt((getContext()), question.getPictureBytes(), "Picture Based Question");
+                        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+                        viewReceipt.show(fragmentManager, "dialog");
+                    }
+                };
+                ss.setSpan(clickableSpan, 0, 9, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                questionView.setText(ss);
+                questionView.setMovementMethod(LinkMovementMethod.getInstance());
+            } else {
+                questionView.setText(linkText);
+            }
             buttonsView[0].setText(question.getnOptionA());
             buttonsView[1].setText(question.getnOptionB());
             buttonsView[2].setText(question.getnOptionC());
             buttonsView[3].setText(question.getnOptionD());
+            if (question.getQuestionType() == 2) {
+                if (question.getPictureBytes() != null) {
+                    System.out.println("Bytes size " + question.getPictureBytes().length);
+                }
+            }
         };
         requireActivity().runOnUiThread(run);
         for (int index = 1; index <= Constants.QUESTION_MAX_TIME_IN_SEC; index++) {

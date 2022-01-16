@@ -16,11 +16,7 @@ public class GameDetails implements Serializable {
 	private int tempGameId;
 	private List<Question> gameQuestions;
 	private Question flipQuestion;
-
-	// int questionType;
-	//byte[]
-	//flip
-	
+	private Question flipPictureQuestion;
 	
 	public String getCelebrityName() {
 		return celebrityName;
@@ -88,5 +84,11 @@ public class GameDetails implements Serializable {
 	}
 	public void setFlipQuestion(Question question) {
 		this.flipQuestion = question;
+	}
+	public Question getFlipPictureQuestion() {
+		return flipPictureQuestion;
+	}
+	public void setFlipPictureQuestion(Question flipPictureQuestion) {
+		this.flipPictureQuestion = flipPictureQuestion;
 	}
 }

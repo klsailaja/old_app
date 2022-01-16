@@ -1,6 +1,8 @@
 package com.ab.telugumoviequiz.games;
 
-public class Question {
+import java.io.Serializable;
+
+public class Question implements Serializable {
 	
 	private int questionNumber;
 	private long category;
@@ -10,14 +12,28 @@ public class Question {
 	private String nOptionB;
 	private String nOptionC;
 	private String nOptionD;
-	private String nOptionE;
-	private String nOptionF;
-	private String nOptionG;
-	private String nOptionH;
 	private int correctOption;
 	private long questionStartTime;
 	private boolean isFlipUsed;
+	private int questionType;
+	private byte[] pictureBytes;
 	
+	public int getQuestionType() {
+		return questionType;
+	}
+
+	public void setQuestionType(int questionType) {
+		this.questionType = questionType;
+	}
+
+	public byte[] getPictureBytes() {
+		return pictureBytes;
+	}
+
+	public void setPictureBytes(byte[] pictureBytes) {
+		this.pictureBytes = pictureBytes;
+	}
+
 	public boolean isFlipUsed() { return isFlipUsed; }
 	
 	public void setFlipUsed(boolean isFlipUsed) { this.isFlipUsed = isFlipUsed; }
@@ -73,30 +89,6 @@ public class Question {
 	public void setnOptionD(String nOptionD) {
 		this.nOptionD = nOptionD;
 	}
-	public String getnOptionE() {
-		return nOptionE;
-	}
-	public void setnOptionE(String nOptionE) {
-		this.nOptionE = nOptionE;
-	}
-	public String getnOptionF() {
-		return nOptionF;
-	}
-	public void setnOptionF(String nOptionF) {
-		this.nOptionF = nOptionF;
-	}
-	public String getnOptionG() {
-		return nOptionG;
-	}
-	public void setnOptionG(String nOptionG) {
-		this.nOptionG = nOptionG;
-	}
-	public String getnOptionH() {
-		return nOptionH;
-	}
-	public void setnOptionH(String nOptionH) {
-		this.nOptionH = nOptionH;
-	}
 	public int getCorrectOption() {
 		return correctOption;
 	}
@@ -108,14 +100,5 @@ public class Question {
 	}
 	public void setQuestionStartTime(long questionStartTime) {
 		this.questionStartTime = questionStartTime;
-	}
-
-	@Override
-	public String toString() {
-		return "Question [questionNumber=" + questionNumber + ", category=" + category + ", timeLine=" + timeLine
-				+ ", nStatement=" + nStatement + ", nOptionA=" + nOptionA + ", nOptionB=" + nOptionB + ", nOptionC="
-				+ nOptionC + ", nOptionD=" + nOptionD + ", nOptionE=" + nOptionE + ", nOptionF=" + nOptionF
-				+ ", nOptionG=" + nOptionG + ", nOptionH=" + nOptionH + ", correctOption=" + correctOption
-				+ ", questionStartTime=" + questionStartTime + ", isFlipUsed=" + isFlipUsed + "]";
 	}
 }
