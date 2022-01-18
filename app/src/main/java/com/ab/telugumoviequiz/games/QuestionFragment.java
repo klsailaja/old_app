@@ -350,21 +350,22 @@ public class QuestionFragment extends BaseFragment
                 }
                 List<Question> questions = gameDetails.getGameQuestions();
                 Question oldQuestion = questions.get(currentQuesPos);
-                Question newQuestion = gameDetails.getFlipQuestion();
+                Question newQuestion;
+                if (oldQuestion.getQuestionType() == 2) {
+                    newQuestion = gameDetails.getFlipPictureQuestion();
+                } else {
+                    newQuestion = gameDetails.getFlipQuestion();
+                }
                 newQuestion.setQuestionStartTime(oldQuestion.getQuestionStartTime());
                 newQuestion.setQuestionNumber(oldQuestion.getQuestionNumber());
                 questions.set(currentQuesPos, newQuestion);
                 oldQuestion = questions.get(currentQuesPos);
                 oldQuestion.setFlipUsed(true);
-
-                int qNo = oldQuestion.getQuestionNumber();
-                questionView.setText(qNo + ") " + oldQuestion.getnStatement());
-                buttonsView[0].setText(oldQuestion.getnOptionA());
-                buttonsView[1].setText(oldQuestion.getnOptionB());
-                buttonsView[2].setText(oldQuestion.getnOptionC());
-                buttonsView[3].setText(oldQuestion.getnOptionD());
+                
+                setQuestionInUI(oldQuestion);
                 flipQuestionUsed = true;
                 updateLifelines(true);
+                displayErrorAsToast("Flip question done");
                 break;
             }
             case R.id.fiftyFifty: {
@@ -835,6 +836,32 @@ public class QuestionFragment extends BaseFragment
         }
     }
 
+    private void setQuestionInUI(Question question) {
+        int qNo = question.getQuestionNumber();
+        String linkText = qNo + ") " + question.getnStatement();
+        if (question.getQuestionType() == 2) {
+            linkText = "Click Here " + qNo + ") " + question.getnStatement();
+            SpannableString ss = new SpannableString(linkText);
+            ClickableSpan clickableSpan = new ClickableSpan() {
+                @Override
+                public void onClick(@NonNull View view) {
+                    ViewReceipt viewReceipt = new ViewReceipt((getContext()), question.getPictureBytes(), "Picture Based Question");
+                    FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+                    viewReceipt.show(fragmentManager, "dialog");
+                }
+            };
+            ss.setSpan(clickableSpan, 0, 9, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            questionView.setText(ss);
+            questionView.setMovementMethod(LinkMovementMethod.getInstance());
+        } else {
+            questionView.setText(linkText);
+        }
+        buttonsView[0].setText(question.getnOptionA());
+        buttonsView[1].setText(question.getnOptionB());
+        buttonsView[2].setText(question.getnOptionC());
+        buttonsView[3].setText(question.getnOptionD());
+    }
+
     @SuppressLint("SetTextI18n")
     private void handleSetQuestion(final Question question) {
         final int questionNo = question.getQuestionNumber() - 1;
@@ -844,10 +871,11 @@ public class QuestionFragment extends BaseFragment
             resetButtonColors();
             quesShowing(true);
             updateLifelines(true);
-            int qNo = question.getQuestionNumber();
+            setQuestionInUI(question);
+            /*int qNo = question.getQuestionNumber();
             String linkText = qNo + ") " + question.getnStatement();
             if (question.getQuestionType() == 2) {
-                linkText = "Click Here" + qNo + ") " + question.getnStatement();
+                linkText = "Click Here " + qNo + ") " + question.getnStatement();
                 SpannableString ss = new SpannableString(linkText);
                 ClickableSpan clickableSpan = new ClickableSpan() {
                     @Override
@@ -866,12 +894,7 @@ public class QuestionFragment extends BaseFragment
             buttonsView[0].setText(question.getnOptionA());
             buttonsView[1].setText(question.getnOptionB());
             buttonsView[2].setText(question.getnOptionC());
-            buttonsView[3].setText(question.getnOptionD());
-            if (question.getQuestionType() == 2) {
-                if (question.getPictureBytes() != null) {
-                    System.out.println("Bytes size " + question.getPictureBytes().length);
-                }
-            }
+            buttonsView[3].setText(question.getnOptionD());*/
         };
         requireActivity().runOnUiThread(run);
         for (int index = 1; index <= Constants.QUESTION_MAX_TIME_IN_SEC; index++) {
