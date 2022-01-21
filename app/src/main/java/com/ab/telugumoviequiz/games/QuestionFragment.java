@@ -47,6 +47,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -519,6 +520,7 @@ public class QuestionFragment extends BaseFragment
                     final AlertDialog alertDialog = new AlertDialog.Builder(requireContext()).create();
                     alertDialog.setTitle("View Winners");
                     alertDialog.setMessage("GAME OVER");
+                    ((MainActivity) requireActivity()).startTheWinMoneyStatus(gameDetails.getStartTime());
                     alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "View Winners", (dialogInterface, i) -> {
                         alertDialog.hide();
                         alertDialog.dismiss();

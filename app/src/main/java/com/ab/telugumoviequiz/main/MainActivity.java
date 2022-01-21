@@ -91,6 +91,21 @@ public class MainActivity extends AppCompatActivity
         Scheduler.getInstance().submit(fetchMoney);
     }
 
+    private void queryMoneyCreditedStatus(long gameStartTime, int retryCount, int waitTime) {
+        displayErrorAsToast("Winners money credited status: In-Progress");
+        GetTask<Integer> getStatus = Request.getMoneyStatusTask(gameStartTime);
+        getStatus.setCallbackResponse(this);
+        String details = gameStartTime + ":" + retryCount;
+        getStatus.setHelperObject(details);
+        Scheduler.getInstance().submit(getStatus,
+                waitTime * 1000, TimeUnit.MILLISECONDS);
+    }
+
+    public void startTheWinMoneyStatus(long gameStartTime) {
+        int waitTime = 1 + (int)(Math.random() * (15 - 1));
+        queryMoneyCreditedStatus(gameStartTime, 1, waitTime);
+    }
+
     @Override
     protected void onStop() {
         super.onStop();
@@ -646,6 +661,24 @@ public class MainActivity extends AppCompatActivity
                 Runnable run = () -> Utils.showMessage("Error", errorMsg,
                         this, this, 1000, null);
                 this.runOnUiThread(run);
+            }
+        } else if (Request.MONEY_TASK_STATUS == reqId) {
+            Integer status = (Integer) response;
+            if (status == 1) {
+                fetchUpdateMoney();
+                displayInfo("Winners money credited status : success", null);
+            } else {
+                String details = (String) userObject;
+                int pos = details.indexOf(":");
+                String startTime = details.substring(0, pos);
+                String retryCount = details.substring(pos + 1);
+                int retryCountInt = Integer.parseInt(retryCount);
+                if (retryCountInt == 11) {
+                    displayInfo("Winners money credited status : FAIL. \n" +
+                            "Please raise a Customer Ticket", null);
+                    return;
+                }
+                queryMoneyCreditedStatus(Long.parseLong(startTime), retryCountInt, 1);
             }
         }
     }
