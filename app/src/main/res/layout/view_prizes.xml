@@ -20,6 +20,15 @@
             android:layout_height="wrap_content"
             android:textColor="@color/impInfo"/>
         <TextView
+            android:id="@+id/creditStatus"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textSize="@dimen/view_prizes_total_label_text_size"
+            android:layout_centerHorizontal="true"
+            android:layout_height="wrap_content"
+            android:textColor="@color/impInfo"/>
+        <TextView
             android:id="@+id/playerCount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

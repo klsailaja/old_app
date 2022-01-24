@@ -35,7 +35,7 @@ public class ViewLeaderboard extends DialogFragment implements View.OnClickListe
     private final Context context;
     private Activity parentActivity;
     private boolean fromHistory = false;
-    private int winnerCount, playersCount;
+    private int winnerCount, playersCount, winMoneyStaus;
 
 
     public ViewLeaderboard(Context context, boolean isGameOver, List<PlayerSummary> list, Activity parentActivity) {
@@ -45,11 +45,13 @@ public class ViewLeaderboard extends DialogFragment implements View.OnClickListe
         this.parentActivity = parentActivity;
     }
 
-    public ViewLeaderboard(Context context, boolean isGameOver, List<PlayerSummary> list, boolean fromHistory) {
+    public ViewLeaderboard(Context context, boolean isGameOver,
+                           List<PlayerSummary> list, boolean fromHistory) {
         this.context = context;
         this.isGameOver = isGameOver;
         this.list = list;
         this.fromHistory = fromHistory;
+        //this.winMoneyStaus = winMoneyStaus;
     }
     public void setTotalWinnersCount(int winnersCount) {
         this.winnerCount = winnersCount;
@@ -77,15 +79,25 @@ public class ViewLeaderboard extends DialogFragment implements View.OnClickListe
         currentCtLabel = currentCtLabel + playersCount;
         currentPlayersCount.setText(currentCtLabel);
 
-
+        TextView creditStatus = root.findViewById(R.id.creditStatus);
+        creditStatus.setVisibility(View.INVISIBLE);
+        if (fromHistory) {
+            creditStatus.setVisibility(View.VISIBLE);
+            String str = "Win Money Credit Status: Success";
+            if (winMoneyStaus == 0) {
+                str = "Win Money Credit Status: In-Progress";
+            } else if (winMoneyStaus == 2) {
+                str = "Win Money Credit Status: Timeout";
+            }
+            creditStatus.setText(str);
+        }
+        
         int leftRowMargin=0;
         int topRowMargin=0;
         int rightRowMargin=0;
         int bottomRowMargin = 0;
 
         int textSize, smallTextSize;
-        textSize = R.dimen.user_answers_table_header_text_size;
-        smallTextSize = R.dimen.user_answers_table_data_text_size;
         textSize = 50;
         smallTextSize = 50;
         int rows = list.size();
@@ -109,7 +121,6 @@ public class ViewLeaderboard extends DialogFragment implements View.OnClickListe
                 row = list.get(i);
                 if (isGameOver) {
                     if (row.getAmountWon() > 0) {
-                        highlightTextSizeRowOffset = 0;
                         actualWinnersCount++;
                     }
                 }
