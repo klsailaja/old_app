@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -34,7 +35,6 @@ import com.ab.telugumoviequiz.help.HelpTopic;
 import com.ab.telugumoviequiz.help.ViewHelp;
 import com.ab.telugumoviequiz.main.MainActivity;
 import com.ab.telugumoviequiz.main.Navigator;
-import com.ab.telugumoviequiz.main.UserProfile;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -42,8 +42,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -57,12 +55,11 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
     private final List<GameDetails> adapterList = new ArrayList<>();
     private GameAdapter mAdapter;
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
-    private ScheduledFuture<?> fetchTask = null;
-    private ScheduledFuture<?> pollerTask = null;
     private String searchKey = null, searchValue = null, showFreeGame = null;
     private final List<Long> gameStartTimeLongValues = new ArrayList<>();
     private final List<String> gameStartTimeStrValues = new ArrayList<>();
     private RecyclerView recyclerView;
+    private AlertDialog alertDialog;
 
     public ShowGames() {
         super();
@@ -92,6 +89,7 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
         mAdapter.setClickListener(this);
+        LocalGamesManager.getInstance().setCallbackResponse(this);
         setBaseParams(false);
         TextView userCountsLabel = root.findViewById(R.id.loggedUserCount);
         userCountsLabel.setVisibility(View.GONE);
@@ -322,73 +320,90 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
     @Override
     public void onStop() {
         super.onStop();
-        if (fetchTask != null) {
-            fetchTask.cancel(true);
-        }
-        if (pollerTask != null) {
-            pollerTask.cancel(true);
-        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        LocalGamesManager.getInstance().setShowing(1, false);
+        LocalGamesManager.getInstance().setShowing(2, false);
+        LocalGamesManager.getInstance().setShowing(3, false);
+        LocalGamesManager.getInstance().setShowing(4, false);
     }
 
     public void setBaseParams(boolean runNow) {
-        GetTask<GameDetails[]> getGamesTask;
-        GetTask<GameStatusHolder> getGamesStatusTask;
+        boolean isLoading;
         switch (fragmentIndex) {
             case 1: {
-                getGamesTask = Request.getFutureGames(1);
-                getGamesStatusTask = Request.getFutureGamesStatusTask(1);
+                if (runNow) {
+                    isLoading = true;
+                    LocalGamesManager.getInstance().refreshNow(1);
+                } else {
+                    LocalGamesManager.getInstance().setShowing(2, false);
+                    LocalGamesManager.getInstance().setShowing(3, false);
+                    LocalGamesManager.getInstance().setShowing(4, false);
+                    isLoading = LocalGamesManager.getInstance().setShowing(1, true);
+                }
                 break;
             }
             case 2: {
-                getGamesTask = Request.getFutureGames(2);
-                getGamesStatusTask = Request.getFutureGamesStatusTask(2);
+                if (runNow) {
+                    isLoading = true;
+                    LocalGamesManager.getInstance().refreshNow(2);
+                } else {
+                    LocalGamesManager.getInstance().setShowing(1, false);
+                    LocalGamesManager.getInstance().setShowing(3, false);
+                    LocalGamesManager.getInstance().setShowing(4, false);
+                    isLoading = LocalGamesManager.getInstance().setShowing(2, true);
+                }
                 break;
             }
             case 3: {
-                UserProfile userProfile = UserDetails.getInstance().getUserProfile();
-                long userProfileId = -1;
-                if (userProfile != null) {
-                    userProfileId = userProfile.getId();
+                if (runNow) {
+                    isLoading = true;
+                    LocalGamesManager.getInstance().refreshNow(3);
+                } else {
+                    LocalGamesManager.getInstance().setShowing(1, false);
+                    LocalGamesManager.getInstance().setShowing(2, false);
+                    LocalGamesManager.getInstance().setShowing(4, false);
+                    isLoading = LocalGamesManager.getInstance().setShowing(3, true);
                 }
-                getGamesTask = Request.getEnrolledGames(1,userProfileId);
-                getGamesStatusTask = Request.getEnrolledGamesStatus(1, userProfileId);
                 break;
             }
             case 4: {
-                UserProfile userProfile = UserDetails.getInstance().getUserProfile();
-                long userProfileId = -1;
-                if (userProfile != null) {
-                    userProfileId = userProfile.getId();
+                if (runNow) {
+                    isLoading = true;
+                    LocalGamesManager.getInstance().refreshNow(4);
+                } else {
+                    LocalGamesManager.getInstance().setShowing(1, false);
+                    LocalGamesManager.getInstance().setShowing(2, false);
+                    LocalGamesManager.getInstance().setShowing(3, false);
+                    isLoading = LocalGamesManager.getInstance().setShowing(4, true);
                 }
-                getGamesTask = Request.getEnrolledGames(2,userProfileId);
-                getGamesStatusTask = Request.getEnrolledGamesStatus(2, userProfileId);
                 break;
             }
             default:
                 throw new IllegalStateException("Unexpected value: " + fragmentIndex);
         }
-        getGamesTask.setCallbackResponse(this);
-        getGamesTask.setActivity(getActivity(), "Processing. Please Wait!!");
-        getGamesStatusTask.setCallbackResponse(this);
-
-        if (runNow) {
-            Scheduler.getInstance().submit(getGamesTask);
-        } else {
-            fetchTask = Scheduler.getInstance().submitRepeatedTask(getGamesTask, 0, 5, TimeUnit.MINUTES);
-            pollerTask = Scheduler.getInstance().submitRepeatedTask(getGamesStatusTask, 10, 10, TimeUnit.SECONDS);
+        if (isLoading) {
+            String waitingMessage = "Processing. Please wait!!!";
+            alertDialog = Utils.getProgressDialog(getActivity(), waitingMessage);
+            alertDialog.show();
         }
-    }
+   }
 
     @Override
     public void handleResponse(int reqId, boolean exceptionThrown, boolean isAPIException, final Object response, Object helperObject) {
+        if (getActivity() != null) {
+            Runnable run = () -> {
+                if (alertDialog != null) {
+                    alertDialog.dismiss();
+                }
+            };
+            getActivity().runOnUiThread(run);
+        }
         boolean isHandled = handleServerError(exceptionThrown, isAPIException, response);
         if (isHandled) {
-            if (fetchTask != null) {
-                fetchTask.cancel(true);
-            }
-            if (pollerTask != null) {
-                pollerTask.cancel(true);
-            }
             return;
         }
         switch (reqId) {

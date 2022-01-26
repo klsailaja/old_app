@@ -111,7 +111,8 @@ public class ViewAdapter extends RecyclerView.Adapter<ViewAdapter.MyViewHolder> 
             holder.celebrityView.setBackgroundResource(R.drawable.table_content_cell_bg);
             holder.tktRateView.setBackgroundResource(R.drawable.table_content_cell_bg);
             holder.viewResultsView.setBackgroundResource(R.drawable.table_content_cell_bg);
-            holder.viewResultsView.setTag(gameResult.getWinnersList());
+            String passData = gameResult.getCreditedStatus() + "-" + gameResult.getWinnersList();
+            holder.viewResultsView.setTag(passData);
             holder.viewResultsView.setOnClickListener(listener);
         }
     }

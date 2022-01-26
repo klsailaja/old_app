@@ -39,7 +39,6 @@ import com.ab.telugumoviequiz.common.Utils;
 import com.ab.telugumoviequiz.constants.UserMoneyAccountType;
 import com.ab.telugumoviequiz.main.MainActivity;
 import com.ab.telugumoviequiz.main.Navigator;
-import com.ab.telugumoviequiz.money.FetchUserMoneyTask;
 import com.ab.telugumoviequiz.withdraw.ViewReceipt;
 
 import java.text.SimpleDateFormat;
@@ -47,7 +46,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -65,6 +63,7 @@ public class QuestionFragment extends BaseFragment
     private ViewMyAnswers myAnsersDialog;
     private ViewPrizeDetails viewPrizeDetails;
     private ViewLeaderboard viewLeaderboard;
+    private ViewReceipt viewPic;
     private boolean fiftyUsed = false, flipQuestionUsed = false;
     private ScheduledFuture<?> gameStatusPollerHandle;
     private final ArrayList<PrizeDetail> gamePrizeDetails = new ArrayList<>(10);
@@ -89,6 +88,7 @@ public class QuestionFragment extends BaseFragment
     public void onCreate (Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         System.out.println("onCreate " + savedInstanceState);
+        LocalGamesManager.getInstance().stop();
     }
 
     @Override
@@ -134,6 +134,7 @@ public class QuestionFragment extends BaseFragment
         System.out.println("In onDestroyView");
         super.onDestroyView();
         closeAllViews(false);
+        LocalGamesManager.getInstance().start();
         requireActivity().getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
@@ -363,7 +364,7 @@ public class QuestionFragment extends BaseFragment
                 oldQuestion = questions.get(currentQuesPos);
                 oldQuestion.setFlipUsed(true);
                 
-                setQuestionInUI(oldQuestion);
+                setQuestionInUI(newQuestion);
                 flipQuestionUsed = true;
                 updateLifelines(true);
                 displayErrorAsToast("Flip question done");
@@ -517,6 +518,7 @@ public class QuestionFragment extends BaseFragment
             case Request.SHOW_WINNERS: {
                 Runnable runnable = () -> {
                     closeAllViews();
+                    clearAll();
                     final AlertDialog alertDialog = new AlertDialog.Builder(requireContext()).create();
                     alertDialog.setTitle("View Winners");
                     alertDialog.setMessage("GAME OVER");
@@ -528,7 +530,8 @@ public class QuestionFragment extends BaseFragment
 
                         Question question = (Question) helperObject;
                         int completedQuestionNumber = question.getQuestionNumber();
-                        GetTask<PlayerSummary[]> leaderBoardReq = Request.getLeaderBoard(gameDetails.getGameId(), completedQuestionNumber);
+                        GetTask<PlayerSummary[]> leaderBoardReq =
+                                Request.getLeaderBoard(gameDetails.getGameId(), completedQuestionNumber);
                         leaderBoardReq.setCallbackResponse(this);
                         leaderBoardReq.setHelperObject(helperObject);
                         Scheduler.getInstance().submit(leaderBoardReq);
@@ -570,7 +573,7 @@ public class QuestionFragment extends BaseFragment
                 }
                 break;
             }
-            case Request.MONEY_TASK_STATUS: {
+            /*case Request.MONEY_TASK_STATUS: {
                 String errosMsg;
                 if (isAPIException) {
                     errosMsg = (String) response;
@@ -590,7 +593,8 @@ public class QuestionFragment extends BaseFragment
                     moneyUpdatedTask.setCallbackResponse(this);
                     moneyUpdatedTask.setHelperObject(++reqCount);
                 }
-            }
+                break;
+            }*/
             default:
                 throw new IllegalStateException("Unexpected value: " + reqId);
         }
@@ -725,6 +729,15 @@ public class QuestionFragment extends BaseFragment
         }
         return null;
     }
+    private void clearAll() {
+        resetButtonColors();
+        quesShowing(false);
+        questionView.setText("");
+        buttonsView[0].setText("");
+        buttonsView[1].setText("");
+        buttonsView[2].setText("");
+        buttonsView[3].setText("");
+    }
 
     private void closeAllViews() {
         closeAllViews(true);
@@ -739,6 +752,9 @@ public class QuestionFragment extends BaseFragment
             }
             if (viewLeaderboard != null) {
                 viewLeaderboard.dismiss();
+            }
+            if (viewPic != null) {
+                viewPic.dismiss();
             }
         };
         if (uiThread) {
@@ -842,17 +858,20 @@ public class QuestionFragment extends BaseFragment
         int qNo = question.getQuestionNumber();
         String linkText = qNo + ") " + question.getnStatement();
         if (question.getQuestionType() == 2) {
-            linkText = "Click Here " + qNo + ") " + question.getnStatement();
+            linkText = + qNo + ") " + question.getnStatement();
             SpannableString ss = new SpannableString(linkText);
             ClickableSpan clickableSpan = new ClickableSpan() {
                 @Override
                 public void onClick(@NonNull View view) {
-                    ViewReceipt viewReceipt = new ViewReceipt((getContext()), question.getPictureBytes(), "Picture Based Question");
+                    viewPic = new ViewReceipt((getContext()), question.getPictureBytes(), "Picture Based Question");
                     FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-                    viewReceipt.show(fragmentManager, "dialog");
+                    viewPic.show(fragmentManager, "dialog");
                 }
             };
-            ss.setSpan(clickableSpan, 0, 9, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            String clickText = "click here to view";
+            int startPos = linkText.indexOf(clickText);
+            int endPos = startPos + clickText.length();
+            ss.setSpan(clickableSpan, startPos, endPos, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             questionView.setText(ss);
             questionView.setMovementMethod(LinkMovementMethod.getInstance());
         } else {
@@ -968,13 +987,13 @@ public class QuestionFragment extends BaseFragment
             scheduler.submit(showLeaderBoardTask, actualStartTime, TimeUnit.MILLISECONDS);
         }
 
-        if (currentTime < (questionStartTime + Constants.SCHEDULE_USER_MONEY_FETCH)) {
+        /*if (currentTime < (questionStartTime + Constants.SCHEDULE_USER_MONEY_FETCH)) {
             actualStartTime = questionStartTime + Constants.SCHEDULE_USER_MONEY_FETCH - System.currentTimeMillis();
             GetTask<Integer> moneyUpdatedTask = Request.getMoneyStatusTask(this.gameDetails.getStartTime());
             moneyUpdatedTask.setCallbackResponse(this);
             moneyUpdatedTask.setHelperObject(1);
             scheduler.submit(moneyUpdatedTask, actualStartTime, TimeUnit.MILLISECONDS);
-        }
+        }*/
     }
 
     private boolean handleKnownErrors(final String errMsg) {

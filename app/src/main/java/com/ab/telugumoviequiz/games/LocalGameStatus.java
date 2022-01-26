@@ -4,30 +4,26 @@ import com.ab.telugumoviequiz.common.CallbackResponse;
 import com.ab.telugumoviequiz.common.GetTask;
 import com.ab.telugumoviequiz.common.Scheduler;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public class LocalGameList implements CallbackResponse {
+public class LocalGameStatus implements CallbackResponse {
     private boolean exceptionThrown;
     private boolean isAPIException;
     private Object helperObject;
     private Object response;
-    private final List<GameDetails> cachedGameList = new ArrayList<>();
+    private GameStatusHolder gameStatusHolder;
     private boolean showing;
 
-    private final GetTask<GameDetails[]> getTask;
+    private final GetTask<GameStatusHolder> getTask;
     private CallbackResponse callbackResponse;
 
     private ScheduledFuture<?> fetchTask;
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
-    private int request_status = 0;
 
-    public LocalGameList(GetTask<GameDetails[]> getTask) {
+    public LocalGameStatus(GetTask<GameStatusHolder> getTask) {
         this.getTask = getTask;
         this.getTask.setCallbackResponse(this);
     }
@@ -37,7 +33,7 @@ public class LocalGameList implements CallbackResponse {
     }
 
     public void start() {
-        fetchTask = Scheduler.getInstance().submitRepeatedTask(getTask, 0, 5, TimeUnit.MINUTES);
+        fetchTask = Scheduler.getInstance().submitRepeatedTask(getTask, 30, 30, TimeUnit.SECONDS);
     }
     public void stop() {
         if (fetchTask != null) {
@@ -47,7 +43,7 @@ public class LocalGameList implements CallbackResponse {
     public boolean setShowing(boolean showing) {
         this.showing = showing;
         lock.readLock().lock();
-        if (request_status == 0) {
+        if (gameStatusHolder == null) {
             lock.readLock().unlock();
             return true;
         } else {
@@ -65,7 +61,6 @@ public class LocalGameList implements CallbackResponse {
     public void handleResponse(int reqId, boolean exceptionThrown,
                                boolean isAPIException, Object response,
                                Object userObject) {
-        request_status = 1;
         this.exceptionThrown = exceptionThrown;
         this.isAPIException = isAPIException;
         this.helperObject = userObject;
@@ -77,27 +72,17 @@ public class LocalGameList implements CallbackResponse {
         }
 
         lock.writeLock().lock();
-        cachedGameList.clear();
-        List<GameDetails> result = Arrays.asList((GameDetails[]) response);
-        cachedGameList.addAll(result);
+        gameStatusHolder = (GameStatusHolder) response;
         lock.writeLock().unlock();
         sendData();
     }
-
     private void sendData() {
         if (showing) {
-            Object callbackResponseObj = response;
-            if (!exceptionThrown) {
-                /*List<GameDetails> filteredList = new ArrayList<>();
-                long currentTime = System.currentTimeMillis();
-                for (int index = 0; index < cachedGameList.size(); index ++) {
-                    GameDetails gm = cachedGameList.get(index);
-                    if (gm.getStartTime() >= currentTime) {
-                        filteredList.add(gm);
-                    }
-                }*/
-                callbackResponseObj = cachedGameList.toArray(new GameDetails[0]);
+            Object callbackResponseObj = gameStatusHolder;
+            if (exceptionThrown) {
+                callbackResponseObj = response;
             }
+            System.out.println(callbackResponseObj);
             callbackResponse.handleResponse(getTask.getRequestId(), exceptionThrown,
                     isAPIException, callbackResponseObj, helperObject);
         }

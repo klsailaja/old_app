@@ -44,6 +44,7 @@ import com.ab.telugumoviequiz.customercare.NewCCReq;
 import com.ab.telugumoviequiz.games.GameDetails;
 import com.ab.telugumoviequiz.games.GameStatus;
 import com.ab.telugumoviequiz.games.GameStatusHolder;
+import com.ab.telugumoviequiz.games.LocalGamesManager;
 import com.ab.telugumoviequiz.games.QuestionFragment;
 import com.ab.telugumoviequiz.games.SelectGameTypeView;
 import com.ab.telugumoviequiz.games.ShowGames;
@@ -92,7 +93,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void queryMoneyCreditedStatus(long gameStartTime, int retryCount, int waitTime) {
-        displayErrorAsToast("Winners money credited status: In-Progress");
         GetTask<Integer> getStatus = Request.getMoneyStatusTask(gameStartTime);
         getStatus.setCallbackResponse(this);
         String details = gameStartTime + ":" + retryCount;
@@ -102,7 +102,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void startTheWinMoneyStatus(long gameStartTime) {
-        int waitTime = 1 + (int)(Math.random() * (15 - 1));
+        displayErrorAsToast("Winners money credited status: In-Progress");
+        int waitTime = 1 + (int)(Math.random() * (10 - 1));
         queryMoneyCreditedStatus(gameStartTime, 1, waitTime);
     }
 
@@ -120,6 +121,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onDestroy () {
         super.onDestroy();
+        LocalGamesManager.getInstance().stop();
         Bundle gameState = getParams(Navigator.QUESTION_VIEW);
         if (gameState != null) {
             String FIFTYUSED = "FIFTYUSED";
@@ -199,6 +201,9 @@ public class MainActivity extends AppCompatActivity
 
         String successMsg = getIntent().getStringExtra("msg");
         Snackbar.make(activityView, successMsg, Snackbar.LENGTH_SHORT).show();
+
+        LocalGamesManager.getInstance().initialize();
+        LocalGamesManager.getInstance().start();
 
         fetchUpdateMoney();
 
@@ -678,7 +683,7 @@ public class MainActivity extends AppCompatActivity
                             "Please raise a Customer Ticket", null);
                     return;
                 }
-                queryMoneyCreditedStatus(Long.parseLong(startTime), retryCountInt, 1);
+                queryMoneyCreditedStatus(Long.parseLong(startTime), retryCountInt, 30);
             }
         }
     }

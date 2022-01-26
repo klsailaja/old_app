@@ -35,10 +35,11 @@ public class ViewLeaderboard extends DialogFragment implements View.OnClickListe
     private final Context context;
     private Activity parentActivity;
     private boolean fromHistory = false;
-    private int winnerCount, playersCount, winMoneyStaus;
+    private int winnerCount, playersCount, winMoneyStatus;
 
 
-    public ViewLeaderboard(Context context, boolean isGameOver, List<PlayerSummary> list, Activity parentActivity) {
+    public ViewLeaderboard(Context context, boolean isGameOver,
+                           List<PlayerSummary> list, Activity parentActivity) {
         this.context = context;
         this.isGameOver = isGameOver;
         this.list = list;
@@ -46,12 +47,13 @@ public class ViewLeaderboard extends DialogFragment implements View.OnClickListe
     }
 
     public ViewLeaderboard(Context context, boolean isGameOver,
-                           List<PlayerSummary> list, boolean fromHistory) {
+                           List<PlayerSummary> list, boolean fromHistory,
+                           int winMoneyStatus) {
         this.context = context;
         this.isGameOver = isGameOver;
         this.list = list;
         this.fromHistory = fromHistory;
-        //this.winMoneyStaus = winMoneyStaus;
+        this.winMoneyStatus = winMoneyStatus;
     }
     public void setTotalWinnersCount(int winnersCount) {
         this.winnerCount = winnersCount;
@@ -76,6 +78,7 @@ public class ViewLeaderboard extends DialogFragment implements View.OnClickListe
 
         TextView currentPlayersCount = root.findViewById(R.id.playerCount);
         String currentCtLabel = getString(R.string.game_total_players_ct);
+        playersCount = list.size();
         currentCtLabel = currentCtLabel + playersCount;
         currentPlayersCount.setText(currentCtLabel);
 
@@ -84,9 +87,9 @@ public class ViewLeaderboard extends DialogFragment implements View.OnClickListe
         if (fromHistory) {
             creditStatus.setVisibility(View.VISIBLE);
             String str = "Win Money Credit Status: Success";
-            if (winMoneyStaus == 0) {
+            if (winMoneyStatus == 0) {
                 str = "Win Money Credit Status: In-Progress";
-            } else if (winMoneyStaus == 2) {
+            } else if (winMoneyStatus == 2) {
                 str = "Win Money Credit Status: Timeout";
             }
             creditStatus.setText(str);
@@ -368,7 +371,7 @@ public class ViewLeaderboard extends DialogFragment implements View.OnClickListe
         if (isGameOver) {
             if (!fromHistory) {
                 if (parentActivity instanceof MainActivity) {
-                    ((MainActivity)parentActivity).launchView(Navigator.CURRENT_GAMES, new Bundle(), false);
+                    //((MainActivity)parentActivity).launchView(Navigator.CURRENT_GAMES, new Bundle(), false);
                     ((MainActivity)parentActivity).storeParams(Navigator.QUESTION_VIEW, null);
                 }
             }

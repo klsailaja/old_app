@@ -143,7 +143,11 @@ public class HistoryView extends BaseFragment implements View.OnClickListener, C
             startPosOffset = startPosOffset + maxRowCount;
             fetchRecords();
         } else if (id == R.id.col5) {
-            String winList = (String) view.getTag();
+            String data = (String) view.getTag();
+            StringTokenizer segregateData = new StringTokenizer(data, "-");
+            int winMoneyCreditStatus = Integer.parseInt(segregateData.nextToken().trim());
+            String winList = segregateData.nextToken().trim();
+
             List<PlayerSummary> winnersList = new ArrayList<>(10);
             StringTokenizer winnerTokenizer = new StringTokenizer(winList, ":");
             while (winnerTokenizer.hasMoreTokens()) {
@@ -162,7 +166,8 @@ public class HistoryView extends BaseFragment implements View.OnClickListener, C
                 winnersList.add(playerSummary);
             }
 
-            ViewLeaderboard viewLeaderboard = new ViewLeaderboard(getContext(), true, winnersList, true);
+            ViewLeaderboard viewLeaderboard = new ViewLeaderboard(getContext(), true,
+                    winnersList, true, winMoneyCreditStatus);
             FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
             viewLeaderboard.show(fragmentManager, "dialog");
         }
