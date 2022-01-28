@@ -70,7 +70,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_top_medium"
         android:textSize="@dimen/introduction_text_size"
-        android:text=""/>
+        android:text="Screenshot"/>
     <RelativeLayout
         android:layout_marginTop="@dimen/margin_top_large"
         android:layout_width="wrap_content"

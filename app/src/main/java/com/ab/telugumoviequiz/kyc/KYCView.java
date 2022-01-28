@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -64,7 +65,7 @@ public class KYCView extends BaseFragment
                             }
                             View view = getView();
                             if (view != null) {
-                                ImageView imageView = view.findViewById(R.id.addBtn);
+                                ImageView imageView = view.findViewById(R.id.frontPage);
                                 imageView.setImageBitmap(bitmapImage);
                             }
                             ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -94,7 +95,7 @@ public class KYCView extends BaseFragment
                             }
                             View view = getView();
                             if (view != null) {
-                                ImageView imageView = view.findViewById(R.id.addBtn);
+                                ImageView imageView = view.findViewById(R.id.backPage);
                                 imageView.setImageBitmap(bitmapImage);
                             }
                             ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -124,7 +125,7 @@ public class KYCView extends BaseFragment
                             }
                             View view = getView();
                             if (view != null) {
-                                ImageView imageView = view.findViewById(R.id.addBtn);
+                                ImageView imageView = view.findViewById(R.id.panPage);
                                 imageView.setImageBitmap(bitmapImage);
                             }
                             ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -212,46 +213,55 @@ public class KYCView extends BaseFragment
             aadharFrontPageBytes = null;
             View view1 = getView();
             if (view1 != null) {
-                ImageView imageView = view1.findViewById(R.id.addBtn);
+                ImageView imageView = view1.findViewById(R.id.frontPage);
                 imageView.setImageBitmap(null);
             }
         } else if (viewId == R.id.removeBack) {
             aadharBackPageBytes = null;
             View view1 = getView();
             if (view1 != null) {
-                ImageView imageView = view1.findViewById(R.id.addBtn);
+                ImageView imageView = view1.findViewById(R.id.backPage);
                 imageView.setImageBitmap(null);
             }
         } else if (viewId == R.id.removePan) {
             panPageBytes = null;
             View view1 = getView();
             if (view1 != null) {
-                ImageView imageView = view1.findViewById(R.id.addBtn);
+                ImageView imageView = view1.findViewById(R.id.panPage);
                 imageView.setImageBitmap(null);
             }
         } else if (viewId == R.id.viewFront) {
             dbPictureId = (Long)view.getTag();
-            showPictureView(dbPictureId);
+            showPictureView(dbPictureId, 1);
         } else if (viewId == R.id.viewBack) {
             dbPictureId = (Long)view.getTag();
-            showPictureView(dbPictureId);
+            showPictureView(dbPictureId, 2);
         } else if (viewId == R.id.viewPan) {
             dbPictureId = (Long)view.getTag();
-            showPictureView(dbPictureId);
+            showPictureView(dbPictureId, 3);
         } else if (viewId == R.id.kycCreateBut) {
             if ((aadharFrontPageBytes == null) || (aadharBackPageBytes == null)
                     || (panPageBytes == null)) {
                 displayInfo("Please select all 3 images", null);
                 return;
             }
+            KYCEntry kycEntry = new KYCEntry();
+            kycEntry.setAfpId(-1);
+            kycEntry.setAbpId(-1);
+            kycEntry.setPpId(-1);
+            kycEntry.setStatus("Not Submitted");
+            kycEntry.setUserId(UserDetails.getInstance().getUserProfile().getId());
+
             PostTask<KYCEntry, Long> getCreateKYCTask = Request.getCreateKYCTask();
+            getCreateKYCTask.setPostObject(kycEntry);
             getCreateKYCTask.setCallbackResponse(this);
             Scheduler.getInstance().submit(getCreateKYCTask);
         }
     }
-    private void showPictureView(long id) {
+    private void showPictureView(long id, int type) {
         GetTask<byte[]> viewReceiptTask = Request.getReceiptTask(id);
         viewReceiptTask.setCallbackResponse(this);
+        viewReceiptTask.setHelperObject(type);
         Scheduler.getInstance().submit(viewReceiptTask);
     }
 
@@ -326,10 +336,16 @@ public class KYCView extends BaseFragment
             if (contents == null) {
                 return;
             }
+            int type = (int) userObject;
+
             Runnable run = () -> {
                 ViewReceipt viewReceipt = new ViewReceipt((getContext()), contents, "KYC Saved Image");
                 FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
                 viewReceipt.show(fragmentManager, "dialog");
+                ImageView imageView = getImageView(type);
+                if (imageView != null) {
+                    imageView.setImageBitmap(BitmapFactory.decodeByteArray(contents, 0, contents.length));
+                }
             };
             Activity activity = getActivity();
             if (activity != null) {
@@ -357,7 +373,7 @@ public class KYCView extends BaseFragment
             String startTypeStr = fileName.substring(0, pos + 1);
             String typeStr = fileName.substring(pos + 1);
             int typeInt = Integer.parseInt(typeStr);
-            String nextTypeStr = startTypeStr + "_type_" + (typeInt + 1);
+            String nextTypeStr = startTypeStr + (typeInt + 1);
 
             if (typeInt == 4) {
                 displayInfo("KYC Images are submitted successfully", this);
@@ -377,6 +393,23 @@ public class KYCView extends BaseFragment
             Scheduler.getInstance().submit(postPictureTask);
         }
     }
+
+    private ImageView getImageView(int type) {
+        View view = getView();
+        if (view == null) {
+            return null;
+        }
+        ImageView imageView = null;
+        if (type == 1) {
+            imageView = view.findViewById(R.id.frontPage);
+        } else if (type == 2) {
+            imageView = view.findViewById(R.id.backPage);
+        } else if (type == 3) {
+            imageView = view.findViewById(R.id.panPage);
+        }
+        return imageView;
+    }
+
     public void doAction(int calledId, Object userObject) {
         Activity mainActivity = getActivity();
         if (mainActivity instanceof MainActivity) {
@@ -393,7 +426,10 @@ public class KYCView extends BaseFragment
             return;
         }
         String statusStr = kycEntry.getStatus();
-        boolean editable = statusStr.equalsIgnoreCase("approved");
+        if (statusStr == null) {
+            statusStr = "not submitted";
+        }
+        boolean editable = !statusStr.equalsIgnoreCase("approved");
 
         TextView statusTV = view.findViewById(R.id.statusId);
         statusTV.setText(statusStr);
