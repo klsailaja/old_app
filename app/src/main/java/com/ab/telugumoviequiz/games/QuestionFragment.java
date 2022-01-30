@@ -58,7 +58,8 @@ public class QuestionFragment extends BaseFragment
     private TextView timerView;
     private TextView questionView;
     private final TextView[] buttonsView = new TextView[4];
-    private Button fiftyFifty, changeQues, moreOptions;
+    private Button fiftyFifty;
+    private Button changeQues;
     private ArrayList<UserAnswer> userAnswers = new ArrayList<>(10);
     private ViewMyAnswers myAnsersDialog;
     private ViewPrizeDetails viewPrizeDetails;
@@ -298,6 +299,12 @@ public class QuestionFragment extends BaseFragment
                 MainActivity mainActivity = (MainActivity) parentActivity;
                 mainActivity.launchView(Navigator.CURRENT_GAMES, null, false);
             }
+        } else if (calledId == 200) {
+            Activity parentActivity = getActivity();
+            if (parentActivity instanceof MainActivity) {
+                MainActivity mainActivity = (MainActivity) parentActivity;
+                mainActivity.launchView(Navigator.CURRENT_GAMES, null, false);
+            }
         }
     }
 
@@ -336,7 +343,8 @@ public class QuestionFragment extends BaseFragment
                             break;
                         }
                         case R.id.item_leaderboard: {
-                            showLeaderBoardView(false);
+                            final Boolean isGameOver = (Boolean) v.getTag();
+                            showLeaderBoardView(isGameOver);
                             break;
                         }
                     }
@@ -667,7 +675,7 @@ public class QuestionFragment extends BaseFragment
 
         fiftyFifty = root.findViewById(R.id.fiftyFifty);
         changeQues = root.findViewById(R.id.flipQuestion);
-        moreOptions = root.findViewById(R.id.moreOptions);
+        Button moreOptions = root.findViewById(R.id.moreOptions);
 
         gameIdLabel.setVisibility(View.GONE);
         gameIdValLabel.setVisibility(View.GONE);
@@ -785,11 +793,19 @@ public class QuestionFragment extends BaseFragment
 
     private void showLeaderBoardView(final boolean isGameOver) {
         Runnable run = () -> {
+            View view = getView();
+            if (view != null) {
+                Button moreButton = view.findViewById(R.id.moreOptions);
+                moreButton.setTag(isGameOver);
+            }
             closeAllViews();
             viewLeaderboard = new ViewLeaderboard(getContext(), isGameOver, gameLeaderBoardDetails, getActivity());
             viewLeaderboard.setTotalWinnersCount(gamePrizeDetails.size());
             viewLeaderboard.setTotalPlayersCount(gameDetails.getCurrentCount());
             FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+            if (isGameOver) {
+                viewLeaderboard.setDialogActionListener(this);
+            }
             if (!isVisible()) {
                 return;
             }
@@ -848,7 +864,6 @@ public class QuestionFragment extends BaseFragment
     private void setTagValueToUIComponents(Integer questionNumber) {
         fiftyFifty.setTag(questionNumber);
         changeQues.setTag(questionNumber);
-        moreOptions.setTag(questionNumber);
         for (TextView t : buttonsView) {
             t.setTag(questionNumber);
         }

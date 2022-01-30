@@ -18,6 +18,7 @@ import android.widget.TextView;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
@@ -31,6 +32,7 @@ import com.ab.telugumoviequiz.common.PostTask;
 import com.ab.telugumoviequiz.common.Request;
 import com.ab.telugumoviequiz.common.Scheduler;
 import com.ab.telugumoviequiz.common.UserDetails;
+import com.ab.telugumoviequiz.common.Utils;
 import com.ab.telugumoviequiz.customercare.PostPictureTask;
 import com.ab.telugumoviequiz.main.MainActivity;
 import com.ab.telugumoviequiz.main.Navigator;
@@ -47,6 +49,7 @@ public class KYCView extends BaseFragment
     private byte[] aadharBackPageBytes;
     private byte[] panPageBytes;
     private static final int REQUEST_CODE = 2000;
+    private AlertDialog alertDialog;
 
     ActivityResultLauncher<String> startaadharFrontPageGallary =
             registerForActivityResult(new ActivityResultContracts.GetContent(),
@@ -245,6 +248,9 @@ public class KYCView extends BaseFragment
                 displayInfo("Please select all 3 images", null);
                 return;
             }
+            alertDialog = Utils.getProgressDialog(getActivity(), "Processing...");
+            alertDialog.show();
+
             KYCEntry kycEntry = new KYCEntry();
             kycEntry.setAfpId(-1);
             kycEntry.setAbpId(-1);
@@ -365,6 +371,15 @@ public class KYCView extends BaseFragment
         } else if (reqId == Request.KYC_POST_PIC) {
             boolean picPostedResult = (Boolean) response;
             if (!picPostedResult) {
+                Runnable run = () -> {
+                    if (alertDialog != null) {
+                        alertDialog.dismiss();
+                    }
+                };
+                Activity activity = getActivity();
+                if (activity != null) {
+                    activity.runOnUiThread(run);
+                }
                 displayInfo("Error. Please retry", null);
                 return;
             }
@@ -376,6 +391,15 @@ public class KYCView extends BaseFragment
             String nextTypeStr = startTypeStr + (typeInt + 1);
 
             if (typeInt == 4) {
+                Runnable run = () -> {
+                    if (alertDialog != null) {
+                        alertDialog.dismiss();
+                    }
+                };
+                Activity activity = getActivity();
+                if (activity != null) {
+                    activity.runOnUiThread(run);
+                }
                 displayInfo("KYC Images are submitted successfully", this);
                 return;
             }
@@ -418,6 +442,7 @@ public class KYCView extends BaseFragment
     }
 
     private void setView(KYCEntry kycEntry) {
+        System.out.println();
         int creditColor = Color.parseColor("#FF138C18");
         int withdrawColor = Color.parseColor("#FF0000");
 

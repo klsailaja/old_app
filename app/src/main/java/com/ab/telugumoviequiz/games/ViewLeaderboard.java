@@ -22,6 +22,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
 import com.ab.telugumoviequiz.R;
+import com.ab.telugumoviequiz.common.DialogAction;
 import com.ab.telugumoviequiz.common.UserDetails;
 import com.ab.telugumoviequiz.common.Utils;
 import com.ab.telugumoviequiz.main.MainActivity;
@@ -36,6 +37,7 @@ public class ViewLeaderboard extends DialogFragment implements View.OnClickListe
     private Activity parentActivity;
     private boolean fromHistory = false;
     private int winnerCount, playersCount, winMoneyStatus;
+    private DialogAction dialogActionListener;
 
 
     public ViewLeaderboard(Context context, boolean isGameOver,
@@ -60,6 +62,9 @@ public class ViewLeaderboard extends DialogFragment implements View.OnClickListe
     }
     public void setTotalPlayersCount(int playersCount) {
         this.playersCount = playersCount;
+    }
+    public void setDialogActionListener(DialogAction dialogActionListener) {
+        this.dialogActionListener = dialogActionListener;
     }
 
     @Override
@@ -371,8 +376,11 @@ public class ViewLeaderboard extends DialogFragment implements View.OnClickListe
         if (isGameOver) {
             if (!fromHistory) {
                 if (parentActivity instanceof MainActivity) {
-                    //((MainActivity)parentActivity).launchView(Navigator.CURRENT_GAMES, new Bundle(), false);
                     ((MainActivity)parentActivity).storeParams(Navigator.QUESTION_VIEW, null);
+                }
+                if (dialogActionListener != null) {
+                    Utils.showConfirmationMessage("Home", "Go to Games Home", parentActivity,
+                            dialogActionListener, 200, null);
                 }
             }
         }

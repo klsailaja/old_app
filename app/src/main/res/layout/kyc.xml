@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_marginTop="@dimen/view_gap_from_top"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <LinearLayout
@@ -192,6 +193,7 @@
         <Button
             style="@style/normalButton"
             android:layout_marginTop="@dimen/margin_top_small"
+            android:layout_marginBottom="@dimen/margin_top_small"
             android:id="@+id/kycCreateBut"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
