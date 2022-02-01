@@ -56,6 +56,7 @@ public class WithdrawReqsView extends BaseFragment implements PopupMenu.OnMenuIt
     private final static int VIEW_BENEFICIERY_DETAILS = 10;
     private final static int VIEW_RECEIPT = 11;
     private final static int VIEW_CLOSED_CMTS = 12;
+    private boolean firstTime = true;
 
     private void handleListeners(View.OnClickListener listener) {
         View view = getView();
@@ -157,7 +158,11 @@ public class WithdrawReqsView extends BaseFragment implements PopupMenu.OnMenuIt
         recyclerView.setAdapter(tableAdapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         fetchRecords();
-        showHelpWindow();
+        if (firstTime) {
+            firstTime = false;
+            showHelpWindow();
+        }
+
         return root;
     }
 
@@ -215,6 +220,8 @@ public class WithdrawReqsView extends BaseFragment implements PopupMenu.OnMenuIt
             if (activity instanceof MainActivity) {
                 ((MainActivity)activity).launchView(Navigator.NEW_WITHDRAW_REQUEST, null, false);
             }
+        } else if (id == R.id.help) {
+            showHelpWindow();
         }
     }
 
@@ -279,10 +286,10 @@ public class WithdrawReqsView extends BaseFragment implements PopupMenu.OnMenuIt
     }
 
     private void showHelpWindow() {
-        int isSet = HelpPreferences.getInstance().readPreference(requireContext(), HelpPreferences.WITHDRAW_TIPS);
+        /*int isSet = HelpPreferences.getInstance().readPreference(requireContext(), HelpPreferences.WITHDRAW_TIPS);
         if (isSet == 1) {
             return;
-        }
+        }*/
         List<String> helpKeys = new ArrayList<>();
         helpKeys.add("topic_name1");
         helpKeys.add("topic_name2");
@@ -291,7 +298,7 @@ public class WithdrawReqsView extends BaseFragment implements PopupMenu.OnMenuIt
         List<HelpTopic> loginHelpEnglishTopics = Utils.getHelpTopics(helpKeys, 2);
 
         ViewHelp viewHelp = new ViewHelp(loginHelpLocalTopics,
-                loginHelpEnglishTopics, ViewHelp.HORIZONTAL, HelpPreferences.WITHDRAW_TIPS);
+                loginHelpEnglishTopics, HelpPreferences.WITHDRAW_TIPS);
         viewHelp.setLocalMainHeading("Main Heading Telugu");
         viewHelp.setEnglishMainHeading("Terms And Conditions");
         Utils.clearState();

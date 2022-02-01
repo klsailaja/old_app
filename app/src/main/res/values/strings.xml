@@ -364,7 +364,7 @@
     <string name="chat_ex_msg_time" translatable="false">10:05 pm</string>
     <string name="chat_heading_msg_time" translatable="false">10:10 am</string>
     <string name="chat_formed_chat_msg" translatable="false">Your Chat Message Appears Here</string>
-    <string name="help_check_box_text" translatable="false">Do not show me next time</string>
+    <string name="help_check_box_text" translatable="false">Click on help ? button above to open again</string>
     <string name="help_do_not_show_next_time" translatable="false">Do not show next time</string>
     <string name="resend_code" translatable="false">Resend Code</string>
     <string name="toolbar_ob" translatable="false">Current Balance in Indian Rupees:</string>

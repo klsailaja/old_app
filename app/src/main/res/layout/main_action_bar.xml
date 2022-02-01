@@ -26,6 +26,17 @@
         android:id="@+id/main_main_money"/>
     <ImageView
         android:layout_alignParentEnd="true"
+        android:src="@drawable/help"
+        android:id="@+id/help"
+        android:layout_marginStart="@dimen/margin_top_medium"
+        android:layout_marginEnd="@dimen/margin_top_medium"
+        android:paddingStart="@dimen/action_bar_icon_start_padding"
+        android:visibility="gone"
+        android:paddingEnd="@dimen/action_bar_icon_end_padding"
+        style="@style/toolbarIconStyle"
+        android:contentDescription="@string/chat_msg" />
+    <ImageView
+        android:layout_toStartOf="@+id/help"
         android:src="@drawable/upcoming"
         android:id="@+id/celebritySchedule"
         android:layout_marginStart="@dimen/margin_top_medium"
@@ -33,13 +44,13 @@
         android:paddingStart="@dimen/action_bar_icon_start_padding"
         android:paddingEnd="@dimen/action_bar_icon_end_padding"
         style="@style/toolbarIconStyle"
-        android:visibility="invisible"
+        android:visibility="gone"
         android:contentDescription="@string/chat_msg" />
     <ImageView
         android:layout_toStartOf="@+id/celebritySchedule"
-        android:src="@drawable/test_chat_bkp"
+        android:src="@drawable/chat1"
         android:id="@+id/chat"
-        android:visibility="visible"
+        android:visibility="gone"
         android:layout_marginStart="@dimen/margin_top_medium"
         android:layout_marginEnd="@dimen/margin_top_medium"
         android:paddingStart="@dimen/action_bar_icon_start_padding"
@@ -52,6 +63,7 @@
         android:id="@+id/search"
         android:layout_marginStart="@dimen/margin_top_medium"
         android:layout_marginEnd="@dimen/margin_top_medium"
+        android:visibility="gone"
         android:paddingStart="@dimen/action_bar_icon_start_padding"
         android:paddingEnd="@dimen/action_bar_icon_end_padding"
         style="@style/toolbarIconStyle"

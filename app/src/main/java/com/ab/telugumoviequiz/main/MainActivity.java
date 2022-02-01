@@ -640,9 +640,9 @@ public class MainActivity extends AppCompatActivity
             fetchUpdateMoney();
         } else if (reqId == Request.CHAT_MSG_COUNT_FETCH) {
             final Integer msgCount = (Integer) response;
-            int chatImgResourceId = R.drawable.test_chat_bkp;
+            int chatImgResourceId = R.drawable.chat1;
             if (msgCount > 0) {
-                chatImgResourceId = R.drawable.new_chat_messages;
+                chatImgResourceId = R.drawable.chat2;
             }
             ActionBar mActionBar = getSupportActionBar();
             if (mActionBar != null) {

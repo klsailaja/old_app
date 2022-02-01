@@ -175,7 +175,7 @@ public class NewUserActivity extends AppCompatActivity
             List<HelpTopic> loginHelpEnglishTopics = Utils.getHelpTopics(helpKeys, 2);
 
             ViewHelp viewHelp = new ViewHelp(loginHelpLocalTopics,
-                    loginHelpEnglishTopics, ViewHelp.HORIZONTAL, HelpPreferences.REFERRAL_INFO);
+                    loginHelpEnglishTopics, HelpPreferences.REFERRAL_INFO);
             viewHelp.setLocalMainHeading("Main Heading Telugu");
             viewHelp.setEnglishMainHeading("Terms And Conditions");
             Utils.clearState();

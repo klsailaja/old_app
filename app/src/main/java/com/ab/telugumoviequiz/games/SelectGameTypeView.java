@@ -35,6 +35,7 @@ public class SelectGameTypeView extends BaseFragment implements View.OnClickList
     public static final int FUTURE_GAMES = 1; //
     public static final int ENROLLED_GAMES = 2; //
     private int viewType;
+    private boolean firstTime = true;
 
     public SelectGameTypeView() {
 
@@ -86,15 +87,19 @@ public class SelectGameTypeView extends BaseFragment implements View.OnClickList
         GetTask<Long> loggedInUserCtTask = Request.getLoggedInUserCount();
         loggedInUserCtTask.setCallbackResponse(this);
         Scheduler.getInstance().submit(loggedInUserCtTask);
-        showHelpWindow();
+        if (firstTime) {
+            firstTime = false;
+            enableActionBarButtons(true, this);
+            showHelpWindow();
+        }
         return root;
     }
 
     private void showHelpWindow() {
-        int isSet = HelpPreferences.getInstance().readPreference(requireContext(), HelpPreferences.HOME_SCREEN_GENERAL_GAME_RULES);
+        /*int isSet = HelpPreferences.getInstance().readPreference(requireContext(), HelpPreferences.HOME_SCREEN_GENERAL_GAME_RULES);
         if (isSet == 1) {
             return;
-        }
+        }*/
         List<String> helpKeys = new ArrayList<>();
         helpKeys.add("topic_name1");
         helpKeys.add("topic_name2");
@@ -103,7 +108,7 @@ public class SelectGameTypeView extends BaseFragment implements View.OnClickList
         List<HelpTopic> loginHelpEnglishTopics = Utils.getHelpTopics(helpKeys, 2);
 
         ViewHelp viewHelp = new ViewHelp(loginHelpLocalTopics,
-                loginHelpEnglishTopics, ViewHelp.HORIZONTAL, HelpPreferences.HOME_SCREEN_GENERAL_GAME_RULES);
+                loginHelpEnglishTopics, HelpPreferences.HOME_SCREEN_GENERAL_GAME_RULES);
         viewHelp.setLocalMainHeading("Main Heading Telugu");
         viewHelp.setEnglishMainHeading("Terms And Conditions");
         Utils.clearState();
@@ -164,6 +169,8 @@ public class SelectGameTypeView extends BaseFragment implements View.OnClickList
             Bundle params = new Bundle();
             params.putInt(Keys.GAMES_VIEW_GAME_TYPE, gameType);
             ((Navigator) requireActivity()).launchView(fragmentName, params, false);
+        } else if (viewId == R.id.help) {
+            showHelpWindow();
         }
     }
 }

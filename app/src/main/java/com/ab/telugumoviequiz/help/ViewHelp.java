@@ -1,7 +1,6 @@
 package com.ab.telugumoviequiz.help;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -27,19 +26,17 @@ public class ViewHelp extends DialogFragment implements MessageListener {
     private final List<HelpTopic> englishTopics;
     private String englishMainHeading;
     private String localMainHeading;
-    private final int orientation;
-    public static final int HORIZONTAL = 1;
-    public static final int VERTICAL = 2;
+    /*public static final int HORIZONTAL = 1;
+    public static final int VERTICAL = 2;*/
     private final String helpPreferencesKey;
     private View.OnClickListener onClickListener;
 
 
     public ViewHelp(List<HelpTopic> localTopics, List<HelpTopic> englishTopics,
-                    int orientation, String helpPreferencesKey) {
+                    String helpPreferencesKey) {
        this.localTopics = localTopics;
        this.englishTopics = englishTopics;
-       this.orientation = orientation;
-       this.helpPreferencesKey = helpPreferencesKey;
+        this.helpPreferencesKey = helpPreferencesKey;
     }
     public void setEnglishMainHeading(String englishMainHeading) {
         this.englishMainHeading = englishMainHeading;
@@ -64,7 +61,7 @@ public class ViewHelp extends DialogFragment implements MessageListener {
         String localLangHelpText = getHelpContents(localMainHeading, localTopics);
         String englishLangHelpText = getHelpContents(englishMainHeading, englishTopics);
         MyPagerAdapter adapterViewPager = new MyPagerAdapter(getChildFragmentManager(),
-                localLangHelpText, englishLangHelpText, orientation, this, helpPreferencesKey);
+                localLangHelpText, englishLangHelpText, this, helpPreferencesKey);
 
         ViewPager vpPager = root.findViewById(R.id.vpPager);
         vpPager.setAdapter(adapterViewPager);
@@ -93,13 +90,13 @@ public class ViewHelp extends DialogFragment implements MessageListener {
     @Override
     public void passData(int reqId, List<String> data) {
         dismiss();
-        String stateStr = data.get(0);
+        /*String stateStr = data.get(0);
         int stateInt = Integer.parseInt(stateStr);
         Context context = getContext();
         if (context != null) {
-            HelpPreferences.getInstance().writePreference(context,
+            /*HelpPreferences.getInstance().writePreference(context,
                     helpPreferencesKey, stateInt);
-        }
+        }*/
         if (onClickListener != null) {
             this.onClickListener.onClick(null);
         }
@@ -118,7 +115,7 @@ public class ViewHelp extends DialogFragment implements MessageListener {
         stringBuilder.append(mainHeading);
         stringBuilder.append("</h2>");
 
-        String colorName = "black";
+        String colorName;
         for (HelpTopic topic : topics) {
             stringBuilder.append("<font size=\"3\" face=\"arial\" color=\"");
             stringBuilder.append("black");

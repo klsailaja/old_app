@@ -120,24 +120,15 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
             joinTask.setPostObject(gm);
             joinTask.setHelperObject(quesGameDetails);
             Scheduler.getInstance().submit(joinTask);
-
-            /*int tktRate = quesGameDetails.getTicketRate();
-            if (tktRate == 0) {
-
-            } else {
-                long userProfileId = UserDetails.getInstance().getUserProfile().getId();
-                GetTask<String> enrolledStatus = Request.getEnrolledStatus(quesGameDetails.getGameId(), userProfileId);
-                enrolledStatus.setCallbackResponse(this);
-                enrolledStatus.setHelperObject(quesGameDetails);
-                Scheduler.getInstance().submit(enrolledStatus);
-            }*/
-        } else if (R.id.celebritySchedule == viewId) {
+       } else if (R.id.celebritySchedule == viewId) {
             GetTask<CelebrityFullDetails> celebrityFullDetailsGetTask = Request.getCelebrityScheduleTask();
             celebrityFullDetailsGetTask.setCallbackResponse(this);
             celebrityFullDetailsGetTask.setActivity(getActivity(), "Processing.Please Wait!");
             Scheduler.getInstance().submit(celebrityFullDetailsGetTask);
         } else if (R.id.search == viewId) {
             showSearchView();
+        } else if (R.id.help == viewId) {
+            showHelpWindow(false);
         }
     }
 
@@ -440,8 +431,8 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
                 applyFilterCriteria();
                 if (reqId == Request.GET_FUTURE_GAMES) {
                     if (firstTime) {
-                        showHelpWindow();
-                        showSearchView();
+                        showHelpWindow(true);
+                        //showSearchView();
                     }
                 }
                 break;
@@ -476,45 +467,6 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
                     ((Navigator) requireActivity()).launchView(Navigator.QUESTION_VIEW, params, false);
                     return;
                 }
-                //GameDetails quesGameDetails = (GameDetails) helperObject;
-                //int tktRate = quesGameDetails.getTicketRate();
-
-                //UserMoney userMoney = UserDetails.getInstance().getUserMoney();
-
-                /*final List<PayGameModel> modelList = new ArrayList<>();
-                PayGameModel referralMoney = new PayGameModel();
-                referralMoney.setAccountName("Referral Money");
-                referralMoney.setAccountBalance(String.valueOf(userMoney.getReferalAmount()));
-                assert UserMoneyAccountType.findById(3) != null;
-                referralMoney.setAccountNumber(UserMoneyAccountType.findById(3).getId());
-                referralMoney.setValid(userMoney.getReferalAmount() >= tktRate);
-                modelList.add(referralMoney);
-
-                PayGameModel winningMoney = new PayGameModel();
-                winningMoney.setAccountName("Winning Money");
-                winningMoney.setAccountBalance(String.valueOf(userMoney.getWinningAmount()));
-                assert UserMoneyAccountType.findById(2) != null;
-                winningMoney.setAccountNumber(UserMoneyAccountType.findById(2).getId());
-                winningMoney.setValid(userMoney.getWinningAmount() >= tktRate);
-                modelList.add(winningMoney);
-
-                PayGameModel mainMoney = new PayGameModel();
-                mainMoney.setAccountName("Main Money");
-                mainMoney.setAccountBalance(String.valueOf(userMoney.getLoadedAmount()));
-                assert UserMoneyAccountType.findById(1) != null;
-                mainMoney.setAccountNumber(UserMoneyAccountType.findById(1).getId());
-                mainMoney.setValid(userMoney.getLoadedAmount() >= tktRate);
-                modelList.add(mainMoney);
-
-                Runnable run = () -> {
-                    PayGameDialog payOptions = new PayGameDialog(modelList, this, quesGameDetails);
-                    FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-                    payOptions.show(fragmentManager, "dialog");
-                };
-                Activity activity = getActivity();
-                if (activity != null) {
-                    activity.runOnUiThread(run);
-                }*/
                 break;
             }
             case Request.CELEBRITY_SCHEDULE_DETAIS: {
@@ -535,11 +487,11 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
         }
     }
 
-    private void showHelpWindow() {
-        int isSet = HelpPreferences.getInstance().readPreference(requireContext(), HelpPreferences.GAME_TIPS);
+    private void showHelpWindow(boolean requireCallBack) {
+        /*int isSet = HelpPreferences.getInstance().readPreference(requireContext(), HelpPreferences.GAME_TIPS);
         if (isSet == 1) {
             return;
-        }
+        }*/
         List<String> helpKeys = new ArrayList<>();
         helpKeys.add("game_tips");
         List<HelpTopic> loginHelpLocalTopics = Utils.getHelpTopics(helpKeys, 1);
@@ -547,10 +499,12 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
 
         Runnable run = () -> {
             ViewHelp viewHelp = new ViewHelp(loginHelpLocalTopics,
-                    loginHelpEnglishTopics, ViewHelp.HORIZONTAL, HelpPreferences.GAME_TIPS);
+                    loginHelpEnglishTopics, HelpPreferences.GAME_TIPS);
             viewHelp.setLocalMainHeading("Game Time Useful Tips");
             viewHelp.setEnglishMainHeading("Game Time Useful Tips");
-            viewHelp.setOnClickListener(this);
+            if (requireCallBack) {
+                viewHelp.setOnClickListener(this);
+            }
             Utils.clearState();
             FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
             viewHelp.show(fragmentManager, "dialog");
@@ -566,12 +520,19 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
                 View view = mActionBar.getCustomView();
                 if (view != null) {
                     ImageView searchButton = view.findViewById(R.id.search);
+                    ImageView helpButton = view.findViewById(R.id.help);
                     if (enable) {
                         searchButton.setVisibility(View.VISIBLE);
                         searchButton.setOnClickListener(this);
+
+                        helpButton.setVisibility(View.VISIBLE);
+                        helpButton.setOnClickListener(this);
                     } else {
                         searchButton.setVisibility(View.INVISIBLE);
                         searchButton.setOnClickListener(null);
+
+                        helpButton.setVisibility(View.INVISIBLE);
+                        helpButton.setOnClickListener(this);
                     }
                     if ((fragmentIndex == 2) || (fragmentIndex == 4)) {
                         ImageView viewCelebritySchedules = view.findViewById(R.id.celebritySchedule);

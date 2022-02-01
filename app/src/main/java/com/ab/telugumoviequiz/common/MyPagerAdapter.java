@@ -10,17 +10,15 @@ import com.ab.telugumoviequiz.help.HelpFragment;
 public class MyPagerAdapter extends FragmentPagerAdapter {
     private final String teluguHelpStr;
     private final String englishHelpStr;
-    private final int orientation;
     private final MessageListener listener;
     private final String helpPreferencesKey;
 
     public MyPagerAdapter(FragmentManager fragmentManager, String teluguHelpStr,
-                          String englishHelpStr, int orientation, MessageListener listener,
+                          String englishHelpStr, MessageListener listener,
                           String helpPreferencesKey) {
         super(fragmentManager);
         this.teluguHelpStr = teluguHelpStr;
         this.englishHelpStr = englishHelpStr;
-        this.orientation = orientation;
         this.listener = listener;
         this.helpPreferencesKey = helpPreferencesKey;
     }
@@ -36,9 +34,9 @@ public class MyPagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         if (position == 1) {
-            return new HelpFragment(englishHelpStr, orientation, listener, helpPreferencesKey);
+            return new HelpFragment(englishHelpStr, listener, helpPreferencesKey);
         }
-        return new HelpFragment(teluguHelpStr, orientation, listener, helpPreferencesKey);
+        return new HelpFragment(teluguHelpStr, listener, helpPreferencesKey);
     }
 
     // Returns the page title for the top indicator

@@ -113,7 +113,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             List<HelpTopic> loginHelpEnglishTopics = Utils.getHelpTopics(helpKeys, 2);
 
             ViewHelp viewHelp = new ViewHelp(loginHelpLocalTopics,
-                    loginHelpEnglishTopics, ViewHelp.HORIZONTAL, HelpPreferences.TERMS_CONDITIONS);
+                    loginHelpEnglishTopics, HelpPreferences.TERMS_CONDITIONS);
             viewHelp.setLocalMainHeading("Main Heading Telugu");
             viewHelp.setEnglishMainHeading("Terms And Conditions");
             Utils.clearState();
@@ -221,7 +221,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         List<HelpTopic> loginHelpEnglishTopics = Utils.getHelpTopics(helpKeys, 2);
 
         ViewHelp viewHelp = new ViewHelp(loginHelpLocalTopics,
-                loginHelpEnglishTopics, ViewHelp.HORIZONTAL, HelpPreferences.WITHDRAW_TIPS);
+                loginHelpEnglishTopics, HelpPreferences.WITHDRAW_TIPS);
         viewHelp.setLocalMainHeading("Main Heading Telugu");
         viewHelp.setEnglishMainHeading("Terms And Conditions");
         Utils.clearState();

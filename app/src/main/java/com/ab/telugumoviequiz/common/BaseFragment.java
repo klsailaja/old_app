@@ -3,11 +3,14 @@ package com.ab.telugumoviequiz.common;
 import android.app.Activity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
 
+import com.ab.telugumoviequiz.R;
 import com.ab.telugumoviequiz.main.MainActivity;
 import com.google.android.material.navigation.NavigationView;
 
@@ -110,5 +113,26 @@ public abstract class BaseFragment extends Fragment implements MessageListener,
             return mainActivity.onNavigationItemSelected(item);
         }
         return false;
+    }
+
+    public void enableActionBarButtons(boolean enable,
+                                       View.OnClickListener listener) {
+        Activity activity = getActivity();
+        if (activity instanceof MainActivity) {
+            ActionBar mActionBar = ((MainActivity) getActivity()).getSupportActionBar();
+            if (mActionBar != null) {
+                View view = mActionBar.getCustomView();
+                if (view != null) {
+                    ImageView helpButton = view.findViewById(R.id.help);
+                    if (enable) {
+                        helpButton.setVisibility(View.VISIBLE);
+                        helpButton.setOnClickListener(listener);
+                    } else {
+                        helpButton.setVisibility(View.INVISIBLE);
+                        helpButton.setOnClickListener(null);
+                    }
+                }
+            }
+        }
     }
 }

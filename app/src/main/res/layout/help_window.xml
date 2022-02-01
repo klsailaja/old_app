@@ -5,7 +5,7 @@
     <ScrollView
         android:layout_alignParentTop="true"
         android:id="@+id/tableScrollView"
-        android:layout_above="@+id/checkbox1"
+        android:layout_above="@+id/helpTextTV"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <WebView
@@ -13,14 +13,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </ScrollView>
-    <CheckBox
-        android:id="@+id/checkbox1"
-        android:layout_above="@+id/helpCloseBut"
-        android:text="@string/help_do_not_show_next_time"
+    <TextView
+        android:layout_marginTop="@dimen/margin_top_large"
+        android:layout_marginBottom="@dimen/margin_top_large"
+        android:id="@+id/helpTextTV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:layout_gravity="start"/>
+        android:layout_gravity="start"
+        android:layout_above="@+id/helpCloseBut"
+        android:text="@string/help_check_box_text" />
     <Button
         android:layout_centerInParent="true"
         android:layout_alignParentBottom="true"

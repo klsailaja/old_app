@@ -115,7 +115,7 @@
     <!--Action Bar-->
     <dimen name="action_bar_icon_padding">5dp</dimen>
     <dimen name="action_bar_icon_start_padding">1dp</dimen>
-    <dimen name="action_bar_icon_end_padding">10dp</dimen>
+    <dimen name="action_bar_icon_end_padding">1dp</dimen>
     <dimen name="action_bar_text_size">20sp</dimen>
     <!--Transactions View-->
     <dimen name="transactions_table_data_text_size">15sp</dimen>
