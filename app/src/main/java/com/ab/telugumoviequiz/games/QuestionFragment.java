@@ -4,16 +4,14 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.res.Resources;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -39,7 +37,6 @@ import com.ab.telugumoviequiz.common.Utils;
 import com.ab.telugumoviequiz.constants.UserMoneyAccountType;
 import com.ab.telugumoviequiz.main.MainActivity;
 import com.ab.telugumoviequiz.main.Navigator;
-import com.ab.telugumoviequiz.withdraw.ViewReceipt;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -58,13 +55,13 @@ public class QuestionFragment extends BaseFragment
     private TextView timerView;
     private TextView questionView;
     private final TextView[] buttonsView = new TextView[4];
+    private ImageView questionPicIV;
     private Button fiftyFifty;
     private Button changeQues;
     private ArrayList<UserAnswer> userAnswers = new ArrayList<>(10);
     private ViewMyAnswers myAnsersDialog;
     private ViewPrizeDetails viewPrizeDetails;
     private ViewLeaderboard viewLeaderboard;
-    private ViewReceipt viewPic;
     private boolean fiftyUsed = false, flipQuestionUsed = false;
     private ScheduledFuture<?> gameStatusPollerHandle;
     private final ArrayList<PrizeDetail> gamePrizeDetails = new ArrayList<>(10);
@@ -90,7 +87,13 @@ public class QuestionFragment extends BaseFragment
         super.onCreate(savedInstanceState);
         System.out.println("onCreate " + savedInstanceState);
         LocalGamesManager.getInstance().stop();
+        /*Activity activity = getActivity();
+        if (activity instanceof AppCompatActivity) {
+            ActionBar mActionBar = ((AppCompatActivity) activity).getSupportActionBar();
+            mActionBar.hide();
+        }*/
     }
+
 
     @Override
     public View onCreateView(
@@ -184,6 +187,7 @@ public class QuestionFragment extends BaseFragment
         timerView = root.findViewById(R.id.timerView);
         progressBar = root.findViewById(R.id.timerProgress);
         questionView = root.findViewById(R.id.questionView);
+        questionPicIV = root.findViewById(R.id.image);
 
         buttonsView[0] = root.findViewById(R.id.optionA);
         buttonsView[1] = root.findViewById(R.id.optionB);
@@ -745,6 +749,8 @@ public class QuestionFragment extends BaseFragment
         buttonsView[1].setText("");
         buttonsView[2].setText("");
         buttonsView[3].setText("");
+        questionPicIV.setImageBitmap(null);
+        questionPicIV.setVisibility(View.GONE);
     }
 
     private void closeAllViews() {
@@ -760,9 +766,6 @@ public class QuestionFragment extends BaseFragment
             }
             if (viewLeaderboard != null) {
                 viewLeaderboard.dismiss();
-            }
-            if (viewPic != null) {
-                viewPic.dismiss();
             }
         };
         if (uiThread) {
@@ -873,7 +876,12 @@ public class QuestionFragment extends BaseFragment
         int qNo = question.getQuestionNumber();
         String linkText = qNo + ") " + question.getnStatement();
         if (question.getQuestionType() == 2) {
-            linkText = + qNo + ") " + question.getnStatement();
+            questionPicIV.setVisibility(View.VISIBLE);
+            byte[] data = question.getPictureBytes();
+            if (data != null) {
+                questionPicIV.setImageBitmap(BitmapFactory.decodeByteArray(data, 0, data.length));
+            }
+            /*linkText = + qNo + ") " + question.getnStatement();
             SpannableString ss = new SpannableString(linkText);
             ClickableSpan clickableSpan = new ClickableSpan() {
                 @Override
@@ -888,10 +896,14 @@ public class QuestionFragment extends BaseFragment
             int endPos = startPos + clickText.length();
             ss.setSpan(clickableSpan, startPos, endPos, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             questionView.setText(ss);
-            questionView.setMovementMethod(LinkMovementMethod.getInstance());
+            questionView.setMovementMethod(LinkMovementMethod.getInstance());*/
+
         } else {
-            questionView.setText(linkText);
+            questionPicIV.setVisibility(View.GONE);
+            questionPicIV.setImageBitmap(null);
+            /*questionView.setText(linkText);*/
         }
+        questionView.setText(linkText);
         buttonsView[0].setText(question.getnOptionA());
         buttonsView[1].setText(question.getnOptionB());
         buttonsView[2].setText(question.getnOptionC());
