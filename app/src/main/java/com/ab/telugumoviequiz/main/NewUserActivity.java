@@ -5,14 +5,22 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
 import android.text.TextWatcher;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
@@ -95,6 +103,7 @@ public class NewUserActivity extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
+        initializeClickables();
     }
 
     @Override
@@ -144,10 +153,6 @@ public class NewUserActivity extends AppCompatActivity
             verifyCodeTask.setPostObject(otpDetails);
             verifyCodeTask.setCallbackResponse(this);
             Scheduler.getInstance().submit(verifyCodeTask);
-        } else if (viewId == id.viewLoginPageBut) {
-            Intent intent = new Intent(this, LoginActivity.class);
-            startActivity(intent);
-            finish();
         } else if (viewId == id.registerButton) {
             UserProfile userProfile = getFromUI();
             if (userProfile == null) {
@@ -390,6 +395,10 @@ public class NewUserActivity extends AppCompatActivity
             return false;
         }
         result = validateReferalCode();
+        if (!result) {
+            return false;
+        }
+        result = validateTermsConditions();
         return result;
     }
 
@@ -470,6 +479,22 @@ public class NewUserActivity extends AppCompatActivity
         verifyCodeButton.setOnClickListener(listener);
     }
 
+    private boolean validateTermsConditions() {
+        CheckBox checkBox = findViewById(R.id.termsConditionsCheck1);
+        if (!checkBox.isChecked()) {
+            Utils.showMessage("Info",
+                    "Read Terms and Conditions and Accept", this, null);
+            return false;
+        }
+        checkBox = findViewById(R.id.termsConditionsCheck2);
+        if (!checkBox.isChecked()) {
+            Utils.showMessage("Info",
+                    "Read Terms and Conditions and Accept", this, null);
+            return false;
+        }
+        return true;
+    }
+
     private boolean validateReferalCode() {
         TextView referalText = findViewById(id.editReferalCode);
         String str = referalText.getText().toString().trim();
@@ -535,6 +560,47 @@ public class NewUserActivity extends AppCompatActivity
             return false;
         }
         return true;
+    }
+
+    private void initializeClickables() {
+        TextView terms1TV = findViewById(R.id.termsConditionsText1);
+        String terms1 = getResources().getString(R.string.terms_conditions1);
+        SpannableString ss = new SpannableString(terms1);
+        ClickableSpan clickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(@NonNull View view) {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Request.getTermsConditionsURL())));
+            }
+
+            public void updateDrawState (TextPaint ds) {
+                ds.setColor(Color.parseColor("#FF0000"));
+            }
+        };
+        String termsLinkText = "Terms of Use";
+        int startPos = terms1.indexOf(termsLinkText);
+        int endPos = startPos + termsLinkText.length();
+        ss.setSpan(clickableSpan, startPos, endPos, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        terms1TV.setText(ss);
+        terms1TV.setMovementMethod(LinkMovementMethod.getInstance());
+
+        TextView newUserTV = findViewById(R.id.viewLoginPageBut);
+        String newUserReg = getResources().getString(R.string.new_user_already_registered);
+        SpannableString ss1 = new SpannableString(newUserReg);
+        ClickableSpan newUserRegSpan = new ClickableSpan() {
+            @Override
+            public void onClick(@NonNull View view) {
+                Intent intent = new Intent(NewUserActivity.this, LoginActivity.class);
+                startActivity(intent);
+                finish();
+            }
+
+            public void updateDrawState (TextPaint ds) {
+                ds.setColor(Color.parseColor("#FF0000"));
+            }
+        };
+        ss1.setSpan(newUserRegSpan, 0, newUserReg.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        newUserTV.setText(ss1);
+        newUserTV.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
     @Override

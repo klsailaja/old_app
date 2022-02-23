@@ -2,12 +2,21 @@ package com.ab.telugumoviequiz.main;
 
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
@@ -34,15 +43,20 @@ import java.util.List;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener, NotifyTextChanged,
         CallbackResponse, MessageListener, DialogAction {
-    private PATextWatcher mailTextWatcher, passwordTextWatcher;
+    private PATextWatcher mailTextWatcher, passwordTextWatcher, captchaTextWatcher;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         HelpReader.getInstance().initialize(getBaseContext());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+
         setContentView(R.layout.activity_login);
         Request.baseUri = getString(R.string.base_url);
+
+        generateCaptcha();
+
         int isCalledFromMain = getIntent().getIntExtra(Keys.LOGIN_SCREEN_CALLED_FROM_LOGOUT, 0);
         if (isCalledFromMain == 1) {
             showHelpWindow();
@@ -52,6 +66,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onStart() {
         super.onStart();
+        initializeClickables();
     }
 
     @Override
@@ -78,11 +93,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onClick(View view) {
         int viewId = view.getId();
-        if (viewId == R.id.viewNewUserBut) {
-            Intent intent = new Intent(this, NewUserActivity.class);
-            startActivity(intent);
-            finish();
-        } else if (viewId == R.id.loginBut) {
+        if (viewId == R.id.loginBut) {
             LoginData loginData = getFromUI();
             if (loginData == null) {
                 return;
@@ -98,7 +109,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         } else if (viewId == R.id.forgotPasswordBut) {
             Utils.showConfirmationMessage("Confirm?", "Are you sure to proceed?",
                     this, this, 10, null);
-        } else if (viewId == R.id.termsConditionsText) {
+        } else if (viewId == R.id.reloadCaptcha) {
+            generateCaptcha();
+        } else if (viewId == R.id.termsConditionsText1) {
             List<String> helpKeys = new ArrayList<>();
             helpKeys.add("topic_name1");
             helpKeys.add("topic_name2");
@@ -205,7 +218,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             validateMailId();
         } else if (viewId == R.id.editTextPassword) {
             validatePasswd();
+        } else if (viewId == R.id.enterCaptchaET) {
+            validateCaptcha();
         }
+    }
+
+    private void generateCaptcha() {
+        int num1 = getRandomNumber();
+        int num2 = getRandomNumber();
+
+        TextView captchaText = findViewById(R.id.captchaQuestion);
+        String str = num1 + " + " + num2;
+        captchaText.setText(str);
     }
 
     private void showHelpWindow() {
@@ -230,7 +254,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private boolean validateTermsConditions() {
-        CheckBox checkBox = findViewById(R.id.termsConditionsCheck);
+        CheckBox checkBox = findViewById(R.id.termsConditionsCheck1);
+        if (!checkBox.isChecked()) {
+            Utils.showMessage("Info",
+                    "Read Terms and Conditions and Accept", this, null);
+            return false;
+        }
+        checkBox = findViewById(R.id.termsConditionsCheck2);
         if (!checkBox.isChecked()) {
             Utils.showMessage("Info",
                     "Read Terms and Conditions and Accept", this, null);
@@ -248,12 +278,21 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         if (!result) {
             return false;
         }
+        result = validateCaptcha();
+        if (!result) {
+            return false;
+        }
+        result = validateUserCaptcha();
+        if (!result) {
+            return false;
+        }
         result = validateTermsConditions();
         return result;
     }
 
     private LoginData getFromUI() {
         boolean uiValidationRes = validateData();
+        System.out.println("In getFromUI" + uiValidationRes);
         if (!uiValidationRes) {
             return null;
         }
@@ -279,16 +318,21 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private void handleTextWatchers(boolean add) {
         TextView mailTextView = findViewById(R.id.editTextEmail);
         TextView passwdTextView = findViewById(R.id.editTextPassword);
+        TextView captchaTextView = findViewById(R.id.enterCaptchaET);
 
         if (add) {
             mailTextWatcher = new PATextWatcher(mailTextView, this);
             passwordTextWatcher = new PATextWatcher(passwdTextView, this);
+            captchaTextWatcher = new PATextWatcher(captchaTextView, this);
 
             mailTextView.addTextChangedListener(mailTextWatcher);
             passwdTextView.addTextChangedListener(passwordTextWatcher);
+            captchaTextView.addTextChangedListener(captchaTextWatcher);
+
         } else {
             mailTextView.removeTextChangedListener(mailTextWatcher);
             passwdTextView.removeTextChangedListener(passwordTextWatcher);
+            captchaTextView.removeTextChangedListener(captchaTextWatcher);
         }
     }
 
@@ -302,8 +346,44 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         TextView forgotPassword = findViewById(R.id.forgotPasswordBut);
         forgotPassword.setOnClickListener(listener);
 
-        TextView termsConditions = findViewById(R.id.termsConditionsText);
-        termsConditions.setOnClickListener(listener);
+        /*TextView termsConditions = findViewById(R.id.termsConditionsText1);
+        termsConditions.setOnClickListener(listener);*/
+
+        ImageView reloadCaptcha = findViewById(R.id.reloadCaptcha);
+        reloadCaptcha.setOnClickListener(listener);
+    }
+
+    private boolean validateUserCaptcha() {
+        TextView captchaText = findViewById(R.id.enterCaptchaET);
+        String str = captchaText.getText().toString().trim();
+        TextView captchaQuestion = findViewById(R.id.captchaQuestion);
+        int captchaTextInt = Integer.parseInt(str);
+        String captchaQuestionStr = captchaQuestion.getText().toString().trim();
+        System.out.println(captchaQuestionStr);
+        int pos = captchaQuestionStr.indexOf("+");
+        String num1Str = captchaQuestionStr.substring(0, pos - 1).trim();
+        String num2Str = captchaQuestionStr.substring(pos + 1).trim();
+        int num1 = Integer.parseInt(num1Str);
+        int num2 = Integer.parseInt(num2Str);
+        boolean isCorrect =  ((num1 + num2) == captchaTextInt);
+        if (!isCorrect) {
+            captchaText.setError("Enter valid captcha");
+            captchaText.requestFocus();
+            return false;
+        }
+        return true;
+    }
+
+    private boolean validateCaptcha() {
+        TextView captchaText = findViewById(R.id.enterCaptchaET);
+        String str = captchaText.getText().toString().trim();
+        String result = Utils.fullValidate(str, "Captcha", false, -1, -1, true);
+        if (result != null) {
+            captchaText.setError(result);
+            captchaText.requestFocus();
+            return false;
+        }
+        return true;
     }
 
     private boolean validatePasswd() {
@@ -335,6 +415,51 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             return false;
         }
         return true;
+    }
+
+    private static int getRandomNumber() {
+        return 1 + (int)(Math.random() * (10 - 1));
+    }
+
+    private void initializeClickables() {
+        TextView terms1TV = findViewById(R.id.termsConditionsText1);
+        String terms1 = getResources().getString(R.string.terms_conditions1);
+        SpannableString ss = new SpannableString(terms1);
+        ClickableSpan clickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(@NonNull View view) {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Request.getTermsConditionsURL())));
+            }
+
+            public void updateDrawState (TextPaint ds) {
+                ds.setColor(Color.parseColor("#FF0000"));
+            }
+        };
+        String termsLinkText = "Terms of Use";
+        int startPos = terms1.indexOf(termsLinkText);
+        int endPos = startPos + termsLinkText.length();
+        ss.setSpan(clickableSpan, startPos, endPos, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        terms1TV.setText(ss);
+        terms1TV.setMovementMethod(LinkMovementMethod.getInstance());
+
+        TextView newUserTV = findViewById(R.id.viewNewUserBut);
+        String newUserReg = getResources().getString(R.string.login_screen_new_user_register_now);
+        SpannableString ss1 = new SpannableString(newUserReg);
+        ClickableSpan newUserRegSpan = new ClickableSpan() {
+            @Override
+            public void onClick(@NonNull View view) {
+                Intent intent = new Intent(LoginActivity.this, NewUserActivity.class);
+                startActivity(intent);
+                finish();
+            }
+
+            public void updateDrawState (TextPaint ds) {
+                ds.setColor(Color.parseColor("#FF0000"));
+            }
+        };
+        ss1.setSpan(newUserRegSpan, 0, newUserReg.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        newUserTV.setText(ss1);
+        newUserTV.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
     @Override

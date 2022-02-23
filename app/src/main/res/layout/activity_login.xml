@@ -51,6 +51,54 @@
                 android:maxLines="1"
                 android:inputType="textPassword"
                 android:autofillHints="" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_top_large"
+                android:orientation="horizontal"
+                android:baselineAligned="false">
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/captchaTIL"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:hint="@string/login_enter_captcha"
+                    android:textColorHint="@color/colorPrimary"
+                    android:background="@null"
+                    android:layout_marginEnd="@dimen/margin_top_small"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                    <com.google.android.material.textfield.TextInputEditText
+                        style="@style/normalTextBox"
+                        android:id="@+id/enterCaptchaET"
+                        android:enabled="true"
+                        android:inputType="number"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </com.google.android.material.textfield.TextInputLayout>
+                <TextView
+                    android:id="@+id/captchaQuestion"
+                    android:layout_width="0dp"
+                    android:layout_weight="0.4"
+                    android:background="@drawable/round_button_nofill"
+                    style="@style/normalButton"
+                    android:layout_marginEnd="@dimen/margin_top_small"
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/captchaTextSize"
+                    android:text="9+8" />
+                <ImageView
+                    android:id="@+id/reloadCaptcha"
+                    android:layout_width="0dp"
+                    android:layout_weight="0.1"
+                    android:src="@drawable/reload"
+                    style="@style/normalButton"
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:layout_marginEnd="@dimen/margin_top_small"
+                    android:layout_height="wrap_content"
+                    android:text="@string/referral_code_more_info" />
+            </LinearLayout>
             <TextView
                 style="@style/viewParent"
                 android:id="@+id/forgotPasswordBut"
@@ -64,21 +112,37 @@
                 android:orientation="horizontal"
                 style="@style/parent">
                 <CheckBox
-                    android:id="@+id/termsConditionsCheck"
+                    android:id="@+id/termsConditionsCheck1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="false"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/termsConditionsText"
-                    android:text="@string/terms_conditions"
-                    android:textSize="@dimen/login_forgot_passwd_text_size"
-                    android:textColor="@color/impInfo" />
+                    android:id="@+id/termsConditionsText1"
+                    android:textSize="15sp"
+                    android:maxLines="3" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_marginTop="@dimen/margin_top_small"
+                android:orientation="horizontal"
+                style="@style/parent">
+                <CheckBox
+                    android:id="@+id/termsConditionsCheck2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="false"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/termsConditionsText2"
+                    android:text="@string/terms_conditions1"
+                    android:textSize="15sp"
+                    android:maxLines="3" />
             </LinearLayout>
             <Button
                 style="@style/normalButton"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="@dimen/margin_top_large"
                 android:id="@+id/loginBut"
                 android:background="@drawable/round_button"
                 android:layout_width="wrap_content"

@@ -86,6 +86,10 @@ public class Request {
     public static final int KYC_CREATE = 7001;
     public static final int KYC_POST_PIC = 7002;
 
+    public static String getTermsConditionsURL() {
+        String uri = baseUri + "/terms";
+        return uri;
+    }
 
     public static PostTask<WithdrawRequestInput, Boolean> createNewWDRequest() {
         String uri = baseUri + "/wd";

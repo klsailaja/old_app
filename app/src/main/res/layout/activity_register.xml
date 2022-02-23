@@ -222,44 +222,60 @@
                             android:layout_height="wrap_content"
                             android:text="@string/referral_code_more_info" />
                     </LinearLayout>
-                    <LinearLayout
-                        android:layout_marginTop="@dimen/margin_top_medium"
-                        android:orientation="horizontal"
-                        style="@style/parent">
-                        <CheckBox
-                            android:id="@+id/termsConditionsCheck"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:checked="false"/>
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/termsConditionsText"
-                            android:text="@string/terms_conditions"
-                            android:textSize="@dimen/login_forgot_passwd_text_size"
-                            android:textColor="@color/impInfo" />
-                    </LinearLayout>
-                    <Button
-                        style="@style/normalButton"
-                        android:layout_marginTop="@dimen/margin_top_small"
-                        android:id="@+id/registerButton"
-                        android:enabled="false"
+                <LinearLayout
+                    android:layout_marginTop="@dimen/margin_top_large"
+                    android:orientation="horizontal"
+                    style="@style/parent">
+                    <CheckBox
+                        android:id="@+id/termsConditionsCheck1"
                         android:layout_width="wrap_content"
-                        android:background="@drawable/round_button"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        android:text="@string/newuser_register_text" />
+                        android:checked="false"/>
                     <TextView
-                        style="@style/parent"
-                        android:id="@+id/viewLoginPageBut"
-                        android:textAlignment="center"
-                        android:textStyle="bold"
-                        android:textSize="@dimen/login_forgot_passwd_text_size"
-                        android:textColor="@color/colorPrimary"
-                        android:text="@string/new_user_already_registered"
-                        android:layout_marginTop="@dimen/margin_top_large"/>
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/termsConditionsText1"
+                        android:textSize="15sp"
+                        android:maxLines="3" />
                 </LinearLayout>
+                <LinearLayout
+                    android:layout_marginTop="@dimen/margin_top_small"
+                    android:orientation="horizontal"
+                    style="@style/parent">
+                    <CheckBox
+                        android:id="@+id/termsConditionsCheck2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="false"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/termsConditionsText2"
+                        android:text="@string/terms_conditions1"
+                        android:textSize="15sp"
+                        android:maxLines="3" />
+                </LinearLayout>
+                <Button
+                    style="@style/normalButton"
+                    android:layout_marginTop="@dimen/margin_top_large"
+                    android:id="@+id/registerButton"
+                    android:enabled="false"
+                    android:layout_width="wrap_content"
+                    android:background="@drawable/round_button"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="@string/newuser_register_text" />
+                <TextView
+                    style="@style/parent"
+                    android:id="@+id/viewLoginPageBut"
+                    android:textAlignment="center"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/login_forgot_passwd_text_size"
+                    android:textColor="@color/colorPrimary"
+                    android:text="@string/new_user_already_registered"
+                    android:layout_marginTop="@dimen/margin_top_large"/>
+            </LinearLayout>
             <!--</androidx.cardview.widget.CardView>-->
             <TextView
                 android:id="@+id/winMsgs"

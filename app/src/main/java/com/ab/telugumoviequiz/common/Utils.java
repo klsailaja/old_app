@@ -36,6 +36,9 @@ public class Utils {
         if (TextUtils.isEmpty(str)) {
             return true;
         }
+        if (str.length() == 0) {
+            return true;
+        }
         return str.equalsIgnoreCase("null");
     }
     public static String fullValidate(String str, String componentName, boolean canBeEmpty, int minLen, int maxLen, boolean onlyNumerics) {

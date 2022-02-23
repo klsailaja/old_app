@@ -72,6 +72,7 @@
     <dimen name="list_view_margin_bottom">20dp</dimen>
     <dimen name="spinner_width">250dp</dimen>
     <dimen name="next_prev_but_gap">5dp</dimen>
+    <dimen name="captchaTextSize">20sp</dimen>
     <!--Login Screen -->
     <dimen name="login_heading_label_padding">10dp</dimen>
     <dimen name="login_forgot_passwd_text_size">17sp</dimen>
@@ -172,4 +173,5 @@
     <dimen name="tableHeaderTextBoxTextSize">15sp</dimen>
     <!-- Customer Care View -->
     <dimen name="cc_money_spinner_width">300dp</dimen>
+
 </resources>
