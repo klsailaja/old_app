@@ -87,8 +87,7 @@ public class Request {
     public static final int KYC_POST_PIC = 7002;
 
     public static String getTermsConditionsURL() {
-        String uri = baseUri + "/terms";
-        return uri;
+        return baseUri + "/terms";
     }
 
     public static PostTask<WithdrawRequestInput, Boolean> createNewWDRequest() {
@@ -137,9 +136,11 @@ public class Request {
         return new GetTask<>(uri, LEADER_BOARD, null,
                 PlayerSummary[].class, null);
     }
-    public static GetGamesTask<GameDetails[]> getFutureGames(int gameType) {
-        String uri = baseUri + "/game/" + gameType + "/future";
-        return new GetGamesTask<>(uri, GET_FUTURE_GAMES,
+    public static String getFutureGamesURI(int gameType, long lastGameId, int slotsNeeded) {
+        return baseUri + "/game/" + gameType + "/future/" + lastGameId + "/" + slotsNeeded;
+    }
+    public static GetGamesTask<GameDetails[]> getFutureGames() {
+        return new GetGamesTask<>(null, GET_FUTURE_GAMES,
                 null, GameDetails[].class, null);
     }
     public static GetTask<GameStatusHolder> getFutureGamesStatusTask(int gameType) {
@@ -252,11 +253,6 @@ public class Request {
         String uri = baseUri + "/cc/cancel/" + userProfileId + "/" + refId;
         return new GetTask<>(uri, CC_CANCEL, null, Boolean.class, null);
     }
-    public static GetTask<byte[]> getCCReceiptTask(long receiptId) {
-        String uri = baseUri + "/cc/receipt/" + receiptId;
-        return new GetReceiptTask<>(uri, CC_RECEIPT, null, byte[].class, null);
-    }
-
 
     /* Withdraw Operations Related */
     public static GetTask<WithdrawRequestsHolder> getWDReqs(long userProfileId, int startRowNo, int status) {

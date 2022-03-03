@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GetTask<T> implements Runnable {
-    private final String reqUri;
+    private String reqUri;
     private final int requestId;
     private CallbackResponse callbackResponse;
     private Object helperObject;
@@ -49,6 +49,10 @@ public class GetTask<T> implements Runnable {
 
     public String getReqUri() {
         return reqUri;
+    }
+
+    public void setReqUri(String reqUri) {
+        this.reqUri = reqUri;
     }
 
     public CallbackResponse getCallbackResponse() {
