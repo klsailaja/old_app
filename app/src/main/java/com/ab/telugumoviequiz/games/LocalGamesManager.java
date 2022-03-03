@@ -12,10 +12,10 @@ import java.util.List;
 public class LocalGamesManager {
     private static LocalGamesManager instance;
 
-    private LocalGameList mixedGameList;
+    private LocalLazyGameList mixedGameList;
     private LocalGameStatus mixedGameStatus;
 
-    private LocalGameList celebrityGameList;
+    private LocalLazyGameList celebrityGameList;
     private LocalGameStatus celebrityGameStatus;
 
     private LocalGameList mixedEnrolledGameList;
@@ -50,15 +50,15 @@ public class LocalGamesManager {
 
     public void initialize() {
         // Mixed Games
-        GetTask<GameDetails[]> getMixedTask = Request.getFutureGames(1);
-        mixedGameList = new LocalGameList(getMixedTask);
+        GetTask<GameDetails[]> getMixedTask = Request.getFutureGames();
+        mixedGameList = new LocalLazyGameList(getMixedTask, 1);
         GetTask<GameStatusHolder> getMixedGamesStatusTask =
                  Request.getFutureGamesStatusTask(1);
         mixedGameStatus = new LocalGameStatus(getMixedGamesStatusTask);
 
         // Celebrity Games
-        GetTask<GameDetails[]> getCelebrityTask = Request.getFutureGames(2);
-        celebrityGameList = new LocalGameList(getCelebrityTask);
+        GetTask<GameDetails[]> getCelebrityTask = Request.getFutureGames();
+        celebrityGameList = new LocalLazyGameList(getCelebrityTask, 2);
         GetTask<GameStatusHolder> getCelebrityGamesStatusTask =
                 Request.getFutureGamesStatusTask(2);
         celebrityGameStatus = new LocalGameStatus(getCelebrityGamesStatusTask);
@@ -142,15 +142,25 @@ public class LocalGamesManager {
 
     public boolean setShowing(int fragmentIndex, boolean showing) {
         List<Object> handlers = getHandlers(fragmentIndex);
-        LocalGameList gameList = (LocalGameList) handlers.get(0);
+        Object obj = handlers.get(0);
+        boolean retVal = false;
+        if (obj instanceof LocalGameList) {
+            retVal = ((LocalGameList) obj).setShowing(showing);
+        } else if (obj instanceof LocalLazyGameList) {
+            retVal = ((LocalLazyGameList) obj).setShowing(showing);
+        }
         LocalGameStatus gameStatus = (LocalGameStatus) handlers.get(1);
         gameStatus.setShowing(showing);
-        return gameList.setShowing(showing);
+        return retVal;
     }
 
     public void refreshNow(int fragmentIndex) {
         List<Object> handlers = getHandlers(fragmentIndex);
-        LocalGameList gameList = (LocalGameList) handlers.get(0);
-        gameList.refreshNow();
+        Object obj = handlers.get(0);
+        if (obj instanceof LocalGameList) {
+            ((LocalGameList) obj).refreshNow();
+        } else if (obj instanceof LocalLazyGameList) {
+            ((LocalLazyGameList) obj).refreshNow();
+        }
     }
 }

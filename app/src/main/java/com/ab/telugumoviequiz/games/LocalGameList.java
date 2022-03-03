@@ -88,14 +88,6 @@ public class LocalGameList implements CallbackResponse {
         if (showing) {
             Object callbackResponseObj = response;
             if (!exceptionThrown) {
-                /*List<GameDetails> filteredList = new ArrayList<>();
-                long currentTime = System.currentTimeMillis();
-                for (int index = 0; index < cachedGameList.size(); index ++) {
-                    GameDetails gm = cachedGameList.get(index);
-                    if (gm.getStartTime() >= currentTime) {
-                        filteredList.add(gm);
-                    }
-                }*/
                 callbackResponseObj = cachedGameList.toArray(new GameDetails[0]);
             }
             callbackResponse.handleResponse(getTask.getRequestId(), exceptionThrown,

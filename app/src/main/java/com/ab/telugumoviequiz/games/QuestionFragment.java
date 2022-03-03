@@ -951,17 +951,17 @@ public class QuestionFragment extends BaseFragment
             } catch (InterruptedException ignored) {
             }
             final int finalIntVal = index;
+            int finalIndex = index;
             run = () -> {
                 progressBar.setProgress(finalIntVal);
                 timerView.setText(Integer.toString(finalIntVal));
+                if (finalIndex == Constants.QUESTION_MAX_TIME_IN_SEC) {
+                    quesShowing(false);
+                    updateLifelines(false);
+                }
             };
             requireActivity().runOnUiThread(run);
         }
-        run = () -> {
-            quesShowing(false);
-            updateLifelines(false);
-        };
-        requireActivity().runOnUiThread(run);
     }
 
     private void scheduleAllQuestions() {
