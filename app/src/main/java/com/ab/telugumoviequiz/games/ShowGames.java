@@ -385,6 +385,7 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
 
     @Override
     public void handleResponse(int reqId, boolean exceptionThrown, boolean isAPIException, final Object response, Object helperObject) {
+        System.out.println(exceptionThrown + " : " + isAPIException + " : " + response);
         if (getActivity() != null) {
             Runnable run = () -> {
                 if (alertDialog != null) {
@@ -417,6 +418,10 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
             }
             case Request.GET_ENROLLED_GAMES:
             case Request.GET_FUTURE_GAMES: {
+                isHandled = handleAPIError(isAPIException, response, 1, null, null);
+                if (isHandled) {
+                    return;
+                }
                 List<GameDetails> result = Arrays.asList((GameDetails[]) response);
                 if (result.size() == 0) {
                     displayInfo("Not enrolled for any games", new ShowHomeScreen(getActivity()));
@@ -470,6 +475,10 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
                 break;
             }
             case Request.CELEBRITY_SCHEDULE_DETAIS: {
+                isHandled = handleAPIError(isAPIException, response, 1, null, null);
+                if (isHandled) {
+                    return;
+                }
                 CelebrityFullDetails celebrityFullDetails = (CelebrityFullDetails) response;
                 Runnable run = () -> {
                     ViewCelebritySchedule viewCelebritySchedule = new ViewCelebritySchedule(getContext(), celebrityFullDetails);
@@ -526,14 +535,13 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
                         searchButton.setOnClickListener(this);
 
                         helpButton.setVisibility(View.VISIBLE);
-                        helpButton.setOnClickListener(this);
                     } else {
                         searchButton.setVisibility(View.INVISIBLE);
                         searchButton.setOnClickListener(null);
 
                         helpButton.setVisibility(View.INVISIBLE);
-                        helpButton.setOnClickListener(this);
                     }
+                    helpButton.setOnClickListener(this);
                     if ((fragmentIndex == 2) || (fragmentIndex == 4)) {
                         ImageView viewCelebritySchedules = view.findViewById(R.id.celebritySchedule);
                         if (enable) {
