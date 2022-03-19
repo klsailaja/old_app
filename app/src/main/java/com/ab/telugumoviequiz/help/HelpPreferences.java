@@ -36,4 +36,16 @@ public class HelpPreferences {
         editor.putInt(key, value);
         editor.apply();
     }
+
+    public void resetPreferences(Context context) {
+        SharedPreferences sharedPref = context.getSharedPreferences(fileName,Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putInt(TERMS_CONDITIONS, 0);
+        editor.putInt(HOME_SCREEN_GENERAL_GAME_RULES, 0);
+        editor.putInt(GAME_TIPS, 0);
+        editor.putInt(WITHDRAW_TIPS, 0);
+        editor.putInt(REFERRAL_INFO, 0);
+        editor.putInt(LOGOUT_TIPS, 0);
+        editor.apply();
+    }
 }
