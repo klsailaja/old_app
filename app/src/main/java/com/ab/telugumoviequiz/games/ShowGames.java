@@ -60,6 +60,7 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
     private final List<String> gameStartTimeStrValues = new ArrayList<>();
     private RecyclerView recyclerView;
     private AlertDialog alertDialog;
+    private boolean isErrorDialogShowing = false;
 
     public ShowGames() {
         super();
@@ -385,7 +386,6 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
 
     @Override
     public void handleResponse(int reqId, boolean exceptionThrown, boolean isAPIException, final Object response, Object helperObject) {
-        System.out.println(exceptionThrown + " : " + isAPIException + " : " + response);
         if (getActivity() != null) {
             Runnable run = () -> {
                 if (alertDialog != null) {
@@ -396,6 +396,10 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
         }
         boolean isHandled = handleServerError(exceptionThrown, isAPIException, response);
         if (isHandled) {
+            if (isErrorDialogShowing) {
+                return;
+            }
+            isErrorDialogShowing = true;
             return;
         }
         switch (reqId) {

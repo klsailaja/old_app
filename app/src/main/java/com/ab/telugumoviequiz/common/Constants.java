@@ -37,4 +37,6 @@ public class Constants {
 
     public static final int MIXED_FETCH_NEXT_SLOT_NUMBERS = 1;
     public static final int CELEBRITY_FETCH_NEXT_SLOT_NUMBERS = 1;
+
+    public static final int GAMES_POLLER_TIME_IN_SECS = 30;
 }

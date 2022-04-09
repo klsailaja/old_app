@@ -82,7 +82,6 @@ public class LocalGameStatus implements CallbackResponse {
             if (exceptionThrown) {
                 callbackResponseObj = response;
             }
-            System.out.println(callbackResponseObj);
             callbackResponse.handleResponse(getTask.getRequestId(), exceptionThrown,
                     isAPIException, callbackResponseObj, helperObject);
         }

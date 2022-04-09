@@ -8,6 +8,7 @@ import com.ab.telugumoviequiz.common.Scheduler;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
@@ -89,6 +90,14 @@ public class LocalLazyGameList implements CallbackResponse {
         lock.writeLock().lock();
         List<GameDetails> result = Arrays.asList((GameDetails[]) response);
         if (result.size() > 0) {
+            long currentTime = System.currentTimeMillis();
+            Iterator<GameDetails> gameDetailsIterator = cachedGameList.iterator();
+            while (gameDetailsIterator.hasNext()) {
+                GameDetails oldGB = gameDetailsIterator.next();
+                if (oldGB.getStartTime() < currentTime) {
+                    gameDetailsIterator.remove();
+                }
+            }
             TreeMap<Long, Integer> gameIdToListPos = new TreeMap<>();
             for (int dataIndex = 0; dataIndex < cachedGameList.size(); dataIndex ++) {
                 GameDetails gd = cachedGameList.get(dataIndex);
@@ -110,17 +119,19 @@ public class LocalLazyGameList implements CallbackResponse {
         sendData();
         if (start) {
             makeRequestReady();
-            Scheduler.getInstance().submit(getTask, 30, TimeUnit.SECONDS);
+            Scheduler.getInstance().submit(getTask, Constants.GAMES_POLLER_TIME_IN_SECS, TimeUnit.SECONDS);
         }
     }
 
     private void sendData() {
-        Object callbackResponseObj = response;
-        if (!exceptionThrown) {
-            callbackResponseObj = cachedGameList.toArray(new GameDetails[0]);
+        if (showing) {
+            Object callbackResponseObj = response;
+            if (!exceptionThrown) {
+                callbackResponseObj = cachedGameList.toArray(new GameDetails[0]);
+            }
+            callbackResponse.handleResponse(getTask.getRequestId(), exceptionThrown,
+                    isAPIException, callbackResponseObj, helperObject);
         }
-        callbackResponse.handleResponse(getTask.getRequestId(), exceptionThrown,
-                isAPIException, callbackResponseObj, helperObject);
     }
 
     private void makeRequestReady() {
