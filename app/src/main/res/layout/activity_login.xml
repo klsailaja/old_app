@@ -86,7 +86,7 @@
                     android:layout_gravity="center"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/captchaTextSize"
-                    android:text="9+8" />
+                    android:text="@string/login_initial_captcha" />
                 <ImageView
                     android:id="@+id/reloadCaptcha"
                     android:layout_width="0dp"
@@ -97,7 +97,8 @@
                     android:layout_gravity="center"
                     android:layout_marginEnd="@dimen/margin_top_small"
                     android:layout_height="wrap_content"
-                    android:text="@string/referral_code_more_info" />
+                    android:text="@string/referral_code_more_info"
+                    android:contentDescription="@string/login_reload_captcha_desc" />
             </LinearLayout>
             <TextView
                 style="@style/viewParent"
@@ -107,39 +108,15 @@
                 android:textSize="@dimen/login_forgot_passwd_text_size"
                 android:layout_gravity="end"
                 android:layout_marginTop="@dimen/margin_top_medium"/>
-            <LinearLayout
+            <CheckBox
+                android:id="@+id/termsConditionsCheck1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_top_large"
-                android:orientation="horizontal"
-                style="@style/parent">
-                <CheckBox
-                    android:id="@+id/termsConditionsCheck1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checked="false"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/termsConditionsText1"
-                    android:textSize="15sp"
-                    android:maxLines="3" />
-            </LinearLayout>
-            <LinearLayout
-                android:layout_marginTop="@dimen/margin_top_small"
-                android:orientation="horizontal"
-                style="@style/parent">
-                <CheckBox
-                    android:id="@+id/termsConditionsCheck2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checked="false"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/termsConditionsText2"
-                    android:text="@string/terms_conditions1"
-                    android:textSize="15sp"
-                    android:maxLines="3" />
-            </LinearLayout>
+                style="@style/parent"
+                android:text="@string/terms_conditions1"
+                android:textSize="15sp"
+                android:checked="false"/>
             <Button
                 style="@style/normalButton"
                 android:layout_marginTop="@dimen/margin_top_large"

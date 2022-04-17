@@ -86,11 +86,14 @@ public class NewUserActivity extends AppCompatActivity
                 if ((i == KeyEvent.KEYCODE_DEL) &&
                         (keyEvent.getAction() == KeyEvent.ACTION_DOWN)) {
                     int componentPosition = 0;
-                    if (view.getId() == id.digit3) {
+                    if (view.getId() == id.digit2) {
                         componentPosition = 1;
-                    } else if (view.getId() == id.digit4) {
+                    } else if (view.getId() == id.digit3) {
                         componentPosition = 2;
+                    } else if (view.getId() == id.digit4) {
+                        componentPosition = 3;
                     }
+                    verifyCodeTextViewList.get(componentPosition).setText("");
                     verifyCodeTextViewList.get(componentPosition).requestFocus();
                     return true;
                 }
@@ -132,7 +135,7 @@ public class NewUserActivity extends AppCompatActivity
         if (viewId == id.sendCode) {
             TextView mailIdTextView = findViewById(id.editTextEmail);
             String mailIdEntered = mailIdTextView.getText().toString().trim();
-            String confirmMsg = "The Mail id is : " + mailIdEntered + ". Please verify if this is correct?";
+            String confirmMsg = "The Mail id is : " + mailIdEntered + " .Confirm if this is correct?";
             Utils.showConfirmationMessage("Confirmation", confirmMsg,
                     this, this, NEW_USER_SEND_CODE, null);
         } else if (viewId == id.verifyCode) {
@@ -353,8 +356,8 @@ public class NewUserActivity extends AppCompatActivity
                 stringBuilder.append(strValue);
             }
         }
-        Button checkCode = findViewById(id.verifyCode);
-        checkCode.setEnabled(digitsEntered == 4);
+        /*Button checkCode = findViewById(id.verifyCode);
+        checkCode.setEnabled(digitsEntered == 4);*/
         if (digitsEntered != 4) {
             return null;
         }
@@ -486,12 +489,6 @@ public class NewUserActivity extends AppCompatActivity
                     "Read Terms and Conditions and Accept", this, null);
             return false;
         }
-        checkBox = findViewById(R.id.termsConditionsCheck2);
-        if (!checkBox.isChecked()) {
-            Utils.showMessage("Info",
-                    "Read Terms and Conditions and Accept", this, null);
-            return false;
-        }
         return true;
     }
 
@@ -563,7 +560,8 @@ public class NewUserActivity extends AppCompatActivity
     }
 
     private void initializeClickables() {
-        TextView terms1TV = findViewById(R.id.termsConditionsText1);
+        //TextView terms1TV = findViewById(R.id.termsConditionsText1);
+        CheckBox terms1TV = findViewById(R.id.termsConditionsCheck1);
         String terms1 = getResources().getString(R.string.terms_conditions1);
         SpannableString ss = new SpannableString(terms1);
         ClickableSpan clickableSpan = new ClickableSpan() {
@@ -581,6 +579,7 @@ public class NewUserActivity extends AppCompatActivity
         int endPos = startPos + termsLinkText.length();
         ss.setSpan(clickableSpan, startPos, endPos, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         terms1TV.setText(ss);
+
         terms1TV.setMovementMethod(LinkMovementMethod.getInstance());
 
         TextView newUserTV = findViewById(R.id.viewLoginPageBut);
@@ -608,7 +607,6 @@ public class NewUserActivity extends AppCompatActivity
         if (calledId == NEW_USER_SEND_CODE) {
             TextView mailIdTxtView = findViewById(id.editTextEmail);
             String mailId = mailIdTxtView.getText().toString().trim();
-            System.out.println("mailId :" + mailId);
             PostTask<String,String> sendCodeTask = Request.sendCodeTask();
             sendCodeTask.setPostObject(mailId);
             sendCodeTask.setCallbackResponse(this);

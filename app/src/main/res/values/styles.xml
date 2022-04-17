@@ -81,6 +81,7 @@
         <item name="android:background">@color/whiteTextColor</item>
         <item name="android:textColor">@color/colorPrimary</item>
         <item name="android:layout_marginTop">@dimen/statusBarMargin</item>
+        <item name="android:layout_marginBottom">@dimen/statusBarMarginBottom</item>
     </style>
     <!-- edittext style -->
     <style name="normalTextBox" parent="parent">

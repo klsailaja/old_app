@@ -11,7 +11,8 @@
     <dimen name="new_user_code_height">40dp</dimen>
     <dimen name="new_user_code_space">13dp</dimen>
     <!-- Status bar related -->
-    <dimen name="statusBarMargin">20dp</dimen>
+    <dimen name="statusBarMargin">10dp</dimen>
+    <dimen name="statusBarMarginBottom">5dp</dimen>
     <dimen name="small_label_left_textsize">10sp</dimen>
     <dimen name="top_gap_from_action_bar">50dp</dimen>
 
@@ -79,6 +80,7 @@
     <!--User Register Screen-->
     <dimen name="user_register_main_heading_padding">10dp</dimen>
     <dimen name="user_register_comps_top_margin">2dp</dimen>
+    <dimen name="user_register_comps_top_margin_small">5dp</dimen>
     <dimen name="user_register_read_more_text_size">10sp</dimen>
     <!-- Game Screen -->
     <dimen name="game_table_comp_left_padding">2dp</dimen>

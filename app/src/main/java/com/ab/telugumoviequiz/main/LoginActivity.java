@@ -111,7 +111,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     this, this, 10, null);
         } else if (viewId == R.id.reloadCaptcha) {
             generateCaptcha();
-        } else if (viewId == R.id.termsConditionsText1) {
+        } /*else if (viewId == R.id.termsConditionsText1) {
             List<String> helpKeys = new ArrayList<>();
             helpKeys.add("topic_name1");
             helpKeys.add("topic_name2");
@@ -132,7 +132,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             Utils.clearState();
             FragmentManager fragmentManager = this.getSupportFragmentManager();
             viewHelp.show(fragmentManager, "dialog");
-        }
+        }*/
     }
 
     @Override
@@ -255,12 +255,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private boolean validateTermsConditions() {
         CheckBox checkBox = findViewById(R.id.termsConditionsCheck1);
-        if (!checkBox.isChecked()) {
-            Utils.showMessage("Info",
-                    "Read Terms and Conditions and Accept", this, null);
-            return false;
-        }
-        checkBox = findViewById(R.id.termsConditionsCheck2);
         if (!checkBox.isChecked()) {
             Utils.showMessage("Info",
                     "Read Terms and Conditions and Accept", this, null);
@@ -422,7 +416,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void initializeClickables() {
-        TextView terms1TV = findViewById(R.id.termsConditionsText1);
+        CheckBox terms1TV = findViewById(R.id.termsConditionsCheck1);
         String terms1 = getResources().getString(R.string.terms_conditions1);
         SpannableString ss = new SpannableString(terms1);
         ClickableSpan clickableSpan = new ClickableSpan() {

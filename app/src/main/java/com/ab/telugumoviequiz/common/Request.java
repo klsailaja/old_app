@@ -316,6 +316,7 @@ public class Request {
                 String[].class, null);
     }
 
+    // New User Registration Screen
     public static PostTask<String, String> sendCodeTask() {
         String uri = baseUri + "/user/sendcode";
         return new PostTask<>(uri, SEND_OTP_CODE, null, null, String.class);
@@ -326,6 +327,7 @@ public class Request {
         return new PostTask<>(uri, VERIFY_OTP_CODE,
                 null, null, String.class);
     }
+
     public static GetTask<Integer> getMoneyStatusTask(long gameStartTime) {
         String uri = baseUri + "/money/update/" + gameStartTime;
         return new GetTask<>(uri, MONEY_TASK_STATUS, null, Integer.class, null);

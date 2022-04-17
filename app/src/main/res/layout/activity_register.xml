@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,7 +8,6 @@
     android:focusableInTouchMode="true"
     android:gravity="center"
     android:layout_gravity="center">
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -27,9 +25,7 @@
                     android:layout_centerVertical="true"
                     android:layout_alignParentStart="true"
                     style="@style/viewParent.headerText.NoMode"
-                    android:textColor="@color/whiteTextColor"
                     android:text="@string/new_user_screen_intro"/>
-
             </RelativeLayout>
             <!--<androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
@@ -37,35 +33,34 @@
                 android:layout_marginTop="@dimen/gap_in_components_medium"
                 app:cardBackgroundColor="@color/black"
                 app:cardCornerRadius="5dp">-->
-
             <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_top_medium"
+                android:orientation="vertical">
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/user_register_comps_top_margin"
-                    android:orientation="vertical">
-                    <com.google.android.material.textfield.TextInputLayout
+                    android:background="@null"
+                    android:hint="@string/new_user_email_hint"
+                    android:textColorHint="@color/colorPrimary"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/editTextEmail"
+                        android:inputType="textEmailAddress"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@null"
-                        android:hint="@string/new_user_email_hint"
-                        android:textColorHint="@color/colorPrimary"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/editTextEmail"
-                            android:inputType="textEmailAddress"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
-                    </com.google.android.material.textfield.TextInputLayout>
-                    <Button
-                        style="@style/normalButton"
-                        android:layout_marginTop="@dimen/margin_top_medium"
-                        android:id="@+id/sendCode"
-                        android:layout_width="wrap_content"
-                        android:background="@drawable/round_button"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        android:text="@string/newuser_send_code" />
+                        android:layout_height="wrap_content" />
+                </com.google.android.material.textfield.TextInputLayout>
+                <Button
+                    style="@style/normalButton"
+                    android:layout_marginTop="@dimen/margin_top_medium"
+                    android:id="@+id/sendCode"
+                    android:layout_width="wrap_content"
+                    android:background="@drawable/round_button"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="@string/newuser_send_code" />
                 <LinearLayout
                     android:id="@+id/codeLayout"
                     android:layout_width="match_parent"
@@ -87,7 +82,6 @@
                         android:textAlignment="center"
                         android:autofillHints="test"
                         tools:ignore="LabelFor" />
-
                     <EditText
                         android:id="@+id/digit2"
                         android:layout_width="0dp"
@@ -102,7 +96,6 @@
                         android:autofillHints="test"
                         android:textAlignment="center"
                         tools:ignore="LabelFor" />
-
                     <EditText
                         android:id="@+id/digit3"
                         android:layout_width="0dp"
@@ -117,7 +110,6 @@
                         android:autofillHints="test"
                         android:textAlignment="center"
                         tools:ignore="LabelFor" />
-
                     <EditText
                         android:id="@+id/digit4"
                         android:layout_width="0dp"
@@ -144,117 +136,93 @@
                     android:enabled="false"
                     android:text="@string/newuser_verify_code" />
                 <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:textColorHint="@color/colorPrimary"
+                    android:hint="@string/new_user_password"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+                    <com.google.android.material.textfield.TextInputEditText
+                        style="@style/normalTextBox"
+                        android:id="@+id/editTextPassword"
+                        android:inputType="textPassword"
+                        android:enabled="false"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@null"
-                        android:textColorHint="@color/colorPrimary"
-                        android:hint="@string/new_user_password"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
-                        <com.google.android.material.textfield.TextInputEditText
-                            style="@style/normalTextBox"
-                            android:id="@+id/editTextPassword"
-                            android:inputType="textPassword"
-                            android:enabled="false"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
-                    </com.google.android.material.textfield.TextInputLayout>
+                        android:layout_height="wrap_content" />
+                </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:textColorHint="@color/colorPrimary"
+                    android:hint="@string/configure_user_password"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+                    <com.google.android.material.textfield.TextInputEditText
+                        style="@style/normalTextBox"
+                        android:id="@+id/confirmTextPassword"
+                        android:inputType="textPassword"
+                        android:enabled="false"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/new_user_user_name"
+                    android:textColorHint="@color/colorPrimary"
+                    android:background="@null"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                    <com.google.android.material.textfield.TextInputEditText
+                        style="@style/normalTextBox"
+                        android:id="@+id/editTextName"
+                        android:inputType="text"
+                        android:enabled="false"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </com.google.android.material.textfield.TextInputLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:baselineAligned="false">
                     <com.google.android.material.textfield.TextInputLayout
-                        android:layout_width="match_parent"
+                        android:id="@+id/editReferralCodeIL"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:background="@null"
-                        android:textColorHint="@color/colorPrimary"
-                        android:hint="@string/configure_user_password"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
-                        <com.google.android.material.textfield.TextInputEditText
-                            style="@style/normalTextBox"
-                            android:id="@+id/confirmTextPassword"
-                            android:inputType="textPassword"
-                            android:enabled="false"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
-                    </com.google.android.material.textfield.TextInputLayout>
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/new_user_user_name"
+                        android:layout_weight="0.7"
+                        android:hint="@string/newuser_referal_code_hint"
                         android:textColorHint="@color/colorPrimary"
                         android:background="@null"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
                         <com.google.android.material.textfield.TextInputEditText
                             style="@style/normalTextBox"
-                            android:id="@+id/editTextName"
-                            android:inputType="text"
+                            android:id="@+id/editReferalCode"
                             android:enabled="false"
+                            android:inputType="textShortMessage"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
                     </com.google.android.material.textfield.TextInputLayout>
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                    <Button
+                        android:id="@+id/referralReadMore"
+                        android:layout_width="0dp"
+                        android:layout_weight="0.3"
+                        android:background="@drawable/round_button"
+                        style="@style/normalButton"
+                        android:gravity="center"
+                        android:layout_gravity="center"
+                        android:textSize="@dimen/user_register_read_more_text_size"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:baselineAligned="false">
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/editReferralCodeIL"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.7"
-                            android:hint="@string/newuser_referal_code_hint"
-                            android:textColorHint="@color/colorPrimary"
-                            android:background="@null"
-                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-                            <com.google.android.material.textfield.TextInputEditText
-                                style="@style/normalTextBox"
-                                android:id="@+id/editReferalCode"
-                                android:enabled="false"
-                                android:inputType="textShortMessage"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content" />
-                        </com.google.android.material.textfield.TextInputLayout>
-                        <Button
-                            android:id="@+id/referralReadMore"
-                            android:layout_width="0dp"
-                            android:layout_weight="0.3"
-                            android:background="@drawable/round_button"
-                            style="@style/normalButton"
-                            android:gravity="center"
-                            android:layout_gravity="center"
-                            android:textSize="@dimen/user_register_read_more_text_size"
-                            android:layout_height="wrap_content"
-                            android:text="@string/referral_code_more_info" />
-                    </LinearLayout>
-                <LinearLayout
+                        android:text="@string/referral_code_more_info" />
+                </LinearLayout>
+                <CheckBox
+                    android:id="@+id/termsConditionsCheck1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_top_large"
-                    android:orientation="horizontal"
-                    style="@style/parent">
-                    <CheckBox
-                        android:id="@+id/termsConditionsCheck1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checked="false"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/termsConditionsText1"
-                        android:textSize="15sp"
-                        android:maxLines="3" />
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_marginTop="@dimen/margin_top_small"
-                    android:orientation="horizontal"
-                    style="@style/parent">
-                    <CheckBox
-                        android:id="@+id/termsConditionsCheck2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checked="false"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/termsConditionsText2"
-                        android:text="@string/terms_conditions1"
-                        android:textSize="15sp"
-                        android:maxLines="3" />
-                </LinearLayout>
+                    style="@style/parent"
+                    android:text="@string/terms_conditions1"
+                    android:textSize="15sp"
+                    android:checked="false"/>
                 <Button
                     style="@style/normalButton"
                     android:layout_marginTop="@dimen/margin_top_large"
@@ -281,6 +249,6 @@
                 android:id="@+id/winMsgs"
                 style="@style/StatusBarMsg"
                 android:text="@string/status_bar_msg" />
-        </LinearLayout>
-    </ScrollView>
+            </LinearLayout>
+        </ScrollView>
 </RelativeLayout>

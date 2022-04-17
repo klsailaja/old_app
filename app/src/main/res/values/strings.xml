@@ -11,13 +11,15 @@
     <string name="login_screen_already_have_acc" translatable="false">Already \nhave an \nAccount?</string>
     <string name="login_screen_forgot_password">Forgot Password?</string>
     <string name="login_screen_new_user_register_now" translatable="false">New user? Register Now</string>
-    <string name="login_screen_login_text">Login</string>
+    <string name="login_screen_login_text">Submit</string>
     <string name="user_login_fail_msg" translatable="false">Login not successful. Please use forgot password option if required</string>
     <string name="user_login_success_msg" translatable="false">Login successful</string>
     <string name="user_forgot_passwd_success_msg" translatable="false">Password Reset. Please check your mail and login</string>
     <string name="terms_conditions1" translatable="false">By Clicking submit, I have read and agreed to the Terms of Use and Privacy Policy</string>
     <string name="terms_conditions2" translatable="false">By Clicking submit, I have read and agreed to the Terms of Use and Privacy Policy available on the Site</string>
-    <string name="login_enter_captcha" translatable="false">Enter captha here</string>
+    <string name="login_enter_captcha" translatable="false">Enter sum here</string>
+    <string name="login_initial_captcha" translatable="false">9+8</string>
+    <string name="login_reload_captcha_desc" translatable="false">Reload Desc</string>
 
     <!-- Update User Profile options -->
     <string name="user_profile_email" translatable="false">E-Mail cannot be updated</string>
@@ -46,7 +48,7 @@
     <string name="newuser_referal_code_hint" translatable="false">Enter Referral Code</string>
     <string name="newuser_send_code" translatable="false">Send Verification Code</string>
     <string name="newuser_verify_code" translatable="false">Verify Code</string>
-    <string name="newuser_register_text" translatable="false">Register</string>
+    <string name="newuser_register_text" translatable="false">Submit</string>
     <string name="new_user_register_success" translatable="false">User successfully registered</string>
     <string name="new_user_screen_intro" translatable="false">Here\'s\nyour first\nstep with \nus!</string>
     <string name="new_user_already_registered" translatable="false">Already have an account?</string>
