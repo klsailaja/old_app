@@ -21,6 +21,7 @@ import com.ab.telugumoviequiz.common.GetTask;
 import com.ab.telugumoviequiz.common.Keys;
 import com.ab.telugumoviequiz.common.Request;
 import com.ab.telugumoviequiz.common.Scheduler;
+import com.ab.telugumoviequiz.common.ShowHelpFirstTimer;
 import com.ab.telugumoviequiz.common.Utils;
 import com.ab.telugumoviequiz.help.HelpPreferences;
 import com.ab.telugumoviequiz.help.HelpTopic;
@@ -35,7 +36,6 @@ public class SelectGameTypeView extends BaseFragment implements View.OnClickList
     public static final int FUTURE_GAMES = 1; //
     public static final int ENROLLED_GAMES = 2; //
     private int viewType;
-    private boolean firstTime = true;
 
     public SelectGameTypeView() {
 
@@ -84,14 +84,14 @@ public class SelectGameTypeView extends BaseFragment implements View.OnClickList
         TextView userCountsLabel = root.findViewById(R.id.winMsgs);
         userCountsLabel.setVisibility(View.GONE);
 
+        enableActionBarButtons(true, this);
+        if (ShowHelpFirstTimer.getInstance().isFirstTime(HelpPreferences.HOME_SCREEN_GENERAL_GAME_RULES)) {
+            showHelpWindow();
+        }
+
         GetTask<Long> loggedInUserCtTask = Request.getLoggedInUserCount();
         loggedInUserCtTask.setCallbackResponse(this);
         Scheduler.getInstance().submit(loggedInUserCtTask);
-        if (firstTime) {
-            firstTime = false;
-            enableActionBarButtons(true, this);
-            showHelpWindow();
-        }
         return root;
     }
 

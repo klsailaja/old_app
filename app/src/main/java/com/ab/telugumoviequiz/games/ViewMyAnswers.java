@@ -102,7 +102,7 @@ public class ViewMyAnswers extends DialogFragment implements View.OnClickListene
 
         int cellValuesBGColor = Color.parseColor("black");
         int cellValueCorrectFGColor = Color.parseColor("green");
-        int cellValueWrongFGColor = Color.parseColor("black");
+        int cellValueWrongFGColor = Color.parseColor("red");
         int cellValueFGColor = Color.parseColor("white");
 
 

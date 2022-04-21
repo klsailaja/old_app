@@ -803,7 +803,11 @@ public class QuestionFragment extends BaseFragment
             }
             closeAllViews();
             viewLeaderboard = new ViewLeaderboard(getContext(), isGameOver, gameLeaderBoardDetails, getActivity());
-            viewLeaderboard.setTotalWinnersCount(gamePrizeDetails.size());
+            int winnersCount = gamePrizeDetails.size();
+            if (gameDetails.getTicketRate() == 0) {
+                winnersCount = 0;
+            }
+            viewLeaderboard.setTotalWinnersCount(winnersCount);
             viewLeaderboard.setTotalPlayersCount(gameDetails.getCurrentCount());
             FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
             if (isGameOver) {

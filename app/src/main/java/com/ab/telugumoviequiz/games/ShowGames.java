@@ -26,6 +26,7 @@ import com.ab.telugumoviequiz.common.MessageListener;
 import com.ab.telugumoviequiz.common.PostTask;
 import com.ab.telugumoviequiz.common.Request;
 import com.ab.telugumoviequiz.common.Scheduler;
+import com.ab.telugumoviequiz.common.ShowHelpFirstTimer;
 import com.ab.telugumoviequiz.common.ShowHomeScreen;
 import com.ab.telugumoviequiz.common.UserDetails;
 import com.ab.telugumoviequiz.common.Utils;
@@ -100,6 +101,7 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
     @Override
     public void onClick(View view) {
         if (view == null) {
+            // This is to open the search dialog from help window
             showSearchView();
             return;
         }
@@ -433,15 +435,13 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
                 }
 
                 lock.writeLock().lock();
-                boolean firstTime = (gameDetailsList.size() == 0);
                 gameDetailsList.clear();
                 gameDetailsList.addAll(result);
                 lock.writeLock().unlock();
                 applyFilterCriteria();
                 if (reqId == Request.GET_FUTURE_GAMES) {
-                    if (firstTime) {
+                    if (ShowHelpFirstTimer.getInstance().isFirstTime(HelpPreferences.GAME_TIPS)) {
                         showHelpWindow(true);
-                        //showSearchView();
                     }
                 }
                 break;

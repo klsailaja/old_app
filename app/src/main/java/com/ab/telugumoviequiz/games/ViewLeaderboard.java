@@ -345,6 +345,9 @@ public class ViewLeaderboard extends DialogFragment implements View.OnClickListe
         } else {
             winnersLabel = winnersLabel + winnerCount;
         }
+        if (winnerCount == 0) {
+            winnersLabel = winnersLabel + " (Free game)";
+        }
 
         totalCountLabel.setText(winnersLabel);
         return root;
