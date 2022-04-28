@@ -25,6 +25,7 @@ import com.ab.telugumoviequiz.common.Request;
 import com.ab.telugumoviequiz.common.Scheduler;
 import com.ab.telugumoviequiz.common.UserDetails;
 import com.ab.telugumoviequiz.common.Utils;
+import com.ab.telugumoviequiz.games.LocalGamesManager;
 import com.ab.telugumoviequiz.main.MainActivity;
 import com.ab.telugumoviequiz.main.Navigator;
 
@@ -48,7 +49,7 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
     private List<String> mixGameTktRates, mixGameStartTimes, mixGameIds;
     private List<String> specialCelebrityNames, specialGameStartTimes, specialGameIds;
     private List<Long> mixGameActualStartTimes, specialActualStartTimes;
-    private boolean req1 = false, req2 = false;
+    private boolean req1 = true, req2 = true;
     private int counter = 0;
     private RecyclerView recyclerView;
     private final int chat_msg_pollinterval = 15;
@@ -112,7 +113,6 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
         fillStrTime();
         chatAdapter.notifyDataSetChanged();
 
-        new GameBasicFetcher().run();
         chatFetchTask = Scheduler.getInstance().submitRepeatedTask(this, 0,
                 chat_msg_pollinterval, TimeUnit.SECONDS);
 
@@ -128,6 +128,7 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
     @Override
     public void onResume() {
         super.onResume();
+        new GameBasicFetcher().run();
         handleListeners(this);
     }
 
@@ -151,7 +152,7 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
         try {
             fetchChatRecords();
             counter++;
-            if (counter >= (300/chat_msg_pollinterval)) {
+            if (counter >= (30/chat_msg_pollinterval)) {
                 counter = 0;
                 new GameBasicFetcher().run();
             }
@@ -168,7 +169,7 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
         String ResponseTemplate = "Im joining for Rs.<RATE> game at <TIME> with GameId:<ID> in <TYPE>";
         String ReqTemplate = "Anyone coming for Rs.<RATE> game at <TIME> with GameId:<ID> in <TYPE>";
         if (messageType == 2) {
-            ReqTemplate = "Anyone coming for <RATE> game at <TIME> with GameId:<ID> in <TYPE>";
+            ReqTemplate = "Anyone coming for Rs. <RATE> game at <TIME> with GameId:<ID> in <TYPE>";
         }
         int pos = gameRate.indexOf(":");
         if (pos > -1) {
@@ -178,7 +179,7 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
         if (pos > -1) {
             gameTime = gameTime.substring(pos + 1).trim();
         }
-        pos = gameId.indexOf(":");
+        pos = gameId.lastIndexOf(":");
         if (pos > -1) {
             gameId = gameId.substring(pos + 1).trim();
         }
@@ -345,8 +346,8 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
                 specialGameStartTimes.add(fullMsg);
                 specialGameIds.add(fullMsg);
             }
-            req1 = false;
-            req2 = false;
+            req1 = true;
+            req2 = true;
             enableButtons(false);
             int messageType = ChatMsgDialog.REQUEST;
             if (view.getId() == R.id.chat_repy_but) {
@@ -416,8 +417,8 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
            final Button button1 = requireView().findViewById(R.id.chat_invite_but);
            final Button button2 = requireView().findViewById(R.id.chat_repy_but);
            Runnable run = () -> {
-               button1.setEnabled(enable);
-               button2.setEnabled(enable);
+               button1.setEnabled(true);
+               button2.setEnabled(true);
            };
            Activity activity = getActivity();
            if (activity != null) {
@@ -454,7 +455,11 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
             if (!actualLongGameStartTimes.contains(gd.getGameTimeInMillis())) {
                 actualLongGameStartTimes.add(gd.getGameTimeInMillis());
             }
-            value = "Game Id : " + gd.getTempGameId();
+            if (gd.getGameType() == 2) {
+                value = "Rs:" + gd.getTicketRate() + "->Game Id : " + gd.getTempGameId();
+            } else {
+                value = "Game Id : " + gd.getTempGameId();
+            }
             gameIds.add(value);
         }
     }
@@ -494,13 +499,25 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
     private class GameBasicFetcher implements Runnable {
         @Override
         public void run() {
-            GetTask<ChatGameDetails[]> request1 = Request.getMixedGameChatBasicGameDetails(1);
+            /*GetTask<ChatGameDetails[]> request1 = Request.getMixedGameChatBasicGameDetails(1);
             request1.setCallbackResponse(ChatView.this);
             Scheduler.getInstance().submit(request1);
 
             GetTask<ChatGameDetails[]> request2 = Request.getCelebrityGameChatBasicGameDetails(2);
             request2.setCallbackResponse(ChatView.this);
-            Scheduler.getInstance().submit(request2);
+            Scheduler.getInstance().submit(request2);*/
+            List<ChatGameDetails> entries =
+                    LocalGamesManager.getInstance().getChatGameDetails(1);
+            if (entries.size() == 0) {
+                enableButtons(false);
+                displayError("Data is still loading. Please try after some time", null);
+            }
+
+            fillValues(mixGameTktRates, mixGameStartTimes, mixGameIds, mixGameActualStartTimes, entries);
+
+            entries = LocalGamesManager.getInstance().getChatGameDetails(2);
+            fillValues(specialCelebrityNames, specialGameStartTimes, specialGameIds, specialActualStartTimes, entries);
+            enableButtons(true);
         }
     }
 }

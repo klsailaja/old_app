@@ -9,4 +9,7 @@
     <item android:id="@+id/item_leaderboard"
         android:title="LeaderBoard">
     </item>
+    <item android:id="@+id/item_win_credit"
+        android:title="Win Money Credit Status">
+    </item>
 </menu>

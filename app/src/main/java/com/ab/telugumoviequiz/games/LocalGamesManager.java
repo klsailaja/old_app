@@ -1,12 +1,18 @@
 package com.ab.telugumoviequiz.games;
 
+import android.annotation.SuppressLint;
+
+import com.ab.telugumoviequiz.chat.ChatGameDetails;
 import com.ab.telugumoviequiz.common.CallbackResponse;
 import com.ab.telugumoviequiz.common.GetTask;
 import com.ab.telugumoviequiz.common.Request;
 import com.ab.telugumoviequiz.common.UserDetails;
 import com.ab.telugumoviequiz.main.UserProfile;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 public class LocalGamesManager {
@@ -162,5 +168,50 @@ public class LocalGamesManager {
         } else if (obj instanceof LocalLazyGameList) {
             ((LocalLazyGameList) obj).refreshNow();
         }
+    }
+
+    public List<ChatGameDetails> getChatGameDetails(int gameType) {
+        List<GameDetails> cachedGames;
+        GameStatusHolder cachedStatus;
+        if (gameType == 1) {
+            cachedGames = mixedGameList.getCachedGameList();
+            cachedStatus = mixedGameStatus.getGamesStatus();
+        } else {
+            cachedGames = celebrityGameList.getCachedGameList();
+            cachedStatus = celebrityGameStatus.getGamesStatus();
+        }
+
+        List<ChatGameDetails> chatGameDetails = new ArrayList<>();
+        if ((cachedStatus == null) || (cachedGames.size() == 0)) {
+            return chatGameDetails;
+        }
+
+        HashMap<Long, GameStatus> statusHashMap = cachedStatus.getVal();
+
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
+        String timePattern = "hh:mm";
+
+        for (GameDetails gameDetails : cachedGames) {
+            Long gameId = gameDetails.getGameId();
+            GameStatus gameStatus = statusHashMap.get(gameId);
+            if (gameStatus != null) {
+                gameDetails.setCurrentCount(gameStatus.getCurrentCount());
+            }
+
+            ChatGameDetails chatGameDetailsObj = new ChatGameDetails();
+            chatGameDetailsObj.setTempGameId(gameDetails.getTempGameId());
+            chatGameDetailsObj.setTicketRate(gameDetails.getTicketRate());
+            chatGameDetailsObj.setCurrentCount(gameDetails.getCurrentCount());
+            chatGameDetailsObj.setGameType(gameType);
+            chatGameDetailsObj.setCelebrityName(gameDetails.getCelebrityName());
+            chatGameDetailsObj.setGameTimeInMillis(gameDetails.getStartTime());
+
+            simpleDateFormat.applyPattern(timePattern);
+            String timeStr = simpleDateFormat.format(new Date(gameDetails.getStartTime()));
+            chatGameDetailsObj.setGameTime(timeStr);
+
+            chatGameDetails.add(chatGameDetailsObj);
+        }
+        return chatGameDetails;
     }
 }

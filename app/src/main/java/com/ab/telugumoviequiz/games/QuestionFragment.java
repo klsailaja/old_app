@@ -200,6 +200,8 @@ public class QuestionFragment extends BaseFragment
         long cTime = System.currentTimeMillis();
         long timeToStart = gameDetails.getStartTime() - cTime - GAME_BEFORE_LOCK_PERIOD_IN_MILLIS - Constants.SCHEDULER_OFFSET_IN_MILLIS;
         long timeDiff = gameDetails.getStartTime() - cTime;
+        UserDetails.getInstance().setLastPlayedGameTime(gameDetails.getStartTime());
+        UserDetails.getInstance().setLastPlayedGameId(gameDetails.getTempGameId());
         if (timeToStart >= 0) {
             displayErrorAsToast(successMsg);
             gameLockedMode(root);
@@ -336,6 +338,9 @@ public class QuestionFragment extends BaseFragment
                 enable = gamePrizeDetails.size() != 0;
                 menuItem = popupMenu.getMenu().findItem(R.id.item_prize_money);
                 menuItem.setEnabled(enable);
+                final Boolean isGameOver = (Boolean) v.getTag();
+                menuItem = popupMenu.getMenu().findItem(R.id.item_win_credit);
+                menuItem.setEnabled(isGameOver);
                 popupMenu.setOnMenuItemClickListener(item -> {
                     switch (item.getItemId()) {
                         case R.id.item_prize_money: {
@@ -347,8 +352,18 @@ public class QuestionFragment extends BaseFragment
                             break;
                         }
                         case R.id.item_leaderboard: {
-                            final Boolean isGameOver = (Boolean) v.getTag();
                             showLeaderBoardView(isGameOver);
+                            break;
+                        }
+                        case R.id.item_win_credit: {
+                            String str = "Win Money Credit Status: In-Progress";
+                            int winMoneyStatus = UserDetails.getUserDetails().getLastPlayedGameWinMoneyCreditStatus();
+                            if (winMoneyStatus == 1) {
+                                str = "Win Money Credit Status: Success";
+                            } else if (winMoneyStatus == 2) {
+                                str = "Win Money Credit Status: Timeout. Please raise a Customer Ticket";
+                            }
+                            displayInfo(str, null);
                             break;
                         }
                     }
@@ -447,7 +462,11 @@ public class QuestionFragment extends BaseFragment
 
                 UserAnswer userAnswer = new UserAnswer(question.getQuestionNumber(), isCorrect, answeredTime);
                 userAnswers.add(userAnswer);
-
+                String userAnswerStr = "Answer: Wrong\n TimeTaken: Not Applicable";
+                if (isCorrect) {
+                    userAnswerStr = "Answer: Correct\n TimeTaken:" + Utils.getUserNotionTimeStr(answeredTime, false);
+                }
+                displayErrorAsToast(userAnswerStr);
 
                 PlayerAnswer playerAnswer = new PlayerAnswer();
                 playerAnswer.setQuestionNo(question.getQuestionNumber());
@@ -511,7 +530,12 @@ public class QuestionFragment extends BaseFragment
             case Request.SUBMIT_ANSWER_REQ: {
                 Integer lastAnsQuestionNo = (Integer) helperObject;
                 String submitMsg = "Successfully submitted Question:" + lastAnsQuestionNo + " answer";
-                displayErrorAsToast(submitMsg);
+                //displayErrorAsToast(submitMsg);
+                View root = getView();
+                if (root != null) {
+                    Button moreOptions = root.findViewById(R.id.moreOptions);
+                    displayErrorAsSnackBar(submitMsg, moreOptions);
+                }
                 break;
             }
             case Request.LEADER_BOARD: {
@@ -571,6 +595,8 @@ public class QuestionFragment extends BaseFragment
                     Boolean result = (Boolean) response;
                     if (result) {
                         errosMsg = "Leaving game was successful";
+                        UserDetails.getInstance().setLastPlayedGameId(-1);
+                        UserDetails.getInstance().setLastPlayedGameTime(-1);
                     } else {
                         errosMsg = "Leaving game was unsuccessful";
                     }
@@ -744,11 +770,12 @@ public class QuestionFragment extends BaseFragment
     private void clearAll() {
         resetButtonColors();
         quesShowing(false);
-        questionView.setText("");
-        buttonsView[0].setText("");
-        buttonsView[1].setText("");
-        buttonsView[2].setText("");
-        buttonsView[3].setText("");
+        Resources resources = getResources();
+        questionView.setText(resources.getText(R.string.ques_initial_text));
+        buttonsView[0].setText(R.string.optionA);
+        buttonsView[1].setText(R.string.optionB);
+        buttonsView[2].setText(R.string.optionC);
+        buttonsView[3].setText(R.string.optionD);
         questionPicIV.setImageBitmap(null);
         questionPicIV.setVisibility(View.GONE);
     }

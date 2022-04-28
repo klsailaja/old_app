@@ -76,6 +76,10 @@ public class LocalGameStatus implements CallbackResponse {
         lock.writeLock().unlock();
         sendData();
     }
+
+    public GameStatusHolder getGamesStatus() {
+        return gameStatusHolder;
+    }
     private void sendData() {
         if (showing) {
             Object callbackResponseObj = gameStatusHolder;

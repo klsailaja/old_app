@@ -6,8 +6,16 @@ import com.ab.telugumoviequiz.main.UserProfile;
 public class UserDetails {
     private static UserDetails userDetails = null;
     private UserMoney userMoney = null;
-
     private UserProfile userProfile;
+
+    // These 2 are set by QuestionFragment
+    private int lastPlayedGameId = -1;
+    private long lastPlayedGameTime = -1;
+
+    // These 2 are set by MainActivity
+    private int lastPlayedGameWinMoneyCreditStatus = -1; // 0 means in-progress, 1-complete, 2-error
+    private long lastPolledSlotGameTime = -1;
+
     private UserDetails() {
     }
 
@@ -26,11 +34,50 @@ public class UserDetails {
         return userMoney;
     }
 
+    public static UserDetails getUserDetails() {
+        return userDetails;
+    }
+
+    public static void setUserDetails(UserDetails userDetails) {
+        UserDetails.userDetails = userDetails;
+    }
+
     public void setUserProfile(UserProfile userProfile) {
         this.userProfile = null;
         this.userProfile = userProfile;
     }
     public UserProfile getUserProfile() {
         return userProfile;
+    }
+
+    public int getLastPlayedGameId() {
+        return lastPlayedGameId;
+    }
+
+    public void setLastPlayedGameId(int lastPlayedGameId) {
+        this.lastPlayedGameId = lastPlayedGameId;
+    }
+
+    public long getLastPlayedGameTime() {
+        return lastPlayedGameTime;
+    }
+
+    public void setLastPlayedGameTime(long lastPlayedGameTime) {
+        this.lastPlayedGameTime = lastPlayedGameTime;
+    }
+
+    public int getLastPlayedGameWinMoneyCreditStatus() {
+        return lastPlayedGameWinMoneyCreditStatus;
+    }
+
+    public void setLastPlayedGameWinMoneyCreditStatus(int lastPlayedGameWinMoneyCreditStatus) {
+        this.lastPlayedGameWinMoneyCreditStatus = lastPlayedGameWinMoneyCreditStatus;
+    }
+
+    public void setLastPolledSlotGameTime(long lastPolledSlotGameTime) {
+        this.lastPolledSlotGameTime = lastPolledSlotGameTime;
+    }
+    public long getLastPolledSlotGameTime() {
+        return this.lastPolledSlotGameTime;
     }
 }

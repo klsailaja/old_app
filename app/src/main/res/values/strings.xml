@@ -1,7 +1,7 @@
 <resources>
     <!-- Main App -->
     <string name="app_name">TeluguMovieQuiz</string>
-    <string name="base_url" translatable="false">http://192.168.1.4:8888</string>
+    <string name="base_url" translatable="false">http://192.168.1.7:8888</string>
 
     <string name="quiz_screen_server_err" translatable="false">Server Error. Please try after some time</string>
 
@@ -101,6 +101,10 @@
     <string name="game_cancellation_success_msg" translatable="false">Game cancelled as minimum users not present. Your ticket money reverted status : Success</string>
     <string name="game_cancellation_fail_msg" translatable="false">Game cancelled as minimum users not present. Your ticket money reverted status : Fail will be credited in 1 to 2 days</string>
     <string name="ques_initial_text" translatable="false">Your question appears here with 4 options. Time and Correct answers matter. Choose the right answer in first attempt. No Second chance and No Negative Marks.</string>
+    <string name="optionA" translatable="false">Option A</string>
+    <string name="optionB" translatable="false">Option B</string>
+    <string name="optionC" translatable="false">Option C</string>
+    <string name="optionD" translatable="false">Option D</string>
     <string name="open_drawer" translatable="false">Open</string>
     <string name="close_drawer" translatable="false">Close</string>
     <string name="action_settings" translatable="false">appbar_settings</string>

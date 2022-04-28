@@ -123,6 +123,10 @@ public class LocalLazyGameList implements CallbackResponse {
         }
     }
 
+    public List<GameDetails> getCachedGameList() {
+        return cachedGameList;
+    }
+
     private void sendData() {
         if (showing) {
             Object callbackResponseObj = response;

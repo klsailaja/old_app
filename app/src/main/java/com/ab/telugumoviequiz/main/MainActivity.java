@@ -669,16 +669,25 @@ public class MainActivity extends AppCompatActivity
             }
         } else if (Request.MONEY_TASK_STATUS == reqId) {
             Integer status = (Integer) response;
+            String details = (String) userObject;
+            int pos = details.indexOf(":");
+            String startTime = details.substring(0, pos);
+            long slotTime = Long.parseLong(startTime);
+            UserDetails.getInstance().setLastPolledSlotGameTime(slotTime);
+            UserDetails.getInstance().setLastPlayedGameWinMoneyCreditStatus(status);
             if (status == 1) {
+                if (slotTime == UserDetails.getInstance().getLastPlayedGameTime()) {
+                    String msg = "GameId: " + UserDetails.getInstance().getLastPlayedGameId() +
+                            " winners money credited status : SUCCESS";
+                    displayInfo(msg, null);
+                }
                 fetchUpdateMoney();
-                displayInfo("Winners money credited status : success", null);
             } else {
-                String details = (String) userObject;
-                int pos = details.indexOf(":");
-                String startTime = details.substring(0, pos);
                 String retryCount = details.substring(pos + 1);
                 int retryCountInt = Integer.parseInt(retryCount);
                 if (retryCountInt == 11) {
+                    UserDetails.getInstance().setLastPolledSlotGameTime(-1);
+                    UserDetails.getInstance().setLastPlayedGameWinMoneyCreditStatus(-1);
                     displayInfo("Winners money credited status : FAIL. \n" +
                             "Please raise a Customer Ticket", null);
                     return;
