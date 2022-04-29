@@ -23,6 +23,7 @@ import com.ab.telugumoviequiz.common.GetTask;
 import com.ab.telugumoviequiz.common.PostTask;
 import com.ab.telugumoviequiz.common.Request;
 import com.ab.telugumoviequiz.common.Scheduler;
+import com.ab.telugumoviequiz.common.ShowHomeScreen;
 import com.ab.telugumoviequiz.common.UserDetails;
 import com.ab.telugumoviequiz.common.Utils;
 import com.ab.telugumoviequiz.games.LocalGamesManager;
@@ -47,7 +48,7 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
     private ScheduledFuture<?> chatFetchTask = null;
     private View textView;
     private List<String> mixGameTktRates, mixGameStartTimes, mixGameIds;
-    private List<String> specialCelebrityNames, specialGameStartTimes, specialGameIds;
+    private List<String> specialGameTktRates, specialGameStartTimes, specialGameIds, specialCelebrityNames;
     private List<Long> mixGameActualStartTimes, specialActualStartTimes;
     private boolean req1 = true, req2 = true;
     private int counter = 0;
@@ -78,6 +79,7 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
         mixGameActualStartTimes = new ArrayList<>(5);
 
         specialCelebrityNames = new ArrayList<>(5);
+        specialGameTktRates = new ArrayList<>(5);
         specialGameStartTimes = new ArrayList<>(5);
         specialGameIds = new ArrayList<>(5);
         specialActualStartTimes = new ArrayList<>(5);
@@ -85,6 +87,7 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
         mixGameTktRates.add("No Data");
         mixGameStartTimes.add("No Data");
         mixGameIds.add("No Data");
+        specialGameTktRates.add("No Data");
         specialCelebrityNames.add("No Data");
         specialGameStartTimes.add("No Data");
         specialGameIds.add("No Data");
@@ -162,14 +165,15 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
     }
 
     @Override
-    public void itemsSelected(int messageType, int gameType, String gameRate, String gameTime, String gameId) {
+    public void itemsSelected(int messageType, int gameType, String gameRate, String gameTime,
+                              String gameId, String celebrityName) {
         if (gameRate.equals("FULL")) {
             return;
         }
         String ResponseTemplate = "Im joining for Rs.<RATE> game at <TIME> with GameId:<ID> in <TYPE>";
         String ReqTemplate = "Anyone coming for Rs.<RATE> game at <TIME> with GameId:<ID> in <TYPE>";
         if (messageType == 2) {
-            ReqTemplate = "Anyone coming for Rs. <RATE> game at <TIME> with GameId:<ID> in <TYPE>";
+            ReqTemplate = "Anyone coming for Rs. <RATE> game at <TIME> with GameId:<ID> in <TYPE> for <CELEBRITY>";
         }
         int pos = gameRate.indexOf(":");
         if (pos > -1) {
@@ -179,13 +183,17 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
         if (pos > -1) {
             gameTime = gameTime.substring(pos + 1).trim();
         }
-        pos = gameId.lastIndexOf(":");
+        pos = gameId.indexOf(":");
         if (pos > -1) {
             gameId = gameId.substring(pos + 1).trim();
         }
         String gameTypeStr = "Mixed Category";
         if (gameType == ChatMsgDialog.CELEBRITY_GAME_TYPE) {
             gameTypeStr = "Celebrity Category";
+            pos = celebrityName.indexOf(":");
+            if (pos > -1) {
+                celebrityName = celebrityName.substring(pos + 1).trim();
+            }
         }
         String template = ReqTemplate;
         if (messageType == ChatMsgDialog.REPLY) {
@@ -195,6 +203,7 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
         chatMsg = chatMsg.replaceAll("<TIME>", gameTime);
         chatMsg = chatMsg.replaceAll("<ID>", gameId);
         chatMsg = chatMsg.replaceAll("<TYPE>", gameTypeStr);
+        chatMsg = chatMsg.replaceAll("<CELEBRITY>", celebrityName);
 
         TextView chatBox = requireView().findViewById(R.id.chatSendMsgTxt);
         chatBox.setText(chatMsg);
@@ -243,7 +252,7 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
                 activity.runOnUiThread(run);
             }
         }
-        if ((reqId == Request.CHAT_BASIC_GAME_DETAILS_MIX_SET) || (reqId == Request.CHAT_BASIC_GAME_DETAILS_CELEBRITY_SET)) {
+        /*if ((reqId == Request.CHAT_BASIC_GAME_DETAILS_MIX_SET) || (reqId == Request.CHAT_BASIC_GAME_DETAILS_CELEBRITY_SET)) {
             isHandled = handleAPIError(isAPIException, response, 2, textView, null);
             if (isHandled) {
                 return;
@@ -252,15 +261,17 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
                 req1 = true;
                 final ChatGameDetails[] result = (ChatGameDetails[]) response;
                 List<ChatGameDetails> newEntries = Arrays.asList(result);
-                fillValues(mixGameTktRates, mixGameStartTimes, mixGameIds, mixGameActualStartTimes, newEntries);
+                fillValues(mixGameTktRates, mixGameStartTimes, mixGameIds,
+                        specialCelebrityNames, mixGameActualStartTimes, newEntries);
             } else {
                 req2 = true;
                 final ChatGameDetails[] result = (ChatGameDetails[]) response;
                 List<ChatGameDetails> newEntries = Arrays.asList(result);
-                fillValues(specialCelebrityNames, specialGameStartTimes, specialGameIds, specialActualStartTimes, newEntries);
+                fillValues(specialGameTktRates, specialGameStartTimes, specialGameIds,
+                        specialCelebrityNames, specialActualStartTimes, newEntries);
             }
             enableButtons(true);
-        } else if (reqId == Request.POST_CHAT_MSG) {
+        }*/ if (reqId == Request.POST_CHAT_MSG) {
             if (isAPIException) {
                 displayErrorAsSnackBar((String) response, textView);
                 return;
@@ -346,8 +357,8 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
                 specialGameStartTimes.add(fullMsg);
                 specialGameIds.add(fullMsg);
             }
-            req1 = true;
-            req2 = true;
+            /*req1 = true;
+            req2 = true;*/
             enableButtons(false);
             int messageType = ChatMsgDialog.REQUEST;
             if (view.getId() == R.id.chat_repy_but) {
@@ -356,7 +367,8 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
 
             ChatMsgDialog chatMsgDialog = new ChatMsgDialog(messageType);
             chatMsgDialog.setMixTypeData(mixGameTktRates, mixGameStartTimes, mixGameIds);
-            chatMsgDialog.setCelebrityTypeData(specialCelebrityNames, specialGameStartTimes, specialGameIds);
+            chatMsgDialog.setCelebrityTypeData(specialGameTktRates, specialGameStartTimes,
+                    specialGameIds, specialCelebrityNames);
             chatMsgDialog.setChatListener(this);
             FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
             chatMsgDialog.show(fragmentManager, "dialog");
@@ -427,24 +439,22 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
        }
     }
 
-    private void fillValues(List<String> rates, List<String> gameTimes, List<String> gameIds, List<Long> actualLongGameStartTimes,
+    private void fillValues(List<String> rates, List<String> gameTimes, List<String> gameIds,
+                            List<String> celebrityNames,
+                            List<Long> actualLongGameStartTimes,
                             List<ChatGameDetails> basicGameDetails) {
         rates.clear();
         gameTimes.clear();
         gameIds.clear();
+        celebrityNames.clear();
         actualLongGameStartTimes.clear();
 
         for (ChatGameDetails gd: basicGameDetails) {
             if (gd.getCurrentCount() == 10) {
                 continue;
             }
-            String value;
-            if (gd.getGameType() == 2) {
-                value = "Celebrity Name : " + gd.getCelebrityName();
-            } else {
-                value = "Game Rate : " + gd.getTicketRate();
-            }
 
+            String value = "Game Rate : " + gd.getTicketRate();;
             if (!rates.contains(value)) {
                 rates.add(value);
             }
@@ -455,12 +465,15 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
             if (!actualLongGameStartTimes.contains(gd.getGameTimeInMillis())) {
                 actualLongGameStartTimes.add(gd.getGameTimeInMillis());
             }
-            if (gd.getGameType() == 2) {
-                value = "Rs:" + gd.getTicketRate() + "->Game Id : " + gd.getTempGameId();
-            } else {
-                value = "Game Id : " + gd.getTempGameId();
-            }
+            value = "Game Id : " + gd.getTempGameId();
             gameIds.add(value);
+
+            if (gd.getGameType() == 2) {
+                value = "Celebrity Name :" + gd.getCelebrityName();
+                if (!celebrityNames.contains(value)) {
+                    celebrityNames.add(value);
+                }
+            }
         }
     }
 
@@ -510,13 +523,16 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
                     LocalGamesManager.getInstance().getChatGameDetails(1);
             if (entries.size() == 0) {
                 enableButtons(false);
-                displayError("Data is still loading. Please try after some time", null);
+                displayError("Data is still loading. Please try after some time", new ShowHomeScreen(getActivity()));
+                return;
             }
 
-            fillValues(mixGameTktRates, mixGameStartTimes, mixGameIds, mixGameActualStartTimes, entries);
+            fillValues(mixGameTktRates, mixGameStartTimes, mixGameIds, specialCelebrityNames,
+                    mixGameActualStartTimes, entries);
 
             entries = LocalGamesManager.getInstance().getChatGameDetails(2);
-            fillValues(specialCelebrityNames, specialGameStartTimes, specialGameIds, specialActualStartTimes, entries);
+            fillValues(specialGameTktRates, specialGameStartTimes, specialGameIds, specialCelebrityNames,
+                    specialActualStartTimes, entries);
             enableButtons(true);
         }
     }

@@ -29,13 +29,16 @@ public class ChatMsgDialog extends DialogFragment implements View.OnClickListene
     //public static int MIXED_GAME_TYPE = 0;
     public static int CELEBRITY_GAME_TYPE = 1;
     private List<String> mixGameTktRates, mixGameStartTimes, mixGameIds;
-    private List<String> celebrityGameTktRates, celebrityGameStartTimes, celebrityGameIds;
+    private List<String> celebrityGameTktRates, celebrityGameStartTimes,
+            celebrityGameIds, celebrityNames;
     private ChatListener listener;
 
     private String[] gameTypeValues;
-    private Spinner gameTypeSpinner, rateSpinner, timeSpinner, gameIdSpinner;
+    private Spinner gameTypeSpinner, rateSpinner, timeSpinner,
+            gameIdSpinner, celebrityNamesSpinner;
     private ArrayAdapter<String> mixRatesAdapter, mixStartTimesAdapter, mixIdsAdapter;
-    private ArrayAdapter<String> celebRatesAdapter, celebStartTimesAdapter, celebIdsAdapter;
+    private ArrayAdapter<String> celebRatesAdapter, celebStartTimesAdapter,
+            celebIdsAdapter, celebNamesAdapter;
 
     public ChatMsgDialog(int messageType) {
         this.messageType = messageType;
@@ -47,10 +50,11 @@ public class ChatMsgDialog extends DialogFragment implements View.OnClickListene
         this.mixGameIds = mixGameIds;
     }
     public void setCelebrityTypeData(List<String> celebrityGameTktRates, List<String> celebrityGameStartTimes,
-                                     List<String> celebrityGameIds) {
+                                     List<String> celebrityGameIds, List<String> celebrityNames) {
         this.celebrityGameTktRates = celebrityGameTktRates;
         this.celebrityGameStartTimes = celebrityGameStartTimes;
         this.celebrityGameIds = celebrityGameIds;
+        this.celebrityNames = celebrityNames;
     }
     public void setChatListener(ChatListener listener) {
         this.listener = listener;
@@ -74,6 +78,7 @@ public class ChatMsgDialog extends DialogFragment implements View.OnClickListene
         rateSpinner = root.findViewById(R.id.rateSpinner);
         timeSpinner = root.findViewById(R.id.gameTimeSpinner);
         gameIdSpinner = root.findViewById(R.id.gameIdSpinner);
+        celebrityNamesSpinner = root.findViewById(R.id.celebritySpinner);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, gameTypeValues);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -109,6 +114,10 @@ public class ChatMsgDialog extends DialogFragment implements View.OnClickListene
         celebIdsAdapter  = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, celebrityGameIds);
         celebIdsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         celebIdsAdapter.setNotifyOnChange(false);
+
+        celebNamesAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, celebrityNames);
+        celebRatesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        celebRatesAdapter.setNotifyOnChange(false);
 
         gameTypeSpinner.setOnItemSelectedListener(this);
         return root;
@@ -149,7 +158,8 @@ public class ChatMsgDialog extends DialogFragment implements View.OnClickListene
         String gameRate = (String) rateSpinner.getSelectedItem();
         String gameTime = (String) timeSpinner.getSelectedItem();
         String gameId = (String) gameIdSpinner.getSelectedItem();
-        listener.itemsSelected(messageType, gameType, gameRate, gameTime, gameId);
+        String celebrityName = (String) celebrityNamesSpinner.getSelectedItem();
+        listener.itemsSelected(messageType, gameType, gameRate, gameTime, gameId, celebrityName);
         dismiss();
     }
 
@@ -164,10 +174,14 @@ public class ChatMsgDialog extends DialogFragment implements View.OnClickListene
             rateSpinner.setAdapter(mixRatesAdapter);
             timeSpinner.setAdapter(mixStartTimesAdapter);
             gameIdSpinner.setAdapter(mixIdsAdapter);
+            celebrityNamesSpinner.setAdapter(celebNamesAdapter);
+            celebrityNamesSpinner.setEnabled(false);
         } else {
             rateSpinner.setAdapter(celebRatesAdapter);
             timeSpinner.setAdapter(celebStartTimesAdapter);
             gameIdSpinner.setAdapter(celebIdsAdapter);
+            celebrityNamesSpinner.setEnabled(true);
+            celebrityNamesSpinner.setAdapter(celebNamesAdapter);
         }
     }
 }
