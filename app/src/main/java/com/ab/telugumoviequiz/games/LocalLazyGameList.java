@@ -67,9 +67,26 @@ public class LocalLazyGameList implements CallbackResponse {
         return false;
     }
     public void refreshNow() {
-        maxGameId = -1;
-        makeRequestReady();
-        Scheduler.getInstance().submit(this.getTask);
+        long currentTime = System.currentTimeMillis();
+        boolean shouldSendReq = false;
+        lock.writeLock().lock();
+        Iterator<GameDetails> gameDetailsIterator = cachedGameList.iterator();
+        while (gameDetailsIterator.hasNext()) {
+            GameDetails oldGB = gameDetailsIterator.next();
+            if (oldGB.getStartTime() < currentTime) {
+                gameDetailsIterator.remove();
+            }
+        }
+        if (cachedGameList.size() > 0) {
+            sendData();
+            shouldSendReq = true;
+        }
+        lock.writeLock().unlock();
+        if (shouldSendReq) {
+            maxGameId = -1;
+            makeRequestReady();
+            Scheduler.getInstance().submit(this.getTask);
+        }
     }
 
     @Override
@@ -107,6 +124,9 @@ public class LocalLazyGameList implements CallbackResponse {
                 }
             }
             for (GameDetails newGD : result) {
+                if (maxGameId < newGD.getGameId()) {
+                    maxGameId = newGD.getGameId();
+                }
                 Integer listPos = gameIdToListPos.get(newGD.getGameId());
                 if (listPos != null) {
                     cachedGameList.set(listPos, newGD);

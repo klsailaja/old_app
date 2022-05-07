@@ -133,11 +133,16 @@ public class NewUserActivity extends AppCompatActivity
     public void onClick(View view) {
         int viewId = view.getId();
         if (viewId == id.sendCode) {
-            TextView mailIdTextView = findViewById(id.editTextEmail);
-            String mailIdEntered = mailIdTextView.getText().toString().trim();
-            String confirmMsg = "The Mail id is : " + mailIdEntered + " .Confirm if this is correct?";
-            Utils.showConfirmationMessage("Confirmation", confirmMsg,
-                    this, this, NEW_USER_SEND_CODE, null);
+            Boolean isResend = (Boolean) view.getTag();
+            if ((isResend == null) || (!isResend)) {
+                TextView mailIdTextView = findViewById(id.editTextEmail);
+                String mailIdEntered = mailIdTextView.getText().toString().trim();
+                String confirmMsg = "The Mail id is : " + mailIdEntered + " Confirm if this is correct?";
+                Utils.showConfirmationMessage("Confirmation", confirmMsg,
+                        this, this, NEW_USER_SEND_CODE, null);
+            } else {
+                doAction(NEW_USER_SEND_CODE, null);
+            }
         } else if (viewId == id.verifyCode) {
             String otpText = getEnteredCode();
             if (otpText == null) {
@@ -244,6 +249,7 @@ public class NewUserActivity extends AppCompatActivity
 
                     Button sendCodeButton = findViewById(id.sendCode);
                     sendCodeButton.setText(string.resend_code);
+                    sendCodeButton.setTag(true);
 
                     String mailId = mailidTextView.getText().toString().trim();
                     for (int index = 0; index < verifyCodeTextViewList.size(); index ++) {
@@ -252,7 +258,7 @@ public class NewUserActivity extends AppCompatActivity
                     }
                     Button verifyCodeButton = findViewById(id.verifyCode);
                     verifyCodeButton.setEnabled(true);
-                    String successMsg = "Verification Code Sent to : " + mailId + ".Please Check mail and enter code";
+                    String successMsg = "Verification Code Sent to : " + mailId + " Please Check mail and enter code";
                     Utils.showMessage("Information", successMsg, this, null);
                 }
             };

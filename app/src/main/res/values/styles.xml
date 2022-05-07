@@ -77,7 +77,7 @@
         <item name="android:textAlignment">center</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">20sp</item>
-        <item name="fontFamily">Arial</item>
+        <item name="fontFamily">sans-serif</item>
         <item name="android:background">@color/whiteTextColor</item>
         <item name="android:textColor">@color/colorPrimary</item>
         <item name="android:layout_marginTop">@dimen/statusBarMargin</item>
@@ -123,7 +123,7 @@
         <item name="android:layout_marginTop">@dimen/introduction_text_top_gap</item>
         <item name="android:layout_marginStart">@dimen/introduction_text_start_gap</item>
         <item name="android:textSize">@dimen/introduction_text_size</item>
-        <item name="android:fontFamily">Arial</item>
+        <item name="android:fontFamily">sans-serif</item>
     </style>
     <style name="viewIntroTextSmall">
         <item name="android:layout_width">wrap_content</item>
@@ -131,7 +131,7 @@
         <item name="android:layout_marginTop">@dimen/introduction_text_top_gap_small</item>
         <item name="android:layout_marginStart">@dimen/introduction_text_start_gap</item>
         <item name="android:textSize">@dimen/introduction_text_size</item>
-        <item name="android:fontFamily">Arial</item>
+        <item name="android:fontFamily">sans-serif</item>
     </style>
     <style name="filterLayerText">
         <item name="android:layout_width">wrap_content</item>

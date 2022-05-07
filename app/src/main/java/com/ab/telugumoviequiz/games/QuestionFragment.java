@@ -333,14 +333,19 @@ public class QuestionFragment extends BaseFragment
                 MenuItem menuItem = popupMenu.getMenu().findItem(R.id.item_my_answers);
                 menuItem.setEnabled(enable);
                 enable = gameLeaderBoardDetails.size() != 0;
+                final Boolean isGameOver = (Boolean) v.getTag();
                 menuItem = popupMenu.getMenu().findItem(R.id.item_leaderboard);
                 menuItem.setEnabled(enable);
+                if (isGameOver) {
+                    menuItem.setTitle(R.string.showWinners);
+                }
                 enable = gamePrizeDetails.size() != 0;
                 menuItem = popupMenu.getMenu().findItem(R.id.item_prize_money);
                 menuItem.setEnabled(enable);
-                final Boolean isGameOver = (Boolean) v.getTag();
+
                 menuItem = popupMenu.getMenu().findItem(R.id.item_win_credit);
                 menuItem.setEnabled(isGameOver);
+                System.out.println("isGameOver :" + isGameOver);
                 popupMenu.setOnMenuItemClickListener(item -> {
                     switch (item.getItemId()) {
                         case R.id.item_prize_money: {
@@ -552,9 +557,16 @@ public class QuestionFragment extends BaseFragment
                 break;
             }
             case Request.SHOW_WINNERS: {
+                final Question question = (Question) helperObject;
+                final boolean isGameOver = (question.getQuestionNumber() == 10);
                 Runnable runnable = () -> {
                     closeAllViews();
                     clearAll();
+                    View view = getView();
+                    if (view != null) {
+                        Button moreButton = view.findViewById(R.id.moreOptions);
+                        moreButton.setTag(isGameOver);
+                    }
                     final AlertDialog alertDialog = new AlertDialog.Builder(requireContext()).create();
                     alertDialog.setTitle("View Winners");
                     alertDialog.setMessage("GAME OVER");
@@ -564,7 +576,6 @@ public class QuestionFragment extends BaseFragment
                         alertDialog.dismiss();
                         alertDialog.cancel();
 
-                        Question question = (Question) helperObject;
                         int completedQuestionNumber = question.getQuestionNumber();
                         GetTask<PlayerSummary[]> leaderBoardReq =
                                 Request.getLeaderBoard(gameDetails.getGameId(), completedQuestionNumber);

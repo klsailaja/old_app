@@ -1,7 +1,6 @@
 package com.ab.telugumoviequiz.common;
 
 import com.ab.telugumoviequiz.chat.Chat;
-import com.ab.telugumoviequiz.chat.ChatGameDetails;
 import com.ab.telugumoviequiz.customercare.CCTicketsHolder;
 import com.ab.telugumoviequiz.customercare.CustomerTicket;
 import com.ab.telugumoviequiz.customercare.PostPictureTask;
@@ -51,8 +50,8 @@ public class Request {
     public static final int CHAT_BULK_FETCH = 120;
     public static final int POST_CHAT_MSG = 121;
     public static final int CHAT_MSG_COUNT_FETCH = 125;
-    public static final int CHAT_BASIC_GAME_DETAILS_MIX_SET = 122;
-    public static final int CHAT_BASIC_GAME_DETAILS_CELEBRITY_SET = 123;
+    /*public static final int CHAT_BASIC_GAME_DETAILS_MIX_SET = 122;
+    public static final int CHAT_BASIC_GAME_DETAILS_CELEBRITY_SET = 123;*/
     public static final int GET_USER_MONEY = 130;
     public static final int GAME_ENROLLED_STATUS = 131;
     public static final int TIME_CHECK_ID = 135;
@@ -281,7 +280,7 @@ public class Request {
         String uri = baseUri + "/chat/count/" + statTime + "/" + endTime;
         return new GetTask<>(uri, CHAT_MSG_COUNT_FETCH, null, Integer.class, null);
     }
-    public static GetTask<ChatGameDetails[]> getMixedGameChatBasicGameDetails(int gameType) {
+    /*public static GetTask<ChatGameDetails[]> getMixedGameChatBasicGameDetails(int gameType) {
         String uri = baseUri + "/game/chat/" + gameType;
         return new GetTask<>(uri, CHAT_BASIC_GAME_DETAILS_MIX_SET, null,
                 ChatGameDetails[].class, null);
@@ -290,7 +289,7 @@ public class Request {
         String uri = baseUri + "/game/chat/" + gameType;
         return new GetTask<>(uri, CHAT_BASIC_GAME_DETAILS_CELEBRITY_SET, null,
                 ChatGameDetails[].class, null);
-    }
+    }*/
     public static PostTask<Chat, Boolean> postChatMsgTask() {
         String uri = baseUri + "/chat/new";
         return new PostTask<>(uri, POST_CHAT_MSG,

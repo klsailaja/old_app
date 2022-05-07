@@ -9,6 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -112,8 +113,11 @@ public class SelectGameTypeView extends BaseFragment implements View.OnClickList
         viewHelp.setLocalMainHeading("Main Heading Telugu");
         viewHelp.setEnglishMainHeading("Terms And Conditions");
         Utils.clearState();
-        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-        viewHelp.show(fragmentManager, "dialog");
+        FragmentActivity activity = getActivity();
+        if (activity != null) {
+            FragmentManager fragmentManager = activity.getSupportFragmentManager();
+            viewHelp.show(fragmentManager, "dialog");
+        }
     }
     @Override
     public void handleResponse(int reqId, boolean exceptionThrown, boolean isAPIException, final Object response, Object helperObject) {
