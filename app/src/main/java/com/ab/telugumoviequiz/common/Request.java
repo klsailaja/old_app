@@ -58,6 +58,7 @@ public class Request {
     public static final int UPCOMING_CELEBRITY_NAMES_ID = 136;
     public static final int SEND_OTP_CODE = 140;
     public static final int VERIFY_OTP_CODE = 141;
+    public static final int GET_FULL_USER_MONEY = 8000;
 
     public static final int USER_CC_LIST = 150;
     public static final int CC_CANCEL = 151;
@@ -300,6 +301,12 @@ public class Request {
     public static GetTask<UserMoney> getMoneyTask(long userProfileId) {
         String uri = baseUri + "/money/" + userProfileId;
         return new GetTask<>(uri, GET_USER_MONEY, null,
+                UserMoney.class, null);
+    }
+
+    public static GetTask<UserMoney> getFullMoneyTask(long userProfileId) {
+        String uri = baseUri + "/fullmoney/" + userProfileId;
+        return new GetTask<>(uri, GET_FULL_USER_MONEY, null,
                 UserMoney.class, null);
     }
 

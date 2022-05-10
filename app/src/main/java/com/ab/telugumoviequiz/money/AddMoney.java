@@ -1,5 +1,6 @@
 package com.ab.telugumoviequiz.money;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,15 +18,20 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.ab.telugumoviequiz.R;
 import com.ab.telugumoviequiz.common.BaseFragment;
 import com.ab.telugumoviequiz.common.CallbackResponse;
+import com.ab.telugumoviequiz.common.GetTask;
 import com.ab.telugumoviequiz.common.NotifyTextChanged;
 import com.ab.telugumoviequiz.common.PATextWatcher;
+import com.ab.telugumoviequiz.common.Request;
+import com.ab.telugumoviequiz.common.Scheduler;
 import com.ab.telugumoviequiz.common.UserDetails;
 import com.ab.telugumoviequiz.common.Utils;
 import com.ab.telugumoviequiz.constants.UserMoneyAccountType;
 import com.ab.telugumoviequiz.games.PayGameModel;
 import com.ab.telugumoviequiz.main.AddMoneyProcessor;
 import com.ab.telugumoviequiz.main.MainActivity;
+import com.ab.telugumoviequiz.main.NewUserActivity;
 import com.ab.telugumoviequiz.main.UserMoney;
+import com.ab.telugumoviequiz.main.UserProfile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,7 +70,12 @@ public class AddMoney extends BaseFragment
                 new ViewAccountsAdapter(accountsList, getContext());
         allMoneyAccListView.setAdapter(viewAccountsAdapter);
         allMoneyAccListView.setItemAnimator(new DefaultItemAnimator());
-        updateMoneyEntries();
+
+        UserProfile userProfile = UserDetails.getInstance().getUserProfile();
+        GetTask<UserMoney> fetchFullMoney = Request.getFullMoneyTask(userProfile.getId());
+        fetchFullMoney.setCallbackResponse(this);
+        Scheduler.getInstance().submit(fetchFullMoney);
+        //updateMoneyEntries();
         return root;
     }
 
@@ -118,7 +129,39 @@ public class AddMoney extends BaseFragment
     }
 
     @Override
-    public void handleResponse(int reqId, boolean exceptionThrown, boolean isAPIException, Object response, Object userObject) {
+    public void handleResponse(int reqId, boolean exceptionThrown,
+                               boolean isAPIException, Object response,
+                               Object userObject) {
+
+        Activity activity = getActivity();
+        if((exceptionThrown) && (!isAPIException)) {
+            Runnable run = () -> {
+                String error = (String) response;
+                Utils.showMessage("Error", error, getContext(), null);
+            };
+            if (activity != null) {
+                activity.runOnUiThread(run);
+            }
+            return;
+        }
+        if (isAPIException) {
+            Runnable run = () -> {
+                String error = (String) response;
+                Utils.showMessage("Error", error, getContext(), null);
+            };
+            if (activity != null) {
+                activity.runOnUiThread(run);
+            }
+            return;
+        }
+        if (reqId == Request.GET_FULL_USER_MONEY) {
+            UserMoney userMoney = (UserMoney) response;
+            UserDetails.getInstance().setUserMoney(userMoney);
+            Runnable run = this::updateMoneyEntries;
+            if (activity != null) {
+                activity.runOnUiThread(run);
+            }
+        }
     }
 
     private void handleListeners(View.OnClickListener listener) {
@@ -183,13 +226,13 @@ public class AddMoney extends BaseFragment
         final List<PayGameModel> modelList = new ArrayList<>();
         PayGameModel referralMoney = new PayGameModel();
         referralMoney.setAccountName("Referral Money");
-        referralMoney.setAccountBalance(String.valueOf(userMoney.getAmount()));
+        referralMoney.setAccountBalance(String.valueOf(userMoney.getReferAmount()));
         referralMoney.setAccountNumber(UserMoneyAccountType.findById(3).getId());
         modelList.add(referralMoney);
 
         PayGameModel winningMoney = new PayGameModel();
         winningMoney.setAccountName("Winning Money");
-        winningMoney.setAccountBalance(String.valueOf(userMoney.getAmount()));
+        winningMoney.setAccountBalance(String.valueOf(userMoney.getWinAmount()));
         assert UserMoneyAccountType.findById(2) != null;
         winningMoney.setAccountNumber(UserMoneyAccountType.findById(2).getId());
         modelList.add(winningMoney);
