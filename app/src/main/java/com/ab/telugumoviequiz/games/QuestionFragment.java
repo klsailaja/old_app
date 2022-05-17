@@ -73,6 +73,11 @@ public class QuestionFragment extends BaseFragment
     private final String USERANSWERS = "USERANS";
     private final String GAMEDETAILS = "GAMEDETAILS";
 
+    private static final int LEAVE_CONFIRM = 10;
+    private static final int QUIT_GAME_CONFIRM = 20;
+    private static final int GAME_OVER_CONFIRM = 100;
+
+
     private Bundle saveState() {
         Bundle saveState = new Bundle();
         saveState.putBoolean(FIFTYUSED, fiftyUsed);
@@ -175,7 +180,8 @@ public class QuestionFragment extends BaseFragment
         }
         if (gameDetails != null) {
             if (System.currentTimeMillis() >= (gameDetails.getStartTime() + 10 * 60 * 1000)) {
-                Utils.showMessage("Info", "Game Over", getContext(), this, 100, null);
+                Utils.showMessage("Info", "Game Over", getContext(), this,
+                        GAME_OVER_CONFIRM, null);
                 return;
             }
         }
@@ -280,7 +286,7 @@ public class QuestionFragment extends BaseFragment
 
     @Override
     public void doAction(int calledId, Object userObject) {
-        if (calledId == 10) {
+        if (calledId == LEAVE_CONFIRM) {
             GameDetails leaveGameDetails = (GameDetails) userObject;
             PostTask<GameOperation, Boolean> joinTask = Request.gameUnjoinTask(leaveGameDetails.getGameId());
             joinTask.setCallbackResponse(this);
@@ -292,14 +298,14 @@ public class QuestionFragment extends BaseFragment
             joinTask.setPostObject(gm);
             joinTask.setHelperObject(leaveGameDetails);
             Scheduler.getInstance().submit(joinTask);
-        } else if (calledId == 20) {
+        } else if (calledId == QUIT_GAME_CONFIRM) {
             MenuItem item = (MenuItem) userObject;
             Activity parentActivity = getActivity();
             if (parentActivity instanceof MainActivity) {
                 MainActivity mainActivity = (MainActivity) parentActivity;
                 mainActivity.onNavigationItemSelected(item);
             }
-        } else if (calledId == 100) {
+        } else if (calledId == GAME_OVER_CONFIRM) {
             Activity parentActivity = getActivity();
             if (parentActivity instanceof MainActivity) {
                 MainActivity mainActivity = (MainActivity) parentActivity;
@@ -319,7 +325,8 @@ public class QuestionFragment extends BaseFragment
     public void onClick(View v){
         int id = v.getId();
         if (id == R.id.game_starts_leave_but) {
-            Utils.showConfirmationMessage("Confirm?", "Are you sure to quit?", getContext(), this, 10, gameDetails);
+            Utils.showConfirmationMessage("Confirm?", "Are you sure to quit?",
+                    getContext(), this, LEAVE_CONFIRM, gameDetails);
             return;
         }
         switch (id) {
@@ -1122,7 +1129,7 @@ public class QuestionFragment extends BaseFragment
         boolean gameInProgress = isGameInProgress();
         if (gameInProgress) {
             Utils.showConfirmationMessage("Confirm", "Game in progress. You will miss questions. Are you sure to proceed?",
-                    getContext(), this, 20, item);
+                    getContext(), this, QUIT_GAME_CONFIRM, item);
             return false;
         }
         return super.onNavigationItemSelected(item);

@@ -37,12 +37,14 @@ import com.ab.telugumoviequiz.help.HelpPreferences;
 import com.ab.telugumoviequiz.help.HelpReader;
 import com.ab.telugumoviequiz.help.HelpTopic;
 import com.ab.telugumoviequiz.help.ViewHelp;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener, NotifyTextChanged,
-        CallbackResponse, MessageListener, DialogAction {
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener,
+        NotifyTextChanged, CallbackResponse, MessageListener, DialogAction {
+    private static final int FORGOT_PASSWD_CONFIRM = 10;
     private PATextWatcher mailTextWatcher, passwordTextWatcher, captchaTextWatcher;
 
     @Override
@@ -108,31 +110,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             Scheduler.getInstance().submit(loginReq);
         } else if (viewId == R.id.forgotPasswordBut) {
             Utils.showConfirmationMessage("Confirm?", "Are you sure to proceed?",
-                    this, this, 10, null);
+                    this, this, FORGOT_PASSWD_CONFIRM, null);
         } else if (viewId == R.id.reloadCaptcha) {
             generateCaptcha();
-        } /*else if (viewId == R.id.termsConditionsText1) {
-            List<String> helpKeys = new ArrayList<>();
-            helpKeys.add("topic_name1");
-            helpKeys.add("topic_name2");
-            helpKeys.add("topic_name3");
-            helpKeys.add("topic_name4");
-            helpKeys.add("topic_name5");
-            helpKeys.add("topic_name6");
-            helpKeys.add("topic_name7");
-            helpKeys.add("topic_name8");
-            helpKeys.add("topic_name9");
-            List<HelpTopic> loginHelpLocalTopics = Utils.getHelpTopics(helpKeys, 1);
-            List<HelpTopic> loginHelpEnglishTopics = Utils.getHelpTopics(helpKeys, 2);
-
-            ViewHelp viewHelp = new ViewHelp(loginHelpLocalTopics,
-                    loginHelpEnglishTopics, HelpPreferences.TERMS_CONDITIONS);
-            viewHelp.setLocalMainHeading("Main Heading Telugu");
-            viewHelp.setEnglishMainHeading("Terms And Conditions");
-            Utils.clearState();
-            FragmentManager fragmentManager = this.getSupportFragmentManager();
-            viewHelp.show(fragmentManager, "dialog");
-        }*/
+        }
     }
 
     @Override
@@ -146,7 +127,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     @Override
-    public void handleResponse(int reqId, boolean exceptionThrown, boolean isAPIException, final Object response, Object helperObj) {
+    public void handleResponse(int reqId, boolean exceptionThrown,
+                               boolean isAPIException,
+                               final Object response, Object helperObj) {
         Runnable enableButtons = () -> {
             Button loginButton = findViewById(R.id.loginBut);
             loginButton.setEnabled(true);
@@ -180,9 +163,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 UserDetails.getInstance().setUserProfile(userProfile);
                 msg = resources.getString(R.string.user_login_success_msg);
                 final String successMsg  = msg;
+                final Button loginButton = findViewById(R.id.loginBut);
                 Runnable loginRun = () -> {
+                    Snackbar.make(loginButton, successMsg, Snackbar.LENGTH_SHORT).show();
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    intent.putExtra("msg", successMsg);
+                    //intent.putExtra("msg", successMsg);
                     startActivity(intent);
                     finish();
                 };
@@ -286,7 +271,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private LoginData getFromUI() {
         boolean uiValidationRes = validateData();
-        System.out.println("In getFromUI" + uiValidationRes);
         if (!uiValidationRes) {
             return null;
         }
@@ -353,7 +337,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         TextView captchaQuestion = findViewById(R.id.captchaQuestion);
         int captchaTextInt = Integer.parseInt(str);
         String captchaQuestionStr = captchaQuestion.getText().toString().trim();
-        System.out.println(captchaQuestionStr);
         int pos = captchaQuestionStr.indexOf("+");
         String num1Str = captchaQuestionStr.substring(0, pos - 1).trim();
         String num2Str = captchaQuestionStr.substring(pos + 1).trim();
@@ -458,16 +441,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void doAction(int calledId, Object userObject) {
-        boolean result = validateMailId();
-        if (!result) {
-            return;
-        }
-        LoginData loginData = formEntity();
+        if (calledId == FORGOT_PASSWD_CONFIRM) {
+            boolean result = validateMailId();
+            if (!result) {
+                return;
+            }
+            LoginData loginData = formEntity();
 
-        PostTask<LoginData, UserProfile> forgotPassword = Request.getForgotPassword();
-        forgotPassword.setCallbackResponse(this);
-        forgotPassword.setPostObject(loginData);
-        forgotPassword.setActivity(LoginActivity.this, null);
-        Scheduler.getInstance().submit(forgotPassword);
+            PostTask<LoginData, UserProfile> forgotPassword = Request.getForgotPassword();
+            forgotPassword.setCallbackResponse(this);
+            forgotPassword.setPostObject(loginData);
+            forgotPassword.setActivity(LoginActivity.this, null);
+            Scheduler.getInstance().submit(forgotPassword);
+        }
     }
 }
