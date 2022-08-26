@@ -235,7 +235,11 @@ public class UpdateUserProfile extends BaseFragment implements View.OnClickListe
         UserProfile userProfile = UserDetails.getInstance().getUserProfile();
         mailIdTextView.setText(userProfile.getEmailAddress());
         mycodeTextView.setText(userProfile.getMyReferalId());
-        bossNameTextView.setText(userProfile.getBossName());
+        String bossName = userProfile.getBossName();
+        if ((bossName == null) || (bossName.length() == 0)) {
+            bossName = "None";
+        }
+        bossNameTextView.setText(bossName);
         bossCodeTextView.setText(userProfile.getBossReferredId());
         userNameTextView.setText(userProfile.getName());
         newPasswordTextView.setText("");

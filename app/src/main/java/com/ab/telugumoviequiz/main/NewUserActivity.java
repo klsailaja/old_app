@@ -14,6 +14,7 @@ import android.text.TextPaint;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -59,8 +60,10 @@ public class NewUserActivity extends AppCompatActivity
     public static int NEW_USER_SEND_CODE = 100;
 
 
+    // Completed.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.v("onCreate", "This is in onCreate");
         super.onCreate(savedInstanceState);
         setContentView(layout.activity_register);
 
@@ -103,12 +106,14 @@ public class NewUserActivity extends AppCompatActivity
         stepsPostValidMailId(false);
     }
 
+    // Completed.
     @Override
     protected void onStart() {
         super.onStart();
         initializeClickables();
     }
 
+    // Completed.
     @Override
     protected void onResume() {
         super.onResume();
@@ -118,6 +123,7 @@ public class NewUserActivity extends AppCompatActivity
         WinMsgHandler.getInstance().start();
     }
 
+    // Completed.
     @Override
     protected void onPause() {
         super.onPause();
@@ -125,11 +131,13 @@ public class NewUserActivity extends AppCompatActivity
         handleTextWatchers(false);
     }
 
+    // Completed.
     @Override
     protected void onStop() {
         super.onStop();
     }
 
+    // Completed.
     public void onClick(View view) {
         int viewId = view.getId();
         if (viewId == id.sendCode) {
@@ -196,17 +204,20 @@ public class NewUserActivity extends AppCompatActivity
             viewHelp.show(fragmentManager, "dialog");
         }
     }
-
+    // Completed.
     @Override
     public void passData(int reqId, List<String> data) {
-        String msg = data.get(0);
-        Runnable run = () -> {
-            TextView winMsgBar = findViewById(R.id.winMsgs);
-            winMsgBar.setText(msg);
-        };
-        this.runOnUiThread(run);
+        if (reqId == WinMsgHandler.WIN_MSG_ID) {
+            String msg = data.get(0);
+            Runnable run = () -> {
+                TextView winMsgBar = findViewById(R.id.winMsgs);
+                winMsgBar.setText(msg);
+            };
+            this.runOnUiThread(run);
+        }
     }
 
+    // Completed.
     @Override
     public void handleResponse(int reqId, boolean exceptionThrown, boolean isAPIException, final Object response, Object helperObj) {
         if((exceptionThrown) && (!isAPIException)) {
@@ -291,6 +302,7 @@ public class NewUserActivity extends AppCompatActivity
         }
     }
 
+    // Completed.
     @SuppressLint("NonConstantResourceId")
     public void textChanged(int viewId) {
         boolean result;
@@ -318,15 +330,17 @@ public class NewUserActivity extends AppCompatActivity
             }
         }
     }
-
+    // Completed.
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
     }
 
+    // Completed.
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
     }
 
+    // Completed.
     @Override
     public void afterTextChanged(Editable s) {
         for (int index = 0; index < verifyCodeTextViewList.size(); index ++) {
@@ -342,6 +356,7 @@ public class NewUserActivity extends AppCompatActivity
             }
         }
     }
+    // Completed.
     private void stepsPostValidMailId(boolean isValid) {
         Button sendCodeBut = findViewById(R.id.sendCode);
         sendCodeBut.setEnabled(isValid);
@@ -351,6 +366,7 @@ public class NewUserActivity extends AppCompatActivity
             textView.setEnabled(isValid);
         }
     }
+    // Completed.
     private String getEnteredCode() {
         StringBuilder stringBuilder = new StringBuilder();
         int digitsEntered = 0;
@@ -370,12 +386,14 @@ public class NewUserActivity extends AppCompatActivity
         return stringBuilder.toString();
     }
 
+    // Completed.
     private UserProfile getFromUI() {
         boolean uiValidationRes = validateData();
         if (!uiValidationRes) return null;
         return formEntity();
     }
 
+    // Completed.
     private boolean validateData() {
         boolean result = validateMailId();
         stepsPostValidMailId(result);
@@ -411,6 +429,7 @@ public class NewUserActivity extends AppCompatActivity
         return result;
     }
 
+    // Completed.
     private UserProfile formEntity() {
         UserProfile userProfile = new UserProfile();
 
@@ -437,6 +456,7 @@ public class NewUserActivity extends AppCompatActivity
         return userProfile;
     }
 
+    // Completed.
     private void handleTextWatchers(boolean add) {
         TextView mailTextView = findViewById(id.editTextEmail);
         TextView passwdTextView = findViewById(id.editTextPassword);
@@ -471,6 +491,7 @@ public class NewUserActivity extends AppCompatActivity
         }
     }
 
+    // Completed.
     private void handleListeners(View.OnClickListener listener) {
         Button loginButton = findViewById(id.registerButton);
         loginButton.setOnClickListener(listener);
@@ -488,6 +509,7 @@ public class NewUserActivity extends AppCompatActivity
         verifyCodeButton.setOnClickListener(listener);
     }
 
+    // Completed.
     private boolean validateTermsConditions() {
         CheckBox checkBox = findViewById(R.id.termsConditionsCheck1);
         if (!checkBox.isChecked()) {
@@ -498,6 +520,7 @@ public class NewUserActivity extends AppCompatActivity
         return true;
     }
 
+    // Completed.
     private boolean validateReferalCode() {
         TextView referalText = findViewById(id.editReferalCode);
         String str = referalText.getText().toString().trim();
@@ -510,6 +533,7 @@ public class NewUserActivity extends AppCompatActivity
         return true;
     }
 
+    // Completed.
     private boolean validateName() {
         TextView nameText = findViewById(id.editTextName);
         String str = nameText.getText().toString().trim();
@@ -522,6 +546,7 @@ public class NewUserActivity extends AppCompatActivity
         return true;
     }
 
+    // Completed.
     private boolean validateConfirmPasswd() {
         TextView confirmPasswdText = findViewById(id.confirmTextPassword);
         String str = confirmPasswdText.getText().toString().trim();
@@ -534,6 +559,7 @@ public class NewUserActivity extends AppCompatActivity
         return true;
     }
 
+    // Completed.
     private boolean validatePasswd() {
         TextView passwdText = findViewById(id.editTextPassword);
         String str = passwdText.getText().toString().trim();
@@ -546,6 +572,7 @@ public class NewUserActivity extends AppCompatActivity
         return true;
     }
 
+    // Completed.
     private boolean validateMailId() {
         TextView mailUI = findViewById(id.editTextEmail);
         String str = mailUI.getText().toString().trim();
@@ -565,6 +592,7 @@ public class NewUserActivity extends AppCompatActivity
         return true;
     }
 
+    // Completed.
     private void initializeClickables() {
         //TextView terms1TV = findViewById(R.id.termsConditionsText1);
         CheckBox terms1TV = findViewById(R.id.termsConditionsCheck1);
@@ -608,6 +636,7 @@ public class NewUserActivity extends AppCompatActivity
         newUserTV.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
+    // Completed.
     @Override
     public void doAction(int calledId, Object userObject) {
         if (calledId == NEW_USER_SEND_CODE) {

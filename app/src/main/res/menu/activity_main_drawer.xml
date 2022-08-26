@@ -47,11 +47,17 @@
             android:id="@+id/share"
             android:title="@string/share_it" />
         <item
+            android:id="@+id/faq"
+            android:title="@string/faq" />
+        <item
             android:id="@+id/nav_kyc"
             android:title="@string/kyc"/>
         <item
             android:id="@+id/nav_customercare"
             android:title="@string/menu_customercare"/>
+        <item
+            android:id="@+id/more_games"
+            android:title="@string/moreGames" />
         <item
             android:id="@+id/logout"
             android:title="@string/menu_logout"/>

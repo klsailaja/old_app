@@ -34,11 +34,9 @@ public class HelpReader {
                 if (mLine.length() == 0) {
                     continue;
                 }
-                System.out.println(mLine);
                 StringTokenizer stringTokenizer = new StringTokenizer(mLine, "=");
                 String key = stringTokenizer.nextToken().trim();
                 String value = stringTokenizer.nextToken().trim();
-                System.out.println(key + "::" + value);
                 if (mode == 1) {
                     localFileContents.put(key, value);
                 } else {

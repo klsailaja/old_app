@@ -48,5 +48,14 @@
                 android:layout_toEndOf="@+id/addBtn"
                 android:text="@string/screenshot_remove" />
         </RelativeLayout>
+        <Button
+            style="@style/normalButton"
+            android:layout_marginTop="@dimen/margin_top_small"
+            android:id="@+id/ccCreateBut"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/ccCreateTicketBut"/>
     </LinearLayout>
 </ScrollView>

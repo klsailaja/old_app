@@ -120,7 +120,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/profileNewPasswd"
                     android:hint="@string/user_profile_new_password_label"
-                    android:inputType="text"
+                    android:inputType="textPassword"
                     android:enabled="true"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
@@ -135,7 +135,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/profileConfirmPasswd"
                     android:hint="@string/user_profile_confirm_password_label"
-                    android:inputType="text"
+                    android:inputType="textPassword"
                     android:enabled="true"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />

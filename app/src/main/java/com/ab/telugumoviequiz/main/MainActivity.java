@@ -41,6 +41,8 @@ import com.ab.telugumoviequiz.common.Utils;
 import com.ab.telugumoviequiz.common.WinMsgHandler;
 import com.ab.telugumoviequiz.customercare.CCTableView;
 import com.ab.telugumoviequiz.customercare.NewCCReq;
+import com.ab.telugumoviequiz.faq.FAQView;
+import com.ab.telugumoviequiz.faq.MoreGamesView;
 import com.ab.telugumoviequiz.games.GameDetails;
 import com.ab.telugumoviequiz.games.GameStatus;
 import com.ab.telugumoviequiz.games.GameStatusHolder;
@@ -345,8 +347,11 @@ public class MainActivity extends AppCompatActivity
             launchView(Navigator.CC_REQ_VIEW, params, false);
         } else if (id == R.id.nav_kyc) {
             launchView(Navigator.KYC_VIEW, params, false);
-        }
-        else if (id == R.id.logout) {
+        } else if (id == R.id.faq) {
+            launchView(Navigator.FAQ, params, false);
+        } else if (id == R.id.more_games) {
+            launchView(Navigator.MORE_GAMES, params, false);
+        } else if (id == R.id.logout) {
             Request.baseUri = getString(R.string.base_url);
             Intent intent = new Intent(this, LoginActivity.class);
             intent.putExtra(Keys.LOGIN_SCREEN_CALLED_FROM_LOGOUT, 1);
@@ -477,6 +482,17 @@ public class MainActivity extends AppCompatActivity
             case Navigator.KYC_VIEW: {
                 stopped = true;
                 fragment = new KYCView();
+                break;
+            }
+            case Navigator.FAQ: {
+                stopped = true;
+                fragment = new FAQView();
+                break;
+            }
+            case Navigator.MORE_GAMES: {
+                stopped = false;
+                fragment = new MoreGamesView();
+                break;
             }
         }
         if (stopped) {
@@ -489,15 +505,17 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void passData(int reqId, List<String> data) {
-        String msg = data.get(0);
-        Runnable run = () -> {
-            TextView winMsgBar = findViewById(R.id.winMsgs);
-            if (winMsgBar == null) {
-                return;
-            }
-            winMsgBar.setText(msg);
-        };
-        this.runOnUiThread(run);
+        if (reqId == WinMsgHandler.WIN_MSG_ID) {
+            String msg = data.get(0);
+            Runnable run = () -> {
+                TextView winMsgBar = findViewById(R.id.winMsgs);
+                if (winMsgBar == null) {
+                    return;
+                }
+                winMsgBar.setText(msg);
+            };
+            this.runOnUiThread(run);
+        }
     }
 
 

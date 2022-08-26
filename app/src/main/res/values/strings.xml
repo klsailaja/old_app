@@ -1,7 +1,7 @@
 <resources>
     <!-- Main App -->
     <string name="app_name">TeluguMovieQuiz</string>
-    <string name="base_url" translatable="false">http://192.168.1.8:8888</string>
+    <string name="base_url" translatable="false">http://192.168.1.5:8888</string>
 
     <string name="quiz_screen_server_err" translatable="false">Server Error. Please try after some time</string>
 
@@ -378,4 +378,7 @@
     <string name="showWinners" translatable="false">Show Winners</string>
     <string name="toolbar_ob" translatable="false">Current Balance in Indian Rupees:</string>
     <string name="toolbar_ob_default" translatable="false">-</string>
+    <string name="faq" translatable="false">FAQs</string>
+    <string name="moreGamesViewIntro" translatable="false">More Games Introduction</string>
+    <string name="moreGames" translatable="false">More Games</string>
 </resources>

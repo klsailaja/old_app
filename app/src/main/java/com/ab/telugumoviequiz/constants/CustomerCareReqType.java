@@ -5,7 +5,7 @@ public enum CustomerCareReqType {
 	
 	private final int id;
 	
-	private CustomerCareReqType(int id){
+	CustomerCareReqType(int id){
 		this.id = id;
 	}
 	

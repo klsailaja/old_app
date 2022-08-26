@@ -49,7 +49,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class ShowGames extends BaseFragment implements CallbackResponse, View.OnClickListener, MessageListener {
+public class ShowGames extends BaseFragment implements CallbackResponse, View.OnClickListener,
+        MessageListener {
     private int fragmentIndex = -1;
 
     private final List<GameDetails> gameDetailsList = new ArrayList<>();

@@ -15,6 +15,7 @@ public class WinMsgHandler implements CallbackResponse {
     private boolean isStopped = false;
     private int count;
     private long lastFetchTime;
+    public static int WIN_MSG_ID = 999;
 
     private WinMsgHandler() {
     }
@@ -63,17 +64,15 @@ public class WinMsgHandler implements CallbackResponse {
             }
             List<String> msgList = new ArrayList<>();
             msgList.add(msg);
-            listener.passData(999, msgList);
+            listener.passData(WIN_MSG_ID, msgList);
         }
     }
 
     public void handleResponse(int reqId, boolean exceptionThrown, boolean isAPIException, final Object response, Object helperObject) {
         if((exceptionThrown) && (!isAPIException)) {
-            System.out.println("Exception thrown here " + response);
             return;
         }
         if (isAPIException) {
-            System.out.println("isAPIException thrown here " + response);
             return;
         }
         if (reqId == Request.WIN_WD_MSGS) {
@@ -81,7 +80,6 @@ public class WinMsgHandler implements CallbackResponse {
             winWdMessages.clear();
             winWdMessages.addAll(result);
             int size = winWdMessages.size();
-            System.out.println("size is " + size);
             String errMessage;
             if (size == 0) {
                 errMessage = "Recent Win messages shown here";

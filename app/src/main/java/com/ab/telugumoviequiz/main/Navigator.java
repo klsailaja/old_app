@@ -30,6 +30,8 @@ public interface Navigator {
     String QUESTION_ANSWER_WRONG = "ReportQuestionAnswerWrong";
     String CC_OTHERS = "CC_OTHERS";
     String KYC_VIEW = "KYC_VIEW";
+    String FAQ = "FAQS";
+    String MORE_GAMES = "Similar More Games";
 
     void launchView(String viewId, Bundle params, boolean storeState);
 }

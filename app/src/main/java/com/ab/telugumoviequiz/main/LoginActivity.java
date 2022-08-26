@@ -47,6 +47,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private static final int FORGOT_PASSWD_CONFIRM = 10;
     private PATextWatcher mailTextWatcher, passwordTextWatcher, captchaTextWatcher;
 
+    // Completed.
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,12 +66,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
+    // Completed.
     @Override
     public void onStart() {
         super.onStart();
         initializeClickables();
     }
 
+    // Completed.
     @Override
     public void onResume() {
         super.onResume();
@@ -80,6 +83,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         WinMsgHandler.getInstance().setUserProfileId(-1);
     }
 
+    // Completed.
     @Override
     public void onPause() {
         super.onPause();
@@ -87,11 +91,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         handleTextWatchers(false);
     }
 
+    // Completed.
     @Override
     public void onStop() {
         super.onStop();
     }
 
+    // Completed.
     @Override
     public void onClick(View view) {
         int viewId = view.getId();
@@ -116,16 +122,20 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
+    // Completed.
     @Override
     public void passData(int reqId, List<String> data) {
-        String msg = data.get(0);
-        Runnable run = () -> {
-            TextView winMsgBar = findViewById(R.id.winMsgs);
-            winMsgBar.setText(msg);
-        };
-        this.runOnUiThread(run);
+        if (reqId == WinMsgHandler.WIN_MSG_ID) {
+            String msg = data.get(0);
+            Runnable run = () -> {
+                TextView winMsgBar = findViewById(R.id.winMsgs);
+                winMsgBar.setText(msg);
+            };
+            this.runOnUiThread(run);
+        }
     }
 
+    // Completed.
     @Override
     public void handleResponse(int reqId, boolean exceptionThrown,
                                boolean isAPIException,
@@ -197,6 +207,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
+    // Completed.
     @Override
     public void textChanged(int viewId) {
         if (viewId == R.id.editTextEmail) {
@@ -208,6 +219,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
+    // Completed.
     private void generateCaptcha() {
         int num1 = getRandomNumber();
         int num2 = getRandomNumber();
@@ -217,6 +229,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         captchaText.setText(str);
     }
 
+    // Completed.
     private void showHelpWindow() {
         int isSet = HelpPreferences.getInstance().readPreference(getBaseContext(), HelpPreferences.LOGOUT_TIPS);
         if (isSet == 1) {
@@ -238,6 +251,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         viewHelp.show(fragmentManager, "dialog");
     }
 
+    // Completed.
     private boolean validateTermsConditions() {
         CheckBox checkBox = findViewById(R.id.termsConditionsCheck1);
         if (!checkBox.isChecked()) {
@@ -248,6 +262,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         return true;
     }
 
+    // Completed.
     private boolean validateData() {
         boolean result = validateMailId();
         if (!result) {
@@ -269,6 +284,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         return result;
     }
 
+    // Completed.
     private LoginData getFromUI() {
         boolean uiValidationRes = validateData();
         if (!uiValidationRes) {
@@ -277,6 +293,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         return formEntity();
     }
 
+    // Completed.
     private LoginData formEntity() {
         LoginData loginData = new LoginData();
 
@@ -293,6 +310,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         return loginData;
     }
 
+    // Completed.
     private void handleTextWatchers(boolean add) {
         TextView mailTextView = findViewById(R.id.editTextEmail);
         TextView passwdTextView = findViewById(R.id.editTextPassword);
@@ -314,6 +332,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
+    // Completed.
     private void handleListeners(View.OnClickListener listener) {
         Button loginButton = findViewById(R.id.loginBut);
         loginButton.setOnClickListener(listener);
@@ -331,6 +350,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         reloadCaptcha.setOnClickListener(listener);
     }
 
+    // Completed.
     private boolean validateUserCaptcha() {
         TextView captchaText = findViewById(R.id.enterCaptchaET);
         String str = captchaText.getText().toString().trim();
@@ -351,6 +371,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         return true;
     }
 
+    // Completed.
     private boolean validateCaptcha() {
         TextView captchaText = findViewById(R.id.enterCaptchaET);
         String str = captchaText.getText().toString().trim();
@@ -363,6 +384,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         return true;
     }
 
+    // Completed.
     private boolean validatePasswd() {
         TextView passwdText = findViewById(R.id.editTextPassword);
         String str = passwdText.getText().toString().trim();
@@ -375,6 +397,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         return true;
     }
 
+    // Completed.
     private boolean validateMailId() {
         TextView mailUI = findViewById(R.id.editTextEmail);
         String str = mailUI.getText().toString().trim();
@@ -394,10 +417,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         return true;
     }
 
+    // Completed.
     private static int getRandomNumber() {
-        return 1 + (int)(Math.random() * (10 - 1));
+        return 1 + (int)(Math.random() * (20 - 1));
     }
 
+    // Completed.
     private void initializeClickables() {
         CheckBox terms1TV = findViewById(R.id.termsConditionsCheck1);
         String terms1 = getResources().getString(R.string.terms_conditions1);
@@ -439,6 +464,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         newUserTV.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
+    // Completed.
     @Override
     public void doAction(int calledId, Object userObject) {
         if (calledId == FORGOT_PASSWD_CONFIRM) {
