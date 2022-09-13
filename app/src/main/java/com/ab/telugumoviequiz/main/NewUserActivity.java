@@ -175,6 +175,11 @@ public class NewUserActivity extends AppCompatActivity
                 Utils.showMessage("Error", "Please correct errors", NewUserActivity.this, null);
                 return;
             }
+            boolean result = validateTermsConditions();
+            if (!result) {
+                return;
+            }
+
             Button loginButton = findViewById(R.id.registerButton);
             loginButton.setEnabled(false);
 
@@ -262,14 +267,15 @@ public class NewUserActivity extends AppCompatActivity
                     sendCodeButton.setText(string.resend_code);
                     sendCodeButton.setTag(true);
 
-                    String mailId = mailidTextView.getText().toString().trim();
                     for (int index = 0; index < verifyCodeTextViewList.size(); index ++) {
                         TextView textView = verifyCodeTextViewList.get(index);
                         textView.setEnabled(true);
                     }
+                    verifyCodeTextViewList.get(0).requestFocus();
+
                     Button verifyCodeButton = findViewById(id.verifyCode);
                     verifyCodeButton.setEnabled(true);
-                    String successMsg = "Verification Code Sent to : " + mailId + " Please Check mail and enter code";
+                    String successMsg = "Verification Code Sent. Please enter code from mail";
                     Utils.showMessage("Information", successMsg, this, null);
                 }
             };
@@ -280,6 +286,11 @@ public class NewUserActivity extends AppCompatActivity
                 String msg = "Verification Code mismatch. Please try again";
                 if (error.toLowerCase().equals("true")) {
                     msg = "Verification Code matched. Please configure password";
+
+                    Button verifyCodeButton = findViewById(id.verifyCode);
+                    verifyCodeButton.setEnabled(false);
+
+                    stepsPostValidMailId(false);
 
                     TextView passwdTextBox = findViewById(id.editTextPassword);
                     passwdTextBox.setEnabled(true);
@@ -295,6 +306,7 @@ public class NewUserActivity extends AppCompatActivity
 
                     Button registerButton = findViewById(id.registerButton);
                     registerButton.setEnabled(true);
+
                 }
                 Utils.showMessage("Information", msg, this, null);
             };
@@ -396,15 +408,11 @@ public class NewUserActivity extends AppCompatActivity
     // Completed.
     private boolean validateData() {
         boolean result = validateMailId();
-        stepsPostValidMailId(result);
         if (!result) {
+            stepsPostValidMailId(result);
             return false;
         }
         result = validatePasswd();
-        if (!result) {
-            return false;
-        }
-        result = validateName();
         if (!result) {
             return false;
         }
@@ -421,11 +429,14 @@ public class NewUserActivity extends AppCompatActivity
             confirmPasswdTextBox.requestFocus();
             return false;
         }
+        result = validateName();
+        if (!result) {
+            return false;
+        }
         result = validateReferalCode();
         if (!result) {
             return false;
         }
-        result = validateTermsConditions();
         return result;
     }
 
