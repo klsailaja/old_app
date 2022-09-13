@@ -86,6 +86,9 @@ public class Request {
     public static final int KYC_CREATE = 7001;
     public static final int KYC_POST_PIC = 7002;
 
+    public static final int SEND_WD_OTP_CODE = 9100;
+    public static final int VERIFY_WD_OTP_CODE = 9200;
+
     public static String getTermsConditionsURL() {
         return baseUri + "/terms";
     }
@@ -320,6 +323,18 @@ public class Request {
         String uri = baseUri + "/game/upcoming/" + hour;
         return new GetTask<>(uri, UPCOMING_CELEBRITY_NAMES_ID, null,
                 String[].class, null);
+    }
+
+    // Withdraw Send OTP Task
+    public static PostTask<String, String> sendWDCodeTask() {
+        String uri = baseUri + "/wd/sendcode";
+        return new PostTask<>(uri, SEND_WD_OTP_CODE, null, null, String.class);
+    }
+
+    public static PostTask<OTPDetails, String> verifyWDCodeTask() {
+        String uri = baseUri + "/wd/verify";
+        return new PostTask<>(uri, VERIFY_WD_OTP_CODE,
+                null, null, String.class);
     }
 
     // New User Registration Screen

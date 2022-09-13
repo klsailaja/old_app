@@ -29,7 +29,6 @@ import com.ab.telugumoviequiz.constants.UserMoneyAccountType;
 import com.ab.telugumoviequiz.games.PayGameModel;
 import com.ab.telugumoviequiz.main.AddMoneyProcessor;
 import com.ab.telugumoviequiz.main.MainActivity;
-import com.ab.telugumoviequiz.main.NewUserActivity;
 import com.ab.telugumoviequiz.main.UserMoney;
 import com.ab.telugumoviequiz.main.UserProfile;
 
@@ -157,6 +156,7 @@ public class AddMoney extends BaseFragment
         if (reqId == Request.GET_FULL_USER_MONEY) {
             UserMoney userMoney = (UserMoney) response;
             UserDetails.getInstance().setUserMoney(userMoney);
+            System.out.println("In Add Money View" + userMoney);
             Runnable run = this::updateMoneyEntries;
             if (activity != null) {
                 activity.runOnUiThread(run);

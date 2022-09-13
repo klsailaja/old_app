@@ -58,6 +58,7 @@ import com.ab.telugumoviequiz.referals.MyReferralsView;
 import com.ab.telugumoviequiz.transactions.TransactionsView;
 import com.ab.telugumoviequiz.userprofile.UpdateUserProfile;
 import com.ab.telugumoviequiz.withdraw.NewWithdrawReq;
+import com.ab.telugumoviequiz.withdraw.VerifyWDOTP;
 import com.ab.telugumoviequiz.withdraw.WithdrawReqsView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -336,7 +337,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_referals) {
             launchView(Navigator.REFERRALS_VIEW, params, false);
         }  else if (id == R.id.nav_withdraw_view) {
-            launchView(Navigator.WITHDRAW_REQ_VIEW, params, false);
+            launchView(Navigator.WD_OTP, params, false);
         } else if (id == R.id.nav_chat) {
             launchView(Navigator.CHAT_VIEW, params, false);
         } else if (id == R.id.nav_user_profile) {
@@ -443,6 +444,11 @@ public class MainActivity extends AppCompatActivity
             case Navigator.HISTORY_VIEW: {
                 stopped = false;
                 fragment = new HistoryView();
+                break;
+            }
+            case Navigator.WD_OTP: {
+                stopped = true;
+                fragment = new VerifyWDOTP();
                 break;
             }
             case Navigator.WITHDRAW_REQ_VIEW: {

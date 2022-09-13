@@ -31,7 +31,8 @@ public interface Navigator {
     String CC_OTHERS = "CC_OTHERS";
     String KYC_VIEW = "KYC_VIEW";
     String FAQ = "FAQS";
-    String MORE_GAMES = "Similar More Games";
+    String MORE_GAMES = "SimilarMoreGames";
+    String WD_OTP = "WD_OTP";
 
     void launchView(String viewId, Bundle params, boolean storeState);
 }

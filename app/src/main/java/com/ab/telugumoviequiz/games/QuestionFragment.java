@@ -340,7 +340,11 @@ public class QuestionFragment extends BaseFragment
                 MenuItem menuItem = popupMenu.getMenu().findItem(R.id.item_my_answers);
                 menuItem.setEnabled(enable);
                 enable = gameLeaderBoardDetails.size() != 0;
-                final Boolean isGameOver = (Boolean) v.getTag();
+                Boolean tempIsGameOver = (Boolean) v.getTag();
+                if (tempIsGameOver == null) {
+                    tempIsGameOver = false;
+                }
+                final boolean isGameOver = tempIsGameOver;
                 menuItem = popupMenu.getMenu().findItem(R.id.item_leaderboard);
                 menuItem.setEnabled(enable);
                 if (isGameOver) {
@@ -713,7 +717,7 @@ public class QuestionFragment extends BaseFragment
             progressBar.setVisibility(View.INVISIBLE);
         }
         //Toast.makeText(getContext(), joinMsg, Toast.LENGTH_SHORT).show();
-        TextView gameIdLabel = root.findViewById(R.id.gameIdLabel);
+        //TextView gameIdLabel = root.findViewById(R.id.gameIdLabel);
         TextView gameIdValLabel = root.findViewById(R.id.gameid_text_val_id);
         TextView startAtLabel = root.findViewById(R.id.startAtLabel);
         TextView startAtValLabel = root.findViewById(R.id.game_starts_label);
@@ -725,8 +729,12 @@ public class QuestionFragment extends BaseFragment
         changeQues = root.findViewById(R.id.flipQuestion);
         Button moreOptions = root.findViewById(R.id.moreOptions);
 
-        gameIdLabel.setVisibility(View.GONE);
-        gameIdValLabel.setVisibility(View.GONE);
+        if (gameIdValLabel != null) {
+            gameIdValLabel.setText(String.valueOf(gameDetails.getTempGameId()));
+        }
+
+        //gameIdLabel.setVisibility(View.GONE);
+        //gameIdValLabel.setVisibility(View.GONE);
         startAtLabel.setVisibility(View.GONE);
         startAtValLabel.setVisibility(View.GONE);
         usersAtLabel.setVisibility(View.GONE);

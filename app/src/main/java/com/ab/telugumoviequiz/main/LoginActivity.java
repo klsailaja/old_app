@@ -437,7 +437,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 ds.setColor(Color.parseColor("#FF0000"));
             }
         };
-        String termsLinkText = "Terms of Use";
+        String termsLinkText = "View Terms and Conditions";
         int startPos = terms1.indexOf(termsLinkText);
         int endPos = startPos + termsLinkText.length();
         ss.setSpan(clickableSpan, startPos, endPos, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
