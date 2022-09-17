@@ -147,6 +147,9 @@
                         android:id="@+id/editTextPassword"
                         android:inputType="textPassword"
                         android:enabled="false"
+                        android:paddingStart="0dp"
+                        android:paddingEnd="10dp"
+                        android:drawableEnd="@drawable/showeye"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -162,6 +165,9 @@
                         android:id="@+id/confirmTextPassword"
                         android:inputType="textPassword"
                         android:enabled="false"
+                        android:paddingStart="0dp"
+                        android:paddingEnd="10dp"
+                        android:drawableEnd="@drawable/showeye"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
                 </com.google.android.material.textfield.TextInputLayout>

@@ -131,8 +131,8 @@ public class GetTask<T> implements Runnable {
                 HttpClientErrorException clientExp = (HttpClientErrorException) ex;
                 errMessage = clientExp.getResponseBodyAsString();
                 isAPIException = true;
-                System.out.println("errMessage is");
-                System.out.println(errMessage);
+                //System.out.println("errMessage is");
+                //System.out.println(errMessage);
             } else if (ex instanceof HttpServerErrorException) {
                 HttpServerErrorException serverExp = (HttpServerErrorException) ex;
                 errMessage = serverExp.getResponseBodyAsString();

@@ -12,10 +12,13 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.TextWatcher;
+import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.LinkMovementMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -50,15 +53,24 @@ import static com.ab.telugumoviequiz.R.layout;
 import static com.ab.telugumoviequiz.R.string;
 
 public class NewUserActivity extends AppCompatActivity
-        implements View.OnClickListener, NotifyTextChanged, CallbackResponse, MessageListener, TextWatcher, DialogAction {
+        implements View.OnClickListener, NotifyTextChanged, CallbackResponse,
+        View.OnTouchListener, MessageListener, TextWatcher, DialogAction {
+
+    private static final int NETWORK_ERROR_SEND_OTP = 1;
+    private static final int NETWORK_ERROR_VERIFY_OTP = 2;
+    private static final int NETWORK_ERROR_CREATE_USER = 3;
+
+    public static int NEW_USER_SEND_CODE = 100;
+
+    private static final String WAIT_MESSAGE = "Processing...Please Wait!";
 
     private PATextWatcher mailTextWatcher;
     private PATextWatcher passwordTextWatcher;
     private PATextWatcher nameTextWatcher;
     private PATextWatcher referralTextWatcher;
     private final ArrayList<TextView> verifyCodeTextViewList = new ArrayList<>(4);
-    public static int NEW_USER_SEND_CODE = 100;
 
+    private boolean passwordShowing = false, confirmPasswordShowing = false;
 
     // Completed.
     @Override
@@ -118,6 +130,7 @@ public class NewUserActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         handleListeners(this);
+        handleTouchListeners(this);
         handleTextWatchers(true);
         WinMsgHandler.getInstance().setListener(this);
         WinMsgHandler.getInstance().start();
@@ -128,6 +141,7 @@ public class NewUserActivity extends AppCompatActivity
     protected void onPause() {
         super.onPause();
         handleListeners(null);
+        handleTouchListeners(null);
         handleTextWatchers(false);
     }
 
@@ -135,6 +149,44 @@ public class NewUserActivity extends AppCompatActivity
     @Override
     protected void onStop() {
         super.onStop();
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        final int right = 2;
+        if (v.getId() == id.editTextPassword) {
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                TextView passwdTextView = findViewById(R.id.editTextPassword);
+                if (event.getRawX() >= passwdTextView.getRight() - passwdTextView.getCompoundDrawables()[right].getBounds().width()) {
+                    if (!passwordShowing) {
+                        passwdTextView.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.showeye, 0);
+                        passwdTextView.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                        passwordShowing = true;
+                    } else {
+                        passwdTextView.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.hideeye, 0);
+                        passwdTextView.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                        passwordShowing = false;
+                    }
+                }
+            }
+        } else if (v.getId() == id.confirmTextPassword) {
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                TextView confirmPasswod = findViewById(R.id.confirmTextPassword);
+                if (event.getRawX() >= confirmPasswod.getRight() - confirmPasswod.getCompoundDrawables()[right].getBounds().width()) {
+                    if (!confirmPasswordShowing) {
+                        confirmPasswod.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.showeye, 0);
+                        confirmPasswod.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                        confirmPasswordShowing = true;
+                    } else {
+                        confirmPasswod.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.hideeye, 0);
+                        confirmPasswod.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                        confirmPasswordShowing = false;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     // Completed.
@@ -158,6 +210,7 @@ public class NewUserActivity extends AppCompatActivity
                         this, null);
                 return;
             }
+            view.setEnabled(false);
             PostTask<OTPDetails, String> verifyCodeTask = Request.verifyCodeTask();
             OTPDetails otpDetails = new OTPDetails();
 
@@ -168,11 +221,13 @@ public class NewUserActivity extends AppCompatActivity
 
             verifyCodeTask.setPostObject(otpDetails);
             verifyCodeTask.setCallbackResponse(this);
+            verifyCodeTask.setActivity(NewUserActivity.this, WAIT_MESSAGE);
+            verifyCodeTask.setHelperObject(NETWORK_ERROR_VERIFY_OTP);
             Scheduler.getInstance().submit(verifyCodeTask);
         } else if (viewId == id.registerButton) {
             UserProfile userProfile = getFromUI();
             if (userProfile == null) {
-                Utils.showMessage("Error", "Please correct errors", NewUserActivity.this, null);
+                Utils.showMessage("Error", "Please correct above errors", NewUserActivity.this, null);
                 return;
             }
             boolean result = validateTermsConditions();
@@ -180,13 +235,13 @@ public class NewUserActivity extends AppCompatActivity
                 return;
             }
 
-            Button loginButton = findViewById(R.id.registerButton);
-            loginButton.setEnabled(false);
+            view.setEnabled(false);
 
             PostTask<UserProfile, UserProfile> createUserReq = Request.getCreateUserProfile();
             createUserReq.setCallbackResponse(this);
             createUserReq.setPostObject(userProfile);
-            createUserReq.setActivity(NewUserActivity.this, null);
+            createUserReq.setActivity(NewUserActivity.this, WAIT_MESSAGE);
+            createUserReq.setHelperObject(NETWORK_ERROR_CREATE_USER);
             Scheduler.getInstance().submit(createUserReq);
         } else if (viewId == id.referralReadMore) {
             int isSet = HelpPreferences.getInstance().readPreference(getBaseContext(), HelpPreferences.REFERRAL_INFO);
@@ -219,14 +274,38 @@ public class NewUserActivity extends AppCompatActivity
                 winMsgBar.setText(msg);
             };
             this.runOnUiThread(run);
+        } else if (reqId == MessageListener.QUIZ_SEVER_VERIFIED) {
+            Resources resources = getResources();
+            final String msg = resources.getString(string.new_user_register_success);
+            Runnable run = () -> {
+                Intent intent = new Intent(NewUserActivity.this, MainActivity.class);
+                intent.putExtra("msg", msg);
+                startActivity(intent);
+                finish();
+            };
+            runOnUiThread(run);
         }
     }
 
     // Completed.
     @Override
-    public void handleResponse(int reqId, boolean exceptionThrown, boolean isAPIException, final Object response, Object helperObj) {
+    public void handleResponse(int reqId, boolean exceptionThrown, boolean isAPIException,
+                               final Object response, final Object helperObj) {
         if((exceptionThrown) && (!isAPIException)) {
             Runnable run = () -> {
+                if (helperObj instanceof Integer) {
+                    int networkErrCode = (Integer) helperObj;
+                    if (networkErrCode == NETWORK_ERROR_SEND_OTP) {
+                        Button button = findViewById(id.sendCode);
+                        button.setEnabled(true);
+                    } else if (networkErrCode == NETWORK_ERROR_VERIFY_OTP) {
+                        Button button = findViewById(id.verifyCode);
+                        button.setEnabled(true);
+                    } else if (networkErrCode == NETWORK_ERROR_CREATE_USER) {
+                        Button button = findViewById(id.registerButton);
+                        button.setEnabled(true);
+                    }
+                }
                 String error = (String) response;
                 Utils.showMessage("Error", error, NewUserActivity.this, null);
             };
@@ -247,15 +326,7 @@ public class NewUserActivity extends AppCompatActivity
             UserProfile dbUserProfile = (UserProfile) response;
             Request.baseUri = dbUserProfile.getServerIpAddress();
             UserDetails.getInstance().setUserProfile(dbUserProfile);
-            Resources resources = getResources();
-            final String msg = resources.getString(string.new_user_register_success);
-            Runnable run = () -> {
-                Intent intent = new Intent(NewUserActivity.this, MainActivity.class);
-                intent.putExtra("msg", msg);
-                startActivity(intent);
-                finish();
-            };
-            runOnUiThread(run);
+            ClientInitializer.getInstance(this, this);
         } else if (reqId == Request.SEND_OTP_CODE) {
             Runnable run = () -> {
                 String error = (String) response;
@@ -409,7 +480,7 @@ public class NewUserActivity extends AppCompatActivity
     private boolean validateData() {
         boolean result = validateMailId();
         if (!result) {
-            stepsPostValidMailId(result);
+            stepsPostValidMailId(false);
             return false;
         }
         result = validatePasswd();
@@ -424,20 +495,18 @@ public class NewUserActivity extends AppCompatActivity
         TextView confirmPasswdTextBox = findViewById(id.confirmTextPassword);
         String passwd = passwdTextBox.getText().toString().trim();
         String confirmPasswd = confirmPasswdTextBox.getText().toString().trim();
-        if (!passwd.equals(confirmPasswd)) {
+        if (passwd.equals(confirmPasswd)) {
+            result = validateName();
+            if (!result) {
+                return false;
+            }
+            result = validateReferalCode();
+            return result;
+        } else {
             confirmPasswdTextBox.setError("Password and Confirm Password are not same");
             confirmPasswdTextBox.requestFocus();
             return false;
         }
-        result = validateName();
-        if (!result) {
-            return false;
-        }
-        result = validateReferalCode();
-        if (!result) {
-            return false;
-        }
-        return result;
     }
 
     // Completed.
@@ -500,6 +569,12 @@ public class NewUserActivity extends AppCompatActivity
             verifyCodeTextViewList.get(2).removeTextChangedListener(this);
             verifyCodeTextViewList.get(3).removeTextChangedListener(this);
         }
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private void handleTouchListeners(View.OnTouchListener listener) {
+        TextView passwdTextView = findViewById(R.id.editTextPassword);
+        passwdTextView.setOnTouchListener(listener);
     }
 
     // Completed.
@@ -651,11 +726,15 @@ public class NewUserActivity extends AppCompatActivity
     @Override
     public void doAction(int calledId, Object userObject) {
         if (calledId == NEW_USER_SEND_CODE) {
+            Button sendOtpBut = findViewById(id.sendCode);
+            sendOtpBut.setEnabled(false);
             TextView mailIdTxtView = findViewById(id.editTextEmail);
             String mailId = mailIdTxtView.getText().toString().trim();
             PostTask<String,String> sendCodeTask = Request.sendCodeTask();
             sendCodeTask.setPostObject(mailId);
             sendCodeTask.setCallbackResponse(this);
+            sendCodeTask.setHelperObject(NETWORK_ERROR_SEND_OTP);
+            sendCodeTask.setActivity(NewUserActivity.this, WAIT_MESSAGE);
             Scheduler.getInstance().submit(sendCodeTask);
         }
     }

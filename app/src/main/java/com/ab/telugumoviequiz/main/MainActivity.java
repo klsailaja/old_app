@@ -83,7 +83,6 @@ public class MainActivity extends AppCompatActivity
     private NavigationView navigationView;
     private MessageListener userMoneyFetchedListener;
 
-    private static final int TIME_DIFF_CONFIRM = 1000;
     private static final int SHARE_CONFIRM = 2000;
 
     public void fetchUpdateMoney() {
@@ -208,11 +207,6 @@ public class MainActivity extends AppCompatActivity
         /*String successMsg = getIntent().getStringExtra("msg");
         Snackbar.make(activityView, successMsg, Snackbar.LENGTH_SHORT).show();*/
 
-        LocalGamesManager.getInstance().initialize();
-        LocalGamesManager.getInstance().start();
-
-        fetchUpdateMoney();
-
         WinMsgHandler.getInstance().setListener(this);
         UserProfile userProfile = UserDetails.getInstance().getUserProfile();
         WinMsgHandler.getInstance().setUserProfileId(userProfile.getId());
@@ -303,10 +297,6 @@ public class MainActivity extends AppCompatActivity
                 0, 30, TimeUnit.SECONDS);
 
         launchView(Navigator.CURRENT_GAMES, new Bundle(), false);
-
-        GetTask<String> timeCheckTask = Request.getTimeCheckTask();
-        timeCheckTask.setCallbackResponse(this);
-        Scheduler.getInstance().submit(timeCheckTask);
 
         /*
         //The below code is to enable notification. But the notification is not consistent
@@ -582,7 +572,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void handleResponse(int reqId, boolean exceptionThrown, boolean isAPIException, Object response, Object userObject) {
+    public void handleResponse(int reqId, boolean exceptionThrown, boolean isAPIException,
+                               Object response, Object userObject) {
         boolean isHandled = handleServerError(exceptionThrown, isAPIException, response);
         if (isHandled) {
             return;
@@ -685,15 +676,6 @@ public class MainActivity extends AppCompatActivity
                     this.runOnUiThread(run);
                 }
             }
-        } else if (Request.TIME_CHECK_ID == reqId) {
-            String result = (String) response;
-            Resources resources = getResources();
-            String errorMsg = resources.getString(R.string.time_sync_error);
-            if (result.equalsIgnoreCase("false")) {
-                Runnable run = () -> Utils.showMessage("Error", errorMsg,
-                        this, this, TIME_DIFF_CONFIRM, null);
-                this.runOnUiThread(run);
-            }
         } else if (Request.MONEY_TASK_STATUS == reqId) {
             Integer status = (Integer) response;
             String details = (String) userObject;
@@ -727,6 +709,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onStart() {
         super.onStart();
+        fetchUpdateMoney();
     }
 
     @Override
@@ -755,10 +738,6 @@ public class MainActivity extends AppCompatActivity
             shareIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
 
             startActivity(Intent.createChooser(shareIntent, "Share Using"));
-        } else if (calledId == TIME_DIFF_CONFIRM) {
-            Intent intent = new Intent(this, LoginActivity.class);
-            startActivity(intent);
-            finish();
         }
     }
 

@@ -48,8 +48,12 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/login_password_hint"
                 android:text="@string/test_passwd"
+                android:longClickable="false"
                 android:maxLines="1"
+                android:paddingStart="0dp"
+                android:paddingEnd="10dp"
                 android:inputType="textPassword"
+                android:drawableEnd="@drawable/showeye"
                 android:autofillHints="" />
             <LinearLayout
                 android:layout_width="match_parent"

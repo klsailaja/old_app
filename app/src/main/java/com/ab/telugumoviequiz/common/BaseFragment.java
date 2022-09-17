@@ -18,11 +18,24 @@ import java.util.List;
 
 public abstract class BaseFragment extends Fragment implements MessageListener,
         NavigationView.OnNavigationItemSelectedListener {
+    private static boolean isNetworkErrorShowing;
 
     public BaseFragment() {
     }
 
+    public static void setIsShowing(boolean isShowing) {
+        BaseFragment.isNetworkErrorShowing = isShowing;
+    }
+    public static boolean getNetworkErrorShowing() {
+        return isNetworkErrorShowing;
+    }
+
     public boolean handleServerError(boolean exceptionThrown, boolean isAPIException, final Object response) {
+        if (isNetworkErrorShowing) {
+            return true;
+        }
+        setIsShowing(true);
+
         Activity parentActivity = getActivity();
         if (parentActivity instanceof MainActivity) {
             MainActivity mainActivity = (MainActivity) parentActivity;

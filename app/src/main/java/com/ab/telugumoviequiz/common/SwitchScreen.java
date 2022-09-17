@@ -14,6 +14,7 @@ public class SwitchScreen implements DialogAction {
 
     @Override
     public void doAction(int id, Object userObj) {
+        BaseFragment.setIsShowing(false);
         Intent intent = new Intent(mainActivity, LoginActivity.class);
         mainActivity.startActivity(intent);
         mainActivity.finish();

@@ -1,5 +1,6 @@
 package com.ab.telugumoviequiz.main;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -8,8 +9,11 @@ import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
+import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.LinkMovementMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.text.style.ClickableSpan;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -43,9 +47,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener,
-        NotifyTextChanged, CallbackResponse, MessageListener, DialogAction {
+        View.OnTouchListener, NotifyTextChanged, CallbackResponse,
+        MessageListener, DialogAction {
     private static final int FORGOT_PASSWD_CONFIRM = 10;
     private PATextWatcher mailTextWatcher, passwordTextWatcher, captchaTextWatcher;
+    private boolean passwordShowing;
 
     // Completed.
     @Override
@@ -78,6 +84,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void onResume() {
         super.onResume();
         handleListeners(this);
+        handleTouchListeners(this);
         handleTextWatchers(true);
         WinMsgHandler.getInstance().setListener(this);
         WinMsgHandler.getInstance().setUserProfileId(-1);
@@ -88,6 +95,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void onPause() {
         super.onPause();
         handleListeners(null);
+        handleTouchListeners(null);
         handleTextWatchers(false);
     }
 
@@ -122,6 +130,28 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        final int right = 2;
+        TextView passwdTextView = findViewById(R.id.editTextPassword);
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            if (event.getRawX() >= passwdTextView.getRight() - passwdTextView.getCompoundDrawables()[right].getBounds().width()) {
+                if (!passwordShowing) {
+                    passwdTextView.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.showeye, 0);
+                    passwdTextView.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                    passwordShowing = true;
+                } else {
+                    passwdTextView.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.hideeye, 0);
+                    passwdTextView.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                    passwordShowing = false;
+                }
+
+            }
+        }
+        return false;
+    }
+
     // Completed.
     @Override
     public void passData(int reqId, List<String> data) {
@@ -132,6 +162,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 winMsgBar.setText(msg);
             };
             this.runOnUiThread(run);
+        } else if (reqId == MessageListener.QUIZ_SEVER_VERIFIED) {
+            Resources resources = getResources();
+            final String successMsg  = resources.getString(R.string.user_login_success_msg);
+            final Button loginButton = findViewById(R.id.loginBut);
+            Runnable loginRun = () -> {
+                Snackbar.make(loginButton, successMsg, Snackbar.LENGTH_SHORT).show();
+                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                //intent.putExtra("msg", successMsg);
+                startActivity(intent);
+                finish();
+            };
+            runOnUiThread(loginRun);
         }
     }
 
@@ -171,17 +213,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             if ((userProfile != null) && (userProfile.getId() > 0)) {
                 Request.baseUri = userProfile.getServerIpAddress();
                 UserDetails.getInstance().setUserProfile(userProfile);
-                msg = resources.getString(R.string.user_login_success_msg);
-                final String successMsg  = msg;
-                final Button loginButton = findViewById(R.id.loginBut);
-                Runnable loginRun = () -> {
-                    Snackbar.make(loginButton, successMsg, Snackbar.LENGTH_SHORT).show();
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    //intent.putExtra("msg", successMsg);
-                    startActivity(intent);
-                    finish();
-                };
-                runOnUiThread(loginRun);
+                ClientInitializer.getInstance(this, this);
             } else {
                 final String successMsg  = msg;
                 Runnable run = () -> Utils.showMessage("Error", successMsg, LoginActivity.this, null);
@@ -348,6 +380,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         ImageView reloadCaptcha = findViewById(R.id.reloadCaptcha);
         reloadCaptcha.setOnClickListener(listener);
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private void handleTouchListeners(View.OnTouchListener listener) {
+        TextView passwdTextView = findViewById(R.id.editTextPassword);
+        passwdTextView.setOnTouchListener(listener);
     }
 
     // Completed.
