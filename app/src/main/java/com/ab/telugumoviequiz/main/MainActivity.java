@@ -296,6 +296,10 @@ public class MainActivity extends AppCompatActivity
         chatMsgCountPollerTask = Scheduler.getInstance().submitRepeatedTask(getChatMsgCountTask,
                 0, 30, TimeUnit.SECONDS);
 
+
+
+        updateMoneyInUI(UserDetails.getInstance().getUserMoney(), false);
+
         launchView(Navigator.CURRENT_GAMES, new Bundle(), false);
 
         /*
@@ -391,6 +395,37 @@ public class MainActivity extends AppCompatActivity
         if (fragment instanceof BaseFragment) {
             navigationView.setNavigationItemSelectedListener((BaseFragment) fragment);
         }
+    }
+
+    private void updateMoneyInUI(UserMoney userMoney, boolean isGameOver) {
+        UserDetails.getInstance().setUserMoney(userMoney);
+
+        if (userMoneyFetchedListener != null) {
+            List<String> values = new ArrayList<>();
+            String isGameOverStr = "0";
+            if (isGameOver) {
+                isGameOverStr = "1";
+            }
+            values.add(isGameOverStr);
+            this.userMoneyFetchedListener.passData(1000, values);
+        }
+        Runnable run = () -> {
+            ActionBar mActionBar = getSupportActionBar();
+            View view = null;
+            if (mActionBar != null) {
+                view = mActionBar.getCustomView();
+            }
+            if (view == null) {
+                return;
+            }
+            TextView mainMoney = view.findViewById(R.id.main_main_money);
+
+            mainMoney.setText(String.valueOf(userMoney.getAmount()));
+            if (isGameOver) {
+                displayErrorAsToast("Winning Money is updated for winners");
+            }
+        };
+        this.runOnUiThread(run);
     }
 
     private Fragment getFragment(String viewId) {
@@ -585,34 +620,9 @@ public class MainActivity extends AppCompatActivity
 
         if (reqId == Request.GET_USER_MONEY) {
             UserMoney userMoney = (UserMoney) response;
-            UserDetails.getInstance().setUserMoney(userMoney);
             Boolean isGameOverBoolean = (Boolean) userObject;
-            if (userMoneyFetchedListener != null) {
-                List<String> values = new ArrayList<>();
-                String isGameOver = "0";
-                if (isGameOverBoolean) {
-                    isGameOver = "1";
-                }
-                values.add(isGameOver);
-                this.userMoneyFetchedListener.passData(1000, values);
-            }
-            Runnable run = () -> {
-                ActionBar mActionBar = getSupportActionBar();
-                View view = null;
-                if (mActionBar != null) {
-                    view = mActionBar.getCustomView();
-                }
-                if (view == null) {
-                    return;
-                }
-                TextView mainMoney = view.findViewById(R.id.main_main_money);
+            updateMoneyInUI(userMoney, isGameOverBoolean);
 
-                mainMoney.setText(String.valueOf(userMoney.getAmount()));
-                if (isGameOverBoolean) {
-                    displayErrorAsToast("Winning Money is updated for winners");
-                }
-            };
-            this.runOnUiThread(run);
         } else if (reqId == Request.GET_FUTURE_GAMES_STATUS) {
             String gameCancelMsg = null;
             GameStatusHolder result = (GameStatusHolder) response;
@@ -704,12 +714,6 @@ public class MainActivity extends AppCompatActivity
                 queryMoneyCreditedStatus(Long.parseLong(startTime), retryCountInt, 30);
             }
         }
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        fetchUpdateMoney();
     }
 
     @Override

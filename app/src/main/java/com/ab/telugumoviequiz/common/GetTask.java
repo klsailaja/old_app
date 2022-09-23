@@ -113,9 +113,7 @@ public class GetTask<T> implements Runnable {
                     getHttpEntity(null), classType);
             Object resObj = responseEntity.getBody();
             if (activity != null) {
-                Runnable run = () -> {
-                    alertDialog.dismiss();
-                };
+                Runnable run = () -> alertDialog.dismiss();
                 activity.runOnUiThread(run);
             }
             getCallbackResponse().handleResponse(getRequestId(), false, false, resObj, helperObject);
@@ -124,7 +122,7 @@ public class GetTask<T> implements Runnable {
                 Runnable run = () -> alertDialog.dismiss();
                 activity.runOnUiThread(run);
             }
-            ex.printStackTrace();
+            //ex.printStackTrace();
             String errMessage = "Please check your internet connectivity and retry";
             boolean isAPIException = false;
             if (ex instanceof HttpClientErrorException) {

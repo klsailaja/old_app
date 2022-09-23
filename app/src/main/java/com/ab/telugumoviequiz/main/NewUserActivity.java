@@ -680,7 +680,6 @@ public class NewUserActivity extends AppCompatActivity
 
     // Completed.
     private void initializeClickables() {
-        //TextView terms1TV = findViewById(R.id.termsConditionsText1);
         CheckBox terms1TV = findViewById(R.id.termsConditionsCheck1);
         String terms1 = getResources().getString(R.string.terms_conditions1);
         SpannableString ss = new SpannableString(terms1);
@@ -694,7 +693,7 @@ public class NewUserActivity extends AppCompatActivity
                 ds.setColor(Color.parseColor("#FF0000"));
             }
         };
-        String termsLinkText = "Terms of Use";
+        String termsLinkText = "Click here";
         int startPos = terms1.indexOf(termsLinkText);
         int endPos = startPos + termsLinkText.length();
         ss.setSpan(clickableSpan, startPos, endPos, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);

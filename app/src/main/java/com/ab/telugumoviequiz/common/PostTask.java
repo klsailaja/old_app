@@ -122,7 +122,7 @@ public class PostTask<T,R> implements Runnable {
                 Runnable run = () -> alertDialog.dismiss();
                 activity.runOnUiThread(run);
             }
-            ex.printStackTrace();
+            //ex.printStackTrace();
             String errMessage = "Check your internet connectivity and retry";
             boolean isAPIException = false;
             if (ex instanceof HttpClientErrorException) {

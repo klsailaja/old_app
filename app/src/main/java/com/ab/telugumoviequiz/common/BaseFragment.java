@@ -31,9 +31,9 @@ public abstract class BaseFragment extends Fragment implements MessageListener,
     }
 
     public boolean handleServerError(boolean exceptionThrown, boolean isAPIException, final Object response) {
-        if (isNetworkErrorShowing) {
+        /*if (isNetworkErrorShowing) {
             return true;
-        }
+        }*/
         setIsShowing(true);
 
         Activity parentActivity = getActivity();

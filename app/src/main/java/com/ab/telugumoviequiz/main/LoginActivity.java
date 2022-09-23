@@ -13,6 +13,7 @@ import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.LinkMovementMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.text.style.ClickableSpan;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -120,7 +121,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             PostTask<LoginData,UserProfile> loginReq = Request.getLogin();
             loginReq.setCallbackResponse(this);
             loginReq.setPostObject(loginData);
-            loginReq.setActivity(LoginActivity.this, "Processing. Please Wait!");
+            loginReq.setActivity(LoginActivity.this, Utils.WAIT_MESSAGE);
             Scheduler.getInstance().submit(loginReq);
         } else if (viewId == R.id.forgotPasswordBut) {
             Utils.showConfirmationMessage("Confirm?", "Are you sure to proceed?",
@@ -166,8 +167,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             Resources resources = getResources();
             final String successMsg  = resources.getString(R.string.user_login_success_msg);
             final Button loginButton = findViewById(R.id.loginBut);
+            Log.d("Login Activity", "All tasks done.");
             Runnable loginRun = () -> {
                 Snackbar.make(loginButton, successMsg, Snackbar.LENGTH_SHORT).show();
+                Log.d("Login Activity", "Starting Main Activity");
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 //intent.putExtra("msg", successMsg);
                 startActivity(intent);
@@ -475,7 +478,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 ds.setColor(Color.parseColor("#FF0000"));
             }
         };
-        String termsLinkText = "View Terms and Conditions";
+        String termsLinkText = "Click here";
         int startPos = terms1.indexOf(termsLinkText);
         int endPos = startPos + termsLinkText.length();
         ss.setSpan(clickableSpan, startPos, endPos, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);

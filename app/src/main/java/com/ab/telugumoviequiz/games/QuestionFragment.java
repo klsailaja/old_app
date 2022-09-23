@@ -290,6 +290,7 @@ public class QuestionFragment extends BaseFragment
             GameDetails leaveGameDetails = (GameDetails) userObject;
             PostTask<GameOperation, Boolean> joinTask = Request.gameUnjoinTask(leaveGameDetails.getGameId());
             joinTask.setCallbackResponse(this);
+            joinTask.setActivity(getActivity(), Utils.WAIT_MESSAGE);
 
             GameOperation gm = new GameOperation();
             gm.setUserProfileId(UserDetails.getInstance().getUserProfile().getId());
@@ -497,6 +498,7 @@ public class QuestionFragment extends BaseFragment
                 submitTask.setCallbackResponse(this);
                 submitTask.setPostObject(playerAnswer);
                 submitTask.setHelperObject(question.getQuestionNumber());
+                submitTask.setActivity(getActivity(), Utils.WAIT_MESSAGE);
                 Scheduler.getInstance().submit(submitTask);
                 break;
             }
@@ -564,6 +566,7 @@ public class QuestionFragment extends BaseFragment
                 GetTask<PlayerSummary[]> leaderBoardReq = Request.getLeaderBoard(gameDetails.getGameId(), completedQuestionNumber);
                 leaderBoardReq.setCallbackResponse(this);
                 leaderBoardReq.setHelperObject(helperObject);
+                leaderBoardReq.setActivity(getActivity(), Utils.WAIT_MESSAGE);
                 Scheduler.getInstance().submit(leaderBoardReq);
                 break;
             }
@@ -592,6 +595,7 @@ public class QuestionFragment extends BaseFragment
                                 Request.getLeaderBoard(gameDetails.getGameId(), completedQuestionNumber);
                         leaderBoardReq.setCallbackResponse(this);
                         leaderBoardReq.setHelperObject(helperObject);
+                        leaderBoardReq.setActivity(getActivity(), Utils.WAIT_MESSAGE);
                         Scheduler.getInstance().submit(leaderBoardReq);
                     });
                     alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Close", (dialogInterface, i) -> {

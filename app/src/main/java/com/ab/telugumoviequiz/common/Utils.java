@@ -32,6 +32,8 @@ public class Utils {
     public static int screenWidth;
     public static int screenHeight;
 
+    public static final String WAIT_MESSAGE = "Processing...Please Wait!";
+
     public static boolean isEmpty(String str) {
         if (TextUtils.isEmpty(str)) {
             return true;

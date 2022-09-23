@@ -3,6 +3,7 @@ package com.ab.telugumoviequiz.games;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -123,6 +124,7 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
 
             joinTask.setPostObject(gm);
             joinTask.setHelperObject(quesGameDetails);
+            joinTask.setActivity(getActivity(), Utils.WAIT_MESSAGE);
             Scheduler.getInstance().submit(joinTask);
        } else if (R.id.celebritySchedule == viewId) {
             GetTask<CelebrityFullDetails> celebrityFullDetailsGetTask = Request.getCelebrityScheduleTask();
@@ -296,11 +298,6 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         enableCelebrityButton(true);
@@ -407,6 +404,7 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
         }
         switch (reqId) {
             case Request.JOIN_GAME: {
+                Log.d("GamesView", "isAPIException : response :" + isAPIException + ":" + response);
                 isHandled = handleAPIError(isAPIException, response, 1, null, null);
                 if (isHandled) {
                     setBaseParams(true);
