@@ -55,6 +55,10 @@ public class ClientInitializer implements CallbackResponse {
         return instance;
     }
 
+    public static void destroy() {
+        instance = null;
+    }
+
     public long getLoggedInUserCount() {
         return currentlyLoggedInUserCount;
     }

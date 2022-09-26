@@ -347,7 +347,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.more_games) {
             launchView(Navigator.MORE_GAMES, params, false);
         } else if (id == R.id.logout) {
-            Request.baseUri = getString(R.string.base_url);
+            Utils.clientReset(getString(R.string.base_url));
             Intent intent = new Intent(this, LoginActivity.class);
             intent.putExtra(Keys.LOGIN_SCREEN_CALLED_FROM_LOGOUT, 1);
             startActivity(intent);

@@ -3,6 +3,7 @@ package com.ab.telugumoviequiz.common;
 import android.app.Activity;
 import android.content.Intent;
 
+import com.ab.telugumoviequiz.R;
 import com.ab.telugumoviequiz.main.LoginActivity;
 
 public class SwitchScreen implements DialogAction {
@@ -15,6 +16,7 @@ public class SwitchScreen implements DialogAction {
     @Override
     public void doAction(int id, Object userObj) {
         BaseFragment.setIsShowing(false);
+        Utils.clientReset(mainActivity.getResources().getString(R.string.base_url));
         Intent intent = new Intent(mainActivity, LoginActivity.class);
         mainActivity.startActivity(intent);
         mainActivity.finish();

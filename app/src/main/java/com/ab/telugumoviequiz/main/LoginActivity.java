@@ -50,6 +50,7 @@ import java.util.List;
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener,
         View.OnTouchListener, NotifyTextChanged, CallbackResponse,
         MessageListener, DialogAction {
+    private final String TAG = "LoginActivity";
     private static final int FORGOT_PASSWD_CONFIRM = 10;
     private PATextWatcher mailTextWatcher, passwordTextWatcher, captchaTextWatcher;
     private boolean passwordShowing;
@@ -57,6 +58,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     // Completed.
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG, "In onCreate");
         super.onCreate(savedInstanceState);
 
         HelpReader.getInstance().initialize(getBaseContext());
@@ -64,6 +66,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         setContentView(R.layout.activity_login);
         Request.baseUri = getString(R.string.base_url);
+        Log.d(TAG, "In OnCreate" + Request.baseUri);
 
         generateCaptcha();
 
@@ -76,6 +79,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     // Completed.
     @Override
     public void onStart() {
+        Log.d(TAG, "In onStart");
         super.onStart();
         initializeClickables();
     }

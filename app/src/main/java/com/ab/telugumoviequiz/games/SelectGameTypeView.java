@@ -33,6 +33,7 @@ public class SelectGameTypeView extends BaseFragment implements View.OnClickList
     public static final int FUTURE_GAMES = 1; //
     public static final int ENROLLED_GAMES = 2; //
     private int viewType;
+    private final String SAVE_VIEW_TYPE = "SAVE_VIEW_TYPE";
 
     public SelectGameTypeView() {
 
@@ -44,7 +45,11 @@ public class SelectGameTypeView extends BaseFragment implements View.OnClickList
 
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
+        if (bundle != null) {
+            viewType = bundle.getInt(SAVE_VIEW_TYPE);
+        }
     }
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -150,5 +155,11 @@ public class SelectGameTypeView extends BaseFragment implements View.OnClickList
         } else if (viewId == R.id.help) {
             showHelpWindow();
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(SAVE_VIEW_TYPE, viewType);
     }
 }

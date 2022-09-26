@@ -65,6 +65,9 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
     private AlertDialog alertDialog;
     private boolean isErrorDialogShowing = false;
 
+    private final String SAVE_GAME_TYPE = "SAVE_GAME_TYPE";
+    private final String TAG = "ShowGames";
+
     public ShowGames() {
         super();
     }
@@ -73,8 +76,15 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         int index = 1;
-        if (getArguments() != null) {
-            index = getArguments().getInt(Keys.GAMES_VIEW_GAME_TYPE);
+        if (bundle != null) {
+            index = bundle.getInt(SAVE_GAME_TYPE);
+            LocalGamesManager.getInstance().start();
+            Log.d(TAG, "Saved State is not null: " + index);
+        } else {
+            if (getArguments() != null) {
+                index = getArguments().getInt(Keys.GAMES_VIEW_GAME_TYPE);
+            }
+            Log.d(TAG, "Args is not null: " + index);
         }
         fragmentIndex = index;
     }
@@ -83,6 +93,7 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
     public View onCreateView(
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
+        Log.d(TAG, "Args is not null: onCreateView");
         View root = inflater.inflate(R.layout.list_games_view, container, false);
         recyclerView = root.findViewById(R.id.recyclerView);
         mAdapter = new GameAdapter();
@@ -98,6 +109,13 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
         TextView userCountsLabel = root.findViewById(R.id.loggedUserCount);
         userCountsLabel.setVisibility(View.GONE);
         return root;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        Log.d(TAG, "onSaveInstanceState");
+        super.onSaveInstanceState(outState);
+        outState.putInt(SAVE_GAME_TYPE, fragmentIndex);
     }
 
     @Override
@@ -317,6 +335,8 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        LocalGamesManager.getInstance().stop();
+        LocalGamesManager.getInstance().setCallbackResponse(null);
         LocalGamesManager.getInstance().setShowing(1, false);
         LocalGamesManager.getInstance().setShowing(2, false);
         LocalGamesManager.getInstance().setShowing(3, false);
@@ -385,7 +405,9 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
    }
 
     @Override
-    public void handleResponse(int reqId, boolean exceptionThrown, boolean isAPIException, final Object response, Object helperObject) {
+    public void handleResponse(int reqId, boolean exceptionThrown,
+                               boolean isAPIException,
+                               final Object response, Object helperObject) {
         if (getActivity() != null) {
             Runnable run = () -> {
                 if (alertDialog != null) {
@@ -404,7 +426,6 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
         }
         switch (reqId) {
             case Request.JOIN_GAME: {
-                Log.d("GamesView", "isAPIException : response :" + isAPIException + ":" + response);
                 isHandled = handleAPIError(isAPIException, response, 1, null, null);
                 if (isHandled) {
                     setBaseParams(true);

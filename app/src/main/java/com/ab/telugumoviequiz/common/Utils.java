@@ -13,9 +13,11 @@ import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
 
 import com.ab.telugumoviequiz.R;
+import com.ab.telugumoviequiz.games.LocalGamesManager;
 import com.ab.telugumoviequiz.help.HelpMessage;
 import com.ab.telugumoviequiz.help.HelpReader;
 import com.ab.telugumoviequiz.help.HelpTopic;
+import com.ab.telugumoviequiz.main.ClientInitializer;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -265,5 +267,10 @@ public class Utils {
             helpTopicList.add(helpTopic);
         }
         return helpTopicList;
+    }
+    public static void clientReset(String baseURL) {
+        Request.baseUri = baseURL;
+        ClientInitializer.destroy();
+        LocalGamesManager.getInstance().stop();
     }
 }
