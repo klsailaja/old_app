@@ -35,7 +35,6 @@ import com.ab.telugumoviequiz.common.MessageListener;
 import com.ab.telugumoviequiz.common.Request;
 import com.ab.telugumoviequiz.common.Scheduler;
 import com.ab.telugumoviequiz.common.ShowHomeScreen;
-import com.ab.telugumoviequiz.common.SwitchScreen;
 import com.ab.telugumoviequiz.common.UserDetails;
 import com.ab.telugumoviequiz.common.Utils;
 import com.ab.telugumoviequiz.common.WinMsgHandler;
@@ -112,15 +111,19 @@ public class MainActivity extends AppCompatActivity
         queryMoneyCreditedStatus(gameStartTime, 1, waitTime);
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
+    private void stopPollers() {
         if (allGamesStatusPollerTask != null) {
             allGamesStatusPollerTask.cancel(true);
         }
         if (chatMsgCountPollerTask != null) {
             chatMsgCountPollerTask.cancel(true);
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        stopPollers();
     }
 
     @Override
@@ -300,7 +303,11 @@ public class MainActivity extends AppCompatActivity
 
         updateMoneyInUI(UserDetails.getInstance().getUserMoney(), false);
 
-        launchView(Navigator.CURRENT_GAMES, new Bundle(), false);
+        Bundle params = new Bundle();
+        params.putInt(SelectGameTypeView.HOME_SCREEN_GAME_TYPE, SelectGameTypeView.FUTURE_GAMES);
+        launchView(Navigator.CURRENT_GAMES, params, false);
+
+        ServerErrorHandler.getInstance().addShutdownListener(this);
 
         /*
         //The below code is to enable notification. But the notification is not consistent
@@ -321,8 +328,10 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
         Bundle params = new Bundle();
         if (id == R.id.nav_current_games) {
+            params.putInt(SelectGameTypeView.HOME_SCREEN_GAME_TYPE, SelectGameTypeView.FUTURE_GAMES);
             launchView(Navigator.CURRENT_GAMES, params, false);
         } else if (id == R.id.nav_enrolled_games) {
+            params.putInt(SelectGameTypeView.HOME_SCREEN_GAME_TYPE, SelectGameTypeView.ENROLLED_GAMES);
             launchView(Navigator.ENROLLED_GAMES, params, false);
         } else if (id == R.id.nav_history_games) {
             launchView(Navigator.HISTORY_VIEW, params, false);
@@ -347,7 +356,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.more_games) {
             launchView(Navigator.MORE_GAMES, params, false);
         } else if (id == R.id.logout) {
-            Utils.clientReset(getString(R.string.base_url));
+            Utils.shutdown(getString(R.string.base_url));
             Intent intent = new Intent(this, LoginActivity.class);
             intent.putExtra(Keys.LOGIN_SCREEN_CALLED_FROM_LOGOUT, 1);
             startActivity(intent);
@@ -394,6 +403,8 @@ public class MainActivity extends AppCompatActivity
         ft.commit();
         if (fragment instanceof BaseFragment) {
             navigationView.setNavigationItemSelectedListener((BaseFragment) fragment);
+            ServerErrorHandler.getInstance().removeShutdownListener((DialogAction) fragment);
+            ServerErrorHandler.getInstance().addShutdownListener((DialogAction) fragment);
         }
     }
 
@@ -444,16 +455,10 @@ public class MainActivity extends AppCompatActivity
                 fragment = new QuestionFragment();
                 break;
             }
-            case Navigator.CURRENT_GAMES: {
-                stopped = false;
-                fragment = new SelectGameTypeView();
-                ((SelectGameTypeView)fragment).setViewType(SelectGameTypeView.FUTURE_GAMES);
-                break;
-            }
+            case Navigator.CURRENT_GAMES:
             case Navigator.ENROLLED_GAMES: {
                 stopped = false;
                 fragment = new SelectGameTypeView();
-                ((SelectGameTypeView)fragment).setViewType(SelectGameTypeView.ENROLLED_GAMES);
                 break;
             }
             case Navigator.REFERRALS_VIEW: {
@@ -550,9 +555,11 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    public boolean handleServerError(boolean exceptionThrown, boolean isAPIException, final Object response) {
+    public boolean handleServerError(boolean exceptionThrown, boolean isAPIException,
+                                     final Object response) {
         if ((exceptionThrown) && (!isAPIException)) {
-            displayError((String)response, new SwitchScreen(this));
+            //displayError((String)response, new SwitchScreen(this));
+            ServerErrorHandler.getInstance().handleServerError("Error", (String)response, this);
             return true;
         }
         return false;
@@ -742,6 +749,8 @@ public class MainActivity extends AppCompatActivity
             shareIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
 
             startActivity(Intent.createChooser(shareIntent, "Share Using"));
+        } else if (calledId == ServerErrorHandler.APP_SHUTDOWN) {
+            stopPollers();
         }
     }
 

@@ -1,6 +1,8 @@
 package com.ab.telugumoviequiz.common;
 
 import android.app.Activity;
+import android.util.Log;
+
 import androidx.appcompat.app.AlertDialog;
 
 import org.springframework.http.HttpEntity;
@@ -28,6 +30,7 @@ public class GetTask<T> implements Runnable {
     private Activity activity;
     private AlertDialog alertDialog;
     private String waitingMessage;
+    public static boolean IGNORE = false;
 
 
     public GetTask(String reqUri, int reqId, CallbackResponse callbackResponse, Class<T> classType, Object helperObject) {
@@ -109,6 +112,7 @@ public class GetTask<T> implements Runnable {
         }
         try {
             RestTemplate restTemplate = getRestTemplate();
+            Log.d("GetTask", getReqUri());
             ResponseEntity<T> responseEntity = restTemplate.exchange(getReqUri(), HttpMethod.GET,
                     getHttpEntity(null), classType);
             Object resObj = responseEntity.getBody();
@@ -122,7 +126,7 @@ public class GetTask<T> implements Runnable {
                 Runnable run = () -> alertDialog.dismiss();
                 activity.runOnUiThread(run);
             }
-            //ex.printStackTrace();
+            ex.printStackTrace();
             String errMessage = "Please check your internet connectivity and retry";
             boolean isAPIException = false;
             if (ex instanceof HttpClientErrorException) {
@@ -135,6 +139,9 @@ public class GetTask<T> implements Runnable {
                 HttpServerErrorException serverExp = (HttpServerErrorException) ex;
                 errMessage = serverExp.getResponseBodyAsString();
                 isAPIException = true;
+            }
+            if (IGNORE) {
+                return;
             }
             getCallbackResponse().handleResponse(getRequestId(), true, isAPIException, errMessage, helperObject);
         }

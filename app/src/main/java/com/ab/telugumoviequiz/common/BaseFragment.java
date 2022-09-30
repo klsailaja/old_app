@@ -16,26 +16,12 @@ import com.google.android.material.navigation.NavigationView;
 
 import java.util.List;
 
-public abstract class BaseFragment extends Fragment implements MessageListener,
+public abstract class BaseFragment extends Fragment implements MessageListener, DialogAction,
         NavigationView.OnNavigationItemSelectedListener {
-    private static boolean isNetworkErrorShowing;
-
     public BaseFragment() {
     }
 
-    public static void setIsShowing(boolean isShowing) {
-        BaseFragment.isNetworkErrorShowing = isShowing;
-    }
-    public static boolean getNetworkErrorShowing() {
-        return isNetworkErrorShowing;
-    }
-
     public boolean handleServerError(boolean exceptionThrown, boolean isAPIException, final Object response) {
-        /*if (isNetworkErrorShowing) {
-            return true;
-        }*/
-        setIsShowing(true);
-
         Activity parentActivity = getActivity();
         if (parentActivity instanceof MainActivity) {
             MainActivity mainActivity = (MainActivity) parentActivity;
@@ -94,8 +80,8 @@ public abstract class BaseFragment extends Fragment implements MessageListener,
     }
 
     public void showErrShowHomeScreen(final String errMsg) {
-        final Activity parentActvity = getActivity();
-        displayError(errMsg, new ShowHomeScreen(parentActvity));
+        final Activity parentActivity = getActivity();
+        displayError(errMsg, new ShowHomeScreen(parentActivity));
     }
 
     @Override
@@ -147,5 +133,8 @@ public abstract class BaseFragment extends Fragment implements MessageListener,
                 }
             }
         }
+    }
+
+    public void doAction(int calledId, Object userObject) {
     }
 }

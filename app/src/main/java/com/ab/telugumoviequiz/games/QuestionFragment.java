@@ -37,6 +37,7 @@ import com.ab.telugumoviequiz.common.Utils;
 import com.ab.telugumoviequiz.constants.UserMoneyAccountType;
 import com.ab.telugumoviequiz.main.MainActivity;
 import com.ab.telugumoviequiz.main.Navigator;
+import com.ab.telugumoviequiz.main.ServerErrorHandler;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -91,7 +92,6 @@ public class QuestionFragment extends BaseFragment
     public void onCreate (Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         System.out.println("onCreate " + savedInstanceState);
-        LocalGamesManager.getInstance().stop();
         /*Activity activity = getActivity();
         if (activity instanceof AppCompatActivity) {
             ActionBar mActionBar = ((AppCompatActivity) activity).getSupportActionBar();
@@ -143,7 +143,9 @@ public class QuestionFragment extends BaseFragment
         System.out.println("In onDestroyView");
         super.onDestroyView();
         closeAllViews(false);
-        LocalGamesManager.getInstance().start();
+        if (LocalGamesManager.getInstance() != null) {
+            LocalGamesManager.getInstance().start();
+        }
         requireActivity().getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
@@ -218,6 +220,9 @@ public class QuestionFragment extends BaseFragment
             displayErrorAsToast(successMsg);
             scheduleAllQuestions();
             gameStartedMode(root, false);
+            if (LocalGamesManager.getInstance() != null) {
+                LocalGamesManager.getInstance().stop();
+            }
         } else if (timeDiff < 0) {
             AlertDialog alertDialog = Utils.getProgressDialog(getActivity(), "Rejoining. Please Wait");
             alertDialog.show();
@@ -246,6 +251,9 @@ public class QuestionFragment extends BaseFragment
             progressBar.setVisibility(View.INVISIBLE);
             quesShowing(false);
             updateLifelines(false);
+            if (LocalGamesManager.getInstance() != null) {
+                LocalGamesManager.getInstance().stop();
+            }
             alertDialog.dismiss();
         }
     }
@@ -317,6 +325,10 @@ public class QuestionFragment extends BaseFragment
             if (parentActivity instanceof MainActivity) {
                 MainActivity mainActivity = (MainActivity) parentActivity;
                 mainActivity.launchView(Navigator.CURRENT_GAMES, null, false);
+            }
+        } else if (calledId == ServerErrorHandler.APP_SHUTDOWN) {
+            if (gameStatusPollerHandle != null) {
+                gameStatusPollerHandle.cancel(true);
             }
         }
     }
@@ -631,6 +643,7 @@ public class QuestionFragment extends BaseFragment
                     if (activity instanceof MainActivity) {
                         Bundle params = new Bundle();
                         params.putString(Keys.LEAVE_ACTION_RESULT, errosMsg);
+                        params.putInt(SelectGameTypeView.HOME_SCREEN_GAME_TYPE, SelectGameTypeView.FUTURE_GAMES);
                         ((MainActivity)activity).launchView(Navigator.CURRENT_GAMES, params, false);
                         ((MainActivity)activity).fetchUpdateMoney();
                     }

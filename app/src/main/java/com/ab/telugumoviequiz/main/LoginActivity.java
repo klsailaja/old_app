@@ -28,6 +28,7 @@ import androidx.fragment.app.FragmentManager;
 import com.ab.telugumoviequiz.R;
 import com.ab.telugumoviequiz.common.CallbackResponse;
 import com.ab.telugumoviequiz.common.DialogAction;
+import com.ab.telugumoviequiz.common.GetTask;
 import com.ab.telugumoviequiz.common.Keys;
 import com.ab.telugumoviequiz.common.MessageListener;
 import com.ab.telugumoviequiz.common.NotifyTextChanged;
@@ -59,6 +60,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "In onCreate");
+        Utils.clientReset(getResources().getString(R.string.base_url));
         super.onCreate(savedInstanceState);
 
         HelpReader.getInstance().initialize(getBaseContext());

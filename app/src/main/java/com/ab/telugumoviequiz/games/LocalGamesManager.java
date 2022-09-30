@@ -146,6 +146,15 @@ public class LocalGamesManager {
         celebrityEnrolledGameStatus.stop();
     }
 
+    public void destroy() {
+        stop();
+        mixedGameList.destroy();
+        celebrityGameList.destroy();
+
+        mixedEnrolledGameList.destroy();
+        celebrityEnrolledGameList.destroy();
+    }
+
     public boolean setShowing(int fragmentIndex, boolean showing) {
         List<Object> handlers = getHandlers(fragmentIndex);
         Object obj = handlers.get(0);

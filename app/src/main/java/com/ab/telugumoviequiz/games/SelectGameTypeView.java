@@ -30,9 +30,10 @@ import java.util.List;
 
 public class SelectGameTypeView extends BaseFragment implements View.OnClickListener {
     private final List<GameTypeModel> modelList = new ArrayList<>();
+    public static final String HOME_SCREEN_GAME_TYPE = "HOME_SCREEN_GAME_TYPE";
     public static final int FUTURE_GAMES = 1; //
     public static final int ENROLLED_GAMES = 2; //
-    private int viewType;
+    private int viewType = FUTURE_GAMES;
     private final String SAVE_VIEW_TYPE = "SAVE_VIEW_TYPE";
 
     public SelectGameTypeView() {
@@ -45,7 +46,10 @@ public class SelectGameTypeView extends BaseFragment implements View.OnClickList
 
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
-        if (bundle != null) {
+        Bundle args = getArguments();
+        if (args != null) {
+            viewType = args.getInt(HOME_SCREEN_GAME_TYPE, FUTURE_GAMES);
+        } else if (bundle != null) {
             viewType = bundle.getInt(SAVE_VIEW_TYPE);
         }
     }

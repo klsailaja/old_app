@@ -255,10 +255,6 @@ public class Utils {
                 }
                 HelpMessage topicHelpMsg = new HelpMessage(pointStrValue, pointSeverityValueInt);
                 topicHelpMsg.setSecondLevelMessages(secondLevelMsgs);
-                System.out.println("Raj Sailu Hasini..." + secondLevelMsgs);
-                if (secondLevelMsgs.size() > 0) {
-                    System.out.println("Raj Sailu Hasini..." + secondLevelMsgs);
-                }
                 topicHelpMessages.add(topicHelpMsg);
                 index++;
             }
@@ -268,9 +264,18 @@ public class Utils {
         }
         return helpTopicList;
     }
-    public static void clientReset(String baseURL) {
+    public static void shutdown(String baseURL) {
+        Scheduler.getInstance().shutDown();
+        GetTask.IGNORE = true;
+        PostTask.IGNORE = true;
         Request.baseUri = baseURL;
         ClientInitializer.destroy();
-        LocalGamesManager.getInstance().stop();
+        LocalGamesManager.getInstance().destroy();
+    }
+
+    public static void clientReset(String baseURL) {
+        GetTask.IGNORE = false;
+        PostTask.IGNORE = false;
+        Request.baseUri = baseURL;
     }
 }

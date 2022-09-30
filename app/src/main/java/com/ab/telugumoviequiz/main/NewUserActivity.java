@@ -77,6 +77,7 @@ public class NewUserActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         Log.v("onCreate", "This is in onCreate");
         super.onCreate(savedInstanceState);
+        Utils.clientReset(getResources().getString(R.string.base_url));
         setContentView(layout.activity_register);
 
         TextView mailTextView = findViewById(id.editTextEmail);

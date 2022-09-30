@@ -30,6 +30,7 @@ public class PostTask<T,R> implements Runnable {
     private Activity activity;
     private AlertDialog alertDialog;
     private String waitingMessage;
+    public static boolean IGNORE = false;
 
     public PostTask(String reqUri, int reqId, CallbackResponse callbackResponse, T postObject, Class<R> classType) {
         this.reqUri = reqUri;
@@ -133,6 +134,9 @@ public class PostTask<T,R> implements Runnable {
                 HttpServerErrorException serverExp = (HttpServerErrorException) ex;
                 errMessage = serverExp.getResponseBodyAsString();
                 isAPIException = true;
+            }
+            if (IGNORE) {
+                return;
             }
             getCallbackResponse().handleResponse(getRequestId(), true, isAPIException, errMessage, getHelperObject());
         }

@@ -9,8 +9,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class LocalGameList implements CallbackResponse {
     private boolean exceptionThrown;
@@ -19,12 +17,13 @@ public class LocalGameList implements CallbackResponse {
     private Object response;
     private final List<GameDetails> cachedGameList = new ArrayList<>();
     private boolean showing;
+    private boolean start;
 
     private final GetTask<GameDetails[]> getTask;
     private CallbackResponse callbackResponse;
 
     private ScheduledFuture<?> fetchTask;
-    private final ReadWriteLock lock = new ReentrantReadWriteLock();
+    //private final ReadWriteLock lock = new ReentrantReadWriteLock();
     private int request_status = 0;
 
     public LocalGameList(GetTask<GameDetails[]> getTask) {
@@ -37,32 +36,38 @@ public class LocalGameList implements CallbackResponse {
     }
 
     public void start() {
+        start = true;
         fetchTask = Scheduler.getInstance().submitRepeatedTask(getTask, 0, 5, TimeUnit.MINUTES);
     }
     public void stop() {
+        start = false;
         if (fetchTask != null) {
             fetchTask.cancel(true);
         }
     }
-    public boolean setShowing(boolean showing) {
+    public synchronized boolean setShowing(boolean showing) {
         this.showing = showing;
-        lock.readLock().lock();
+        //lock.readLock().lock();
         if (request_status == 0) {
-            lock.readLock().unlock();
+            //lock.readLock().unlock();
             return true;
         } else {
             // Return the cached data here
             sendData();
         }
-        lock.readLock().unlock();
+        //lock.readLock().unlock();
         return false;
     }
     public void refreshNow() {
         Scheduler.getInstance().submit(this.getTask);
     }
 
+    public void destroy() {
+        cachedGameList.clear();
+    }
+
     @Override
-    public void handleResponse(int reqId, boolean exceptionThrown,
+    public synchronized void handleResponse(int reqId, boolean exceptionThrown,
                                boolean isAPIException, Object response,
                                Object userObject) {
         request_status = 1;
@@ -76,16 +81,16 @@ public class LocalGameList implements CallbackResponse {
             return;
         }
 
-        lock.writeLock().lock();
+        //lock.writeLock().lock();
         cachedGameList.clear();
         List<GameDetails> result = Arrays.asList((GameDetails[]) response);
         cachedGameList.addAll(result);
-        lock.writeLock().unlock();
+        //lock.writeLock().unlock();
         sendData();
     }
 
     private void sendData() {
-        if (showing) {
+        if ((showing) && (start)) {
             Object callbackResponseObj = response;
             if (!exceptionThrown) {
                 callbackResponseObj = cachedGameList.toArray(new GameDetails[0]);

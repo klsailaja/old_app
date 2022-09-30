@@ -21,7 +21,7 @@ public class ClientInitializer implements CallbackResponse {
     private final String TAG = "ClientInitializer:";
     @SuppressLint("StaticFieldLeak")
     private static ClientInitializer instance;
-    private final Activity activity;
+    private Activity activity;
 
     private long currentlyLoggedInUserCount;
     private final MessageListener messageListener;
@@ -56,6 +56,7 @@ public class ClientInitializer implements CallbackResponse {
     }
 
     public static void destroy() {
+        instance.activity = null;
         instance = null;
     }
 
@@ -110,6 +111,5 @@ public class ClientInitializer implements CallbackResponse {
             activity.runOnUiThread(run);
             messageListener.passData(MessageListener.QUIZ_SEVER_VERIFIED, null);
         }
-
     }
 }

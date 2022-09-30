@@ -79,12 +79,10 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
         if (bundle != null) {
             index = bundle.getInt(SAVE_GAME_TYPE);
             LocalGamesManager.getInstance().start();
-            Log.d(TAG, "Saved State is not null: " + index);
         } else {
             if (getArguments() != null) {
                 index = getArguments().getInt(Keys.GAMES_VIEW_GAME_TYPE);
             }
-            Log.d(TAG, "Args is not null: " + index);
         }
         fragmentIndex = index;
     }
@@ -93,7 +91,6 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
     public View onCreateView(
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        Log.d(TAG, "Args is not null: onCreateView");
         View root = inflater.inflate(R.layout.list_games_view, container, false);
         recyclerView = root.findViewById(R.id.recyclerView);
         mAdapter = new GameAdapter();
@@ -335,6 +332,10 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        LocalGamesManager gmInstance = LocalGamesManager.getInstance();
+        if (gmInstance == null) {
+            return;
+        }
         LocalGamesManager.getInstance().stop();
         LocalGamesManager.getInstance().setCallbackResponse(null);
         LocalGamesManager.getInstance().setShowing(1, false);
@@ -449,7 +450,8 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
                     return;
                 }
                 List<GameDetails> result = Arrays.asList((GameDetails[]) response);
-                if (result.size() == 0) {
+                Log.d(TAG,"result size()" + result.size());
+                if ((result.size() == 0) && (reqId == Request.GET_ENROLLED_GAMES)) {
                     displayInfo("Not enrolled for any games", new ShowHomeScreen(getActivity()));
                     return;
                 }

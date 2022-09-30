@@ -29,6 +29,7 @@ import com.ab.telugumoviequiz.common.Utils;
 import com.ab.telugumoviequiz.games.LocalGamesManager;
 import com.ab.telugumoviequiz.main.MainActivity;
 import com.ab.telugumoviequiz.main.Navigator;
+import com.ab.telugumoviequiz.main.ServerErrorHandler;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -50,7 +51,6 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
     private List<String> mixGameTktRates, mixGameStartTimes, mixGameIds;
     private List<String> specialGameTktRates, specialGameStartTimes, specialGameIds, specialCelebrityNames;
     private List<Long> mixGameActualStartTimes, specialActualStartTimes;
-    private boolean req1 = true, req2 = true;
     private int counter = 0;
     private RecyclerView recyclerView;
     private final int chat_msg_pollinterval = 15;
@@ -145,9 +145,7 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
     public void onDestroy() {
         super.onDestroy();
         storeEndTime();
-        if (chatFetchTask != null) {
-            chatFetchTask.cancel(true);
-        }
+        stopPollers();
     }
 
     @Override
@@ -359,7 +357,7 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
             }
             /*req1 = true;
             req2 = true;*/
-            enableButtons(false);
+            enableButtons();
             int messageType = ChatMsgDialog.REQUEST;
             if (view.getId() == R.id.chat_repy_but) {
                 messageType = ChatMsgDialog.REPLY;
@@ -424,19 +422,17 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
         return data;
     }
 
-    private void enableButtons(boolean enable) {
-       if ((req1) && (req2)) {
-           final Button button1 = requireView().findViewById(R.id.chat_invite_but);
-           final Button button2 = requireView().findViewById(R.id.chat_repy_but);
-           Runnable run = () -> {
-               button1.setEnabled(true);
-               button2.setEnabled(true);
-           };
-           Activity activity = getActivity();
-           if (activity != null) {
-               activity.runOnUiThread(run);
-           }
-       }
+    private void enableButtons() {
+        final Button button1 = requireView().findViewById(R.id.chat_invite_but);
+        final Button button2 = requireView().findViewById(R.id.chat_repy_but);
+        Runnable run = () -> {
+            button1.setEnabled(true);
+            button2.setEnabled(true);
+        };
+        Activity activity = getActivity();
+        if (activity != null) {
+            activity.runOnUiThread(run);
+        }
     }
 
     private void fillValues(List<String> rates, List<String> gameTimes, List<String> gameIds,
@@ -454,7 +450,7 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
                 continue;
             }
 
-            String value = "Game Rate : " + gd.getTicketRate();;
+            String value = "Game Rate : " + gd.getTicketRate();
             if (!rates.contains(value)) {
                 rates.add(value);
             }
@@ -522,7 +518,7 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
             List<ChatGameDetails> entries =
                     LocalGamesManager.getInstance().getChatGameDetails(1);
             if (entries.size() == 0) {
-                enableButtons(false);
+                enableButtons();
                 displayError("Data is still loading. Please try after some time", new ShowHomeScreen(getActivity()));
                 return;
             }
@@ -533,7 +529,19 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
             entries = LocalGamesManager.getInstance().getChatGameDetails(2);
             fillValues(specialGameTktRates, specialGameStartTimes, specialGameIds, specialCelebrityNames,
                     specialActualStartTimes, entries);
-            enableButtons(true);
+            enableButtons();
+        }
+    }
+
+    private void stopPollers() {
+        if (chatFetchTask != null) {
+            chatFetchTask.cancel(true);
+        }
+    }
+
+    public void doAction(int calledId, Object userObject) {
+        if (calledId == ServerErrorHandler.APP_SHUTDOWN) {
+            stopPollers();
         }
     }
 }
