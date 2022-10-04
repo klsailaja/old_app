@@ -58,6 +58,9 @@ public class SelectGameTypeView extends BaseFragment implements View.OnClickList
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.list_games_view, container, false);
+        if (root == null) {
+            return null;
+        }
         RecyclerView recyclerView = root.findViewById(R.id.recyclerView);
 
         modelList.clear();
@@ -86,6 +89,13 @@ public class SelectGameTypeView extends BaseFragment implements View.OnClickList
                 Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
             }
         }
+
+        TextView title = root.findViewById(R.id.viewTitle);
+        String titleName = "Current Games";
+        if (viewType == ENROLLED_GAMES) {
+            titleName = "Enrolled Games";
+        }
+        title.setText(titleName);
 
         TextView userCountsLabel = root.findViewById(R.id.winMsgs);
         userCountsLabel.setVisibility(View.GONE);

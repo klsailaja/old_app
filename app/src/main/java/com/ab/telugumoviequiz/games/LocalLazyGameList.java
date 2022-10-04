@@ -13,10 +13,13 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.TreeMap;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public class LocalLazyGameList implements CallbackResponse {
+public class LocalLazyGameList implements CallbackResponse, Runnable {
     private boolean exceptionThrown;
     private boolean isAPIException;
     private Object helperObject;
@@ -28,12 +31,14 @@ public class LocalLazyGameList implements CallbackResponse {
     private CallbackResponse callbackResponse;
     private final String TAG = "LocalLazyGameList";
 
-    //private ReadWriteLock lock;
-    private final AtomicInteger request_status = new AtomicInteger(0);
+    private final ReadWriteLock lock = new ReentrantReadWriteLock();
+    //private final AtomicInteger request_status = new AtomicInteger(0);
     private boolean start;
     private long maxGameId = -1;
     private final int gameType;
+    private int slotGamesCount = -1;
 
+    private ScheduledFuture<?> checkTask;
 
     // boolean oneShot -> true, polling period -> false, polling period, last game id, new set
 
@@ -48,41 +53,58 @@ public class LocalLazyGameList implements CallbackResponse {
     }
 
     public void start() {
-        request_status.set(0);
+        //request_status.set(0);
         exceptionThrown = false;
         isAPIException = false;
         helperObject = null;
         response = null;
         start = true;
         maxGameId = -1;
-        //lock = new ReentrantReadWriteLock();
-        makeRequestReady();
-        Scheduler.getInstance().submit(getTask);
+        checkTask = Scheduler.getInstance().submitRepeatedTask(this, 0, 5, TimeUnit.MINUTES);
+    }
+
+    public void run() {
+        boolean sendRequest = shouldSendRequest();
+        Log.d(TAG, "This is run method:" + gameType + ":" + sendRequest);
+        removeOldEntries();
+        if (sendRequest) {
+            makeRequestReady();
+            getTask.run();
+        }
     }
 
     public void stop() {
         start = false;
+        stopPollers();
     }
 
     public void destroy() {
         cachedGameList.clear();
+        stopPollers();
     }
 
-    public synchronized boolean setShowing(boolean showing) {
+    private void stopPollers() {
+        if (checkTask != null) {
+            checkTask.cancel(true);
+        }
+    }
+
+    public boolean setShowing(boolean showing) {
         this.showing = showing;
-        //lock.readLock().lock();
+        lock.readLock().lock();
         // Return the cached data here
-        if (request_status.get() == 0) {
-            //lock.readLock().unlock();
+        if (cachedGameList.size() == 0) {
+            lock.readLock().unlock();
             return true;
         } else sendData();
-        //lock.readLock().unlock();
+        lock.readLock().unlock();
         return false;
     }
     public void refreshNow() {
+        Log.d(TAG, "This is in refreshNow");
         long currentTime = System.currentTimeMillis();
         boolean shouldSendReq = false;
-        //lock.writeLock().lock();
+        lock.writeLock().lock();
         Iterator<GameDetails> gameDetailsIterator = cachedGameList.iterator();
         while (gameDetailsIterator.hasNext()) {
             GameDetails oldGB = gameDetailsIterator.next();
@@ -94,7 +116,7 @@ public class LocalLazyGameList implements CallbackResponse {
             sendData();
             shouldSendReq = true;
         }
-        //lock.writeLock().unlock();
+        lock.writeLock().unlock();
         if (shouldSendReq) {
             maxGameId = -1;
             makeRequestReady();
@@ -103,11 +125,11 @@ public class LocalLazyGameList implements CallbackResponse {
     }
 
     @Override
-    public synchronized void handleResponse(int reqId, boolean exceptionThrown,
+    public void handleResponse(int reqId, boolean exceptionThrown,
                                boolean isAPIException, Object response,
                                Object userObject) {
-        Log.d(TAG, "This is in handleResponse1:" + cachedGameList.size());
-        request_status.set(1);
+        Log.d(TAG, "This is in handleResponse:" + gameType + ":" + cachedGameList.size());
+        //request_status.set(1);
         this.exceptionThrown = exceptionThrown;
         this.isAPIException = isAPIException;
         this.helperObject = userObject;
@@ -118,10 +140,11 @@ public class LocalLazyGameList implements CallbackResponse {
             return;
         }
         List<GameDetails> result = Arrays.asList((GameDetails[]) response);
-        boolean callSendData = (result.size() == 0);
-        removeOldEntries(callSendData);
+        if (slotGamesCount == -1) {
+            slotGamesCount = result.size();
+        }
         if (result.size() > 0) {
-            //lock.writeLock().lock();
+            lock.writeLock().lock();
             TreeMap<Long, Integer> gameIdToListPos = new TreeMap<>();
             for (int dataIndex = 0; dataIndex < cachedGameList.size(); dataIndex ++) {
                 GameDetails gd = cachedGameList.get(dataIndex);
@@ -141,14 +164,16 @@ public class LocalLazyGameList implements CallbackResponse {
                     cachedGameList.add(newGD);
                 }
             }
+            lock.writeLock().unlock();
         }
-        //lock.writeLock().unlock();
         sendData();
-        if (start) {
+        boolean sendReq = shouldSendRequest();
+        Log.d(TAG, "This is in handleResponse:" + gameType + ":" + sendReq);
+        if (sendReq) {
             makeRequestReady();
             Scheduler.getInstance().submit(getTask, Constants.GAMES_POLLER_TIME_IN_SECS, TimeUnit.SECONDS);
         }
-        Log.d(TAG, "This is in handleResponse2:" + cachedGameList.size());
+        Log.d(TAG, "This is in handleResponse:" + gameType + ":" + cachedGameList.size());
     }
 
     public List<GameDetails> getCachedGameList() {
@@ -157,6 +182,7 @@ public class LocalLazyGameList implements CallbackResponse {
 
     private void sendData() {
         Log.d(TAG, "This is in sendData start:" + cachedGameList.size() + " : " + exceptionThrown);
+        Log.d(TAG, "Start value is :" + start);
         if ((showing) && (start)) {
             Log.d(TAG, "This is in sendData showing:" + cachedGameList.size());
             Object callbackResponseObj = response;
@@ -169,7 +195,30 @@ public class LocalLazyGameList implements CallbackResponse {
         }
     }
 
+    private boolean shouldSendRequest() {
+        if (!start) {
+            return false;
+        }
+        if (slotGamesCount == -1) {
+            return true;
+        }
+        lock.writeLock().lock();
+        int currentGamesCount = cachedGameList.size();
+        if (currentGamesCount == 0) {
+            lock.writeLock().unlock();
+            return true;
+        }
+        int currentSlots = currentGamesCount / slotGamesCount;
+        Log.d(TAG, "slotGamesCount:" + slotGamesCount + "currentGamesCount:" + currentGamesCount);
+        Log.d(TAG, "currentSlots:" + currentSlots);
+        boolean result = (currentSlots <= Constants.MAX_GAMES_SLOTS);
+        Log.d(TAG, "currentSlots:" + result);
+        lock.writeLock().unlock();
+        return result;
+    }
+
     private void makeRequestReady() {
+        Log.d(TAG, "makeRequestReady:" + gameType);
         int fetchSlotSize = Constants.MIXED_INITIAL_SLOT_NUMBERS;
         if (maxGameId == -1) {
             if (gameType == 2) {
@@ -184,8 +233,8 @@ public class LocalLazyGameList implements CallbackResponse {
         this.getTask.setReqUri(Request.getFutureGamesURI(gameType, maxGameId, fetchSlotSize));
     }
 
-    private void removeOldEntries(boolean callSendData) {
-        //lock.writeLock().lock();
+    private void removeOldEntries() {
+        lock.writeLock().lock();
         long currentTime = System.currentTimeMillis();
         Iterator<GameDetails> gameDetailsIterator = cachedGameList.iterator();
         while (gameDetailsIterator.hasNext()) {
@@ -194,9 +243,7 @@ public class LocalLazyGameList implements CallbackResponse {
                 gameDetailsIterator.remove();
             }
         }
-        //lock.writeLock().unlock();
-        if (!callSendData) {
-            sendData();
-        }
+        lock.writeLock().unlock();
+        sendData();
     }
 }

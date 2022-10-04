@@ -28,7 +28,6 @@ import androidx.fragment.app.FragmentManager;
 import com.ab.telugumoviequiz.R;
 import com.ab.telugumoviequiz.common.CallbackResponse;
 import com.ab.telugumoviequiz.common.DialogAction;
-import com.ab.telugumoviequiz.common.GetTask;
 import com.ab.telugumoviequiz.common.Keys;
 import com.ab.telugumoviequiz.common.MessageListener;
 import com.ab.telugumoviequiz.common.NotifyTextChanged;
@@ -59,16 +58,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     // Completed.
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Log.d(TAG, "In onCreate");
-        Utils.clientReset(getResources().getString(R.string.base_url));
         super.onCreate(savedInstanceState);
+
+        Utils.clientReset(getResources().getString(R.string.base_url));
 
         HelpReader.getInstance().initialize(getBaseContext());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
 
         setContentView(R.layout.activity_login);
-        Request.baseUri = getString(R.string.base_url);
-        Log.d(TAG, "In OnCreate" + Request.baseUri);
+        Log.d(TAG, "In OnCreate:" + Request.baseUri);
 
         generateCaptcha();
 
@@ -81,7 +79,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     // Completed.
     @Override
     public void onStart() {
-        Log.d(TAG, "In onStart");
         super.onStart();
         initializeClickables();
     }
@@ -104,12 +101,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         handleListeners(null);
         handleTouchListeners(null);
         handleTextWatchers(false);
-    }
-
-    // Completed.
-    @Override
-    public void onStop() {
-        super.onStop();
     }
 
     // Completed.
@@ -173,10 +164,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             Resources resources = getResources();
             final String successMsg  = resources.getString(R.string.user_login_success_msg);
             final Button loginButton = findViewById(R.id.loginBut);
-            Log.d("Login Activity", "All tasks done.");
+            Log.d(TAG, "All tasks done.");
             Runnable loginRun = () -> {
                 Snackbar.make(loginButton, successMsg, Snackbar.LENGTH_SHORT).show();
-                Log.d("Login Activity", "Starting Main Activity");
+                Log.d(TAG, "Starting Main Activity");
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 //intent.putExtra("msg", successMsg);
                 startActivity(intent);
@@ -220,7 +211,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             String msg = resources.getString(R.string.user_login_fail_msg);
 
             if ((userProfile != null) && (userProfile.getId() > 0)) {
-                Request.baseUri = userProfile.getServerIpAddress();
+                String quizServerURI = userProfile.getServerIpAddress();
+                Log.d(TAG, "Quiz Server URI:" + quizServerURI);
+                Log.d(TAG, quizServerURI.contains(":") + ";;" + quizServerURI.indexOf(":"));
+                if (!quizServerURI.contains(":")) {
+                    Log.d(TAG, "inside:" + quizServerURI);
+                    Runnable run = () -> Utils.showMessage("Error", quizServerURI,
+                            LoginActivity.this, null);
+                    runOnUiThread(run);
+                    return;
+                }
+                Log.d(TAG, "Proceeding here :" + quizServerURI);
+                Request.baseUri = quizServerURI;
                 UserDetails.getInstance().setUserProfile(userProfile);
                 ClientInitializer.getInstance(this, this);
             } else {

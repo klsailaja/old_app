@@ -62,8 +62,6 @@ public class NewUserActivity extends AppCompatActivity
 
     public static int NEW_USER_SEND_CODE = 100;
 
-    private static final String WAIT_MESSAGE = "Processing...Please Wait!";
-
     private PATextWatcher mailTextWatcher;
     private PATextWatcher passwordTextWatcher;
     private PATextWatcher nameTextWatcher;
@@ -71,11 +69,12 @@ public class NewUserActivity extends AppCompatActivity
     private final ArrayList<TextView> verifyCodeTextViewList = new ArrayList<>(4);
 
     private boolean passwordShowing = false, confirmPasswordShowing = false;
+    private final String TAG = "NewUserActivity";
 
     // Completed.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.v("onCreate", "This is in onCreate");
+        Log.v(TAG, "This is in onCreate");
         super.onCreate(savedInstanceState);
         Utils.clientReset(getResources().getString(R.string.base_url));
         setContentView(layout.activity_register);
@@ -222,7 +221,7 @@ public class NewUserActivity extends AppCompatActivity
 
             verifyCodeTask.setPostObject(otpDetails);
             verifyCodeTask.setCallbackResponse(this);
-            verifyCodeTask.setActivity(NewUserActivity.this, WAIT_MESSAGE);
+            verifyCodeTask.setActivity(NewUserActivity.this, Utils.WAIT_MESSAGE);
             verifyCodeTask.setHelperObject(NETWORK_ERROR_VERIFY_OTP);
             Scheduler.getInstance().submit(verifyCodeTask);
         } else if (viewId == id.registerButton) {
@@ -241,7 +240,7 @@ public class NewUserActivity extends AppCompatActivity
             PostTask<UserProfile, UserProfile> createUserReq = Request.getCreateUserProfile();
             createUserReq.setCallbackResponse(this);
             createUserReq.setPostObject(userProfile);
-            createUserReq.setActivity(NewUserActivity.this, WAIT_MESSAGE);
+            createUserReq.setActivity(NewUserActivity.this, Utils.WAIT_MESSAGE);
             createUserReq.setHelperObject(NETWORK_ERROR_CREATE_USER);
             Scheduler.getInstance().submit(createUserReq);
         } else if (viewId == id.referralReadMore) {
@@ -325,6 +324,15 @@ public class NewUserActivity extends AppCompatActivity
         }
         if (reqId == Request.CREATE_USER_PROFILE) {
             UserProfile dbUserProfile = (UserProfile) response;
+            String quizServerURI = dbUserProfile.getServerIpAddress();
+            if (!quizServerURI.contains(":")) {
+                Log.d(TAG, "inside:" + quizServerURI);
+                Runnable run = () -> Utils.showMessage("Error", quizServerURI,
+                        NewUserActivity.this, null);
+                runOnUiThread(run);
+                return;
+            }
+            Log.d(TAG, "proceeding here:" + quizServerURI);
             Request.baseUri = dbUserProfile.getServerIpAddress();
             UserDetails.getInstance().setUserProfile(dbUserProfile);
             ClientInitializer.getInstance(this, this);
@@ -734,7 +742,7 @@ public class NewUserActivity extends AppCompatActivity
             sendCodeTask.setPostObject(mailId);
             sendCodeTask.setCallbackResponse(this);
             sendCodeTask.setHelperObject(NETWORK_ERROR_SEND_OTP);
-            sendCodeTask.setActivity(NewUserActivity.this, WAIT_MESSAGE);
+            sendCodeTask.setActivity(NewUserActivity.this, Utils.WAIT_MESSAGE);
             Scheduler.getInstance().submit(sendCodeTask);
         }
     }

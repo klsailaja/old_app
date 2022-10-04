@@ -68,6 +68,9 @@ public class ClientInitializer implements CallbackResponse {
     public void handleResponse(int reqId, boolean exceptionThrown, boolean isAPIException,
                                Object response, Object userObject) {
         if ((exceptionThrown) && (!isAPIException)) {
+            String baseUrl = activity.getResources().getString(R.string.base_url);
+            Utils.shutdown(baseUrl);
+            Utils.clientReset(baseUrl);
             alertDialog.dismiss();
             Runnable run = () -> Utils.showMessage("Error", (String)response, activity, null);
             activity.runOnUiThread(run);
@@ -85,7 +88,10 @@ public class ClientInitializer implements CallbackResponse {
             Resources resources = activity.getResources();
             String errorMsg = resources.getString(R.string.time_sync_error);
             if (result.equalsIgnoreCase("false")) {
-                Runnable run = () -> Utils.showMessage("Error", errorMsg, activity, null);
+                Runnable run = () -> {
+                    alertDialog.dismiss();
+                    Utils.showMessage("Error", errorMsg, activity, null);
+                };
                 activity.runOnUiThread(run);
             } else {
                 LocalGamesManager.getInstance().initialize();

@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onDestroy () {
         super.onDestroy();
-        LocalGamesManager.getInstance().stop();
+        ServerErrorHandler.getInstance().removeShutdownListener(this);
         Bundle gameState = getParams(Navigator.QUESTION_VIEW);
         if (gameState != null) {
             String FIFTYUSED = "FIFTYUSED";
@@ -356,11 +356,12 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.more_games) {
             launchView(Navigator.MORE_GAMES, params, false);
         } else if (id == R.id.logout) {
-            Utils.shutdown(getString(R.string.base_url));
+            /*Utils.shutdown(getString(R.string.base_url));
             Intent intent = new Intent(this, LoginActivity.class);
             intent.putExtra(Keys.LOGIN_SCREEN_CALLED_FROM_LOGOUT, 1);
             startActivity(intent);
-            finish();
+            finish();*/
+            ServerErrorHandler.getInstance().shutDownApp(this);
         } else if (id == R.id.share) {
             Resources resources = getResources();
             String shareTxt1 = resources.getString(R.string.share_text1);
@@ -403,8 +404,6 @@ public class MainActivity extends AppCompatActivity
         ft.commit();
         if (fragment instanceof BaseFragment) {
             navigationView.setNavigationItemSelectedListener((BaseFragment) fragment);
-            ServerErrorHandler.getInstance().removeShutdownListener((DialogAction) fragment);
-            ServerErrorHandler.getInstance().addShutdownListener((DialogAction) fragment);
         }
     }
 

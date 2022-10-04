@@ -16,8 +16,9 @@ import com.google.android.material.navigation.NavigationView;
 
 import java.util.List;
 
-public abstract class BaseFragment extends Fragment implements MessageListener, DialogAction,
+public abstract class BaseFragment extends Fragment implements MessageListener,
         NavigationView.OnNavigationItemSelectedListener {
+
     public BaseFragment() {
     }
 
@@ -133,8 +134,5 @@ public abstract class BaseFragment extends Fragment implements MessageListener, 
                 }
             }
         }
-    }
-
-    public void doAction(int calledId, Object userObject) {
     }
 }

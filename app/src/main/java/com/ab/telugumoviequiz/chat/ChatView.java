@@ -19,6 +19,7 @@ import com.ab.telugumoviequiz.R;
 import com.ab.telugumoviequiz.common.BaseFragment;
 import com.ab.telugumoviequiz.common.CallbackResponse;
 import com.ab.telugumoviequiz.common.Constants;
+import com.ab.telugumoviequiz.common.DialogAction;
 import com.ab.telugumoviequiz.common.GetTask;
 import com.ab.telugumoviequiz.common.PostTask;
 import com.ab.telugumoviequiz.common.Request;
@@ -41,7 +42,8 @@ import java.util.concurrent.TimeUnit;
 
 import static com.ab.telugumoviequiz.common.Constants.CHAT_MAX_ENTRIES;
 
-public class ChatView extends BaseFragment implements View.OnClickListener, CallbackResponse, Runnable, ChatListener {
+public class ChatView extends BaseFragment implements View.OnClickListener,
+        CallbackResponse, Runnable, ChatListener, DialogAction {
     private ViewAdapter chatAdapter;
     private final List<Chat> data = new ArrayList<>();
     private static final String key1 = "FETCHED_ENDTIME";
@@ -125,6 +127,7 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
         sendBut.setEnabled(false);
         sendBut = root.findViewById(R.id.chat_repy_but);
         sendBut.setEnabled(false);
+        ServerErrorHandler.getInstance().addShutdownListener(this);
         return root;
     }
 
@@ -146,6 +149,7 @@ public class ChatView extends BaseFragment implements View.OnClickListener, Call
         super.onDestroy();
         storeEndTime();
         stopPollers();
+        ServerErrorHandler.getInstance().removeShutdownListener(this);
     }
 
     @Override

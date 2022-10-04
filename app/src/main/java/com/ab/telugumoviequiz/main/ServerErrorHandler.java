@@ -1,12 +1,15 @@
 package com.ab.telugumoviequiz.main;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.util.Log;
 
 import androidx.appcompat.app.AlertDialog;
 
 import com.ab.telugumoviequiz.R;
 import com.ab.telugumoviequiz.common.DialogAction;
+import com.ab.telugumoviequiz.common.Keys;
 import com.ab.telugumoviequiz.common.Utils;
 
 import java.util.ArrayList;
@@ -14,10 +17,12 @@ import java.util.List;
 
 public class ServerErrorHandler implements DialogAction {
     public static int APP_SHUTDOWN = -90;
-    private List<DialogAction> shutDownListeners = new ArrayList<>();
+    private final List<DialogAction> shutDownListeners = new ArrayList<>();
     private Activity mainActivity;
+    @SuppressLint("StaticFieldLeak")
     private static ServerErrorHandler instance;
     private boolean showing = false;
+    private final String TAG = "ServerErrorHandler";
 
     private ServerErrorHandler() {
     }
@@ -43,7 +48,7 @@ public class ServerErrorHandler implements DialogAction {
     }
     public void addShutdownListener(DialogAction listener) {
         if (!shutDownListeners.contains(listener)) {
-            shutDownListeners.add(listener);
+            //shutDownListeners.add(listener);
         }
     }
     public void removeShutdownListener(DialogAction listener) {
@@ -51,6 +56,7 @@ public class ServerErrorHandler implements DialogAction {
     }
     private void notifyListeners() {
         for (DialogAction listener : shutDownListeners) {
+            Log.d(TAG, "Notify : " + listener.getClass().getName());
             try {
                 listener.doAction(APP_SHUTDOWN, null);
             } catch (Exception ex) {
@@ -61,15 +67,23 @@ public class ServerErrorHandler implements DialogAction {
 
     @Override
     public void doAction(int calledId, Object userObject) {
+        shutDownApp(mainActivity);
+    }
+
+    public void shutDownApp(Activity mainActivity) {
         AlertDialog alertDialog = Utils.getProgressDialog(mainActivity, Utils.WAIT_MESSAGE);
+        Log.d(TAG, "This is after dialog show");
         alertDialog.show();
         notifyListeners();
+        String coreServerUrl = mainActivity.getResources().getString(R.string.base_url);
+        Utils.shutdown(coreServerUrl);
         Intent intent = new Intent(mainActivity, LoginActivity.class);
-        mainActivity.finish();
+        intent.putExtra(Keys.LOGIN_SCREEN_CALLED_FROM_LOGOUT, 1);
         mainActivity.startActivity(intent);
+        mainActivity.finish();
         alertDialog.dismiss();
+        Log.d(TAG, "This is after dialog dismiss");
         mainActivity = null;
         destroy();
-        Utils.shutdown(mainActivity.getResources().getString(R.string.base_url));
     }
 }

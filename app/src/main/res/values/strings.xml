@@ -371,7 +371,7 @@
     <string name="receipt_desc" translatable="false">receipt</string>
     <string name="share_text1" translatable="false">Download from: </string>
     <string name="share_text2" translatable="false">Use my Referral Code to register which is: </string>
-    <string name="time_sync_error" translatable="false">Your device time is not in sync with server. Use Network time in clock.Logging you off</string>
+    <string name="time_sync_error" translatable="false">Your phone time is not in sync with server. Use Network time in clock.Logging you off</string>
     <string name="chat_ex_msg_name" translatable="false">Username</string>
     <string name="chat_ex_msg" translatable="false">I am joining for GameId: 100</string>
     <string name="chat_ex_msg_time" translatable="false">10:05 pm</string>

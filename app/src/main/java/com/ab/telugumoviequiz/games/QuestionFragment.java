@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -77,6 +78,7 @@ public class QuestionFragment extends BaseFragment
     private static final int LEAVE_CONFIRM = 10;
     private static final int QUIT_GAME_CONFIRM = 20;
     private static final int GAME_OVER_CONFIRM = 100;
+    private boolean callStart = false;
 
 
     private Bundle saveState() {
@@ -123,6 +125,7 @@ public class QuestionFragment extends BaseFragment
         }*/
         // Minimise the game screen case end
         requireActivity().getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        ServerErrorHandler.getInstance().addShutdownListener(this);
         return inflater.inflate(R.layout.activity_question, container, false);
     }
 
@@ -142,9 +145,13 @@ public class QuestionFragment extends BaseFragment
     public void onDestroyView() {
         System.out.println("In onDestroyView");
         super.onDestroyView();
+        ServerErrorHandler.getInstance().removeShutdownListener(this);
         closeAllViews(false);
-        if (LocalGamesManager.getInstance() != null) {
-            LocalGamesManager.getInstance().start();
+        if (callStart) {
+            LocalGamesManager localGamesManager = LocalGamesManager.getInstance();
+            if (localGamesManager != null) {
+                localGamesManager.start();
+            }
         }
         requireActivity().getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
@@ -220,8 +227,11 @@ public class QuestionFragment extends BaseFragment
             displayErrorAsToast(successMsg);
             scheduleAllQuestions();
             gameStartedMode(root, false);
-            if (LocalGamesManager.getInstance() != null) {
-                LocalGamesManager.getInstance().stop();
+            Log.d("QuestionFragment", "Calling stop method");
+            LocalGamesManager localGamesManager = LocalGamesManager.getInstance();
+            if (localGamesManager != null) {
+                callStart = true;
+                localGamesManager.stop();
             }
         } else if (timeDiff < 0) {
             AlertDialog alertDialog = Utils.getProgressDialog(getActivity(), "Rejoining. Please Wait");
@@ -251,8 +261,11 @@ public class QuestionFragment extends BaseFragment
             progressBar.setVisibility(View.INVISIBLE);
             quesShowing(false);
             updateLifelines(false);
-            if (LocalGamesManager.getInstance() != null) {
-                LocalGamesManager.getInstance().stop();
+            Log.d("QuestionFragment", "Calling stop method");
+            LocalGamesManager localGamesManager = LocalGamesManager.getInstance();
+            if (localGamesManager != null) {
+                callStart = true;
+                localGamesManager.stop();
             }
             alertDialog.dismiss();
         }

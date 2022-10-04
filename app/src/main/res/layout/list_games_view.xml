@@ -5,6 +5,10 @@
     android:layout_height="match_parent"
     android:layout_marginTop="@dimen/view_gap_from_top"
     android:orientation="vertical">
+    <TextView
+        android:id="@+id/viewTitle"
+        android:layout_marginTop="@dimen/gap_in_components_less"
+        style="@style/StatusBarMsg"/>
     <androidx.recyclerview.widget.RecyclerView
         android:layout_marginTop="@dimen/game_recyle_view_top_margin"
         android:id="@+id/recyclerView"

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Point;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
@@ -270,6 +271,7 @@ public class Utils {
         PostTask.IGNORE = true;
         Request.baseUri = baseURL;
         ClientInitializer.destroy();
+        Log.d("Utils", "ServerErrorHandler : before LocalGamesManager destroy");
         LocalGamesManager.getInstance().destroy();
     }
 

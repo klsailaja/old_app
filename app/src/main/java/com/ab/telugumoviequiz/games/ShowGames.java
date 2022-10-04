@@ -105,6 +105,10 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
         setBaseParams(false);
         TextView userCountsLabel = root.findViewById(R.id.loggedUserCount);
         userCountsLabel.setVisibility(View.GONE);
+
+        TextView viewTitle = root.findViewById(R.id.viewTitle);
+        viewTitle.setVisibility(View.GONE);
+
         return root;
     }
 
@@ -331,12 +335,12 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
 
     @Override
     public void onDestroyView() {
+        Log.d(TAG, "showGames onDestroyView");
         super.onDestroyView();
         LocalGamesManager gmInstance = LocalGamesManager.getInstance();
         if (gmInstance == null) {
             return;
         }
-        LocalGamesManager.getInstance().stop();
         LocalGamesManager.getInstance().setCallbackResponse(null);
         LocalGamesManager.getInstance().setShowing(1, false);
         LocalGamesManager.getInstance().setShowing(2, false);
