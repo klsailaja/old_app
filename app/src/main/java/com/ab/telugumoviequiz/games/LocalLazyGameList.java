@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.TreeMap;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -64,9 +63,9 @@ public class LocalLazyGameList implements CallbackResponse, Runnable {
     }
 
     public void run() {
+        removeOldEntries();
         boolean sendRequest = shouldSendRequest();
         Log.d(TAG, "This is run method:" + gameType + ":" + sendRequest);
-        removeOldEntries();
         if (sendRequest) {
             makeRequestReady();
             getTask.run();
@@ -177,6 +176,7 @@ public class LocalLazyGameList implements CallbackResponse, Runnable {
     }
 
     public List<GameDetails> getCachedGameList() {
+        removeOldEntries();
         return cachedGameList;
     }
 

@@ -31,6 +31,7 @@ public class Constants {
     public static int CHAT_MAX_ENTRIES = 100;
     public static final long CHAT_MAX_DURATION_IN_MINS = 30;
     public static final long CHAT_MAX_DURATION_IN_MILLIS = CHAT_MAX_DURATION_IN_MINS * 60 * 1000;
+    public static int CHAT_POLL_INTERVAL = 15;
 
     public static final int MIXED_INITIAL_SLOT_NUMBERS = 1;
     public static final int CELEBRITY_INITIAL_SLOT_NUMBERS = 1;

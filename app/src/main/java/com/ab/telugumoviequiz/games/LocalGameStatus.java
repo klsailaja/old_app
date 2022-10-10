@@ -1,5 +1,7 @@
 package com.ab.telugumoviequiz.games;
 
+import android.util.Log;
+
 import com.ab.telugumoviequiz.common.CallbackResponse;
 import com.ab.telugumoviequiz.common.GetTask;
 import com.ab.telugumoviequiz.common.Scheduler;
@@ -36,7 +38,9 @@ public class LocalGameStatus implements CallbackResponse {
         fetchTask = Scheduler.getInstance().submitRepeatedTask(getTask, 30, 30, TimeUnit.SECONDS);
     }
     public void stop() {
+        Log.d("LocalGameStatus", "stop is called");
         if (fetchTask != null) {
+            Log.d("LocalGameStatus", "stop is called inside if");
             fetchTask.cancel(true);
         }
     }

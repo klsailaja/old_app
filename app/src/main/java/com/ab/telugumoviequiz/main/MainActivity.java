@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -45,7 +47,6 @@ import com.ab.telugumoviequiz.faq.MoreGamesView;
 import com.ab.telugumoviequiz.games.GameDetails;
 import com.ab.telugumoviequiz.games.GameStatus;
 import com.ab.telugumoviequiz.games.GameStatusHolder;
-import com.ab.telugumoviequiz.games.LocalGamesManager;
 import com.ab.telugumoviequiz.games.QuestionFragment;
 import com.ab.telugumoviequiz.games.SelectGameTypeView;
 import com.ab.telugumoviequiz.games.ShowGames;
@@ -81,6 +82,7 @@ public class MainActivity extends AppCompatActivity
     private ScheduledFuture<?> chatMsgCountPollerTask = null;
     private NavigationView navigationView;
     private MessageListener userMoneyFetchedListener;
+    private final String TAG = "MainActivity";
 
     private static final int SHARE_CONFIRM = 2000;
 
@@ -128,6 +130,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onDestroy () {
+        Log.d(TAG, "In onDestroy");
         super.onDestroy();
         ServerErrorHandler.getInstance().removeShutdownListener(this);
         Bundle gameState = getParams(Navigator.QUESTION_VIEW);
@@ -141,6 +144,9 @@ public class MainActivity extends AppCompatActivity
             boolean flipQuestionUsed = gameState.getBoolean(FLIPUSED);
             ArrayList<UserAnswer> userAnswers  = gameState.getParcelableArrayList(USERANSWERS);
             GameDetails gameDetails = (GameDetails) gameState.getSerializable(GAMEDETAILS);
+            if (gameDetails == null) {
+                return;
+            }
             long gameStartTime = gameDetails.getStartTime();
 
             boolean gameInProgress = false;
@@ -178,6 +184,10 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate method start");
+        if (savedInstanceState != null) {
+            Log.d(TAG, "onCreate method savedInstanceState is not null");
+        }
         Utils.clearState();
         setContentView(R.layout.activity_main);
         activityView = this.findViewById(android.R.id.content);
@@ -266,12 +276,15 @@ public class MainActivity extends AppCompatActivity
         }
         editor.apply();
 
+        String initialView = Navigator.CURRENT_GAMES;
+
         if (gameInProgress) {
             Bundle gameState = new Bundle();
             gameState.putBoolean(FIFTYUSED, fiftyUsed);
             gameState.putBoolean(FLIPUSED, flipQuestionUsed);
             gameState.putParcelableArrayList(USERANSWERS, userAnswers);
             storeParams(Navigator.QUESTION_VIEW, gameState);
+            initialView = Navigator.ENROLLED_GAMES;
         }
 
         long startTime = System.currentTimeMillis();
@@ -304,8 +317,12 @@ public class MainActivity extends AppCompatActivity
         updateMoneyInUI(UserDetails.getInstance().getUserMoney(), false);
 
         Bundle params = new Bundle();
-        params.putInt(SelectGameTypeView.HOME_SCREEN_GAME_TYPE, SelectGameTypeView.FUTURE_GAMES);
-        launchView(Navigator.CURRENT_GAMES, params, false);
+        if (initialView.equals(Navigator.CURRENT_GAMES)) {
+            params.putInt(SelectGameTypeView.HOME_SCREEN_GAME_TYPE, SelectGameTypeView.FUTURE_GAMES);
+        } else {
+            params.putInt(SelectGameTypeView.HOME_SCREEN_GAME_TYPE, SelectGameTypeView.ENROLLED_GAMES);
+        }
+        launchView(initialView, params, false);
 
         ServerErrorHandler.getInstance().addShutdownListener(this);
 
@@ -603,6 +620,7 @@ public class MainActivity extends AppCompatActivity
         };
         this.runOnUiThread(run);
     }
+
     public void displayErrorAsSnackBar(final String errMsg, View view) {
         Runnable run = () -> Snackbar.make(view, errMsg, Snackbar.LENGTH_LONG).show();
         this.runOnUiThread(run);
@@ -724,19 +742,21 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onResume() {
+        Log.d(TAG, "onResume");
         super.onResume();
     }
 
     @Override
     public void onPause() {
+        Log.d(TAG, "onPause");
         super.onPause();
     }
 
-    /*@Override
+    @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
-        System.out.println("Activity onSaveInstanceState ");
+        Log.d(TAG, "MainActivity onSaveInstanceState");
         super.onSaveInstanceState(outState);
-    }*/
+    }
 
     public void doAction(int calledId, Object userObject) {
         if (calledId == SHARE_CONFIRM) {

@@ -52,8 +52,10 @@ public class LocalGameList implements CallbackResponse {
             lock.readLock().unlock();
             return true;
         } else {
-            // Return the cached data here
-            sendData();
+            //sendData();
+            if (showing) {
+                refreshNow();
+            }
         }
         lock.readLock().unlock();
         return false;

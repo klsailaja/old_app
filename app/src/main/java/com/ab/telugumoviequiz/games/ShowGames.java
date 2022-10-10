@@ -74,10 +74,13 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
 
     @Override
     public void onCreate(Bundle bundle) {
+        Log.d(TAG, "In on Create");
         super.onCreate(bundle);
         int index = 1;
         if (bundle != null) {
+            Log.d(TAG, "In on bundle not null");
             index = bundle.getInt(SAVE_GAME_TYPE);
+            Log.d(TAG, "In on bundle not null" + index);
             LocalGamesManager.getInstance().start();
         } else {
             if (getArguments() != null) {
@@ -91,6 +94,10 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
     public View onCreateView(
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
+        Log.d(TAG, "In on create view");
+        if (savedInstanceState != null) {
+            Log.d(TAG, "In on create view savedInstanceState not null");
+        }
         View root = inflater.inflate(R.layout.list_games_view, container, false);
         recyclerView = root.findViewById(R.id.recyclerView);
         mAdapter = new GameAdapter();

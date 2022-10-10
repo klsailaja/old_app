@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,9 +17,12 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -79,6 +83,7 @@ public class QuestionFragment extends BaseFragment
     private static final int QUIT_GAME_CONFIRM = 20;
     private static final int GAME_OVER_CONFIRM = 100;
     private boolean callStart = false;
+    private final String TAG = "MainActivity";
 
 
     private Bundle saveState() {
@@ -93,12 +98,11 @@ public class QuestionFragment extends BaseFragment
     @Override
     public void onCreate (Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        System.out.println("onCreate " + savedInstanceState);
-        /*Activity activity = getActivity();
-        if (activity instanceof AppCompatActivity) {
-            ActionBar mActionBar = ((AppCompatActivity) activity).getSupportActionBar();
-            mActionBar.hide();
-        }*/
+        Log.d(TAG, "QF onCreate");
+        if (savedInstanceState != null) {
+            Log.d(TAG, "QF onCreate savedInstanceState is not null");
+        }
+        showActionBar(false);
     }
 
 
@@ -131,8 +135,8 @@ public class QuestionFragment extends BaseFragment
 
     @Override
     public void onStart() {
-        restoreState();
         super.onStart();
+        restoreState();
     }
 
     @Override
@@ -154,6 +158,7 @@ public class QuestionFragment extends BaseFragment
             }
         }
         requireActivity().getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        showActionBar(true);
     }
 
     private void restoreState() {
@@ -212,6 +217,7 @@ public class QuestionFragment extends BaseFragment
         Resources resources = getResources();
         String successMsg = resources.getString(R.string.game_join_success_msg);
 
+
         long cTime = System.currentTimeMillis();
         long timeToStart = gameDetails.getStartTime() - cTime - GAME_BEFORE_LOCK_PERIOD_IN_MILLIS - Constants.SCHEDULER_OFFSET_IN_MILLIS;
         long timeDiff = gameDetails.getStartTime() - cTime;
@@ -227,12 +233,6 @@ public class QuestionFragment extends BaseFragment
             displayErrorAsToast(successMsg);
             scheduleAllQuestions();
             gameStartedMode(root, false);
-            Log.d("QuestionFragment", "Calling stop method");
-            LocalGamesManager localGamesManager = LocalGamesManager.getInstance();
-            if (localGamesManager != null) {
-                callStart = true;
-                localGamesManager.stop();
-            }
         } else if (timeDiff < 0) {
             AlertDialog alertDialog = Utils.getProgressDialog(getActivity(), "Rejoining. Please Wait");
             alertDialog.show();
@@ -241,6 +241,8 @@ public class QuestionFragment extends BaseFragment
             int mins = (int) (timeDiff / 60);
             int secs = (int) timeDiff - (mins * 60);
             if (secs > 0) {
+                String timeUp = resources.getString(R.string.timeup);
+                displayErrorAsToast(timeUp);
                 mins++;
             }
             int alreadyAnsweredCt = userAnswers.size();
@@ -261,12 +263,6 @@ public class QuestionFragment extends BaseFragment
             progressBar.setVisibility(View.INVISIBLE);
             quesShowing(false);
             updateLifelines(false);
-            Log.d("QuestionFragment", "Calling stop method");
-            LocalGamesManager localGamesManager = LocalGamesManager.getInstance();
-            if (localGamesManager != null) {
-                callStart = true;
-                localGamesManager.stop();
-            }
             alertDialog.dismiss();
         }
     }
@@ -507,8 +503,23 @@ public class QuestionFragment extends BaseFragment
                 String userAnswerStr = "Answer: Wrong\n TimeTaken: Not Applicable";
                 if (isCorrect) {
                     userAnswerStr = "Answer: Correct\n TimeTaken:" + Utils.getUserNotionTimeStr(answeredTime, false);
+                    String finalErrMsg = userAnswerStr;
+                    Activity activity = getActivity();
+                    Runnable run = () -> {
+                        Toast toast = Toast.makeText(getActivity(), finalErrMsg, Toast.LENGTH_LONG);
+                        View view = toast.getView();
+                        TextView text = view.findViewById(android.R.id.message);
+                        text.setTextColor(Color.GREEN);
+                        toast.show();
+                    };
+                    if (activity != null) {
+                        activity.runOnUiThread(run);
+                    }
+                } else {
+                    displayErrorAsToast(userAnswerStr);
                 }
-                displayErrorAsToast(userAnswerStr);
+
+
 
                 PlayerAnswer playerAnswer = new PlayerAnswer();
                 playerAnswer.setQuestionNo(question.getQuestionNumber());
@@ -740,6 +751,12 @@ public class QuestionFragment extends BaseFragment
     }
 
     private void gameStartedMode(View root, boolean rejoin) {
+        Log.d("QuestionFragment", "Calling stop method");
+        LocalGamesManager localGamesManager = LocalGamesManager.getInstance();
+        if (localGamesManager != null) {
+            callStart = true;
+            localGamesManager.stop();
+        }
         String joinMsg = getString(R.string.game_start_msg);
         if (rejoin) {
             joinMsg = getString(R.string.game_rejoin_msg);
@@ -1192,6 +1209,20 @@ public class QuestionFragment extends BaseFragment
             String isGameOverStr = data.get(0);
             if (isGameOverStr.equalsIgnoreCase("1")) {
                 displayErrorAsToast("Winning Money is updated for winners");
+            }
+        }
+    }
+
+    private void showActionBar(boolean show) {
+        Activity activity = getActivity();
+        if (activity instanceof AppCompatActivity) {
+            ActionBar mActionBar = ((AppCompatActivity) activity).getSupportActionBar();
+            if (mActionBar != null) {
+                if (show) {
+                    mActionBar.show();
+                } else {
+                    mActionBar.hide();
+                }
             }
         }
     }

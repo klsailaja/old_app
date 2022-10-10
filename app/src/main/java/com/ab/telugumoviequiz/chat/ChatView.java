@@ -3,6 +3,7 @@ package com.ab.telugumoviequiz.chat;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import com.ab.telugumoviequiz.common.CallbackResponse;
 import com.ab.telugumoviequiz.common.Constants;
 import com.ab.telugumoviequiz.common.DialogAction;
 import com.ab.telugumoviequiz.common.GetTask;
+import com.ab.telugumoviequiz.common.MessageListener;
 import com.ab.telugumoviequiz.common.PostTask;
 import com.ab.telugumoviequiz.common.Request;
 import com.ab.telugumoviequiz.common.Scheduler;
@@ -44,26 +46,36 @@ import static com.ab.telugumoviequiz.common.Constants.CHAT_MAX_ENTRIES;
 
 public class ChatView extends BaseFragment implements View.OnClickListener,
         CallbackResponse, Runnable, ChatListener, DialogAction {
-    private ViewAdapter chatAdapter;
+
+    private static final String FETCHED_ENDTIME = "FETCHED_ENDTIME";
+    private static final String GAME_DETAILS_FETCH_COUNTER = "GD_FETCH_COUNTER";
+
     private final List<Chat> data = new ArrayList<>();
-    private static final String key1 = "FETCHED_ENDTIME";
+    private ViewAdapter chatAdapter;
+    private RecyclerView recyclerView;
     private long endTimeFetched = -1;
     private ScheduledFuture<?> chatFetchTask = null;
     private View textView;
+
     private List<String> mixGameTktRates, mixGameStartTimes, mixGameIds;
     private List<String> specialGameTktRates, specialGameStartTimes, specialGameIds, specialCelebrityNames;
     private List<Long> mixGameActualStartTimes, specialActualStartTimes;
     private int counter = 0;
-    private RecyclerView recyclerView;
-    private final int chat_msg_pollinterval = 15;
+
+    private int chat_msg_pollinterval;
+    private final String TAG = "ChatView";
+    private final GameBasicFetcher gameBasicFetcher = new GameBasicFetcher();
 
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
+        Log.d(TAG, "This is in onCreate");
+
+        chat_msg_pollinterval = Constants.CHAT_POLL_INTERVAL;
 
         Bundle chatBundle = ((MainActivity) requireActivity()).getParams(Navigator.CHAT_VIEW);
         if (chatBundle != null) {
-            endTimeFetched = bundle.getLong(key1, -1);
+            endTimeFetched = bundle.getLong(FETCHED_ENDTIME, -1);
             if (endTimeFetched != -1) {
                 long currentTime = System.currentTimeMillis();
                 if (currentTime > endTimeFetched) {
@@ -74,6 +86,11 @@ public class ChatView extends BaseFragment implements View.OnClickListener,
                 }
             }
         }
+        Log.d(TAG, "endTimeFetched:" + new Date(endTimeFetched));
+        if (bundle != null) {
+            counter = bundle.getInt(GAME_DETAILS_FETCH_COUNTER, 0);
+        }
+        Log.d(TAG, "counter:" + counter);
 
         mixGameTktRates = new ArrayList<>(5);
         mixGameStartTimes = new ArrayList<>(5);
@@ -99,6 +116,7 @@ public class ChatView extends BaseFragment implements View.OnClickListener,
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
 
+        Log.d(TAG, "In onCreateView");
         int[] points = Utils.getScreenWidth(getContext());
         ViewAdapter.screenWidth = points[0];
 
@@ -134,32 +152,43 @@ public class ChatView extends BaseFragment implements View.OnClickListener,
     @Override
     public void onResume() {
         super.onResume();
-        new GameBasicFetcher().run();
+        Log.d(TAG, "onResume");
+        gameBasicFetcher.run();
         handleListeners(this);
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        Log.d(TAG, "onPause");
         handleListeners(null);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Log.d(TAG, "onDestroy");
         storeEndTime();
         stopPollers();
         ServerErrorHandler.getInstance().removeShutdownListener(this);
     }
 
     @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        Log.d(TAG, "onSaveInstanceState");
+        super.onSaveInstanceState(outState);
+        outState.putInt(GAME_DETAILS_FETCH_COUNTER, counter);
+    }
+
+    @Override
     public void run() {
+        Log.d(TAG, "run()");
         try {
             fetchChatRecords();
             counter++;
-            if (counter >= (30/chat_msg_pollinterval)) {
+            if (counter >= (300/chat_msg_pollinterval)) {
                 counter = 0;
-                new GameBasicFetcher().run();
+                gameBasicFetcher.run();
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -253,27 +282,7 @@ public class ChatView extends BaseFragment implements View.OnClickListener,
             if (activity != null) {
                 activity.runOnUiThread(run);
             }
-        }
-        /*if ((reqId == Request.CHAT_BASIC_GAME_DETAILS_MIX_SET) || (reqId == Request.CHAT_BASIC_GAME_DETAILS_CELEBRITY_SET)) {
-            isHandled = handleAPIError(isAPIException, response, 2, textView, null);
-            if (isHandled) {
-                return;
-            }
-            if (reqId == Request.CHAT_BASIC_GAME_DETAILS_MIX_SET) {
-                req1 = true;
-                final ChatGameDetails[] result = (ChatGameDetails[]) response;
-                List<ChatGameDetails> newEntries = Arrays.asList(result);
-                fillValues(mixGameTktRates, mixGameStartTimes, mixGameIds,
-                        specialCelebrityNames, mixGameActualStartTimes, newEntries);
-            } else {
-                req2 = true;
-                final ChatGameDetails[] result = (ChatGameDetails[]) response;
-                List<ChatGameDetails> newEntries = Arrays.asList(result);
-                fillValues(specialGameTktRates, specialGameStartTimes, specialGameIds,
-                        specialCelebrityNames, specialActualStartTimes, newEntries);
-            }
-            enableButtons(true);
-        }*/ if (reqId == Request.POST_CHAT_MSG) {
+        } else if (reqId == Request.POST_CHAT_MSG) {
             if (isAPIException) {
                 displayErrorAsSnackBar((String) response, textView);
                 return;
@@ -331,6 +340,7 @@ public class ChatView extends BaseFragment implements View.OnClickListener,
             newChatMsg.setMessage(chatMsg);
             newChatMsg.setSentTimeStamp(System.currentTimeMillis());
             newChatMsg.setSenderName(UserDetails.getInstance().getUserProfile().getName());
+            Log.d(TAG, "gameStartTime in post:" + gameStartTime + ":" + new Date(gameStartTime));
             newChatMsg.setGameStartTime(gameStartTime);
 
             PostTask<Chat,Boolean> postChatMsgTask = Request.postChatMsgTask();
@@ -359,8 +369,6 @@ public class ChatView extends BaseFragment implements View.OnClickListener,
                 specialGameStartTimes.add(fullMsg);
                 specialGameIds.add(fullMsg);
             }
-            /*req1 = true;
-            req2 = true;*/
             enableButtons();
             int messageType = ChatMsgDialog.REQUEST;
             if (view.getId() == R.id.chat_repy_but) {
@@ -383,7 +391,7 @@ public class ChatView extends BaseFragment implements View.OnClickListener,
         if (bundle == null) {
             bundle = new Bundle();
         }
-        bundle.putLong(key1, endTimeFetched);
+        bundle.putLong(FETCHED_ENDTIME, endTimeFetched);
     }
 
     private void fillStrTime() {
@@ -512,13 +520,6 @@ public class ChatView extends BaseFragment implements View.OnClickListener,
     private class GameBasicFetcher implements Runnable {
         @Override
         public void run() {
-            /*GetTask<ChatGameDetails[]> request1 = Request.getMixedGameChatBasicGameDetails(1);
-            request1.setCallbackResponse(ChatView.this);
-            Scheduler.getInstance().submit(request1);
-
-            GetTask<ChatGameDetails[]> request2 = Request.getCelebrityGameChatBasicGameDetails(2);
-            request2.setCallbackResponse(ChatView.this);
-            Scheduler.getInstance().submit(request2);*/
             List<ChatGameDetails> entries =
                     LocalGamesManager.getInstance().getChatGameDetails(1);
             if (entries.size() == 0) {
@@ -547,5 +548,14 @@ public class ChatView extends BaseFragment implements View.OnClickListener,
         if (calledId == ServerErrorHandler.APP_SHUTDOWN) {
             stopPollers();
         }
+    }
+
+    @Override
+    public void passData(int reqId, List<String> data) {
+        if (reqId == MessageListener.GAMES_DATA_UPDATED) {
+            counter = 0;
+            gameBasicFetcher.run();
+        }
+        super.passData(reqId, data);
     }
 }

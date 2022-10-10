@@ -21,7 +21,8 @@ import com.ab.telugumoviequiz.common.Utils;
 
 import java.util.List;
 
-public class ChatMsgDialog extends DialogFragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
+public class ChatMsgDialog extends DialogFragment implements View.OnClickListener,
+        AdapterView.OnItemSelectedListener {
 
     private final int messageType;
     public static int REQUEST = 1;
@@ -116,8 +117,8 @@ public class ChatMsgDialog extends DialogFragment implements View.OnClickListene
         celebIdsAdapter.setNotifyOnChange(false);
 
         celebNamesAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, celebrityNames);
-        celebRatesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        celebRatesAdapter.setNotifyOnChange(false);
+        celebNamesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        celebNamesAdapter.setNotifyOnChange(false);
 
         gameTypeSpinner.setOnItemSelectedListener(this);
         return root;
