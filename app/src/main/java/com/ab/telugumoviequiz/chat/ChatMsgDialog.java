@@ -61,31 +61,7 @@ public class ChatMsgDialog extends DialogFragment implements View.OnClickListene
         this.listener = listener;
     }
 
-    @Override
-    public void onCreate(Bundle bundle) {
-        super.onCreate(bundle);
-        Resources resources = getResources();
-        gameTypeValues = resources.getStringArray(R.array.chat_game_types);
-    }
-
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.chat_msg, container, false);
-
-        Button closeButton = root.findViewById(R.id.user_answers_close_but);
-        closeButton.setOnClickListener(this);
-
-        gameTypeSpinner = root.findViewById(R.id.gameTypeSpinner);
-        rateSpinner = root.findViewById(R.id.rateSpinner);
-        timeSpinner = root.findViewById(R.id.gameTimeSpinner);
-        gameIdSpinner = root.findViewById(R.id.gameIdSpinner);
-        celebrityNamesSpinner = root.findViewById(R.id.celebritySpinner);
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, gameTypeValues);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        gameTypeSpinner.setAdapter(adapter);
-        gameTypeSpinner.setSelection(0);
-
+    public void setAdapters() {
         mixRatesAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, mixGameTktRates);
         mixRatesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mixRatesAdapter.setNotifyOnChange(false);
@@ -119,6 +95,34 @@ public class ChatMsgDialog extends DialogFragment implements View.OnClickListene
         celebNamesAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, celebrityNames);
         celebNamesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         celebNamesAdapter.setNotifyOnChange(false);
+    }
+
+    @Override
+    public void onCreate(Bundle bundle) {
+        super.onCreate(bundle);
+        Resources resources = getResources();
+        gameTypeValues = resources.getStringArray(R.array.chat_game_types);
+    }
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View root = inflater.inflate(R.layout.chat_msg, container, false);
+
+        Button closeButton = root.findViewById(R.id.user_answers_close_but);
+        closeButton.setOnClickListener(this);
+
+        gameTypeSpinner = root.findViewById(R.id.gameTypeSpinner);
+        rateSpinner = root.findViewById(R.id.rateSpinner);
+        timeSpinner = root.findViewById(R.id.gameTimeSpinner);
+        gameIdSpinner = root.findViewById(R.id.gameIdSpinner);
+        celebrityNamesSpinner = root.findViewById(R.id.celebritySpinner);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, gameTypeValues);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        gameTypeSpinner.setAdapter(adapter);
+        gameTypeSpinner.setSelection(0);
+
+        setAdapters();
 
         gameTypeSpinner.setOnItemSelectedListener(this);
         return root;

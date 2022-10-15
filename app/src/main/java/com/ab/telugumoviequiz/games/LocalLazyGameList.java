@@ -5,6 +5,7 @@ import android.util.Log;
 import com.ab.telugumoviequiz.common.CallbackResponse;
 import com.ab.telugumoviequiz.common.Constants;
 import com.ab.telugumoviequiz.common.GetTask;
+import com.ab.telugumoviequiz.common.MessageListener;
 import com.ab.telugumoviequiz.common.Request;
 import com.ab.telugumoviequiz.common.Scheduler;
 
@@ -17,6 +18,8 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+import static com.ab.telugumoviequiz.common.MessageListener.GAMES_DATA_UPDATED;
 
 public class LocalLazyGameList implements CallbackResponse, Runnable {
     private boolean exceptionThrown;
@@ -38,6 +41,7 @@ public class LocalLazyGameList implements CallbackResponse, Runnable {
     private int slotGamesCount = -1;
 
     private ScheduledFuture<?> checkTask;
+    private final List<MessageListener> listeners = new ArrayList<>();
 
     // boolean oneShot -> true, polling period -> false, polling period, last game id, new set
 
@@ -63,9 +67,9 @@ public class LocalLazyGameList implements CallbackResponse, Runnable {
     }
 
     public void run() {
+        Log.d(TAG, "This is run method:" + gameType);
         removeOldEntries();
         boolean sendRequest = shouldSendRequest();
-        Log.d(TAG, "This is run method:" + gameType + ":" + sendRequest);
         if (sendRequest) {
             makeRequestReady();
             getTask.run();
@@ -164,6 +168,7 @@ public class LocalLazyGameList implements CallbackResponse, Runnable {
                 }
             }
             lock.writeLock().unlock();
+            notifyListeners();
         }
         sendData();
         boolean sendReq = shouldSendRequest();
@@ -181,14 +186,14 @@ public class LocalLazyGameList implements CallbackResponse, Runnable {
     }
 
     private void sendData() {
-        Log.d(TAG, "This is in sendData start:" + cachedGameList.size() + " : " + exceptionThrown);
+        Log.d(TAG, "This is in sendData start:" + gameType + ":" + cachedGameList.size() + " : " + exceptionThrown);
         Log.d(TAG, "Start value is :" + start);
         if ((showing) && (start)) {
-            Log.d(TAG, "This is in sendData showing:" + cachedGameList.size());
+            Log.d(TAG, "This is in sendData showing:" + cachedGameList.size() + ":" + gameType);
             Object callbackResponseObj = response;
             if (!exceptionThrown) {
                 callbackResponseObj = cachedGameList.toArray(new GameDetails[0]);
-                Log.d(TAG, "This is in sendData:" + cachedGameList.size());
+                Log.d(TAG, "This is in sendData:" + cachedGameList.size() + ":" + gameType);
             }
             callbackResponse.handleResponse(getTask.getRequestId(), exceptionThrown,
                     isAPIException, callbackResponseObj, helperObject);
@@ -209,10 +214,10 @@ public class LocalLazyGameList implements CallbackResponse, Runnable {
             return true;
         }
         int currentSlots = currentGamesCount / slotGamesCount;
-        Log.d(TAG, "slotGamesCount:" + slotGamesCount + "currentGamesCount:" + currentGamesCount);
-        Log.d(TAG, "currentSlots:" + currentSlots);
-        boolean result = (currentSlots <= Constants.MAX_GAMES_SLOTS);
-        Log.d(TAG, "currentSlots:" + result);
+        Log.d(TAG, "slotGamesCount:" + slotGamesCount + "currentGamesCount:" + currentGamesCount + ":" + gameType);
+        Log.d(TAG, "currentSlots:" + currentSlots+ ":" + gameType);
+        boolean result = (currentSlots < Constants.MAX_GAMES_SLOTS);
+        Log.d(TAG, "currentSlots:" + result+ ":" + gameType);
         lock.writeLock().unlock();
         return result;
     }
@@ -246,4 +251,25 @@ public class LocalLazyGameList implements CallbackResponse, Runnable {
         lock.writeLock().unlock();
         sendData();
     }
+    public void addDataListeners(MessageListener listener) {
+        if (!listeners.contains(listener)) {
+            listeners.add(listener);
+        }
+    }
+
+    public void removeDataListeners(MessageListener listener) {
+        listeners.remove(listener);
+    }
+
+    private void notifyListeners() {
+        for (MessageListener listener : listeners) {
+            Log.d(TAG, "Notify : " + listener.getClass().getName() + ":" + gameType);
+            try {
+                listener.passData(GAMES_DATA_UPDATED, null);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
 }

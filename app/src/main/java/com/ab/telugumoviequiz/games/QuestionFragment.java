@@ -82,6 +82,7 @@ public class QuestionFragment extends BaseFragment
     private static final int LEAVE_CONFIRM = 10;
     private static final int QUIT_GAME_CONFIRM = 20;
     private static final int GAME_OVER_CONFIRM = 100;
+    private static final int BACK_CONFIRM = 210;
     private boolean callStart = false;
     private final String TAG = "MainActivity";
 
@@ -339,6 +340,12 @@ public class QuestionFragment extends BaseFragment
             if (gameStatusPollerHandle != null) {
                 gameStatusPollerHandle.cancel(true);
             }
+        } else if (calledId == BACK_CONFIRM) {
+            Activity parentActivity = getActivity();
+            if (parentActivity instanceof MainActivity) {
+                MainActivity mainActivity = (MainActivity) parentActivity;
+                mainActivity.launchView(Navigator.CURRENT_GAMES, null, false);
+            }
         }
     }
 
@@ -349,6 +356,10 @@ public class QuestionFragment extends BaseFragment
         if (id == R.id.game_starts_leave_but) {
             Utils.showConfirmationMessage("Confirm?", "Are you sure to quit?",
                     getContext(), this, LEAVE_CONFIRM, gameDetails);
+            return;
+        } else if (id == R.id.back) {
+            Utils.showConfirmationMessage("Confirm?", "Sure to go back? If so, join in time from enrolled games",
+                    getContext(), this, BACK_CONFIRM, gameDetails);
             return;
         }
         switch (id) {
@@ -743,6 +754,10 @@ public class QuestionFragment extends BaseFragment
         if (leaveButton != null) {
             leaveButton.setOnClickListener(this);
         }
+        Button backButton = root.findViewById(R.id.back);
+        if (backButton != null) {
+            backButton.setOnClickListener(this);
+        }
 
         timerView.setText("0");
         progressBar.setVisibility(View.INVISIBLE);
@@ -771,6 +786,7 @@ public class QuestionFragment extends BaseFragment
         TextView usersAtLabel = root.findViewById(R.id.usersAtLabel);
         TextView userAtValLabel = root.findViewById(R.id.starts_user_ct_val);
         Button gameStartBut = root.findViewById(R.id.game_starts_leave_but);
+        Button backButton = root.findViewById(R.id.back);
 
         fiftyFifty = root.findViewById(R.id.fiftyFifty);
         changeQues = root.findViewById(R.id.flipQuestion);
@@ -787,6 +803,7 @@ public class QuestionFragment extends BaseFragment
         usersAtLabel.setVisibility(View.GONE);
         userAtValLabel.setVisibility(View.GONE);
         gameStartBut.setVisibility(View.GONE);
+        backButton.setVisibility(View.GONE);
 
         fiftyFifty.setVisibility(View.VISIBLE);
         changeQues.setVisibility(View.VISIBLE);

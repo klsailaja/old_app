@@ -35,6 +35,7 @@ public class SearchGamesDialog extends DialogFragment
     private String[] searchCols;
     private ArrayAdapter<String> gameIdsAdapter, celebrityNamesAdapter, gameTimesAdapter, gameRatesAdapter;
     private MessageListener listener;
+    private int selectedIndex;
 
     public SearchGamesDialog(int gameMode) {
         this.gameMode = gameMode;
@@ -88,6 +89,20 @@ public class SearchGamesDialog extends DialogFragment
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         searchColsSpinner.setAdapter(adapter);
 
+        setAdapters(false);
+
+        searchColsSpinner.setOnItemSelectedListener(this);
+
+        searchColsSpinner.setSelection(2);
+        box.setSelected(true);
+        return root;
+    }
+
+    public void setAdapters(boolean retainSelection) {
+        if (retainSelection) {
+            selectedIndex = searchColsSpinner.getSelectedItemPosition();
+        }
+
         gameIdsAdapter = new ArrayAdapter<>(getContext(), R.layout.spinner_list_item, gameIds);
         gameIdsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         gameIdsAdapter.setNotifyOnChange(false);
@@ -106,11 +121,9 @@ public class SearchGamesDialog extends DialogFragment
         gameRatesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         gameRatesAdapter.setNotifyOnChange(false);
 
-        searchColsSpinner.setOnItemSelectedListener(this);
-
-        searchColsSpinner.setSelection(2);
-        box.setSelected(true);
-        return root;
+        if (retainSelection) {
+            searchColsSpinner.setSelection(selectedIndex);
+        }
     }
 
     @Override

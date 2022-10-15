@@ -103,13 +103,7 @@ public class ChatView extends BaseFragment implements View.OnClickListener,
         specialGameIds = new ArrayList<>(5);
         specialActualStartTimes = new ArrayList<>(5);
 
-        mixGameTktRates.add("No Data");
-        mixGameStartTimes.add("No Data");
-        mixGameIds.add("No Data");
-        specialGameTktRates.add("No Data");
-        specialCelebrityNames.add("No Data");
-        specialGameStartTimes.add("No Data");
-        specialGameIds.add("No Data");
+        LocalGamesManager.getInstance().addDataListeners(this);
     }
 
     public View onCreateView(
@@ -171,6 +165,7 @@ public class ChatView extends BaseFragment implements View.OnClickListener,
         storeEndTime();
         stopPollers();
         ServerErrorHandler.getInstance().removeShutdownListener(this);
+        LocalGamesManager.getInstance().removeDataListeners(this);
     }
 
     @Override
@@ -376,10 +371,10 @@ public class ChatView extends BaseFragment implements View.OnClickListener,
             }
 
             ChatMsgDialog chatMsgDialog = new ChatMsgDialog(messageType);
+            chatMsgDialog.setChatListener(this);
             chatMsgDialog.setMixTypeData(mixGameTktRates, mixGameStartTimes, mixGameIds);
             chatMsgDialog.setCelebrityTypeData(specialGameTktRates, specialGameStartTimes,
                     specialGameIds, specialCelebrityNames);
-            chatMsgDialog.setChatListener(this);
             FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
             chatMsgDialog.show(fragmentManager, "dialog");
         }
@@ -528,6 +523,14 @@ public class ChatView extends BaseFragment implements View.OnClickListener,
                 return;
             }
 
+            mixGameTktRates.add("No Data");
+            mixGameStartTimes.add("No Data");
+            mixGameIds.add("No Data");
+            specialGameTktRates.add("No Data");
+            specialCelebrityNames.add("No Data");
+            specialGameStartTimes.add("No Data");
+            specialGameIds.add("No Data");
+
             fillValues(mixGameTktRates, mixGameStartTimes, mixGameIds, specialCelebrityNames,
                     mixGameActualStartTimes, entries);
 
@@ -535,6 +538,18 @@ public class ChatView extends BaseFragment implements View.OnClickListener,
             fillValues(specialGameTktRates, specialGameStartTimes, specialGameIds, specialCelebrityNames,
                     specialActualStartTimes, entries);
             enableButtons();
+            /*if (chatMsgDialog != null) {
+                Runnable run = () -> {
+                    chatMsgDialog.setMixTypeData(mixGameTktRates, mixGameStartTimes, mixGameIds);
+                    chatMsgDialog.setCelebrityTypeData(specialGameTktRates, specialGameStartTimes,
+                            specialGameIds, specialCelebrityNames);
+                    chatMsgDialog.setAdapters();
+                };
+                Activity activity = getActivity();
+                if (activity != null) {
+                    activity.runOnUiThread(run);
+                }
+            }*/
         }
     }
 
@@ -555,7 +570,8 @@ public class ChatView extends BaseFragment implements View.OnClickListener,
         if (reqId == MessageListener.GAMES_DATA_UPDATED) {
             counter = 0;
             gameBasicFetcher.run();
+        } else {
+            super.passData(reqId, data);
         }
-        super.passData(reqId, data);
     }
 }

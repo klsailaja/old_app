@@ -19,7 +19,7 @@ public class LocalGameList implements CallbackResponse {
     private Object response;
     private final List<GameDetails> cachedGameList = new ArrayList<>();
     private boolean showing;
-    //private boolean start;
+    private boolean start;
 
     private final GetTask<GameDetails[]> getTask;
     private CallbackResponse callbackResponse;
@@ -38,15 +38,24 @@ public class LocalGameList implements CallbackResponse {
     }
 
     public void start() {
-        fetchTask = Scheduler.getInstance().submitRepeatedTask(getTask, 1000, 5 * 60 * 1000, TimeUnit.MILLISECONDS);
+        if (!start) {
+            start = true;
+            fetchTask = Scheduler.getInstance().submitRepeatedTask(getTask, 0, 5, TimeUnit.MINUTES);
+        }
     }
     public void stop() {
+        start = false;
         if (fetchTask != null) {
             fetchTask.cancel(true);
         }
     }
     public boolean setShowing(boolean showing) {
         this.showing = showing;
+        if (showing) {
+            start();
+        } else {
+            stop();
+        }
         lock.readLock().lock();
         if (request_status == 0) {
             lock.readLock().unlock();

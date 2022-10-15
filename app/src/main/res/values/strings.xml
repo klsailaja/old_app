@@ -94,6 +94,7 @@
     <string name="game_start_msg" translatable="false">Game Locked.Cannot Leave.You can check prize details</string>
     <string name="game_rejoin_msg" translatable="false">Successfully Rejoined</string>
     <string name="fifty_fifty" translatable="false">50–50</string>
+    <string name="back" translatable="false">Back</string>
     <string name="flip_question" translatable="false">Flip Question</string>
     <string name="more_game_options" translatable="false">More Options</string>
     <string name="game_join_success_msg" translatable="false">Successfully Joined Game</string>

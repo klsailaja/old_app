@@ -57,7 +57,7 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
     private final List<GameDetails> gameDetailsList = new ArrayList<>();
     private final List<GameDetails> adapterList = new ArrayList<>();
     private GameAdapter mAdapter;
-    private final ReadWriteLock lock = new ReentrantReadWriteLock();
+    //private final ReadWriteLock lock = new ReentrantReadWriteLock();
     private String searchKey = null, searchValue = null, showFreeGame = null;
     private final List<Long> gameStartTimeLongValues = new ArrayList<>();
     private final List<String> gameStartTimeStrValues = new ArrayList<>();
@@ -67,6 +67,9 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
 
     private final String SAVE_GAME_TYPE = "SAVE_GAME_TYPE";
     private final String TAG = "ShowGames";
+    private final List<String> searchGameIds = new ArrayList<>();
+    private final List<String> celebrityNames = new ArrayList<>();
+    private final List<String> searchRates = new ArrayList<>();
 
     public ShowGames() {
         super();
@@ -128,13 +131,16 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
 
     @Override
     public void onClick(View view) {
+        Log.d(TAG, "This is in onClick");
         if (view == null) {
             // This is to open the search dialog from help window
             showSearchView();
             return;
         }
         int viewId = view.getId();
+        Log.d(TAG, "This is in onClick:" + viewId);
         if (R.id.card_entry_join == viewId) {
+            Log.d(TAG, "This is in onClick: join" + viewId);
             String tagName = (String) view.getTag();
             int pos = Integer.parseInt(tagName);
             GameDetails quesGameDetails = adapterList.get(pos);
@@ -163,20 +169,19 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
             showHelpWindow(false);
         }
     }
+    private void buildSearchData() {
+        searchRates.clear();
+        searchGameIds.clear();
+        celebrityNames.clear();
 
-    private void showSearchView() {
         int gameMode = 2;
         if ((fragmentIndex == 1) || (fragmentIndex == 3)) {
             gameMode = 1;
         }
-        List<String> searchGameIds = new ArrayList<>();
-        List<String> celebrityNames = new ArrayList<>();
-        List<String> searchRates = new ArrayList<>();
-
         gameStartTimeLongValues.clear();
         gameStartTimeStrValues.clear();
 
-        lock.readLock().lock();
+        //lock.readLock().lock();
         for (GameDetails gameDetails : gameDetailsList) {
             searchGameIds.add(String.valueOf(gameDetails.getTempGameId()));
             if (!searchRates.contains(String.valueOf(gameDetails.getTicketRate()))) {
@@ -202,8 +207,14 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
                 }
             }
         }
-        lock.readLock().unlock();
+        //lock.readLock().unlock();
+    }
 
+    private void showSearchView() {
+        int gameMode = 2;
+        if ((fragmentIndex == 1) || (fragmentIndex == 3)) {
+            gameMode = 1;
+        }
         SearchGamesDialog searchGamesDialog = new SearchGamesDialog(gameMode);
         searchGamesDialog.setData(searchGameIds, celebrityNames, gameStartTimeStrValues, searchRates);
         searchGamesDialog.setListener(this);
@@ -236,7 +247,7 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
         } else if (searchKey.equals("Game Start Time")) {
             searchType = 3;
         }
-        lock.readLock().lock();
+        //lock.readLock().lock();
         for (GameDetails gameDetails : gameDetailsList) {
             if (searchType == 1) {
                 if (String.valueOf(gameDetails.getTempGameId()).equals(searchValue)) {
@@ -256,7 +267,7 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
             } else if (searchType == 3) {
                 int startTimeIndex = gameStartTimeStrValues.indexOf(searchValue);
                 if (startTimeIndex == -1) {
-                    return;
+                    continue;
                 }
                 Long longStartTime = gameStartTimeLongValues.get(startTimeIndex);
                 if (longStartTime == gameDetails.getStartTime()) {
@@ -282,7 +293,7 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
                 }
             }
         }
-        lock.readLock().unlock();
+        //lock.readLock().unlock();
         if (filterSet.size() == 0) {
             searchKey = null;
             searchValue = null;
@@ -467,10 +478,11 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
                     return;
                 }
 
-                lock.writeLock().lock();
+                //lock.writeLock().lock();
                 gameDetailsList.clear();
                 gameDetailsList.addAll(result);
-                lock.writeLock().unlock();
+                //lock.writeLock().unlock();
+                buildSearchData();
                 applyFilterCriteria();
                 if (reqId == Request.GET_FUTURE_GAMES) {
                     if (ShowHelpFirstTimer.getInstance().isFirstTime(HelpPreferences.GAME_TIPS)) {
@@ -483,7 +495,7 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
             case Request.GET_ENROLLED_GAMES_STATUS: {
                 GameStatusHolder result = (GameStatusHolder) response;
                 HashMap<Long, GameStatus> statusHashMap = result.getVal();
-                lock.writeLock().lock();
+                //lock.writeLock().lock();
                 for (GameDetails gameDetails : gameDetailsList) {
                     Long gameId = gameDetails.getGameId();
                     GameStatus gameStatus = statusHashMap.get(gameId);
@@ -492,7 +504,7 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
                     }
                     gameDetails.setCurrentCount(gameStatus.getCurrentCount());
                 }
-                lock.writeLock().unlock();
+                //lock.writeLock().unlock();
                 applyFilterCriteria();
                 break;
             }

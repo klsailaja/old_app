@@ -24,6 +24,7 @@ public class LocalGameStatus implements CallbackResponse {
 
     private ScheduledFuture<?> fetchTask;
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
+    private boolean start;
 
     public LocalGameStatus(GetTask<GameStatusHolder> getTask) {
         this.getTask = getTask;
@@ -35,9 +36,13 @@ public class LocalGameStatus implements CallbackResponse {
     }
 
     public void start() {
-        fetchTask = Scheduler.getInstance().submitRepeatedTask(getTask, 30, 30, TimeUnit.SECONDS);
+        if (!start) {
+            start = true;
+            fetchTask = Scheduler.getInstance().submitRepeatedTask(getTask, 30, 30, TimeUnit.SECONDS);
+        }
     }
     public void stop() {
+        start = false;
         Log.d("LocalGameStatus", "stop is called");
         if (fetchTask != null) {
             Log.d("LocalGameStatus", "stop is called inside if");

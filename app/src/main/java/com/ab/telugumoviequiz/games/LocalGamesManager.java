@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import com.ab.telugumoviequiz.chat.ChatGameDetails;
 import com.ab.telugumoviequiz.common.CallbackResponse;
 import com.ab.telugumoviequiz.common.GetTask;
+import com.ab.telugumoviequiz.common.MessageListener;
 import com.ab.telugumoviequiz.common.Request;
 import com.ab.telugumoviequiz.common.UserDetails;
 import com.ab.telugumoviequiz.main.UserProfile;
@@ -125,11 +126,11 @@ public class LocalGamesManager {
         celebrityGameList.start();
         celebrityGameStatus.start();
 
-        mixedEnrolledGameList.start();
+        /*mixedEnrolledGameList.start();
         mixedEnrolledGameStatus.start();
 
         celebrityEnrolledGameList.start();
-        celebrityEnrolledGameStatus.start();
+        celebrityEnrolledGameStatus.start();*/
     }
 
     public void stop() {
@@ -161,11 +162,19 @@ public class LocalGamesManager {
         boolean retVal = false;
         if (obj instanceof LocalGameList) {
             retVal = ((LocalGameList) obj).setShowing(showing);
+            LocalGameStatus gameStatus = (LocalGameStatus) handlers.get(1);
+            gameStatus.setShowing(showing);
+            if (showing) {
+                gameStatus.start();
+            } else {
+                gameStatus.stop();
+            }
         } else if (obj instanceof LocalLazyGameList) {
             retVal = ((LocalLazyGameList) obj).setShowing(showing);
+            LocalGameStatus gameStatus = (LocalGameStatus) handlers.get(1);
+            gameStatus.setShowing(showing);
         }
-        LocalGameStatus gameStatus = (LocalGameStatus) handlers.get(1);
-        gameStatus.setShowing(showing);
+
         return retVal;
     }
 
@@ -222,5 +231,15 @@ public class LocalGamesManager {
             chatGameDetails.add(chatGameDetailsObj);
         }
         return chatGameDetails;
+    }
+
+    public void addDataListeners(MessageListener listener) {
+        mixedGameList.addDataListeners(listener);
+        celebrityGameList.addDataListeners(listener);
+    }
+
+    public void removeDataListeners(MessageListener listener) {
+        mixedGameList.removeDataListeners(listener);
+        celebrityGameList.removeDataListeners(listener);
     }
 }
