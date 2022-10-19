@@ -104,6 +104,22 @@ public class Utils {
         alertDialog.show();
     }
 
+    public static void showUserIssue(String title, String message, final Context context,
+                                   final DialogAction dialogAction, int id, Object userObject) {
+        final AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+        alertDialog.setTitle(title);
+        alertDialog.setMessage(message);
+        alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Open Ticket", (dialogInterface, i) -> {
+            alertDialog.hide();
+            alertDialog.dismiss();
+            alertDialog.cancel();
+            if (dialogAction != null) {
+                dialogAction.doAction(id, userObject);
+            }
+        });
+        alertDialog.show();
+    }
+
     public static void showMessage(String title, String message, final Context context, final DialogAction dialogAction) {
         showMessage(title, message, context, dialogAction, -1, null);
     }
@@ -273,6 +289,7 @@ public class Utils {
         ClientInitializer.destroy();
         Log.d("Utils", "ServerErrorHandler : before LocalGamesManager destroy");
         LocalGamesManager.getInstance().destroy();
+        ShowHelpFirstTimer.getInstance().destroy();
     }
 
     public static void clientReset(String baseURL) {

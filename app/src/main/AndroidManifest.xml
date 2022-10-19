@@ -22,12 +22,14 @@
             android:required="false" />
 
         <activity
+            android:exported="false"
             android:name="com.ab.telugumoviequiz.main.MainActivity"
             android:theme="@style/Theme.TeluguMovieQuiz"
             android:screenOrientation="landscape">
         </activity>
 
         <activity
+            android:exported="true"
             android:name="com.ab.telugumoviequiz.main.LoginActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.TeluguMovieQuiz"
@@ -39,6 +41,7 @@
         </activity>
 
         <activity
+            android:exported="false"
             android:name="com.ab.telugumoviequiz.main.NewUserActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.TeluguMovieQuiz"

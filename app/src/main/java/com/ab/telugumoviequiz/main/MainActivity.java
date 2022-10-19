@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity
     private MessageListener userMoneyFetchedListener;
     private final String TAG = "MainActivity";
 
-    private static final int SHARE_CONFIRM = 2000;
+
 
     public void fetchUpdateMoney() {
         fetchUpdateMoney(false);
@@ -299,8 +299,9 @@ public class MainActivity extends AppCompatActivity
         calendar.set(Calendar.MINUTE, minute);
         calendar.set(Calendar.SECOND, 0);
         startTime = calendar.getTimeInMillis();
-        long initialDelay = startTime - System.currentTimeMillis() - 10 * 1000;
-        GetTask<GameStatusHolder> getGamesStatusTask = Request.getFutureGamesStatusTask(-1);
+        int waitTime = 5 + (int)(Math.random() * (15 - 1));
+        long initialDelay = startTime - System.currentTimeMillis() - waitTime * 1000;
+        GetTask<GameStatusHolder> getGamesStatusTask = Request.getCancelGamesStatus(-1);
         getGamesStatusTask.setCallbackResponse(this);
         allGamesStatusPollerTask = Scheduler.getInstance().submitRepeatedTask(getGamesStatusTask,
                 initialDelay, 5 * 60 * 1000, TimeUnit.MILLISECONDS);
@@ -605,6 +606,12 @@ public class MainActivity extends AppCompatActivity
         displayMsg("Error", errMsg, dialogAction);
     }
 
+    public void showUserIssue(final String title, final String msg,
+                              int id, DialogAction dialogAction, Object userObject) {
+        Runnable run = () -> Utils.showUserIssue(title, msg, MainActivity.this, dialogAction, id, userObject);
+        this.runOnUiThread(run);
+    }
+
     public void displayMsg(final String title, final String msg, DialogAction dialogAction) {
         Runnable run = () -> Utils.showMessage(title, msg, MainActivity.this, dialogAction);
         this.runOnUiThread(run);
@@ -647,10 +654,13 @@ public class MainActivity extends AppCompatActivity
             Boolean isGameOverBoolean = (Boolean) userObject;
             updateMoneyInUI(userMoney, isGameOverBoolean);
 
-        } else if (reqId == Request.GET_FUTURE_GAMES_STATUS) {
-            String gameCancelMsg = null;
+        } else if (reqId == Request.GET_CANCEL_GAMES_STATUS) {
+
+            int error = -1;
+            int userViewingGameId = -1;
             GameStatusHolder result = (GameStatusHolder) response;
             HashMap<Long, GameStatus> statusHashMap = result.getVal();
+            Log.d(TAG, "This is in cancel game response" + statusHashMap);
 
             UserProfile userProfile = UserDetails.getInstance().getUserProfile();
             long userProfileId = -1;
@@ -665,23 +675,35 @@ public class MainActivity extends AppCompatActivity
                     continue;
                 }
                 int status = gameStatus.getGameStatus();
+
                 if (status == -1) {
-                    Map<Long, Boolean> userAccountRevertStatus = gameStatus.getUserAccountRevertStatus();
-                    Boolean revertStatus = userAccountRevertStatus.get(userProfileId);
+                    Map<Long, Integer> userAccountRevertStatus = gameStatus.getUserAccountRevertStatus();
+                    Log.d(TAG, "This is in cancel game user status" + userAccountRevertStatus);
+                    Integer revertStatus = userAccountRevertStatus.get(userProfileId);
                     if (revertStatus == null) {
                         continue;
                     }
-                    int userViewingGameId = gameStatus.getViewId();
-                    if (revertStatus) {
-                        gameCancelMsg = "GameId#:" + userViewingGameId + " Cancelled as minimum users not present. Ticket Money credited successfully";
+                    userViewingGameId = gameStatus.getViewId();
+                    if (revertStatus == 2) {
+                        error = 1;
+                    } else if (revertStatus == 1) {
+                        error = 0;
                     }
                 }
             }
-            fetchUpdateMoney();
-            if (gameCancelMsg == null) {
+            if (error == -1) {
                 return;
             }
-            displayInfo(gameCancelMsg, new ShowHomeScreen(this));
+            fetchUpdateMoney();
+            String gameCancelMsg = "GameId#:" + userViewingGameId + " Cancelled as minimum users not present. Ticket Money credited status: ";
+            if (error == 1) {
+                gameCancelMsg = gameCancelMsg + "Success";
+                displayInfo(gameCancelMsg, new ShowHomeScreen(this));
+            } else {
+                gameCancelMsg = gameCancelMsg + "Fail";
+                showUserIssue("Error", gameCancelMsg, DialogAction.GAME_CANCELLED_MONEY_NOT_CREDITED,
+                        this, null);
+            }
         } else if (reqId == Request.ADD_MONEY_REQ) {
             Boolean result = (Boolean) response;
             String msg = "Money added successfully";
@@ -759,7 +781,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void doAction(int calledId, Object userObject) {
-        if (calledId == SHARE_CONFIRM) {
+        if (calledId == DialogAction.SHARE_CONFIRM) {
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
             shareIntent.setType("text/plain");
             String shareSubject = "Quiz App";

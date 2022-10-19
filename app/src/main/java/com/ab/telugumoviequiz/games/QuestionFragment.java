@@ -195,6 +195,7 @@ public class QuestionFragment extends BaseFragment
         }
         if (gameDetails != null) {
             if (System.currentTimeMillis() >= (gameDetails.getStartTime() + 10 * 60 * 1000)) {
+                progressBar.setVisibility(View.GONE);
                 Utils.showMessage("Info", "Game Over", getContext(), this,
                         GAME_OVER_CONFIRM, null);
                 return;

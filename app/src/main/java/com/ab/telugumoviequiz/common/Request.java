@@ -32,6 +32,7 @@ public class Request {
     public static final int GET_ENROLLED_GAMES = 201;
     public static final int GET_FUTURE_GAMES_STATUS = 202;
     public static final int GET_ENROLLED_GAMES_STATUS = 203;
+    public static final int GET_CANCEL_GAMES_STATUS = 205;
     //public static final int GET_CELEBRITY_NAME = 204;
     public static final int CREATE_USER_PROFILE = 100;
     public static final int LOGIN_REQ = 101;
@@ -149,6 +150,12 @@ public class Request {
     public static GetTask<GameStatusHolder> getFutureGamesStatusTask(int gameType) {
         String uri = baseUri + "/game/" + gameType + "/allstatus";
         return new GetTask<>(uri, GET_FUTURE_GAMES_STATUS, null,
+                GameStatusHolder.class, null);
+    }
+
+    public static GetTask<GameStatusHolder> getCancelGamesStatus(int gameType) {
+        String uri = baseUri + "/game/" + gameType + "/cgstatus";
+        return new GetTask<>(uri, GET_CANCEL_GAMES_STATUS, null,
                 GameStatusHolder.class, null);
     }
     public static GetTask<GameDetails[]> getEnrolledGames(int gameType, long userProfileId) {

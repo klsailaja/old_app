@@ -14,4 +14,9 @@ public class Keys {
     public static final String QUESTION_VIEW_GAME_START_TIME = "GAMESTARTTIME";
 
     public static final String LOGIN_SCREEN_CALLED_FROM_LOGOUT = "LOGOUT";
+
+    // Customer Care Keys
+    public static final String CC_TYPE = "CC_TYPE";
+    public static final String CC_REQ_OTHER_DETAILS = "CC_REQ_OTHER_DETAILS";
+
 }

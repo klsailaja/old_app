@@ -25,4 +25,7 @@ public class ShowHelpFirstTimer {
         }
         return false;
     }
+    public void destroy() {
+        firstTimeStatus.clear();
+    }
 }

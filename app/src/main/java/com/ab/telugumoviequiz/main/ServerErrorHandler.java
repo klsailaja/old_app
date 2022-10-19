@@ -47,12 +47,8 @@ public class ServerErrorHandler implements DialogAction {
         instance = null;
     }
     public void addShutdownListener(DialogAction listener) {
-        if (!shutDownListeners.contains(listener)) {
-            //shutDownListeners.add(listener);
-        }
     }
     public void removeShutdownListener(DialogAction listener) {
-        shutDownListeners.remove(listener);
     }
     private void notifyListeners() {
         for (DialogAction listener : shutDownListeners) {
@@ -83,7 +79,6 @@ public class ServerErrorHandler implements DialogAction {
         mainActivity.finish();
         alertDialog.dismiss();
         Log.d(TAG, "This is after dialog dismiss");
-        mainActivity = null;
         destroy();
     }
 }
