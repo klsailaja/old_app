@@ -26,6 +26,7 @@ public interface Navigator {
     String NEW_CC_REQUEST = "NewCustomerCareReqView";
     String ADDED_MONEY_NOT_UPDATED = "AddedMoneyNotUpdated";
     String WIN_MONEY_NOT_UPDATED = "WinMoneyNotUpdated";
+    String CANCELLED_GAME_RATE_NOT_ADDED = "CancelledGameMoneyNotAdded";
     String WD_REQ_NOT_PROCESSED = "WithdrawRequestNotProcessed";
     String QUESTION_ANSWER_WRONG = "ReportQuestionAnswerWrong";
     String CC_OTHERS = "CC_OTHERS";

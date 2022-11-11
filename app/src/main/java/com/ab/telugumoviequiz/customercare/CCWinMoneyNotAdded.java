@@ -3,6 +3,7 @@ package com.ab.telugumoviequiz.customercare;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import com.ab.telugumoviequiz.R;
 import com.ab.telugumoviequiz.common.BaseFragment;
 import com.ab.telugumoviequiz.common.CallbackResponse;
 import com.ab.telugumoviequiz.common.DialogAction;
+import com.ab.telugumoviequiz.common.Keys;
 import com.ab.telugumoviequiz.common.NotifyTextChanged;
 import com.ab.telugumoviequiz.common.PATextWatcher;
 import com.ab.telugumoviequiz.common.Request;
@@ -34,7 +36,7 @@ public class CCWinMoneyNotAdded extends BaseFragment implements View.OnClickList
     private PATextWatcher gameIdWatcher;
     private static final String ISSUE_DATE_KEY = "PLAYED_DATE";
     private static final String ISSUE_GAMEID_KEY = "GAME_ID";
-
+    private int ccSubType = -1;
 
     public CCWinMoneyNotAdded() {
         super();
@@ -43,13 +45,46 @@ public class CCWinMoneyNotAdded extends BaseFragment implements View.OnClickList
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
+        if (bundle != null) {
+            ccSubType = bundle.getInt(Keys.CC_SUB_TYPE);
+        } else {
+            if (getArguments() != null) {
+                ccSubType = getArguments().getInt(Keys.CC_SUB_TYPE);
+            }
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(Keys.CC_SUB_TYPE, ccSubType);
     }
 
     @Override
     public View onCreateView(
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.cc_win_money_issue, container, false);
+        Log.v("CC View: ", "ccSubType:" + ccSubType);
+        Log.v("CC View:", "args:" + getArguments());
+        View view;
+        if (ccSubType == 1) {
+            view = inflater.inflate(R.layout.cc_win_money_issue, container, false);
+            Bundle args = getArguments();
+            if (args != null) {
+                TextView gameIdTV = view.findViewById(R.id.ccWinMoneyGameIdET);
+                TextView playedDate = view.findViewById(R.id.ccWinMoneyDateET);
+                String ISSUE_DATE_KEY = "PLAYED_DATE";
+                String ISSUE_GAMEID_KEY = "GAME_ID";
+                String playedDateStr = args.getString(ISSUE_DATE_KEY);
+                String gameIdStr = args.getString(ISSUE_GAMEID_KEY);
+
+                gameIdTV.setText(gameIdStr);
+                playedDate.setText(playedDateStr);
+            }
+        } else {
+            view = inflater.inflate(R.layout.cc_cancelled_game_money, container, false);
+        }
+        return view;
     }
 
     @Override
@@ -99,7 +134,11 @@ public class CCWinMoneyNotAdded extends BaseFragment implements View.OnClickList
             int year = Integer.parseInt(stringTokenizer.nextToken().trim());
             boolean issueDateValidation = CCUtils.validateDate(day, month, year, 72);
             if (!issueDateValidation) {
-                displayError("Money added date should be less than 72 hrs", null);
+                if (ccSubType == 1) {
+                    displayError("Money added date should be less than 72 hrs", null);
+                } else {
+                    displayError("Played Game date should be less than 72 hrs", null);
+                }
                 return;
             }
 
@@ -111,8 +150,13 @@ public class CCWinMoneyNotAdded extends BaseFragment implements View.OnClickList
             ccExtraDetailMap.put(ISSUE_GAMEID_KEY, gameIdStr);
 
             String ccExtraDetails = CCUtils.encodeCCExtraValues(ccExtraDetailMap);
-            CCUtils.createdCCTicket(CustomerCareReqType.WIN_MONEY_NOT_ADDED.getId(),
-                    this, ccExtraDetails, this.getActivity());
+            if (ccSubType == 1) {
+                CCUtils.createdCCTicket(CustomerCareReqType.WIN_MONEY_NOT_ADDED.getId(),
+                        this, ccExtraDetails, this.getActivity());
+            } else {
+                CCUtils.createdCCTicket(CustomerCareReqType.CANCELLED_GAME_MONEY_NOT_ADDED.getId(),
+                        this, ccExtraDetails, this.getActivity());
+            }
         }
     }
 
@@ -129,7 +173,7 @@ public class CCWinMoneyNotAdded extends BaseFragment implements View.OnClickList
         }
         if (reqId == Request.CREATE_CC_ISSUE) {
             Long id = (Long) response;
-            String msg = "Successfully created Ticket";
+            String msg = "Successfully created Ticket. It will be checked and status will be updated";
             if (id == -1) {
                 msg = "Failed to create ticket. Please retry";
             }

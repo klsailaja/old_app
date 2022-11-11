@@ -1,6 +1,7 @@
 package com.ab.telugumoviequiz.customercare;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,10 +17,13 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.ab.telugumoviequiz.R;
 import com.ab.telugumoviequiz.common.BaseFragment;
+import com.ab.telugumoviequiz.common.Keys;
 import com.ab.telugumoviequiz.main.Navigator;
 
 public class NewCCReq extends BaseFragment implements AdapterView.OnItemSelectedListener {
 
+    private Spinner ccTypesSpinner;
+    private Bundle args;
     public NewCCReq() {
         super();
     }
@@ -35,9 +39,10 @@ public class NewCCReq extends BaseFragment implements AdapterView.OnItemSelected
             Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.cc_root_panel, container, false);
 
-        Spinner ccTypesSpinner = root.findViewById(R.id.wdTransferTypes);
+        ccTypesSpinner = root.findViewById(R.id.wdTransferTypes);
         String[] ccTypes = {"Added Money Not Updated", "Win Money Not Added",
-                "Withdraw Request Not Processed", "Question/Answer Wrong", "Others"
+                "Cancelled Game Money Not Added", "Withdraw Request Not Processed",
+                "Question/Answer Wrong", "Others"
         };
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
@@ -45,10 +50,15 @@ public class NewCCReq extends BaseFragment implements AdapterView.OnItemSelected
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         ccTypesSpinner.setAdapter(adapter);
 
-        ccTypesSpinner.setSelection(0);
-
-        showView(Navigator.ADDED_MONEY_NOT_UPDATED);
         ccTypesSpinner.setOnItemSelectedListener(this);
+
+        args = getArguments();
+        if (args != null) {
+            ccTypesSpinner.setSelection(1);
+        } else {
+            ccTypesSpinner.setSelection(0);
+        }
+
         return root;
     }
 
@@ -70,15 +80,16 @@ public class NewCCReq extends BaseFragment implements AdapterView.OnItemSelected
     @Override
     public void onStop() {
         super.onStop();
+        ccTypesSpinner.setOnItemSelectedListener(null);
     }
 
-    private void showView(String viewName) {
+    private void showView(String viewName, Bundle args1) {
         FragmentActivity parentActivity = getActivity();
         if (parentActivity == null) {
             return;
         }
         FragmentManager mgr = parentActivity.getSupportFragmentManager();
-        Fragment fragment = getFragment(viewName);
+        Fragment fragment = getFragment(viewName, args1);
         if (fragment == null) {
             return;
         }
@@ -87,8 +98,11 @@ public class NewCCReq extends BaseFragment implements AdapterView.OnItemSelected
         ft.commit();
     }
 
-    private Fragment getFragment(String viewId) {
-        BaseFragment fragment = null;
+    private Fragment getFragment(String viewId, Bundle args) {
+        BaseFragment fragment;
+        if (args == null) {
+            args = new Bundle();
+        }
         switch (viewId) {
             case Navigator.ADDED_MONEY_NOT_UPDATED: {
                 fragment = new CCAddedMoneyIssue();
@@ -96,6 +110,14 @@ public class NewCCReq extends BaseFragment implements AdapterView.OnItemSelected
             }
             case Navigator.WIN_MONEY_NOT_UPDATED: {
                 fragment = new CCWinMoneyNotAdded();
+                args.putInt(Keys.CC_SUB_TYPE, 1);
+                fragment.setArguments(args);
+                break;
+            }
+            case Navigator.CANCELLED_GAME_RATE_NOT_ADDED: {
+                fragment = new CCWinMoneyNotAdded();
+                args.putInt(Keys.CC_SUB_TYPE, 2);
+                fragment.setArguments(args);
                 break;
             }
             case Navigator.WD_REQ_NOT_PROCESSED: {
@@ -110,23 +132,28 @@ public class NewCCReq extends BaseFragment implements AdapterView.OnItemSelected
                 fragment = new CCOthersIssue();
                 break;
             }
+            default:
+                throw new IllegalStateException("Unexpected value: " + viewId);
         }
         return fragment;
     }
 
     @Override
     public void onItemSelected(AdapterView<?> arg0, View arg1, int position,long id) {
+        Log.v("Item", "position:" + position);
         String viewName = Navigator.ADDED_MONEY_NOT_UPDATED;
         if (position == 1) {
             viewName = Navigator.WIN_MONEY_NOT_UPDATED;
         } else if (position == 2) {
-            viewName = Navigator.WD_REQ_NOT_PROCESSED;
+            viewName = Navigator.CANCELLED_GAME_RATE_NOT_ADDED;
         } else if (position == 3) {
-            viewName = Navigator.QUESTION_ANSWER_WRONG;
+            viewName = Navigator.WD_REQ_NOT_PROCESSED;
         } else if (position == 4) {
+            viewName = Navigator.QUESTION_ANSWER_WRONG;
+        } else if (position == 5) {
             viewName = Navigator.CC_OTHERS;
         }
-        showView(viewName);
+        showView(viewName, args);
     }
 
     @Override

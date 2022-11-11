@@ -18,6 +18,7 @@ import android.text.method.PasswordTransformationMethod;
 import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -25,7 +26,9 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
 
 import com.ab.telugumoviequiz.R;
@@ -78,6 +81,18 @@ public class NewUserActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         Utils.clientReset(getResources().getString(R.string.base_url));
         setContentView(layout.activity_register);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar mActionBar = getSupportActionBar();
+        if (mActionBar != null) {
+            LayoutInflater mInflater = LayoutInflater.from(this);
+            @SuppressLint("InflateParams") View mCustomView = mInflater.inflate(R.layout.title_action_bar, null);
+            mActionBar.setDisplayShowHomeEnabled(false);
+            mActionBar.setDisplayShowTitleEnabled(false);
+            mActionBar.setDisplayShowCustomEnabled(true);
+            mActionBar.setCustomView(mCustomView);
+        }
 
         TextView mailTextView = findViewById(id.editTextEmail);
         mailTextView.requestFocus();

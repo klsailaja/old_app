@@ -137,12 +137,12 @@ public class QuestionFragment extends BaseFragment
     @Override
     public void onStart() {
         super.onStart();
-        restoreState();
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        restoreState();
         System.out.println("onResume called");
     }
 
@@ -362,6 +362,10 @@ public class QuestionFragment extends BaseFragment
             Utils.showConfirmationMessage("Confirm?", "Sure to go back? If so, join in time from enrolled games",
                     getContext(), this, BACK_CONFIRM, gameDetails);
             return;
+        } else if (id == R.id.home) {
+            Utils.showConfirmationMessage("Confirm?", "Procced to Home?",
+                    getContext(), this, BACK_CONFIRM, gameDetails);
+            return;
         }
         switch (id) {
             case R.id.moreOptions: {
@@ -406,12 +410,15 @@ public class QuestionFragment extends BaseFragment
                             break;
                         }
                         case R.id.item_win_credit: {
-                            String str = "Win Money Credit Status: In-Progress";
                             int winMoneyStatus = UserDetails.getUserDetails().getLastPlayedGameWinMoneyCreditStatus();
-                            if (winMoneyStatus == 1) {
-                                str = "Win Money Credit Status: Success";
-                            } else if (winMoneyStatus == 2) {
-                                str = "Win Money Credit Status: Timeout. Please raise a Customer Ticket";
+                            String str = Utils.getMoneyCreditStatusMessage(winMoneyStatus);
+                            if (str.length() == 0) {
+                                View root = getView();
+                                if (root != null) {
+                                    Button moreOptions = getView().findViewById(R.id.moreOptions);
+                                    displayErrorAsSnackBar("In-Progress. Please try after some time", moreOptions);
+                                    return true;
+                                }
                             }
                             displayInfo(str, null);
                             break;
@@ -628,6 +635,12 @@ public class QuestionFragment extends BaseFragment
                     if (view != null) {
                         Button moreButton = view.findViewById(R.id.moreOptions);
                         moreButton.setTag(isGameOver);
+
+                        fiftyFifty.setVisibility(View.GONE);
+                        changeQues.setVisibility(View.GONE);
+
+                        Button backButton = view.findViewById(R.id.home);
+                        backButton.setVisibility(View.VISIBLE);
                     }
                     final AlertDialog alertDialog = new AlertDialog.Builder(requireContext()).create();
                     alertDialog.setTitle("View Winners");
@@ -758,6 +771,11 @@ public class QuestionFragment extends BaseFragment
         Button backButton = root.findViewById(R.id.back);
         if (backButton != null) {
             backButton.setOnClickListener(this);
+        }
+
+        Button homeButton = root.findViewById(R.id.home);
+        if (homeButton != null) {
+            homeButton.setOnClickListener(this);
         }
 
         timerView.setText("0");

@@ -19,4 +19,5 @@ public class Keys {
     public static final String CC_TYPE = "CC_TYPE";
     public static final String CC_REQ_OTHER_DETAILS = "CC_REQ_OTHER_DETAILS";
 
+    public static final String CC_SUB_TYPE = "CC_SUB_TYPE";
 }

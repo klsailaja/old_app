@@ -1,149 +1,168 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.ab.telugumoviequiz.main.LoginActivity"
-    android:background="@color/login_bk_color"
-    android:focusableInTouchMode="true"
-    android:gravity="center"
-    android:layout_gravity="center">
-    <ScrollView
+    tools:context="com.ab.telugumoviequiz.main.LoginActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_centerInParent="true"
-        tools:ignore="UselessParent">
-        <LinearLayout
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:padding="@dimen/login_heading_label_padding"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+    <RelativeLayout android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.ab.telugumoviequiz.main.LoginActivity"
+        android:background="@color/login_bk_color"
+        android:focusableInTouchMode="true"
+        android:gravity="center"
+        android:layout_gravity="center">
+        <ScrollView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:layout_centerVertical="true"
-                    android:layout_alignParentStart="true"
-                    style="@style/viewParent.headerText.NoMode"
-                    android:text="@string/login_screen_already_have_acc"/>
-            </RelativeLayout>
-            <EditText
-                android:id="@+id/editTextEmail"
-                android:layout_marginTop="@dimen/margin_top_large"
-                style="@style/normalTextBox"
-                android:inputType="textEmailAddress"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:text="@string/test_user_name"
-                android:hint="@string/login_email_hint"
-                android:autofillHints="" />
-            <EditText
-                android:id="@+id/editTextPassword"
-                android:layout_marginTop="@dimen/margin_top_large"
-                style="@style/normalTextBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/login_password_hint"
-                android:text="@string/test_passwd"
-                android:longClickable="false"
-                android:maxLines="1"
-                android:paddingStart="0dp"
-                android:paddingEnd="10dp"
-                android:inputType="textPassword"
-                android:drawableEnd="@drawable/showeye"
-                android:autofillHints="" />
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerInParent="true"
+            tools:ignore="UselessParent">
             <LinearLayout
                 android:layout_width="match_parent"
+                android:padding="@dimen/login_heading_label_padding"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_top_large"
-                android:orientation="horizontal"
-                android:baselineAligned="false">
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/captchaTIL"
-                    android:layout_width="0dp"
+                android:orientation="vertical">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentStart="true"
+                        style="@style/viewParent.headerText.NoMode"
+                        android:text="@string/login_screen_already_have_acc"/>
+                </RelativeLayout>
+                <EditText
+                    android:id="@+id/editTextEmail"
+                    android:layout_marginTop="@dimen/margin_top_large"
+                    style="@style/normalTextBox"
+                    android:inputType="textEmailAddress"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.5"
-                    android:hint="@string/login_enter_captcha"
-                    android:textColorHint="@color/colorPrimary"
-                    android:background="@null"
-                    android:layout_marginEnd="@dimen/margin_top_small"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-                    <com.google.android.material.textfield.TextInputEditText
-                        style="@style/normalTextBox"
-                        android:id="@+id/enterCaptchaET"
-                        android:enabled="true"
-                        android:inputType="number"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-                </com.google.android.material.textfield.TextInputLayout>
+                    android:maxLines="1"
+                    android:text="@string/test_user_name"
+                    android:hint="@string/login_email_hint"
+                    android:autofillHints="" />
+                <EditText
+                    android:id="@+id/editTextPassword"
+                    android:layout_marginTop="@dimen/margin_top_large"
+                    style="@style/normalTextBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/login_password_hint"
+                    android:text="@string/test_passwd"
+                    android:longClickable="false"
+                    android:maxLines="1"
+                    android:paddingStart="0dp"
+                    android:paddingEnd="10dp"
+                    android:inputType="textPassword"
+                    android:drawableEnd="@drawable/showeye"
+                    android:autofillHints="" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_top_large"
+                    android:orientation="horizontal"
+                    android:baselineAligned="false">
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/captchaTIL"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:hint="@string/login_enter_captcha"
+                        android:textColorHint="@color/colorPrimary"
+                        android:background="@null"
+                        android:layout_marginEnd="@dimen/margin_top_small"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                        <com.google.android.material.textfield.TextInputEditText
+                            style="@style/normalTextBox"
+                            android:id="@+id/enterCaptchaET"
+                            android:enabled="true"
+                            android:inputType="number"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+                    </com.google.android.material.textfield.TextInputLayout>
+                    <TextView
+                        android:id="@+id/captchaQuestion"
+                        android:layout_width="0dp"
+                        android:layout_weight="0.4"
+                        android:background="@drawable/round_button_nofill"
+                        style="@style/normalButton"
+                        android:layout_marginEnd="@dimen/margin_top_small"
+                        android:gravity="center"
+                        android:layout_gravity="center"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/captchaTextSize"
+                        android:text="@string/login_initial_captcha" />
+                    <ImageView
+                        android:id="@+id/reloadCaptcha"
+                        android:layout_width="0dp"
+                        android:layout_weight="0.1"
+                        android:src="@drawable/reload"
+                        style="@style/normalButton"
+                        android:gravity="center"
+                        android:layout_gravity="center"
+                        android:layout_marginEnd="@dimen/margin_top_small"
+                        android:layout_height="wrap_content"
+                        android:text="@string/referral_code_more_info"
+                        android:contentDescription="@string/login_reload_captcha_desc" />
+                </LinearLayout>
                 <TextView
-                    android:id="@+id/captchaQuestion"
-                    android:layout_width="0dp"
-                    android:layout_weight="0.4"
-                    android:background="@drawable/round_button_nofill"
-                    style="@style/normalButton"
-                    android:layout_marginEnd="@dimen/margin_top_small"
-                    android:gravity="center"
-                    android:layout_gravity="center"
+                    style="@style/viewParent"
+                    android:id="@+id/forgotPasswordBut"
+                    android:text="@string/login_screen_forgot_password"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/login_forgot_passwd_text_size"
+                    android:layout_gravity="end"
+                    android:layout_marginTop="@dimen/margin_top_medium"/>
+                <CheckBox
+                    android:id="@+id/termsConditionsCheck1"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/captchaTextSize"
-                    android:text="@string/login_initial_captcha" />
-                <ImageView
-                    android:id="@+id/reloadCaptcha"
-                    android:layout_width="0dp"
-                    android:layout_weight="0.1"
-                    android:src="@drawable/reload"
+                    android:layout_marginTop="@dimen/margin_top_large"
+                    style="@style/parent"
+                    android:text="@string/terms_conditions1"
+                    android:textSize="15sp"
+                    android:checked="false"/>
+                <Button
                     style="@style/normalButton"
-                    android:gravity="center"
-                    android:layout_gravity="center"
-                    android:layout_marginEnd="@dimen/margin_top_small"
+                    android:layout_marginTop="@dimen/margin_top_large"
+                    android:id="@+id/loginBut"
+                    android:background="@drawable/round_button"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/referral_code_more_info"
-                    android:contentDescription="@string/login_reload_captcha_desc" />
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="@string/login_screen_login_text" />
+                <TextView
+                    android:id="@+id/viewNewUserBut"
+                    style="@style/parent"
+                    android:textAlignment="center"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/login_forgot_passwd_text_size"
+                    android:text="@string/login_screen_new_user_register_now"
+                    android:layout_marginTop="@dimen/margin_top_large"/>
+                <TextView
+                    android:id="@+id/winMsgs"
+                    style="@style/StatusBarMsg"
+                    android:text="@string/status_bar_msg" />
             </LinearLayout>
-            <TextView
-                style="@style/viewParent"
-                android:id="@+id/forgotPasswordBut"
-                android:text="@string/login_screen_forgot_password"
-                android:textColor="@color/colorPrimary"
-                android:textSize="@dimen/login_forgot_passwd_text_size"
-                android:layout_gravity="end"
-                android:layout_marginTop="@dimen/margin_top_medium"/>
-            <CheckBox
-                android:id="@+id/termsConditionsCheck1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_top_large"
-                style="@style/parent"
-                android:text="@string/terms_conditions1"
-                android:textSize="15sp"
-                android:checked="false"/>
-            <Button
-                style="@style/normalButton"
-                android:layout_marginTop="@dimen/margin_top_large"
-                android:id="@+id/loginBut"
-                android:background="@drawable/round_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:text="@string/login_screen_login_text" />
-            <TextView
-                android:id="@+id/viewNewUserBut"
-                style="@style/parent"
-                android:textAlignment="center"
-                android:textStyle="bold"
-                android:textColor="@color/colorPrimary"
-                android:textSize="@dimen/login_forgot_passwd_text_size"
-                android:text="@string/login_screen_new_user_register_now"
-                android:layout_marginTop="@dimen/margin_top_large"/>
-            <TextView
-                android:id="@+id/winMsgs"
-                style="@style/StatusBarMsg"
-                android:text="@string/status_bar_msg" />
-        </LinearLayout>
-    </ScrollView>
-</RelativeLayout>
+        </ScrollView>
+    </RelativeLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

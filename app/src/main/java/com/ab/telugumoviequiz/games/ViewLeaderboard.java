@@ -91,12 +91,7 @@ public class ViewLeaderboard extends DialogFragment implements View.OnClickListe
         creditStatus.setVisibility(View.INVISIBLE);
         if (fromHistory) {
             creditStatus.setVisibility(View.VISIBLE);
-            String str = "Win Money Credit Status: Success";
-            if (winMoneyStatus == 0) {
-                str = "Win Money Credit Status: In-Progress";
-            } else if (winMoneyStatus == 2) {
-                str = "Win Money Credit Status: Timeout";
-            }
+            String str = Utils.getHistoryViewMoneyCreditStatusMsg(winMoneyStatus);
             creditStatus.setText(str);
         }
         
@@ -348,6 +343,11 @@ public class ViewLeaderboard extends DialogFragment implements View.OnClickListe
         if (!fromHistory) {
             if (winnerCount == 0) {
                 winnersLabel = winnersLabel + " (Free game)";
+            }
+        } else {
+            if (winMoneyStatus >= 2) {
+                String msg = Utils.getMoneyCreditStatusMessage(winMoneyStatus);
+                Utils.showMessage("Error", msg, context, null);
             }
         }
 

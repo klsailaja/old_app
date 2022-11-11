@@ -14,6 +14,7 @@ import android.text.method.LinkMovementMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.text.style.ClickableSpan;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -22,7 +23,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
 
 import com.ab.telugumoviequiz.R;
@@ -67,6 +70,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         setContentView(R.layout.activity_login);
         Log.d(TAG, "In OnCreate:" + Request.baseUri);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar mActionBar = getSupportActionBar();
+        if (mActionBar != null) {
+            LayoutInflater mInflater = LayoutInflater.from(this);
+            @SuppressLint("InflateParams") View mCustomView = mInflater.inflate(R.layout.title_action_bar, null);
+            mActionBar.setDisplayShowHomeEnabled(false);
+            mActionBar.setDisplayShowTitleEnabled(false);
+            mActionBar.setDisplayShowCustomEnabled(true);
+            mActionBar.setCustomView(mCustomView);
+        }
 
         generateCaptcha();
 

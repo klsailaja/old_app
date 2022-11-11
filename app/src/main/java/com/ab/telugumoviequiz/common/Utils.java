@@ -14,6 +14,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
 
 import com.ab.telugumoviequiz.R;
+import com.ab.telugumoviequiz.constants.WinMoneyCreditStatus;
 import com.ab.telugumoviequiz.games.LocalGamesManager;
 import com.ab.telugumoviequiz.help.HelpMessage;
 import com.ab.telugumoviequiz.help.HelpReader;
@@ -296,5 +297,50 @@ public class Utils {
         GetTask.IGNORE = false;
         PostTask.IGNORE = false;
         Request.baseUri = baseURL;
+    }
+
+    public static String getHistoryViewMoneyCreditStatusMsg(int state) {
+        String msg = "";
+        if (state == WinMoneyCreditStatus.ALL_SUCCESS.getId()) {
+            msg = "Winners money credited status: SUCCESS" ;
+        } else if (state == WinMoneyCreditStatus.ALL_FAIL.getId()) {
+            // All Records Fail
+            msg = "Winners money credited status: FAIL" ;
+        } else if (state == WinMoneyCreditStatus.PARTIAL_RESULTS.getId()) {
+            msg = "Winners money credited status: FAIL" ;
+        } else if (state == WinMoneyCreditStatus.IN_PROGRESS.getId()) {
+            msg = "Winners money credited status: In-Progress" ;
+        }
+        return msg;
+    }
+
+    public static String getMoneyCreditStatusMessage(int state) {
+        String msg = "";
+        if (state == WinMoneyCreditStatus.ALL_SUCCESS.getId()) {
+            // All Records success
+            msg = "Winners money credited status: SUCCESS" ;
+        } else if (state == WinMoneyCreditStatus.ALL_FAIL.getId()) {
+            // All Records Fail
+            msg = "Winners money credited status: FAIL \n" +
+                    "Customer Tickets Raised by the app for this Issue. Please check";
+        } else if (state == WinMoneyCreditStatus.PARTIAL_RESULTS.getId()) {
+            msg = "Winners money credited status: FAIL \n" +
+                    "Please Check in MyTransaction view and File a Customer Ticket " +
+                    "if win money not credited";
+        }
+        return msg;
+    }
+
+    public static String getCancelledGameRevertMsg(int state) {
+        String msg = null;
+        if (state == WinMoneyCreditStatus.ALL_SUCCESS.getId()) {
+            // All Records success
+            msg = "SUCCESS" ;
+        } else if (state == WinMoneyCreditStatus.ALL_FAIL.getId()) {
+            // All Records Fail
+            msg = "FAIL \n" +
+                    "Customer Tickets Raised by the system for this Issue. Please check";
+        }
+        return msg;
     }
 }

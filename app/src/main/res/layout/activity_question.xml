@@ -108,6 +108,19 @@
                     android:text="@string/back" />
                 <Button
                     android:layout_marginTop="@dimen/margin_top_large"
+                    android:id="@+id/home"
+                    style="@style/normalButton"
+                    android:layout_column="5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="1dp"
+                    android:background="@drawable/round_button"
+                    android:layout_gravity="fill_horizontal"
+                    android:gravity="center"
+                    android:visibility="gone"
+                    android:text="@string/home" />
+                <Button
+                    android:layout_marginTop="@dimen/margin_top_large"
                     android:id="@+id/fiftyFifty"
                     style="@style/normalButton"
                     android:layout_column="5"

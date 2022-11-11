@@ -95,6 +95,7 @@
     <string name="game_rejoin_msg" translatable="false">Successfully Rejoined</string>
     <string name="fifty_fifty" translatable="false">50–50</string>
     <string name="back" translatable="false">Back</string>
+    <string name="home" translatable="false">Home</string>
     <string name="flip_question" translatable="false">Flip Question</string>
     <string name="more_game_options" translatable="false">More Options</string>
     <string name="game_join_success_msg" translatable="false">Successfully Joined Game</string>
@@ -191,6 +192,7 @@
     <string name="transactionview_col8" translatable="false">More Options</string>
     <string-array name="transactions_more_options">
         <item>View More Details</item>
+        <item>Open a Customer Care Ticket</item>
     </string-array>
 
     <!-- User Games History -->
@@ -319,6 +321,10 @@
     <string name="screenshot_remove" translatable="false">Remove</string>
     <string name="ccCreateTicketBut" translatable="false">Create Ticket</string>
     <string name="screenshot_title" translatable="false">Added Money Payment Screenshot:</string>
+
+    <!-- Customer Care Cancelled Game Money Not Added Issue -->
+    <string name="ccCancelledMoneyIntro" translatable="false">If your game is cancelled, ticket rate money is not credited back, raise an issue here.</string>
+    <string name="ccCancelledMoneyGameId" translatable="false">Enter cancelled game Id</string>
 
     <!-- Customer Care Win Money Not Added Issue -->
     <string name="ccWinMoneyIntro" translatable="false">If you are a winner and money is not credited in mytransactions then you can raise a ticket here</string>

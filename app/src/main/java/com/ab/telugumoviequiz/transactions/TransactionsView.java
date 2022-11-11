@@ -24,9 +24,13 @@ import com.ab.telugumoviequiz.common.Request;
 import com.ab.telugumoviequiz.common.Scheduler;
 import com.ab.telugumoviequiz.common.UserDetails;
 import com.ab.telugumoviequiz.common.Utils;
+import com.ab.telugumoviequiz.customercare.CCUtils;
+import com.ab.telugumoviequiz.main.MainActivity;
+import com.ab.telugumoviequiz.main.Navigator;
 import com.ab.telugumoviequiz.main.UserProfile;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class TransactionsView extends BaseFragment implements PopupMenu.OnMenuItemClickListener,
@@ -38,6 +42,7 @@ public class TransactionsView extends BaseFragment implements PopupMenu.OnMenuIt
     private int accountType = -1;
     public final static int MORE_OPTIONS_BUTTON_ID = 1;
     private final static int VIEW_MORE_DETAILS = 10;
+    private final static int OPEN_CUSTOMER_CARE_TKT = 11;
 
     private void handleListeners(View.OnClickListener listener) {
         View view = getView();
@@ -194,6 +199,28 @@ public class TransactionsView extends BaseFragment implements PopupMenu.OnMenuIt
             stringBuilder.append(operResult);
             Utils.showMessage("", stringBuilder.toString(), this.getContext(), null);
             return true;
+        } else if (id == OPEN_CUSTOMER_CARE_TKT) {
+            MyTransaction selectedTransaction = (MyTransaction) item.getActionView().getTag();
+            String extraDetails = selectedTransaction.getExtraDetails();
+            HashMap<String,String> extraDetailsMap = CCUtils.decodeCCExtraValues(extraDetails);
+
+            String GAME_START_TIME_KEY = "GAME_START_TIME";
+            String GAME_CLIENT_ID = "GAME_CLIENT_ID";
+
+            String gameStartTime = extraDetailsMap.get(GAME_START_TIME_KEY);
+            String gameCientId = extraDetailsMap.get(GAME_CLIENT_ID);
+
+
+            String ISSUE_DATE_KEY = "PLAYED_DATE";
+            String ISSUE_GAMEID_KEY = "GAME_ID";
+            Bundle bundle = new Bundle();
+            bundle.putString(ISSUE_DATE_KEY, gameStartTime);
+            bundle.putString(ISSUE_GAMEID_KEY, gameCientId);
+            Activity parentActivity = getActivity();
+            if (parentActivity instanceof MainActivity) {
+                MainActivity mainActivity = (MainActivity) parentActivity;
+                mainActivity.launchView(Navigator.NEW_CC_REQUEST, bundle, false);
+            }
         }
         String text = (String) item.getTitle();
         accountType = -1;

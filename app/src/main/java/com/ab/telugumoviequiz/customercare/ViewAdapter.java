@@ -169,6 +169,8 @@ public class ViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 ccRequestType = "Wrong Quiz Answer";
             } else if (ccRequest.getRequestType() == 5) {
                 ccRequestType = "Others";
+            } else if (ccRequest.getRequestType() == 6) {
+                ccRequestType = "Cancelled Game Money Not Added";
             }
             holder.typeView.setText(ccRequestType);
 

@@ -1,260 +1,281 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.ab.telugumoviequiz.main.NewUserActivity"
-    android:background="@color/white"
-    android:focusableInTouchMode="true"
-    android:gravity="center"
-    android:layout_gravity="center">
-    <ScrollView
+    tools:context="com.ab.telugumoviequiz.main.NewUserActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
-        tools:ignore="UselessParent">
-        <LinearLayout
+        tools:context="com.ab.telugumoviequiz.main.NewUserActivity"
+        android:background="@color/white"
+        android:focusableInTouchMode="true"
+        android:gravity="center"
+        android:layout_gravity="center">
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="@dimen/user_register_main_heading_padding">
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:layout_centerVertical="true"
-                    android:layout_alignParentStart="true"
-                    style="@style/viewParent.headerText.NoMode"
-                    android:text="@string/new_user_screen_intro"/>
-            </RelativeLayout>
-            <!--<androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/gap_in_components_medium"
-                app:cardBackgroundColor="@color/black"
-                app:cardCornerRadius="5dp">-->
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            tools:ignore="UselessParent">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_top_medium"
-                android:orientation="vertical">
-                <com.google.android.material.textfield.TextInputLayout
+                android:orientation="vertical"
+                android:padding="@dimen/user_register_main_heading_padding">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentStart="true"
+                        style="@style/viewParent.headerText.NoMode"
+                        android:text="@string/new_user_screen_intro"/>
+                </RelativeLayout>
+                <!--<androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@null"
-                    android:hint="@string/new_user_email_hint"
-                    android:textColorHint="@color/colorPrimary"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/editTextEmail"
-                        android:inputType="textEmailAddress"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-                </com.google.android.material.textfield.TextInputLayout>
-                <Button
-                    style="@style/normalButton"
-                    android:layout_marginTop="@dimen/margin_top_medium"
-                    android:id="@+id/sendCode"
-                    android:layout_width="wrap_content"
-                    android:background="@drawable/round_button"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:text="@string/newuser_send_code" />
-                <LinearLayout
-                    android:id="@+id/codeLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/margin_top_large"
-                    android:orientation="horizontal">
-                    <EditText
-                        android:id="@+id/digit1"
-                        android:layout_width="0dp"
-                        android:layout_height="@dimen/new_user_code_height"
-                        android:layout_marginEnd="@dimen/new_user_code_space"
-                        android:layout_weight="1"
-                        android:imeOptions="actionDone"
-                        android:inputType="number"
-                        android:maxLength="1"
-                        android:maxLines="1"
-                        android:background="@drawable/textbox_border"
-                        android:textColorHint="@color/colorPrimary"
-                        android:textAlignment="center"
-                        android:autofillHints="test"
-                        tools:ignore="LabelFor" />
-                    <EditText
-                        android:id="@+id/digit2"
-                        android:layout_width="0dp"
-                        android:layout_height="@dimen/new_user_code_height"
-                        android:layout_marginEnd="@dimen/new_user_code_space"
-                        android:layout_weight="1"
-                        android:imeOptions="actionDone"
-                        android:inputType="number"
-                        android:maxLength="1"
-                        android:maxLines="1"
-                        android:background="@drawable/textbox_border"
-                        android:autofillHints="test"
-                        android:textAlignment="center"
-                        tools:ignore="LabelFor" />
-                    <EditText
-                        android:id="@+id/digit3"
-                        android:layout_width="0dp"
-                        android:layout_height="@dimen/new_user_code_height"
-                        android:layout_marginEnd="@dimen/new_user_code_space"
-                        android:layout_weight="1"
-                        android:imeOptions="actionDone"
-                        android:inputType="number"
-                        android:maxLength="1"
-                        android:maxLines="1"
-                        android:background="@drawable/textbox_border"
-                        android:autofillHints="test"
-                        android:textAlignment="center"
-                        tools:ignore="LabelFor" />
-                    <EditText
-                        android:id="@+id/digit4"
-                        android:layout_width="0dp"
-                        android:layout_height="@dimen/new_user_code_height"
-                        android:layout_weight="1"
-                        android:inputType="number"
-                        android:imeOptions="actionDone"
-                        android:maxLength="1"
-                        android:maxLines="1"
-                        android:background="@drawable/textbox_border"
-                        android:autofillHints="test"
-                        android:textAlignment="center"
-                        tools:ignore="LabelFor" />
-                </LinearLayout>
-                <Button
-                    style="@style/normalButton"
-                    android:layout_marginTop="@dimen/margin_top_small"
-                    android:id="@+id/verifyCode"
-                    android:layout_width="wrap_content"
-                    android:background="@drawable/round_button"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:enabled="false"
-                    android:text="@string/newuser_verify_code" />
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@null"
-                    android:textColorHint="@color/colorPrimary"
-                    android:hint="@string/new_user_password"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
-                    <com.google.android.material.textfield.TextInputEditText
-                        style="@style/normalTextBox"
-                        android:id="@+id/editTextPassword"
-                        android:inputType="textPassword"
-                        android:enabled="false"
-                        android:paddingStart="0dp"
-                        android:paddingEnd="10dp"
-                        android:drawableEnd="@drawable/showeye"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-                </com.google.android.material.textfield.TextInputLayout>
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@null"
-                    android:textColorHint="@color/colorPrimary"
-                    android:hint="@string/configure_user_password"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
-                    <com.google.android.material.textfield.TextInputEditText
-                        style="@style/normalTextBox"
-                        android:id="@+id/confirmTextPassword"
-                        android:inputType="textPassword"
-                        android:enabled="false"
-                        android:paddingStart="0dp"
-                        android:paddingEnd="10dp"
-                        android:drawableEnd="@drawable/showeye"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-                </com.google.android.material.textfield.TextInputLayout>
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/new_user_user_name"
-                    android:textColorHint="@color/colorPrimary"
-                    android:background="@null"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-                    <com.google.android.material.textfield.TextInputEditText
-                        style="@style/normalTextBox"
-                        android:id="@+id/editTextName"
-                        android:inputType="text"
-                        android:enabled="false"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-                </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_marginTop="@dimen/gap_in_components_medium"
+                    app:cardBackgroundColor="@color/black"
+                    app:cardCornerRadius="5dp">-->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:baselineAligned="false">
+                    android:layout_margin="@dimen/margin_top_medium"
+                    android:orientation="vertical">
                     <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/editReferralCodeIL"
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.7"
-                        android:hint="@string/newuser_referal_code_hint"
+                        android:background="@null"
+                        android:hint="@string/new_user_email_hint"
+                        android:textColorHint="@color/colorPrimary"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/editTextEmail"
+                            android:inputType="textEmailAddress"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+                    </com.google.android.material.textfield.TextInputLayout>
+                    <Button
+                        style="@style/normalButton"
+                        android:layout_marginTop="@dimen/margin_top_medium"
+                        android:id="@+id/sendCode"
+                        android:layout_width="wrap_content"
+                        android:background="@drawable/round_button"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:text="@string/newuser_send_code" />
+                    <LinearLayout
+                        android:id="@+id/codeLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/margin_top_large"
+                        android:orientation="horizontal">
+                        <EditText
+                            android:id="@+id/digit1"
+                            android:layout_width="0dp"
+                            android:layout_height="@dimen/new_user_code_height"
+                            android:layout_marginEnd="@dimen/new_user_code_space"
+                            android:layout_weight="1"
+                            android:imeOptions="actionDone"
+                            android:inputType="number"
+                            android:maxLength="1"
+                            android:maxLines="1"
+                            android:background="@drawable/textbox_border"
+                            android:textColorHint="@color/colorPrimary"
+                            android:textAlignment="center"
+                            android:autofillHints="test"
+                            tools:ignore="LabelFor" />
+                        <EditText
+                            android:id="@+id/digit2"
+                            android:layout_width="0dp"
+                            android:layout_height="@dimen/new_user_code_height"
+                            android:layout_marginEnd="@dimen/new_user_code_space"
+                            android:layout_weight="1"
+                            android:imeOptions="actionDone"
+                            android:inputType="number"
+                            android:maxLength="1"
+                            android:maxLines="1"
+                            android:background="@drawable/textbox_border"
+                            android:autofillHints="test"
+                            android:textAlignment="center"
+                            tools:ignore="LabelFor" />
+                        <EditText
+                            android:id="@+id/digit3"
+                            android:layout_width="0dp"
+                            android:layout_height="@dimen/new_user_code_height"
+                            android:layout_marginEnd="@dimen/new_user_code_space"
+                            android:layout_weight="1"
+                            android:imeOptions="actionDone"
+                            android:inputType="number"
+                            android:maxLength="1"
+                            android:maxLines="1"
+                            android:background="@drawable/textbox_border"
+                            android:autofillHints="test"
+                            android:textAlignment="center"
+                            tools:ignore="LabelFor" />
+                        <EditText
+                            android:id="@+id/digit4"
+                            android:layout_width="0dp"
+                            android:layout_height="@dimen/new_user_code_height"
+                            android:layout_weight="1"
+                            android:inputType="number"
+                            android:imeOptions="actionDone"
+                            android:maxLength="1"
+                            android:maxLines="1"
+                            android:background="@drawable/textbox_border"
+                            android:autofillHints="test"
+                            android:textAlignment="center"
+                            tools:ignore="LabelFor" />
+                    </LinearLayout>
+                    <Button
+                        style="@style/normalButton"
+                        android:layout_marginTop="@dimen/margin_top_small"
+                        android:id="@+id/verifyCode"
+                        android:layout_width="wrap_content"
+                        android:background="@drawable/round_button"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:enabled="false"
+                        android:text="@string/newuser_verify_code" />
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:textColorHint="@color/colorPrimary"
+                        android:hint="@string/new_user_password"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+                        <com.google.android.material.textfield.TextInputEditText
+                            style="@style/normalTextBox"
+                            android:id="@+id/editTextPassword"
+                            android:inputType="textPassword"
+                            android:enabled="false"
+                            android:paddingStart="0dp"
+                            android:paddingEnd="10dp"
+                            android:drawableEnd="@drawable/showeye"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+                    </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:textColorHint="@color/colorPrimary"
+                        android:hint="@string/configure_user_password"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+                        <com.google.android.material.textfield.TextInputEditText
+                            style="@style/normalTextBox"
+                            android:id="@+id/confirmTextPassword"
+                            android:inputType="textPassword"
+                            android:enabled="false"
+                            android:paddingStart="0dp"
+                            android:paddingEnd="10dp"
+                            android:drawableEnd="@drawable/showeye"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+                    </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/new_user_user_name"
                         android:textColorHint="@color/colorPrimary"
                         android:background="@null"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
                         <com.google.android.material.textfield.TextInputEditText
                             style="@style/normalTextBox"
-                            android:id="@+id/editReferalCode"
+                            android:id="@+id/editTextName"
+                            android:inputType="text"
                             android:enabled="false"
-                            android:inputType="textShortMessage"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
                     </com.google.android.material.textfield.TextInputLayout>
-                    <Button
-                        android:id="@+id/referralReadMore"
-                        android:layout_width="0dp"
-                        android:layout_weight="0.3"
-                        android:background="@drawable/round_button"
-                        style="@style/normalButton"
-                        android:gravity="center"
-                        android:layout_gravity="center"
-                        android:textSize="@dimen/user_register_read_more_text_size"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/referral_code_more_info" />
+                        android:orientation="horizontal"
+                        android:baselineAligned="false">
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/editReferralCodeIL"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.7"
+                            android:hint="@string/newuser_referal_code_hint"
+                            android:textColorHint="@color/colorPrimary"
+                            android:background="@null"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                            <com.google.android.material.textfield.TextInputEditText
+                                style="@style/normalTextBox"
+                                android:id="@+id/editReferalCode"
+                                android:enabled="false"
+                                android:inputType="textShortMessage"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content" />
+                        </com.google.android.material.textfield.TextInputLayout>
+                        <Button
+                            android:id="@+id/referralReadMore"
+                            android:layout_width="0dp"
+                            android:layout_weight="0.3"
+                            android:background="@drawable/round_button"
+                            style="@style/normalButton"
+                            android:gravity="center"
+                            android:layout_gravity="center"
+                            android:textSize="@dimen/user_register_read_more_text_size"
+                            android:layout_height="wrap_content"
+                            android:text="@string/referral_code_more_info" />
+                    </LinearLayout>
+                    <CheckBox
+                        android:id="@+id/termsConditionsCheck1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_top_large"
+                        style="@style/parent"
+                        android:text="@string/terms_conditions1"
+                        android:textSize="15sp"
+                        android:checked="false"/>
+                    <Button
+                        style="@style/normalButton"
+                        android:layout_marginTop="@dimen/margin_top_large"
+                        android:id="@+id/registerButton"
+                        android:enabled="false"
+                        android:layout_width="wrap_content"
+                        android:background="@drawable/round_button"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:text="@string/newuser_register_text" />
+                    <TextView
+                        style="@style/parent"
+                        android:id="@+id/viewLoginPageBut"
+                        android:textAlignment="center"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/login_forgot_passwd_text_size"
+                        android:textColor="@color/colorPrimary"
+                        android:text="@string/new_user_already_registered"
+                        android:layout_marginTop="@dimen/margin_top_large"/>
                 </LinearLayout>
-                <CheckBox
-                    android:id="@+id/termsConditionsCheck1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_top_large"
-                    style="@style/parent"
-                    android:text="@string/terms_conditions1"
-                    android:textSize="15sp"
-                    android:checked="false"/>
-                <Button
-                    style="@style/normalButton"
-                    android:layout_marginTop="@dimen/margin_top_large"
-                    android:id="@+id/registerButton"
-                    android:enabled="false"
-                    android:layout_width="wrap_content"
-                    android:background="@drawable/round_button"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:text="@string/newuser_register_text" />
+                <!--</androidx.cardview.widget.CardView>-->
                 <TextView
-                    style="@style/parent"
-                    android:id="@+id/viewLoginPageBut"
-                    android:textAlignment="center"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/login_forgot_passwd_text_size"
-                    android:textColor="@color/colorPrimary"
-                    android:text="@string/new_user_already_registered"
-                    android:layout_marginTop="@dimen/margin_top_large"/>
-            </LinearLayout>
-            <!--</androidx.cardview.widget.CardView>-->
-            <TextView
-                android:id="@+id/winMsgs"
-                style="@style/StatusBarMsg"
-                android:text="@string/status_bar_msg" />
-            </LinearLayout>
-        </ScrollView>
-</RelativeLayout>
+                    android:id="@+id/winMsgs"
+                    style="@style/StatusBarMsg"
+                    android:text="@string/status_bar_msg" />
+                </LinearLayout>
+            </ScrollView>
+    </RelativeLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
