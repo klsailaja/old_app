@@ -209,9 +209,11 @@ public class Utils {
             waitingMsg.setText(waitingMessage);
         }
         alertDialogBuilder.setView(customLayout);
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.setCanceledOnTouchOutside(false);
 
         // create and show the alert dialog
-        return alertDialogBuilder.create();
+        return alertDialog;
     }
 
 
