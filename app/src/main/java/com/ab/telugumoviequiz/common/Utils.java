@@ -14,7 +14,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
 
 import com.ab.telugumoviequiz.R;
-import com.ab.telugumoviequiz.constants.WinMoneyCreditStatus;
+import com.ab.telugumoviequiz.constants.MoneyCreditStatus;
 import com.ab.telugumoviequiz.games.LocalGamesManager;
 import com.ab.telugumoviequiz.help.HelpMessage;
 import com.ab.telugumoviequiz.help.HelpReader;
@@ -303,14 +303,14 @@ public class Utils {
 
     public static String getHistoryViewMoneyCreditStatusMsg(int state) {
         String msg = "";
-        if (state == WinMoneyCreditStatus.ALL_SUCCESS.getId()) {
+        if (state == MoneyCreditStatus.ALL_SUCCESS.getId()) {
             msg = "Winners money credited status: SUCCESS" ;
-        } else if (state == WinMoneyCreditStatus.ALL_FAIL.getId()) {
+        } else if (state == MoneyCreditStatus.ALL_FAIL.getId()) {
             // All Records Fail
             msg = "Winners money credited status: FAIL" ;
-        } else if (state == WinMoneyCreditStatus.PARTIAL_RESULTS.getId()) {
+        } else if (state == MoneyCreditStatus.PARTIAL_RESULTS.getId()) {
             msg = "Winners money credited status: FAIL" ;
-        } else if (state == WinMoneyCreditStatus.IN_PROGRESS.getId()) {
+        } else if (state == MoneyCreditStatus.IN_PROGRESS.getId()) {
             msg = "Winners money credited status: In-Progress" ;
         }
         return msg;
@@ -318,14 +318,14 @@ public class Utils {
 
     public static String getMoneyCreditStatusMessage(int state) {
         String msg = "";
-        if (state == WinMoneyCreditStatus.ALL_SUCCESS.getId()) {
+        if (state == MoneyCreditStatus.ALL_SUCCESS.getId()) {
             // All Records success
             msg = "Winners money credited status: SUCCESS" ;
-        } else if (state == WinMoneyCreditStatus.ALL_FAIL.getId()) {
+        } else if (state == MoneyCreditStatus.ALL_FAIL.getId()) {
             // All Records Fail
             msg = "Winners money credited status: FAIL \n" +
                     "Customer Tickets Raised by the app for this Issue. Please check";
-        } else if (state == WinMoneyCreditStatus.PARTIAL_RESULTS.getId()) {
+        } else if (state == MoneyCreditStatus.PARTIAL_RESULTS.getId()) {
             msg = "Winners money credited status: FAIL \n" +
                     "Please Check in MyTransaction view and File a Customer Ticket " +
                     "if win money not credited";
@@ -335,10 +335,10 @@ public class Utils {
 
     public static String getCancelledGameRevertMsg(int state) {
         String msg = null;
-        if (state == WinMoneyCreditStatus.ALL_SUCCESS.getId()) {
+        if (state == MoneyCreditStatus.ALL_SUCCESS.getId()) {
             // All Records success
             msg = "SUCCESS" ;
-        } else if (state == WinMoneyCreditStatus.ALL_FAIL.getId()) {
+        } else if (state == MoneyCreditStatus.ALL_FAIL.getId()) {
             // All Records Fail
             msg = "FAIL \n" +
                     "Customer Tickets Raised by the system for this Issue. Please check";

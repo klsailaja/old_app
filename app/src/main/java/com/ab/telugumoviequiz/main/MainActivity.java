@@ -40,7 +40,7 @@ import com.ab.telugumoviequiz.common.ShowHomeScreen;
 import com.ab.telugumoviequiz.common.UserDetails;
 import com.ab.telugumoviequiz.common.Utils;
 import com.ab.telugumoviequiz.common.WinMsgHandler;
-import com.ab.telugumoviequiz.constants.WinMoneyCreditStatus;
+import com.ab.telugumoviequiz.constants.MoneyCreditStatus;
 import com.ab.telugumoviequiz.customercare.CCTableView;
 import com.ab.telugumoviequiz.customercare.NewCCReq;
 import com.ab.telugumoviequiz.faq.FAQView;
@@ -686,9 +686,9 @@ public class MainActivity extends AppCompatActivity
                         continue;
                     }
                     userViewingGameId = gameStatus.getViewId();
-                    if (revertStatus == WinMoneyCreditStatus.ALL_SUCCESS.getId()) {
+                    if (revertStatus == MoneyCreditStatus.ALL_SUCCESS.getId()) {
                         error = 1;
-                    } else if (revertStatus == WinMoneyCreditStatus.ALL_FAIL.getId()) {
+                    } else if (revertStatus == MoneyCreditStatus.ALL_FAIL.getId()) {
                         error = 0;
                     }
                     creditMsg = Utils.getCancelledGameRevertMsg(revertStatus);
