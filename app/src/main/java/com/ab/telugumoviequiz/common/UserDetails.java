@@ -15,6 +15,7 @@ public class UserDetails {
     // These 2 are set by MainActivity
     private int lastPlayedGameWinMoneyCreditStatus = -1; // 0 means in-progress, 1-complete, 2-error
     private long lastPolledSlotGameTime = -1;
+    private String lastPlayedGameWinMoneyCreditMsg;
 
     private UserDetails() {
     }
@@ -79,5 +80,12 @@ public class UserDetails {
     }
     public long getLastPolledSlotGameTime() {
         return this.lastPolledSlotGameTime;
+    }
+
+    public void setLastPlayedGameWinMoneyCreditMsg(String msg) {
+        lastPlayedGameWinMoneyCreditMsg = msg;
+    }
+    public String getLastPlayedGameWinMoneyCreditMsg() {
+        return lastPlayedGameWinMoneyCreditMsg;
     }
 }

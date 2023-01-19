@@ -34,6 +34,7 @@ import com.ab.telugumoviequiz.common.DialogAction;
 import com.ab.telugumoviequiz.common.GetTask;
 import com.ab.telugumoviequiz.common.Keys;
 import com.ab.telugumoviequiz.common.MessageListener;
+import com.ab.telugumoviequiz.common.PostTask;
 import com.ab.telugumoviequiz.common.Request;
 import com.ab.telugumoviequiz.common.Scheduler;
 import com.ab.telugumoviequiz.common.ShowHomeScreen;
@@ -45,6 +46,7 @@ import com.ab.telugumoviequiz.customercare.CCTableView;
 import com.ab.telugumoviequiz.customercare.NewCCReq;
 import com.ab.telugumoviequiz.faq.FAQView;
 import com.ab.telugumoviequiz.faq.MoreGamesView;
+import com.ab.telugumoviequiz.games.CancelGameStatusTask;
 import com.ab.telugumoviequiz.games.GameDetails;
 import com.ab.telugumoviequiz.games.GameStatus;
 import com.ab.telugumoviequiz.games.GameStatusHolder;
@@ -55,6 +57,8 @@ import com.ab.telugumoviequiz.games.UserAnswer;
 import com.ab.telugumoviequiz.history.HistoryView;
 import com.ab.telugumoviequiz.kyc.KYCView;
 import com.ab.telugumoviequiz.money.AddMoney;
+import com.ab.telugumoviequiz.money.MoneyStatusInput;
+import com.ab.telugumoviequiz.money.MoneyStatusOutput;
 import com.ab.telugumoviequiz.referals.MyReferralsView;
 import com.ab.telugumoviequiz.transactions.TransactionsView;
 import com.ab.telugumoviequiz.userprofile.UpdateUserProfile;
@@ -99,12 +103,33 @@ public class MainActivity extends AppCompatActivity
         Scheduler.getInstance().submit(fetchMoney);
     }
 
-    private void queryMoneyCreditedStatus(long gameStartTime, int retryCount, int waitTime) {
-        GetTask<Integer> getStatus = Request.getMoneyStatusTask(gameStartTime);
+    private void queryCancelledGameMoneyStatus(long gameStartTime, int retryCount) {
+        MoneyStatusInput statusInput = new MoneyStatusInput();
+        statusInput.setGameSlotTime(gameStartTime);
+        statusInput.setUid(UserDetails.getInstance().getUserProfile().getId());
+        statusInput.setOperType(2);
+
+        PostTask<MoneyStatusInput, MoneyStatusOutput> getStatus = Request.getCancelGamesRefundMoneyStatusTask();
         getStatus.setCallbackResponse(this);
+        getStatus.setPostObject(statusInput);
         String details = gameStartTime + ":" + retryCount;
         getStatus.setHelperObject(details);
         Scheduler.getInstance().submit(getStatus,
+                30 * 1000, TimeUnit.MILLISECONDS);
+    }
+
+    private void queryMoneyCreditedStatus(long gameStartTime, int retryCount, int waitTime) {
+        MoneyStatusInput statusInput = new MoneyStatusInput();
+        statusInput.setGameSlotTime(gameStartTime);
+        statusInput.setUid(UserDetails.getInstance().getUserProfile().getId());
+        statusInput.setOperType(1);
+
+        PostTask<MoneyStatusInput, MoneyStatusOutput> getWinStatus = Request.getMoneyStatusTask();
+        getWinStatus.setPostObject(statusInput);
+        getWinStatus.setCallbackResponse(this);
+        String details = gameStartTime + ":" + retryCount;
+        getWinStatus.setHelperObject(details);
+        Scheduler.getInstance().submit(getWinStatus,
                 waitTime * 1000, TimeUnit.MILLISECONDS);
     }
 
@@ -300,11 +325,12 @@ public class MainActivity extends AppCompatActivity
         calendar.set(Calendar.MINUTE, minute);
         calendar.set(Calendar.SECOND, 0);
         startTime = calendar.getTimeInMillis();
-        int waitTime = 1 + (int)(Math.random() * (15 - 1));
-        long initialDelay = startTime - System.currentTimeMillis() + waitTime * 1000;
-        GetTask<GameStatusHolder> getGamesStatusTask = Request.getCancelGamesStatus(-1);
-        getGamesStatusTask.setCallbackResponse(this);
-        allGamesStatusPollerTask = Scheduler.getInstance().submitRepeatedTask(getGamesStatusTask,
+        int waitTime = 1 + (int)(Math.random() * (10 - 1));
+        long initialDelay = startTime - System.currentTimeMillis() - waitTime * 1000;
+
+        CancelGameStatusTask cancelGameStatusTask =
+                CancelGameStatusTask.getInstance(startTime, this);
+        allGamesStatusPollerTask = Scheduler.getInstance().submitRepeatedTask(cancelGameStatusTask,
                 initialDelay, 5 * 60 * 1000, TimeUnit.MILLISECONDS);
 
         long chatEndTime = System.currentTimeMillis();
@@ -732,30 +758,53 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         } else if (Request.MONEY_TASK_STATUS == reqId) {
-            Integer status = (Integer) response;
+            MoneyStatusOutput statusRes = (MoneyStatusOutput) response;
+            if (statusRes.getStatus() == -1) {
+                // Not found in the server
+                return;
+            }
             String details = (String) userObject;
             int pos = details.indexOf(":");
             String startTime = details.substring(0, pos);
             long slotTime = Long.parseLong(startTime);
             UserDetails.getInstance().setLastPolledSlotGameTime(slotTime);
-            UserDetails.getInstance().setLastPlayedGameWinMoneyCreditStatus(status);
-            if (status == 0) {
+            UserDetails.getInstance().setLastPlayedGameWinMoneyCreditStatus(statusRes.getStatus());
+            UserDetails.getInstance().setLastPlayedGameWinMoneyCreditMsg(statusRes.getMessage());
+            if (statusRes.getStatus() == MoneyCreditStatus.IN_PROGRESS.getId()) {
                 String retryCount = details.substring(pos + 1);
                 int retryCountInt = Integer.parseInt(retryCount);
                 if (retryCountInt == 11) {
-                    UserDetails.getInstance().setLastPolledSlotGameTime(-1);
-                    UserDetails.getInstance().setLastPlayedGameWinMoneyCreditStatus(-1);
-                    displayInfo("Winners money credited status : FAIL. \n" +
-                            "Please raise a Customer Ticket", null);
+                    displayInfo("Win Money Not Credited. \n"
+                            + "Please create a customer ticket", null);
                     return;
                 }
                 queryMoneyCreditedStatus(Long.parseLong(startTime), retryCountInt, 30);
             } else {
-                if (slotTime == UserDetails.getInstance().getLastPlayedGameTime()) {
-                    String msg = "GameId: " + UserDetails.getInstance().getLastPlayedGameId() + " " +
-                            Utils.getMoneyCreditStatusMessage(status);
-                    displayInfo(msg, null);
+                displayInfo(statusRes.getMessage(), null);
+                fetchUpdateMoney();
+            }
+        } else if (Request.CANCEL_GAMES_REFUND_TASK_STATUS == reqId) {
+            MoneyStatusOutput statusRes = (MoneyStatusOutput) response;
+            Log.d("Money", statusRes.getStatus() + ":" +statusRes.getMessage());
+            if (statusRes.getStatus() == -1) {
+                // Not found in the server
+                return;
+            }
+            String details = (String) userObject;
+            int pos = details.indexOf(":");
+            String gameTimeStr = details.substring(0, pos);
+            long gameTime = Long.parseLong(gameTimeStr);
+            if (statusRes.getStatus() == MoneyCreditStatus.IN_PROGRESS.getId()) {
+                String retryCount = details.substring(pos + 1);
+                int retryCountInt = Integer.parseInt(retryCount);
+                if (retryCountInt == 11) {
+                    displayInfo("Cancelled Game Ticket Money Not Credited. \n"
+                            + "Please create a customer ticket", new ShowHomeScreen(this));
+                    return;
                 }
+                queryCancelledGameMoneyStatus(gameTime, retryCountInt);
+            } else {
+                displayInfo(statusRes.getMessage(), new ShowHomeScreen(this));
                 fetchUpdateMoney();
             }
         }

@@ -39,6 +39,7 @@ import com.ab.telugumoviequiz.common.Scheduler;
 import com.ab.telugumoviequiz.common.UITask;
 import com.ab.telugumoviequiz.common.UserDetails;
 import com.ab.telugumoviequiz.common.Utils;
+import com.ab.telugumoviequiz.constants.MoneyCreditStatus;
 import com.ab.telugumoviequiz.constants.UserMoneyAccountType;
 import com.ab.telugumoviequiz.main.MainActivity;
 import com.ab.telugumoviequiz.main.Navigator;
@@ -411,8 +412,8 @@ public class QuestionFragment extends BaseFragment
                         }
                         case R.id.item_win_credit: {
                             int winMoneyStatus = UserDetails.getUserDetails().getLastPlayedGameWinMoneyCreditStatus();
-                            String str = Utils.getMoneyCreditStatusMessage(winMoneyStatus);
-                            if (str.length() == 0) {
+                            String str = UserDetails.getUserDetails().getLastPlayedGameWinMoneyCreditMsg();
+                            if (winMoneyStatus == MoneyCreditStatus.IN_PROGRESS.getId()) {
                                 View root = getView();
                                 if (root != null) {
                                     Button moreOptions = getView().findViewById(R.id.moreOptions);

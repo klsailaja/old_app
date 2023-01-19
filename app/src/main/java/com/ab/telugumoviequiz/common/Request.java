@@ -19,6 +19,8 @@ import com.ab.telugumoviequiz.main.LoginData;
 import com.ab.telugumoviequiz.main.OTPDetails;
 import com.ab.telugumoviequiz.main.UserMoney;
 import com.ab.telugumoviequiz.main.UserProfile;
+import com.ab.telugumoviequiz.money.MoneyStatusInput;
+import com.ab.telugumoviequiz.money.MoneyStatusOutput;
 import com.ab.telugumoviequiz.money.TransferRequest;
 import com.ab.telugumoviequiz.referals.ReferalDetails;
 import com.ab.telugumoviequiz.transactions.TransactionsHolder;
@@ -81,6 +83,7 @@ public class Request {
     public static final int ADD_MONEY_REQ = 4050;
     public static final int GET_LOGGEG_IN_USER_COUNT = 4051;
     public static final int MONEY_TASK_STATUS = 5000;
+    public static final int CANCEL_GAMES_REFUND_TASK_STATUS = 5010;
     public static final int CREATE_CC_ISSUE = 6000;
     public static final int POST_PIC_ISSUE = 6001;
     public static final int KYC_GET_OBJECT = 7000;
@@ -356,9 +359,15 @@ public class Request {
                 null, null, String.class);
     }
 
-    public static GetTask<Integer> getMoneyStatusTask(long gameStartTime) {
-        String uri = baseUri + "/money/update/" + gameStartTime;
-        return new GetTask<>(uri, MONEY_TASK_STATUS, null, Integer.class, null);
+    public static PostTask<MoneyStatusInput, MoneyStatusOutput> getMoneyStatusTask() {
+        String uri = baseUri + "/money/update";
+        return new PostTask<>(uri, MONEY_TASK_STATUS,
+                null, null, MoneyStatusOutput.class);
+    }
+    public static PostTask<MoneyStatusInput, MoneyStatusOutput> getCancelGamesRefundMoneyStatusTask() {
+        String uri = baseUri + "/money/update";
+        return new PostTask<>(uri, CANCEL_GAMES_REFUND_TASK_STATUS,
+                null, null, MoneyStatusOutput.class);
     }
 
     public static PostTask<CustomerTicket, Long> getCreateCCTask() {
