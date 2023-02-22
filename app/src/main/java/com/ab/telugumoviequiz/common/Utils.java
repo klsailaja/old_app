@@ -210,6 +210,7 @@ public class Utils {
         }
         alertDialogBuilder.setView(customLayout);
         AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.setCancelable(false);
         alertDialog.setCanceledOnTouchOutside(false);
 
         // create and show the alert dialog

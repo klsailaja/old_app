@@ -213,7 +213,7 @@ public class LocalGamesManager {
             Long gameId = gameDetails.getGameId();
             GameStatus gameStatus = statusHashMap.get(gameId);
             if (gameStatus != null) {
-                gameDetails.setCurrentCount(gameStatus.getCurrentCount());
+                gameDetails.setCurrentCount(gameStatus.getEnrolledPlayerNames().size());
             }
 
             ChatGameDetails chatGameDetailsObj = new ChatGameDetails();

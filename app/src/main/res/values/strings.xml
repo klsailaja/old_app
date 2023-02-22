@@ -148,6 +148,9 @@
     <string name="view_prize_details_amt" translatable="false">Prize Money</string>
     <string name="view_prize_details_free_game_prize" translatable="false">No Prize Money for Free Game</string>
 
+    <string name="view_players_sno" translatable="false">S.No</string>
+    <string name="view_players_name" translatable="false">Player Display Name</string>
+
     <string name="view_leadership_rank" translatable="false">Rank#</string>
     <string name="view_leadership_correct_count" translatable="false">Correct Ans Ct</string>
     <string name="view_leadership_time_taken" translatable="false">Total Time</string>
@@ -394,4 +397,5 @@
     <string name="moreGamesViewIntro" translatable="false">More Games Introduction</string>
     <string name="moreGames" translatable="false">More Games</string>
     <string name="timeup" translatable="false">Present Question time up. You can continue from next one</string>
+    <string name="view_players" translatable="false">View</string>
 </resources>

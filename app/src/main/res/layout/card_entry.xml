@@ -160,6 +160,15 @@
                                     <TextView
                                         style="@style/quiz_left_label"
                                         android:text="@string/games_screen_total_user_count" />
+                                    <TextView
+                                        android:id="@+id/view_players"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginStart="@dimen/next_prev_gap"
+                                        android:layout_marginEnd="@dimen/next_prev_gap"
+                                        android:textSize="@dimen/tableHeaderTextBoxTextSize"
+                                        android:textColor="@color/impInfo"
+                                        android:text="@string/view_players" />
                                 </LinearLayout>
                                 <LinearLayout
                                     android:layout_gravity="start"

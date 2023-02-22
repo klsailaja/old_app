@@ -1183,6 +1183,7 @@ public class QuestionFragment extends BaseFragment
         }
 
         final GameStatus result = (GameStatus) response;
+        Log.d("Raj:", "" + result.getGameStatus());
         if ((result.getGameStatus() == 2) || (result.getGameStatus() == -1)) {
             if (gameStatusPollerHandle != null) {
                 gameStatusPollerHandle.cancel(true);
@@ -1196,10 +1197,10 @@ public class QuestionFragment extends BaseFragment
             getPrizeDetailsReq.setCallbackResponse(this);
             Scheduler.getInstance().submit(getPrizeDetailsReq);
         }
-        gameDetails.setCurrentCount(result.getCurrentCount());
+        gameDetails.setCurrentCount(result.getEnrolledPlayerNames().size());
         Runnable run = () -> {
             if (userCountTextLabel != null) {
-                userCountTextLabel.setText(String.valueOf(result.getCurrentCount()));
+                userCountTextLabel.setText(String.valueOf(result.getEnrolledPlayerNames().size()));
             }
         };
         requireActivity().runOnUiThread(run);

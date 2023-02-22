@@ -1,6 +1,7 @@
 package com.ab.telugumoviequiz.games;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class GameDetails implements Serializable {
@@ -17,6 +18,7 @@ public class GameDetails implements Serializable {
 	private List<Question> gameQuestions;
 	private Question flipQuestion;
 	private Question flipPictureQuestion;
+	private List<String> enrolledPlayerNames = new ArrayList<>();
 	
 	public String getCelebrityName() {
 		return celebrityName;
@@ -90,5 +92,11 @@ public class GameDetails implements Serializable {
 	}
 	public void setFlipPictureQuestion(Question flipPictureQuestion) {
 		this.flipPictureQuestion = flipPictureQuestion;
+	}
+	public List<String> getEnrolledPlayerNames() {
+		return enrolledPlayerNames;
+	}
+	public void setEnrolledPlayerNames(List<String> enrolledPlayerNames) {
+		this.enrolledPlayerNames = enrolledPlayerNames;
 	}
 }

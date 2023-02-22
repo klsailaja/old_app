@@ -48,8 +48,6 @@ import com.ab.telugumoviequiz.faq.FAQView;
 import com.ab.telugumoviequiz.faq.MoreGamesView;
 import com.ab.telugumoviequiz.games.CancelGameStatusTask;
 import com.ab.telugumoviequiz.games.GameDetails;
-import com.ab.telugumoviequiz.games.GameStatus;
-import com.ab.telugumoviequiz.games.GameStatusHolder;
 import com.ab.telugumoviequiz.games.QuestionFragment;
 import com.ab.telugumoviequiz.games.SelectGameTypeView;
 import com.ab.telugumoviequiz.games.ShowGames;
@@ -70,9 +68,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -682,7 +678,7 @@ public class MainActivity extends AppCompatActivity
             updateMoneyInUI(userMoney, isGameOverBoolean);
 
         } else if (reqId == Request.GET_CANCEL_GAMES_STATUS) {
-
+            /*
             int error = -1;
             int userViewingGameId = -1;
             String creditMsg = null;
@@ -728,7 +724,7 @@ public class MainActivity extends AppCompatActivity
             }
             String gameCancelMsg = "GameId#:" + userViewingGameId
                     + " Cancelled as minimum users not present. \n Ticket Money credited status: " + creditMsg;
-            displayInfo(gameCancelMsg, new ShowHomeScreen(this));
+            displayInfo(gameCancelMsg, new ShowHomeScreen(this));*/
         } else if (reqId == Request.ADD_MONEY_REQ) {
             Boolean result = (Boolean) response;
             String msg = "Money added successfully";

@@ -44,8 +44,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -139,7 +137,17 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
         }
         int viewId = view.getId();
         Log.d(TAG, "This is in onClick:" + viewId);
-        if (R.id.card_entry_join == viewId) {
+        if (R.id.view_players == viewId) {
+            Log.d(TAG, "This is in view payers:" + viewId);
+            String tagName = (String) view.getTag();
+            int pos = Integer.parseInt(tagName);
+            GameDetails quesGameDetails = adapterList.get(pos);
+            ViewPlayers viewPlayers = new ViewPlayers(getContext(), quesGameDetails.getTempGameId());
+            FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+            viewPlayers.setValues(quesGameDetails.getEnrolledPlayerNames());
+            viewPlayers.show(fragmentManager, "dialog");
+
+        } else if (R.id.card_entry_join == viewId) {
             Log.d(TAG, "This is in onClick: join" + viewId);
             String tagName = (String) view.getTag();
             int pos = Integer.parseInt(tagName);
@@ -502,7 +510,8 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
                     if (gameStatus == null) {
                         continue;
                     }
-                    gameDetails.setCurrentCount(gameStatus.getCurrentCount());
+                    gameDetails.setCurrentCount(gameStatus.getEnrolledPlayerNames().size());
+                    gameDetails.setEnrolledPlayerNames(gameStatus.getEnrolledPlayerNames());
                 }
                 //lock.writeLock().unlock();
                 applyFilterCriteria();

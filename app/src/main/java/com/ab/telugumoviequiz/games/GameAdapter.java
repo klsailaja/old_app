@@ -28,6 +28,7 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.MyViewHolder> 
 
     static class MyViewHolder extends RecyclerView.ViewHolder {
         TextView gameIdView, announceTimeView, dateView, countView, timeView, costView;
+        TextView viewPlayers;
         Button joinButton;
         MyViewHolder(View view) {
             super(view);
@@ -40,6 +41,7 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.MyViewHolder> 
             countView = view.findViewById(R.id.card_entry_currentCount);
             timeView = view.findViewById(R.id.card_entry_time);
             costView = view.findViewById(R.id.card_entry_cost);
+            viewPlayers = view.findViewById(R.id.view_players);
             joinButton = view.findViewById(R.id.card_entry_join);
         }
     }
@@ -62,6 +64,9 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.MyViewHolder> 
                 .inflate(R.layout.card_entry, parent, false);
         Button loginButton = itemView.findViewById(R.id.card_entry_join);
         loginButton.setOnClickListener(mClickListener);
+
+        TextView viewPlayers = itemView.findViewById(R.id.view_players);
+        viewPlayers.setOnClickListener(mClickListener);
         return new MyViewHolder(itemView);
     }
 
@@ -104,6 +109,7 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.MyViewHolder> 
             String joinTxt = "Join " + gd.getCelebrityName() + " Special";
             holder.joinButton.setText(joinTxt);
         }
+        holder.viewPlayers.setTag(String.valueOf(position));
     }
     @Override
     public int getItemCount() {
