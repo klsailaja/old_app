@@ -17,6 +17,9 @@ public class UserDetails {
     private long lastPolledSlotGameTime = -1;
     private String lastPlayedGameWinMoneyCreditMsg;
 
+    private boolean isGameSoundOn = true;
+    private boolean notificationValue = true;
+
     private UserDetails() {
     }
 
@@ -87,5 +90,19 @@ public class UserDetails {
     }
     public String getLastPlayedGameWinMoneyCreditMsg() {
         return lastPlayedGameWinMoneyCreditMsg;
+    }
+
+    public void setIsGameSoundOn(boolean value) {
+        isGameSoundOn = value;
+    }
+    public boolean getIsGameSoundOn() {
+        return isGameSoundOn;
+    }
+
+    public void setNotificationValue(boolean value) {
+        notificationValue = value;
+    }
+    public boolean getNotificationValue() {
+        return notificationValue;
     }
 }

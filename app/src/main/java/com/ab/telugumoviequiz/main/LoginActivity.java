@@ -63,7 +63,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Utils.clientReset(getResources().getString(R.string.base_url));
+        Request.baseUri = getResources().getString(R.string.base_url);
+        Utils.clientReset(Request.baseUri);
 
         HelpReader.getInstance().initialize(getBaseContext());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
@@ -107,6 +108,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         handleTextWatchers(true);
         WinMsgHandler.getInstance().setListener(this);
         WinMsgHandler.getInstance().setUserProfileId(-1);
+        //Utils.showSuccessDialog(this);
+        //Utils.showErrorDialog(this);
+        //Utils.showWarningDialog(this);
     }
 
     // Completed.

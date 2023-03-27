@@ -20,4 +20,8 @@ public class Keys {
     public static final String CC_REQ_OTHER_DETAILS = "CC_REQ_OTHER_DETAILS";
 
     public static final String CC_SUB_TYPE = "CC_SUB_TYPE";
+
+    // Preference Values Keys
+    public static final String APP_SOUND_KEY = "APP_SOUND_KEY";
+    public static final String APP_NOTIFICATION_KEY = "APP_NOTIFICATION_KEY";
 }

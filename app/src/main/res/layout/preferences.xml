@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_margin="@dimen/list_view_margin_top"
+        android:textSize="@dimen/introduction_text_size"
+        android:gravity="start"
+        android:text="@string/preference_heading" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:gravity="start"
+        android:layout_margin="@dimen/list_view_margin_top"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/soundText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/normal_label_left_textsize"
+            android:text="@string/preference_sound_name"
+            android:layout_gravity="start"
+            android:gravity="start" />
+
+        <Switch
+            android:id="@+id/soundSwitch"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_top_large"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:gravity="start"
+        android:layout_margin="@dimen/list_view_margin_top"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/notificationText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/normal_label_left_textsize"
+            android:text="@string/preference_notification_name"
+            android:layout_gravity="start"
+            android:gravity="start" />
+
+        <Switch
+            android:id="@+id/notificationSwitch"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_top_large"/>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/list_view_margin_top"
+        android:text="@string/notification_ki"/>
+
+    <Button
+        android:id="@+id/pref_but"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/margin_top_large"
+        android:gravity="center"
+        android:text="@string/preference_ok"
+        tools:ignore="ButtonStyle" />
+</LinearLayout>

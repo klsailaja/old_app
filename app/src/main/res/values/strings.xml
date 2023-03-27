@@ -398,4 +398,16 @@
     <string name="moreGames" translatable="false">More Games</string>
     <string name="timeup" translatable="false">Present Question time up. You can continue from next one</string>
     <string name="view_players" translatable="false">View</string>
+
+    <string name="preference_sound_name" translatable="false">Sound ON/OFF</string>
+    <string name="preference_notification_name" translatable="false">Notification ON/OFF</string>
+    <string name="preference_heading" translatable="false">Settings:</string>
+    <string name="preference_ok" translatable="false">OK</string>
+    <string name="notification_ki" translatable="false">Note: When notification is enabled, it will not work for the first time after phone restarted.</string>
+
+    <string name="NEWS_CHANNEL_ID" translatable="false">gameinfo</string>
+    <string name="CHANNEL_NEWS" translatable="false">GameInfo</string>
+    <string name="CHANNEL_DESCRIPTION" translatable="false">Get informed with new updates</string>
+    <string name="NOTIFICATION_TITLE" translatable="false">Celebrities Game Details</string>
+    <string name="NOTIFICATION_DESC" translatable="false">Upcoming celebrities game details</string>
 </resources>

@@ -1,6 +1,8 @@
 package com.ab.telugumoviequiz.main;
 
 import android.annotation.SuppressLint;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,6 +11,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -35,6 +38,7 @@ import com.ab.telugumoviequiz.common.GetTask;
 import com.ab.telugumoviequiz.common.Keys;
 import com.ab.telugumoviequiz.common.MessageListener;
 import com.ab.telugumoviequiz.common.PostTask;
+import com.ab.telugumoviequiz.common.PreferenceDialog;
 import com.ab.telugumoviequiz.common.Request;
 import com.ab.telugumoviequiz.common.Scheduler;
 import com.ab.telugumoviequiz.common.ShowHomeScreen;
@@ -57,6 +61,7 @@ import com.ab.telugumoviequiz.kyc.KYCView;
 import com.ab.telugumoviequiz.money.AddMoney;
 import com.ab.telugumoviequiz.money.MoneyStatusInput;
 import com.ab.telugumoviequiz.money.MoneyStatusOutput;
+import com.ab.telugumoviequiz.notification.MyNotificationHandler;
 import com.ab.telugumoviequiz.referals.MyReferralsView;
 import com.ab.telugumoviequiz.transactions.TransactionsView;
 import com.ab.telugumoviequiz.userprofile.UpdateUserProfile;
@@ -74,7 +79,8 @@ import java.util.concurrent.TimeUnit;
 
 
 public class MainActivity extends AppCompatActivity
-        implements Navigator, CallbackResponse, MessageListener, DialogAction {
+        implements Navigator, CallbackResponse, MessageListener,
+        DialogAction, View.OnClickListener {
 
     public View activityView = null;
     private final Bundle appParams = new Bundle();
@@ -154,7 +160,15 @@ public class MainActivity extends AppCompatActivity
     protected void onDestroy () {
         Log.d(TAG, "In onDestroy");
         super.onDestroy();
+
         ServerErrorHandler.getInstance().removeShutdownListener(this);
+        PreferenceDialog.storeState(getApplicationContext());
+
+        if (UserDetails.getInstance().getNotificationValue()) {
+            Log.d(TAG, "In register with AM");
+            registerWithAlarmManager(true);
+        }
+
         Bundle gameState = getParams(Navigator.QUESTION_VIEW);
         if (gameState != null) {
             String FIFTYUSED = "FIFTYUSED";
@@ -207,6 +221,13 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate method start");
+
+        MyNotificationHandler.getInstance(getApplicationContext()).
+                registerNotificationChannelChannel(getString(R.string.NEWS_CHANNEL_ID),
+                        getString(R.string.CHANNEL_NEWS), getString(R.string.CHANNEL_DESCRIPTION));
+
+        PreferenceDialog.readStateUpdateInMem(getApplicationContext());
+        
         if (savedInstanceState != null) {
             Log.d(TAG, "onCreate method savedInstanceState is not null");
         }
@@ -336,8 +357,6 @@ public class MainActivity extends AppCompatActivity
         chatMsgCountPollerTask = Scheduler.getInstance().submitRepeatedTask(getChatMsgCountTask,
                 0, 30, TimeUnit.SECONDS);
 
-
-
         updateMoneyInUI(UserDetails.getInstance().getUserMoney(), false);
 
         Bundle params = new Bundle();
@@ -350,13 +369,19 @@ public class MainActivity extends AppCompatActivity
 
         ServerErrorHandler.getInstance().addShutdownListener(this);
 
-        /*
-        //The below code is to enable notification. But the notification is not consistent
-        Intent intent = new Intent();
-        intent.setAction("android.intent.action.NOTIFY");
-        this.registerReceiver(new AlertReceiver(), new IntentFilter());
-        startAlarm(true);
-        */
+        Utils.showWarningDialog(this);
+
+        // Notifications tuned off during the app runs
+        registerWithAlarmManager(false);
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view.getId() == R.id.settings) {
+            FragmentManager fragmentManager = this.getSupportFragmentManager();
+            PreferenceDialog dialog = new PreferenceDialog();
+            dialog.show(fragmentManager, "dialog");
+        }
     }
 
     @Override
@@ -445,6 +470,18 @@ public class MainActivity extends AppCompatActivity
         ft.commit();
         if (fragment instanceof BaseFragment) {
             navigationView.setNavigationItemSelectedListener((BaseFragment) fragment);
+        }
+        ActionBar mActionBar = getSupportActionBar();
+        if (mActionBar != null) {
+            View view = mActionBar.getCustomView();
+            ImageView settingsBut = view.findViewById(R.id.settings);
+            int settingsVisibility = View.GONE;
+            if (viewName.equals(Navigator.CURRENT_GAMES)) {
+                settingsVisibility = View.VISIBLE;
+                settingsBut.setOnClickListener(this);
+            }
+            settingsBut.setVisibility(settingsVisibility);
+
         }
     }
 
@@ -594,6 +631,18 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    private void registerWithAlarmManager(boolean register) {
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, AlertReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        if (register) {
+            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP,
+                    System.currentTimeMillis() + 1000, 5 * 60 * 1000, pendingIntent);
+        } else {
+            alarmManager.cancel(pendingIntent);
+        }
+    }
+
 
     public boolean handleServerError(boolean exceptionThrown, boolean isAPIException,
                                      final Object response) {
@@ -677,7 +726,7 @@ public class MainActivity extends AppCompatActivity
             Boolean isGameOverBoolean = (Boolean) userObject;
             updateMoneyInUI(userMoney, isGameOverBoolean);
 
-        } else if (reqId == Request.GET_CANCEL_GAMES_STATUS) {
+        //} else if (reqId == Request.GET_CANCEL_GAMES_STATUS) {
             /*
             int error = -1;
             int userViewingGameId = -1;

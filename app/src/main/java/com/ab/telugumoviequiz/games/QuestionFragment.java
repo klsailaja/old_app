@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -85,8 +86,9 @@ public class QuestionFragment extends BaseFragment
     private static final int GAME_OVER_CONFIRM = 100;
     private static final int BACK_CONFIRM = 210;
     private boolean callStart = false;
-    private final String TAG = "MainActivity";
-
+    private final String TAG = "QuestionFragment";
+    private MediaPlayer answeredMP, timeoutMP;
+    private AlertDialog getReadyMsg;
 
     private Bundle saveState() {
         Bundle saveState = new Bundle();
@@ -130,6 +132,7 @@ public class QuestionFragment extends BaseFragment
             }
         }*/
         // Minimise the game screen case end
+        Log.d(TAG, "QF onCreate");
         requireActivity().getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         ServerErrorHandler.getInstance().addShutdownListener(this);
         return inflater.inflate(R.layout.activity_question, container, false);
@@ -151,6 +154,12 @@ public class QuestionFragment extends BaseFragment
     public void onDestroyView() {
         System.out.println("In onDestroyView");
         super.onDestroyView();
+        if (answeredMP != null) {
+            answeredMP.release();
+        }
+        if (timeoutMP != null) {
+            timeoutMP.release();
+        }
         ServerErrorHandler.getInstance().removeShutdownListener(this);
         closeAllViews(false);
         if (callStart) {
@@ -364,7 +373,7 @@ public class QuestionFragment extends BaseFragment
                     getContext(), this, BACK_CONFIRM, gameDetails);
             return;
         } else if (id == R.id.home) {
-            Utils.showConfirmationMessage("Confirm?", "Procced to Home?",
+            Utils.showConfirmationMessage("Confirm?", "Proceed to Home?",
                     getContext(), this, BACK_CONFIRM, gameDetails);
             return;
         }
@@ -521,6 +530,16 @@ public class QuestionFragment extends BaseFragment
                 UserAnswer userAnswer = new UserAnswer(question.getQuestionNumber(), isCorrect, answeredTime);
                 userAnswers.add(userAnswer);
                 String userAnswerStr = "Answer: Wrong\n TimeTaken: Not Applicable";
+                int soundFileId = R.raw.wrong;
+                if (isCorrect) {
+                    soundFileId = R.raw.correct;
+                }
+                if (UserDetails.getInstance().getIsGameSoundOn()) {
+                    answeredMP = MediaPlayer.create(getContext(), soundFileId);
+                    if (answeredMP != null) {
+                        answeredMP.start();
+                    }
+                }
                 if (isCorrect) {
                     userAnswerStr = "Answer: Correct\n TimeTaken:" + Utils.getUserNotionTimeStr(answeredTime, false);
                     String finalErrMsg = userAnswerStr;
@@ -582,6 +601,18 @@ public class QuestionFragment extends BaseFragment
             }
             case Request.SINGLE_GAME_STATUS: {
                 handleGameStatus(isAPIException, response);
+                break;
+            }
+            case Request.SHOW_READY_MSG: {
+                Activity activity = requireActivity();
+                Runnable run = () -> {
+                    closeAllViews();
+                    Question question = (Question) helperObject;
+                    String msg = "Question No: " + question.getQuestionNumber() + " Coming up in few seconds.";
+                    getReadyMsg = Utils.getProgressDialog(activity, msg);
+                    getReadyMsg.show();
+                };
+                activity.runOnUiThread(run);
                 break;
             }
             /*case Request.LOCK_TIME_OVER: {
@@ -1055,35 +1086,15 @@ public class QuestionFragment extends BaseFragment
     private void handleSetQuestion(final Question question) {
         final int questionNo = question.getQuestionNumber() - 1;
         @SuppressLint("SetTextI18n") Runnable run = () -> {
+            if (getReadyMsg != null) {
+                getReadyMsg.dismiss();
+            }
             setTagValueToUIComponents(questionNo);
             closeAllViews();
             resetButtonColors();
             quesShowing(true);
             updateLifelines(true);
             setQuestionInUI(question);
-            /*int qNo = question.getQuestionNumber();
-            String linkText = qNo + ") " + question.getnStatement();
-            if (question.getQuestionType() == 2) {
-                linkText = "Click Here " + qNo + ") " + question.getnStatement();
-                SpannableString ss = new SpannableString(linkText);
-                ClickableSpan clickableSpan = new ClickableSpan() {
-                    @Override
-                    public void onClick(@NonNull View view) {
-                        ViewReceipt viewReceipt = new ViewReceipt((getContext()), question.getPictureBytes(), "Picture Based Question");
-                        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-                        viewReceipt.show(fragmentManager, "dialog");
-                    }
-                };
-                ss.setSpan(clickableSpan, 0, 9, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                questionView.setText(ss);
-                questionView.setMovementMethod(LinkMovementMethod.getInstance());
-            } else {
-                questionView.setText(linkText);
-            }
-            buttonsView[0].setText(question.getnOptionA());
-            buttonsView[1].setText(question.getnOptionB());
-            buttonsView[2].setText(question.getnOptionC());
-            buttonsView[3].setText(question.getnOptionD());*/
         };
         requireActivity().runOnUiThread(run);
         for (int index = 1; index <= Constants.QUESTION_MAX_TIME_IN_SEC; index++) {
@@ -1096,7 +1107,23 @@ public class QuestionFragment extends BaseFragment
             run = () -> {
                 progressBar.setProgress(finalIntVal);
                 timerView.setText(Integer.toString(finalIntVal));
-                if (finalIndex == Constants.QUESTION_MAX_TIME_IN_SEC) {
+                if (finalIndex == Constants.QUESTION_MAX_TIME_IN_SEC - 5) {
+                    boolean userAnswered = false;
+                    for (UserAnswer userAnswer : userAnswers) {
+                        if (userAnswer.getqNo() == question.getQuestionNumber()) {
+                            userAnswered = true;
+                            break;
+                        }
+                    }
+                    if (!userAnswered) {
+                        if (UserDetails.getInstance().getIsGameSoundOn()) {
+                            timeoutMP = MediaPlayer.create(getContext(), R.raw.headsup);
+                            if (timeoutMP != null) {
+                                timeoutMP.start();
+                            }
+                        }
+                    }
+                } else if (finalIndex == Constants.QUESTION_MAX_TIME_IN_SEC) {
                     quesShowing(false);
                     updateLifelines(false);
                 }
@@ -1115,6 +1142,12 @@ public class QuestionFragment extends BaseFragment
         for (int index = 0; index <= (maxQuestionsCount - 2); index++) {
             Question question = gameQuestions.get(index);
             questionStartTime = question.getQuestionStartTime();
+
+            if (currentTime < questionStartTime - Constants.GET_READY_MSG_IN_MILLIS) {
+                actualStartTime = questionStartTime - Constants.GET_READY_MSG_IN_MILLIS - System.currentTimeMillis();
+                UITask showReadyMsg = new UITask(Request.SHOW_READY_MSG, this, question);
+                scheduler.submit(showReadyMsg, actualStartTime, TimeUnit.MILLISECONDS);
+            }
 
             if (currentTime < questionStartTime) {
                 actualStartTime = questionStartTime - System.currentTimeMillis() - Constants.SCHEDULER_OFFSET_IN_MILLIS;

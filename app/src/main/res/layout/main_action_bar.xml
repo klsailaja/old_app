@@ -68,4 +68,15 @@
         android:paddingEnd="@dimen/action_bar_icon_end_padding"
         style="@style/toolbarIconStyle"
         android:contentDescription="@string/chat_msg" />
+    <ImageView
+        android:layout_toStartOf="@+id/search"
+        android:src="@drawable/search"
+        android:id="@+id/settings"
+        android:layout_marginStart="@dimen/margin_top_medium"
+        android:layout_marginEnd="@dimen/margin_top_medium"
+        android:visibility="invisible"
+        android:paddingStart="@dimen/action_bar_icon_start_padding"
+        android:paddingEnd="@dimen/action_bar_icon_end_padding"
+        style="@style/toolbarIconStyle"
+        android:contentDescription="@string/chat_msg" />
 </RelativeLayout>

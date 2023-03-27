@@ -29,6 +29,7 @@ import com.ab.telugumoviequiz.withdraw.WithdrawRequestInput;
 import com.ab.telugumoviequiz.withdraw.WithdrawRequestsHolder;
 
 public class Request {
+    //public static String coreServerUri = null;
     public static String baseUri = null;
     public static final int GET_FUTURE_GAMES = 200;
     public static final int GET_ENROLLED_GAMES = 201;
@@ -68,6 +69,7 @@ public class Request {
     public static final int CC_RECEIPT = 152;
 
     public static final int SHOW_QUESTION = 1000;
+    public static final int SHOW_READY_MSG = 1001;
     public static final int SHOW_USER_ANSWERS = 2000;
     public static final int SHOW_LEADER_BOARD = 2001;
     //public static final int SHOW_READY_MSG = 2002;
@@ -329,8 +331,8 @@ public class Request {
                 String.class, null);
     }
 
-    public static GetTask<String[]> getUpcomingCelebrityNamesTask(int hour) {
-        String uri = baseUri + "/game/upcoming/" + hour;
+    public static GetTask<String[]> getUpcomingCelebrityNamesTask(String coreServerUri) {
+        String uri = coreServerUri + "/upcoming" ;
         return new GetTask<>(uri, UPCOMING_CELEBRITY_NAMES_ID, null,
                 String[].class, null);
     }

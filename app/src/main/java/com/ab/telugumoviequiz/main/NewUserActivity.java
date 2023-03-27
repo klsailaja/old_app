@@ -79,7 +79,8 @@ public class NewUserActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         Log.v(TAG, "This is in onCreate");
         super.onCreate(savedInstanceState);
-        Utils.clientReset(getResources().getString(R.string.base_url));
+        Request.baseUri = getResources().getString(R.string.base_url);
+        Utils.clientReset(Request.baseUri);
         setContentView(layout.activity_register);
 
         Toolbar toolbar = findViewById(R.id.toolbar);

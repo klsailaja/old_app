@@ -4,12 +4,17 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Point;
+import android.graphics.drawable.ColorDrawable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Display;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 
@@ -334,16 +339,103 @@ public class Utils {
         return msg;
     }
 
-    public static String getCancelledGameRevertMsg(int state) {
-        String msg = null;
-        if (state == MoneyCreditStatus.ALL_SUCCESS.getId()) {
-            // All Records success
-            msg = "SUCCESS" ;
-        } else if (state == MoneyCreditStatus.ALL_FAIL.getId()) {
-            // All Records Fail
-            msg = "FAIL \n" +
-                    "Customer Tickets Raised by the system for this Issue. Please check";
+    public static void showSuccessDialog(Context context){
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.AlertDialogTheme);
+        View view = LayoutInflater.
+                from(context).inflate(
+                R.layout.layout_success_dailog,
+                null
+        );
+        builder.setView(view);
+        ((TextView) view.findViewById(R.id.textTitle)).setText("Success");
+        ((TextView) view.findViewById(R.id.textMessage)).setText("Msg");
+        ((Button) view.findViewById(R.id.buttonAction)).setText("Ok");
+        ((ImageView) view.findViewById(R.id.imageIcon)).setImageResource(R.drawable.done);
+
+        final AlertDialog alertDialog = builder.create();
+
+        view.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+                Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        if (alertDialog.getWindow() != null){
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
         }
-        return msg;
+        alertDialog.show();
+    }
+    public static void showWarningDialog(Context context){
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.AlertDialogTheme);
+        View view = LayoutInflater.from(context).inflate(
+                R.layout.layout_warning_dailog,
+                null
+        );
+        builder.setView(view);
+        String WIN_MONEY_FREE_GAME_MSG = "No Win Money for free game. Win Money Credit result will be shown for paid games. \n"
+                + "If not credited for some reason, Customer Ticket is created automatically and \n"
+                + " resolved within 3-5 days";
+
+        ((TextView) view.findViewById(R.id.textTitle)).setText("Warning");
+        ((TextView) view.findViewById(R.id.textMessage)).setText(WIN_MONEY_FREE_GAME_MSG);
+        ((Button) view.findViewById(R.id.buttonYes)).setText("WarnYes");
+        ((Button) view.findViewById(R.id.buttonNo)).setText("WarnNo");
+        ((ImageView) view.findViewById(R.id.imageIcon)).setImageResource(R.drawable.warning);
+
+        final AlertDialog alertDialog = builder.create();
+
+        view.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+                Toast.makeText(context, "Yes", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        view.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+                Toast.makeText(context, "No", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        if (alertDialog.getWindow() != null){
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        }
+        alertDialog.show();
+    }
+
+    public static void showErrorDialog(Context context, boolean showTicket){
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.AlertDialogTheme);
+        View view = LayoutInflater.from(context).inflate(
+                R.layout.layout_error_dailog, null
+        );
+        builder.setView(view);
+        ((TextView) view.findViewById(R.id.textTitle)).setText("Error");
+        ((TextView) view.findViewById(R.id.textMessage)).setText("ErrText");
+        ((Button) view.findViewById(R.id.buttonYes)).setText("Ok");
+        ((Button) view.findViewById(R.id.buttonNo)).setText("Open Ticket");
+        if (!showTicket) {
+            ((Button) view.findViewById(R.id.buttonNo)).setVisibility(View.GONE);
+        }
+        ((ImageView) view.findViewById(R.id.imageIcon)).setImageResource(R.drawable.error);
+
+        final AlertDialog alertDialog = builder.create();
+
+        view.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+                Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        if (alertDialog.getWindow() != null){
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        }
+        alertDialog.show();
     }
 }
