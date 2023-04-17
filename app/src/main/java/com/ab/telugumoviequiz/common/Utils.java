@@ -3,8 +3,11 @@ package com.ab.telugumoviequiz.common;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Display;
@@ -71,6 +74,42 @@ public class Utils {
             }
         }
         return null;
+    }
+
+    public static List<ImageView> getImageViewButtons(View rootView, List<Integer> imgViewIds) {
+        List<ImageView> imageViews = new ArrayList<>();
+        if (rootView != null) {
+            for (int viewId : imgViewIds) {
+                imageViews.add(rootView.findViewById(viewId));
+            }
+        }
+        return imageViews;
+    }
+
+    public static void enableToolBarButtons(List<ImageView> buttons, View.OnClickListener listener,
+                                            boolean enable) {
+        int buttonSize = buttons.size();
+        for (int index = 0; index < buttonSize; index++) {
+            Drawable background = buttons.get(index).getBackground();
+            Drawable drawable   = buttons.get(index).getDrawable();
+            if (enable) {
+                if (background != null) {
+                    background.setColorFilter(null);
+                }
+                if (drawable != null) {
+                    drawable.setColorFilter(null);
+                }
+                buttons.get(index).setOnClickListener(listener);
+            } else {
+                if (background != null) {
+                    background.setColorFilter(Color.GRAY, PorterDuff.Mode.SRC_IN);
+                }
+                if (drawable != null) {
+                    drawable.setColorFilter(Color.GRAY, PorterDuff.Mode.SRC_IN);
+                }
+                buttons.get(index).setOnClickListener(null);
+            }
+        }
     }
 
     public static void showConfirmationMessage(String title,String message, final Context context,
@@ -438,4 +477,5 @@ public class Utils {
         }
         alertDialog.show();
     }
+
 }

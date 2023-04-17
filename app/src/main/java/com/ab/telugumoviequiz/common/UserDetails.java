@@ -105,4 +105,8 @@ public class UserDetails {
     public boolean getNotificationValue() {
         return notificationValue;
     }
+
+    public boolean isMoneyMode() {
+        return userProfile.isMoneyMode();
+    }
 }

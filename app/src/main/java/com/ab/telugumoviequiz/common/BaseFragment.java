@@ -14,6 +14,7 @@ import com.ab.telugumoviequiz.R;
 import com.ab.telugumoviequiz.main.MainActivity;
 import com.google.android.material.navigation.NavigationView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class BaseFragment extends Fragment implements MessageListener,
@@ -123,14 +124,10 @@ public abstract class BaseFragment extends Fragment implements MessageListener,
             if (mActionBar != null) {
                 View view = mActionBar.getCustomView();
                 if (view != null) {
-                    ImageView helpButton = view.findViewById(R.id.help);
-                    if (enable) {
-                        helpButton.setVisibility(View.VISIBLE);
-                        helpButton.setOnClickListener(listener);
-                    } else {
-                        helpButton.setVisibility(View.INVISIBLE);
-                        helpButton.setOnClickListener(null);
-                    }
+                    List<Integer> allToolBarButIds = new ArrayList<>();
+                    allToolBarButIds.add(R.id.help);
+                    List<ImageView> allToolBarButs = Utils.getImageViewButtons(view, allToolBarButIds);
+                    Utils.enableToolBarButtons(allToolBarButs, listener, enable);
                 }
             }
         }

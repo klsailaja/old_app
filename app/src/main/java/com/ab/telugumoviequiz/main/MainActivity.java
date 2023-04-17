@@ -11,7 +11,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -59,6 +58,7 @@ import com.ab.telugumoviequiz.games.UserAnswer;
 import com.ab.telugumoviequiz.history.HistoryView;
 import com.ab.telugumoviequiz.kyc.KYCView;
 import com.ab.telugumoviequiz.money.AddMoney;
+import com.ab.telugumoviequiz.money.CoinStore;
 import com.ab.telugumoviequiz.money.MoneyStatusInput;
 import com.ab.telugumoviequiz.money.MoneyStatusOutput;
 import com.ab.telugumoviequiz.notification.MyNotificationHandler;
@@ -132,7 +132,7 @@ public class MainActivity extends AppCompatActivity
         String details = gameStartTime + ":" + retryCount;
         getWinStatus.setHelperObject(details);
         Scheduler.getInstance().submit(getWinStatus,
-                waitTime * 1000, TimeUnit.MILLISECONDS);
+                waitTime * 1000L, TimeUnit.MILLISECONDS);
     }
 
     public void startTheWinMoneyStatus(long gameStartTime) {
@@ -245,6 +245,20 @@ public class MainActivity extends AppCompatActivity
             mActionBar.setDisplayShowTitleEnabled(false);
             mActionBar.setDisplayShowCustomEnabled(true);
             mActionBar.setCustomView(mCustomView);
+
+            ImageView moneyIcon = mCustomView.findViewById(R.id.moneyIcon);
+            if (!UserDetails.getInstance().isMoneyMode()) {
+                moneyIcon.setImageResource(R.drawable.coins);
+            }
+
+            List<Integer> allToolBarButIds = new ArrayList<>();
+            allToolBarButIds.add(R.id.settings);
+            allToolBarButIds.add(R.id.help);
+            allToolBarButIds.add(R.id.celebritySchedule);
+            allToolBarButIds.add(R.id.chat);
+            allToolBarButIds.add(R.id.search);
+            List<ImageView> allToolBarButs = Utils.getImageViewButtons(mCustomView, allToolBarButIds);
+            Utils.enableToolBarButtons(allToolBarButs, null, false);
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -259,6 +273,12 @@ public class MainActivity extends AppCompatActivity
         nav_userName.setText(UserDetails.getInstance().getUserProfile().getName());
         TextView nav_mailId = hView.findViewById(R.id.userMailId);
         nav_mailId.setText(UserDetails.getInstance().getUserProfile().getEmailAddress());
+
+        if (UserDetails.getUserDetails().isMoneyMode()) {
+            navigationView.inflateMenu(R.menu.activity_main_money_drawer);
+        } else {
+            navigationView.inflateMenu(R.menu.activity_main_coin_drawer);
+        }
 
         /*String successMsg = getIntent().getStringExtra("msg");
         Snackbar.make(activityView, successMsg, Snackbar.LENGTH_SHORT).show();*/
@@ -343,7 +363,7 @@ public class MainActivity extends AppCompatActivity
         calendar.set(Calendar.SECOND, 0);
         startTime = calendar.getTimeInMillis();
         int waitTime = 1 + (int)(Math.random() * (10 - 1));
-        long initialDelay = startTime - System.currentTimeMillis() - waitTime * 1000;
+        long initialDelay = startTime - System.currentTimeMillis() - waitTime * 1000L;
 
         CancelGameStatusTask cancelGameStatusTask =
                 CancelGameStatusTask.getInstance(startTime, this);
@@ -412,7 +432,11 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_user_profile) {
             launchView(Navigator.PROFILE_VIEW, params, false);
         } else if (id == R.id.nav_add_money) {
-            launchView(Navigator.ADD_MONEY_VIEW, params, false);
+            String addMoneyView = Navigator.ADD_MONEY_VIEW;
+            if (!UserDetails.getUserDetails().isMoneyMode()) {
+                addMoneyView = Navigator.COIN_STORE_VIEW;
+            }
+            launchView(addMoneyView, params, false);
         } else if (id == R.id.nav_customercare) {
             launchView(Navigator.CC_REQ_VIEW, params, false);
         } else if (id == R.id.nav_kyc) {
@@ -471,17 +495,17 @@ public class MainActivity extends AppCompatActivity
         if (fragment instanceof BaseFragment) {
             navigationView.setNavigationItemSelectedListener((BaseFragment) fragment);
         }
+
         ActionBar mActionBar = getSupportActionBar();
         if (mActionBar != null) {
             View view = mActionBar.getCustomView();
-            ImageView settingsBut = view.findViewById(R.id.settings);
-            int settingsVisibility = View.GONE;
-            if (viewName.equals(Navigator.CURRENT_GAMES)) {
-                settingsVisibility = View.VISIBLE;
-                settingsBut.setOnClickListener(this);
-            }
-            settingsBut.setVisibility(settingsVisibility);
 
+            List<Integer> mainViewToolbarButIds = new ArrayList<>();
+            mainViewToolbarButIds.add(R.id.settings);
+
+            List<ImageView> allToolBarButs = Utils.getImageViewButtons(view, mainViewToolbarButIds);
+            boolean enabled = viewName.equals(Navigator.CURRENT_GAMES);
+            Utils.enableToolBarButtons(allToolBarButs, this, enabled);
         }
     }
 
@@ -517,6 +541,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private Fragment getFragment(String viewId) {
+        System.out.println("viewId: " + viewId);
         BaseFragment fragment = null;
         switch (viewId) {
             case Navigator.MIXED_GAMES_VIEW:
@@ -577,6 +602,11 @@ public class MainActivity extends AppCompatActivity
                 fragment = new AddMoney();
                 break;
             }
+            case Navigator.COIN_STORE_VIEW: {
+                stopped = true;
+                fragment = new CoinStore();
+                break;
+            }
             case Navigator.NEW_WITHDRAW_REQUEST: {
                 stopped = true;
                 fragment = new NewWithdrawReq();
@@ -634,7 +664,7 @@ public class MainActivity extends AppCompatActivity
     private void registerWithAlarmManager(boolean register) {
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this, AlertReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        @SuppressLint("UnspecifiedImmutableFlag") PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         if (register) {
             alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP,
                     System.currentTimeMillis() + 1000, 5 * 60 * 1000, pendingIntent);

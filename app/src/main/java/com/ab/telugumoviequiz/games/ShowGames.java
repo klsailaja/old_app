@@ -580,6 +580,24 @@ public class ShowGames extends BaseFragment implements CallbackResponse, View.On
     }
 
     private void enableCelebrityButton(boolean enable) {
+        List<Integer> allToolBarButIds = new ArrayList<>();
+        allToolBarButIds.add(R.id.search);
+        allToolBarButIds.add(R.id.help);
+        if ((fragmentIndex == 2) || (fragmentIndex == 4)) {
+            allToolBarButIds.add(R.id.celebritySchedule);
+        }
+        Activity activity = getActivity();
+        if (activity instanceof MainActivity) {
+            ActionBar mActionBar = ((MainActivity) getActivity()).getSupportActionBar();
+            if (mActionBar != null) {
+                View view = mActionBar.getCustomView();
+                List<ImageView> allToolBarButs = Utils.getImageViewButtons(view, allToolBarButIds);
+                Utils.enableToolBarButtons(allToolBarButs, this, enable);
+            }
+        }
+    }
+
+    private void enableCelebrityButton1(boolean enable) {
         Activity activity = getActivity();
         if (activity instanceof MainActivity) {
             ActionBar mActionBar = ((MainActivity) getActivity()).getSupportActionBar();

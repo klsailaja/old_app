@@ -6,10 +6,12 @@ public class UserMoney {
 	private long amtLocked;
 	private long winAmount;
 	private long referAmount;
-	
+	private long addedAmount;
+	private long withdrawnAmount;
+
 	public UserMoney() {
 	}
-	
+
 	public UserMoney(long id, long amount, long amtLocked, long winAmount, long referAmount) {
 		super();
 		this.id = id;
@@ -58,5 +60,19 @@ public class UserMoney {
 	public void setReferAmount(long referAmount) {
 		this.referAmount = referAmount;
 	}
-	
+
+	public long getAddedAmount() {
+		return addedAmount;
+	}
+	public void setAddedAmount(long addedAmount) {
+		this.addedAmount = addedAmount;
+	}
+	public long getWithdrawnAmount() {
+		return withdrawnAmount;
+	}
+	public void setWithdrawnAmount(long withdrawnAmount) {
+		this.withdrawnAmount = withdrawnAmount;
+	}
 }
+
+

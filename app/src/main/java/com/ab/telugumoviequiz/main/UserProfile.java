@@ -17,7 +17,14 @@ public class UserProfile {
 	private String serverIpAddress;
 	private int serverPortNumber;
 	private long serverIndex;
+	private boolean moneyMode;
 
+	public boolean isMoneyMode() {
+		return moneyMode;
+	}
+	public void setMoneyMode(boolean moneyMode) {
+		this.moneyMode = moneyMode;
+	}
 
 	public long getServerIndex() {
 		return serverIndex;

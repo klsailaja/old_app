@@ -7,13 +7,12 @@ android {
         release {
         }
     }
-    compileSdkVersion 32
-    buildToolsVersion "30.0.2"
+    compileSdkVersion 33
 
     defaultConfig {
         applicationId "com.ab.telugumoviequiz"
         minSdkVersion 24
-        targetSdkVersion 32
+        targetSdkVersion 33
         versionCode 1
         versionName "1.0"
 

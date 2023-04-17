@@ -6,7 +6,7 @@ import com.ab.telugumoviequiz.common.CallbackResponse;
 import com.ab.telugumoviequiz.common.PostTask;
 import com.ab.telugumoviequiz.common.Request;
 import com.ab.telugumoviequiz.common.Scheduler;
-import com.ab.telugumoviequiz.money.TransferRequest;
+import com.ab.telugumoviequiz.money.LoadMoney;
 
 public class AddMoneyProcessor {
     private static AddMoneyProcessor instance;
@@ -21,11 +21,11 @@ public class AddMoneyProcessor {
         return instance;
     }
 
-    public void processAddMoneyRequest(int amount, CallbackResponse callbackResponse, Activity activity) {
-        PostTask<TransferRequest, Boolean> addMoneyRequest = Request.getLoadMoneyRequest(amount);
+    public void processAddMoneyRequest(LoadMoney loadMoney, CallbackResponse callbackResponse, Activity activity) {
+        PostTask<LoadMoney, Boolean> addMoneyRequest = Request.getLoadMoneyRequest();
         addMoneyRequest.setCallbackResponse(callbackResponse);
-        addMoneyRequest.setPostObject(new TransferRequest());
         addMoneyRequest.setActivity(activity, null);
+        addMoneyRequest.setPostObject(loadMoney);
         Scheduler.getInstance().submit(addMoneyRequest);
     }
 }

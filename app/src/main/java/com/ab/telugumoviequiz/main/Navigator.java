@@ -14,6 +14,7 @@ public interface Navigator {
 
     String HISTORY_VIEW = "HistoryView";
     String ADD_MONEY_VIEW = "AddMoney";
+    String COIN_STORE_VIEW = "CoinStore";
     String CHAT_VIEW = "ChatView";
     String REFERRALS_VIEW = "ReferralsView";
     String TRANSACTIONS_VIEW = "TransactionsView";

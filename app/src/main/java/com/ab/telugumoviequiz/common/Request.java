@@ -19,6 +19,7 @@ import com.ab.telugumoviequiz.main.LoginData;
 import com.ab.telugumoviequiz.main.OTPDetails;
 import com.ab.telugumoviequiz.main.UserMoney;
 import com.ab.telugumoviequiz.main.UserProfile;
+import com.ab.telugumoviequiz.money.LoadMoney;
 import com.ab.telugumoviequiz.money.MoneyStatusInput;
 import com.ab.telugumoviequiz.money.MoneyStatusOutput;
 import com.ab.telugumoviequiz.money.TransferRequest;
@@ -201,9 +202,8 @@ public class Request {
                 null, null, String.class);
     }
 
-    public static PostTask<TransferRequest, Boolean> getLoadMoneyRequest(int amt) {
-        String uri = baseUri + "/money/" + UserDetails.getInstance().getUserProfile().getId()
-                + "/load/" + amt;
+    public static PostTask<LoadMoney, Boolean> getLoadMoneyRequest() {
+        String uri = baseUri + "/money/load";
         return new PostTask<>(uri, ADD_MONEY_REQ,
                 null, null, Boolean.class);
     }

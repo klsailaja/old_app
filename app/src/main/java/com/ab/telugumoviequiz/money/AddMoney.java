@@ -123,7 +123,12 @@ public class AddMoney extends BaseFragment
             String str = mailUI.getText().toString().trim();
             int amtInt = Integer.parseInt(str);
             MainActivity mainActivity = (MainActivity)getActivity();
-            AddMoneyProcessor.getInstance().processAddMoneyRequest(amtInt, mainActivity, mainActivity);
+            LoadMoney loadMoney = new LoadMoney();
+            loadMoney.setUid(UserDetails.getInstance().getUserProfile().getId());
+            loadMoney.setMoneyMoney(UserDetails.getInstance().isMoneyMode());
+            loadMoney.setAmount(amtInt);
+            loadMoney.setCoinCount(-1);
+            AddMoneyProcessor.getInstance().processAddMoneyRequest(loadMoney, mainActivity, mainActivity);
         }
     }
 
@@ -151,6 +156,10 @@ public class AddMoney extends BaseFragment
             if (activity != null) {
                 activity.runOnUiThread(run);
             }
+            return;
+        }
+        if (reqId == Request.ADD_MONEY_REQ) {
+            displayInfo("Money Added Successfully", null);
             return;
         }
         if (reqId == Request.GET_FULL_USER_MONEY) {
@@ -203,10 +212,7 @@ public class AddMoney extends BaseFragment
         TextView mailUI = view.findViewById(R.id.otherMoneyTextBox);
         String str = mailUI.getText().toString().trim();
         String result = Utils.fullValidate(str, "Amount", false, -1, -1, true);
-        boolean showErr = true;
-        if (result != null) {
-            showErr = false;
-        }
+        boolean showErr = result == null;
         if (!showErr) {
             mailUI.setError(result);
             mailUI.requestFocus();
@@ -238,7 +244,7 @@ public class AddMoney extends BaseFragment
         modelList.add(winningMoney);
 
         PayGameModel mainMoney = new PayGameModel();
-        mainMoney.setAccountName("Main Money");
+        mainMoney.setAccountName("Added Money");
         mainMoney.setAccountBalance(String.valueOf(userMoney.getAmount()));
         assert UserMoneyAccountType.findById(1) != null;
         mainMoney.setAccountNumber(UserMoneyAccountType.findById(1).getId());
@@ -246,6 +252,6 @@ public class AddMoney extends BaseFragment
 
         accountsList.clear();
         accountsList.addAll(modelList);
-        viewAccountsAdapter.notifyDataSetChanged();
+        viewAccountsAdapter.notifyItemChanged(0, modelList.size() - 1);
     }
 }
