@@ -135,6 +135,10 @@
         <item name="android:layout_marginStart">@dimen/introduction_text_start_gap</item>
         <item name="android:textSize">@dimen/introduction_text_size</item>
         <item name="android:fontFamily">sans-serif</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textStyle">bold</item>
     </style>
     <style name="viewIntroTextSmall">
         <item name="android:layout_width">wrap_content</item>

@@ -62,9 +62,10 @@
     <string name="menu_chat" translatable="false">Chat</string>
     <string name="menu_referal" translatable="false">My Referrals</string>
     <string name="menu_history" translatable="false">My Games</string>
-    <string name="menu_transactions" translatable="false">My Transactions</string>
-    <string name="nav_withdraw_view" translatable="false">Money Withdraw</string>
-    <string name="menu_add_money" translatable="false">Add Money</string>
+
+
+
+
     <string name="menu_transfer_money" translatable="false">Transfer Money</string>
     <string name="menu_user_profile" translatable="false">My Profile</string>
     <string name="menu_customercare" translatable="false">Customer Care</string>
@@ -78,6 +79,18 @@
     <string name="nav_header_desc" translatable="false">Navigation header</string>
     <string name="nav_header_title" translatable="false">Telugu Movie Quiz</string>
     <string name="nav_header_subtitle" translatable="false">android.studio@android.com</string>
+
+    <string name="menu_add_money" translatable="false">Add Money</string>
+    <string name="nav_withdraw_view" translatable="false">Money Withdraw</string>
+    <string name="menu_transactions" translatable="false">Money History</string>
+    <string name="wd_history" translatable="false">Withdraw History</string>
+    <string name="money_stats" translatable="false">Money Stats</string>
+
+    <string name="menu_coin_store" translatable="false">Coin Store</string>
+    <string name="menu_coin_wd" translatable="false">Redeem Coins</string>
+    <string name="coin_history" translatable="false">Coin History</string>
+    <string name="redeem_history" translatable="false">Redeem History</string>
+    <string name="redeem_stats" translatable="false">Redeem Stats</string>
 
     <!-- Action Bar -->
     <string name="chat_msg" translatable="false">You have a new Chat Msg</string>
@@ -410,4 +423,13 @@
     <string name="CHANNEL_DESCRIPTION" translatable="false">Get informed with new updates</string>
     <string name="NOTIFICATION_TITLE" translatable="false">Celebrities Game Details</string>
     <string name="NOTIFICATION_DESC" translatable="false">Upcoming celebrities game details</string>
+
+    <string name="buy_coin_desc" translatable="false">%1$d Coins</string>
+    <string name="buy_coin_cost" translatable="false">Buy for Rs. %1$d</string>
+    <string name="coin_store_img_desc" translatable="false">Coin Images</string>
+    <string name="coin_store_but_dummy" translatable="false">Dummy Text</string>
+
+
+
+
 </resources>

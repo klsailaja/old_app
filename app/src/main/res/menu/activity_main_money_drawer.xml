@@ -22,6 +22,16 @@
         <item
             android:id="@+id/nav_withdraw_view"
             android:title="@string/nav_withdraw_view" />
+        <item
+            android:id="@+id/nav_transactions"
+            android:title="@string/menu_transactions" />
+        <item
+            android:id="@+id/nav_wd_history"
+            android:title="@string/wd_history" />
+        <item
+            android:id="@+id/nav_money_stats"
+            android:title="@string/money_stats" />
+
     </group>
     <group android:id="@+id/menu_my_opers"
         android:checkableBehavior="none">
@@ -31,9 +41,7 @@
         <item
             android:id="@+id/nav_referals"
             android:title="@string/menu_referal" />
-        <item
-            android:id="@+id/nav_transactions"
-            android:title="@string/menu_transactions" />
+
     </group>
     <group android:id="@+id/menu_chat"
         android:checkableBehavior="none">

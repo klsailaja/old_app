@@ -1,3 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <integer name="buy_coin_1_number">25</integer>
+    <integer name="buy_coin_1_cost">10</integer>
+    <integer name="buy_coin_2_number">75</integer>
+    <integer name="buy_coin_2_cost">25</integer>
+    <integer name="buy_coin_3_number">155</integer>
+    <integer name="buy_coin_3_cost">50</integer>
+    <integer name="buy_coin_4_number">320</integer>
+    <integer name="buy_coin_4_cost">100</integer>
+    <integer name="buy_coin_5_number">660</integer>
+    <integer name="buy_coin_5_cost">200</integer>
+    <integer name="buy_coin_6_number">1360</integer>
+    <integer name="buy_coin_6_cost">400</integer>
+    <integer name="buy_coin_7_number">1750</integer>
+    <integer name="buy_coin_7_cost">500</integer>
+    <integer name="buy_coin_8_number">2780</integer>
+    <integer name="buy_coin_8_cost">750</integer>
+    <integer name="buy_coin_9_number">3700</integer>
+    <integer name="buy_coin_9_cost">1000</integer>
 </resources>

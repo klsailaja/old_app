@@ -1,4 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-  
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+    <group android:id="@+id/menu_games"
+        android:checkableBehavior="none">
+        <item
+            android:id="@+id/nav_current_games"
+            android:title="@string/menu_current_games" />
+        <item
+            android:id="@+id/nav_enrolled_games"
+            android:title="@string/menu_enrolled_games" />
+        <item
+            android:id="@+id/nav_history_games"
+            android:title="@string/menu_history_games" />
+    </group>
+    <group android:id="@+id/menu_cash"
+        android:checkableBehavior="none">
+        <item
+            android:id="@+id/nav_add_money"
+            android:title="@string/menu_coin_store"/>
+        <item
+            android:id="@+id/nav_withdraw_view"
+            android:title="@string/menu_coin_wd" />
+        <item
+            android:id="@+id/nav_transactions"
+            android:title="@string/coin_history" />
+        <item
+            android:id="@+id/nav_wd_history"
+            android:title="@string/redeem_history" />
+        <item
+            android:id="@+id/nav_money_stats"
+            android:title="@string/redeem_stats" />
+    </group>
+    <group android:id="@+id/menu_my_opers"
+        android:checkableBehavior="none">
+        <item
+            android:id="@+id/nav_user_profile"
+            android:title="@string/menu_user_profile"/>
+        <item
+            android:id="@+id/nav_referals"
+            android:title="@string/menu_referal" />
+    </group>
+    <group android:id="@+id/menu_chat"
+        android:checkableBehavior="none">
+        <item
+            android:id="@+id/nav_chat"
+            android:title="@string/menu_chat" />
+    </group>
+    <group android:id="@+id/menu_logout"
+        android:checkableBehavior="none">
+        <item
+            android:id="@+id/share"
+            android:title="@string/share_it" />
+        <item
+            android:id="@+id/faq"
+            android:title="@string/faq" />
+        <item
+            android:id="@+id/nav_kyc"
+            android:title="@string/kyc"/>
+        <item
+            android:id="@+id/nav_customercare"
+            android:title="@string/menu_customercare"/>
+        <item
+            android:id="@+id/more_games"
+            android:title="@string/moreGames" />
+        <item
+            android:id="@+id/logout"
+            android:title="@string/menu_logout"/>
+        <item
+            android:id="@+id/version"
+            android:title="@string/versionLabel"/>
+    </group>
 </menu>
