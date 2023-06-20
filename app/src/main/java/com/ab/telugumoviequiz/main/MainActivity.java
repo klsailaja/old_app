@@ -91,150 +91,28 @@ public class MainActivity extends AppCompatActivity
     private MessageListener userMoneyFetchedListener;
     private final String TAG = "MainActivity";
 
-
-
-    public void fetchUpdateMoney() {
-        fetchUpdateMoney(false);
-    }
-
-    public void fetchUpdateMoney(boolean isGameOver) {
-        UserProfile userProfile = UserDetails.getInstance().getUserProfile();
-        GetTask<UserMoney> fetchMoney = Request.getMoneyTask(userProfile.getId());
-        fetchMoney.setCallbackResponse(this);
-        fetchMoney.setHelperObject(isGameOver);
-        Scheduler.getInstance().submit(fetchMoney);
-    }
-
-    private void queryCancelledGameMoneyStatus(long gameStartTime, int retryCount) {
-        MoneyStatusInput statusInput = new MoneyStatusInput();
-        statusInput.setGameSlotTime(gameStartTime);
-        statusInput.setUid(UserDetails.getInstance().getUserProfile().getId());
-        statusInput.setOperType(2);
-
-        PostTask<MoneyStatusInput, MoneyStatusOutput> getStatus = Request.getCancelGamesRefundMoneyStatusTask();
-        getStatus.setCallbackResponse(this);
-        getStatus.setPostObject(statusInput);
-        String details = gameStartTime + ":" + retryCount;
-        getStatus.setHelperObject(details);
-        Scheduler.getInstance().submit(getStatus,
-                30 * 1000, TimeUnit.MILLISECONDS);
-    }
-
-    private void queryMoneyCreditedStatus(long gameStartTime, int retryCount, int waitTime) {
-        MoneyStatusInput statusInput = new MoneyStatusInput();
-        statusInput.setGameSlotTime(gameStartTime);
-        statusInput.setUid(UserDetails.getInstance().getUserProfile().getId());
-        statusInput.setOperType(1);
-
-        PostTask<MoneyStatusInput, MoneyStatusOutput> getWinStatus = Request.getMoneyStatusTask();
-        getWinStatus.setPostObject(statusInput);
-        getWinStatus.setCallbackResponse(this);
-        String details = gameStartTime + ":" + retryCount;
-        getWinStatus.setHelperObject(details);
-        Scheduler.getInstance().submit(getWinStatus,
-                waitTime * 1000L, TimeUnit.MILLISECONDS);
-    }
-
-    public void startTheWinMoneyStatus(long gameStartTime) {
-        displayErrorAsToast("Winners money credited status: In-Progress");
-        int waitTime = 1 + (int)(Math.random() * (10 - 1));
-        queryMoneyCreditedStatus(gameStartTime, 1, waitTime);
-    }
-
-    private void stopPollers() {
-        if (allGamesStatusPollerTask != null) {
-            allGamesStatusPollerTask.cancel(true);
-        }
-        if (chatMsgCountPollerTask != null) {
-            chatMsgCountPollerTask.cancel(true);
-        }
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        stopPollers();
-    }
-
-    @Override
-    protected void onDestroy () {
-        Log.d(TAG, "In onDestroy");
-        super.onDestroy();
-
-        ServerErrorHandler.getInstance().removeShutdownListener(this);
-        PreferenceDialog.storeState(getApplicationContext());
-
-        if (UserDetails.getInstance().getNotificationValue()) {
-            Log.d(TAG, "In register with AM");
-            registerWithAlarmManager(true);
-        }
-
-        Bundle gameState = getParams(Navigator.QUESTION_VIEW);
-        if (gameState != null) {
-            String FIFTYUSED = "FIFTYUSED";
-            String FLIPUSED = "FLIPUSED";
-            String USERANSWERS = "USERANS";
-            String GAMEDETAILS = "GAMEDETAILS";
-
-            boolean fiftyUsed = gameState.getBoolean(FIFTYUSED);
-            boolean flipQuestionUsed = gameState.getBoolean(FLIPUSED);
-            ArrayList<UserAnswer> userAnswers  = gameState.getParcelableArrayList(USERANSWERS);
-            GameDetails gameDetails = (GameDetails) gameState.getSerializable(GAMEDETAILS);
-            if (gameDetails == null) {
-                return;
-            }
-            long gameStartTime = gameDetails.getStartTime();
-
-            boolean gameInProgress = false;
-            long currentTime = System.currentTimeMillis();
-            long gameEndTime = gameStartTime + 10 * 60 * 1000;
-            if ((currentTime >= gameStartTime) && (currentTime <= gameEndTime)) {
-                gameInProgress = true;
-            }
-            if (!gameInProgress) {
-                return;
-            }
-            SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putBoolean(Keys.QUESTION_VIEW_FIFTY_FIFTY, fiftyUsed);
-            editor.putBoolean(Keys.QUESTION_VIEW_FLIP_QUESTION, flipQuestionUsed);
-            int userAnsSize = userAnswers.size();
-            editor.putInt(Keys.QUESTION_VIEW_USER_ANS_LENGTH, userAnsSize);
-            editor.putLong(Keys.QUESTION_VIEW_GAME_START_TIME, gameStartTime);
-            for (int index = 0; index < userAnsSize; index ++) {
-                UserAnswer userAnswer = userAnswers.get(index);
-
-                String qNoKey = Keys.QUESTION_VIEW_USER_ANS_QNO_PREFIX + index + 1;
-                editor.putInt(qNoKey, userAnswer.getqNo());
-
-                String isCorrectKey = Keys.QUESTION_VIEW_USER_ANS_IS_CORRECT_PREFIX + index + 1;
-                editor.putBoolean(isCorrectKey, userAnswer.isCorrect());
-
-                String quesTimeKey = Keys.QUESTION_VIEW_USER_ANS_TIME_PREFIX + index + 1;
-                editor.putLong(quesTimeKey, userAnswer.getTimeTaken());
-            }
-            editor.apply();
-        }
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG, "This is in onCreate");
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "onCreate method start");
 
+        // This is for notification initialization
         MyNotificationHandler.getInstance(getApplicationContext()).
                 registerNotificationChannelChannel(getString(R.string.NEWS_CHANNEL_ID),
                         getString(R.string.CHANNEL_NEWS), getString(R.string.CHANNEL_DESCRIPTION));
 
         PreferenceDialog.readStateUpdateInMem(getApplicationContext());
-        
+
         if (savedInstanceState != null) {
             Log.d(TAG, "onCreate method savedInstanceState is not null");
         }
+
         Utils.clearState();
+
         setContentView(R.layout.activity_main);
         activityView = this.findViewById(android.R.id.content);
 
+        // Toolbar initialization
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar mActionBar = getSupportActionBar();
@@ -394,6 +272,97 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    public void onResume() {
+        Log.d(TAG, "onResume");
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        Log.d(TAG, "onPause");
+        super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        stopPollers();
+    }
+
+    @Override
+    protected void onDestroy () {
+        Log.d(TAG, "In onDestroy");
+        super.onDestroy();
+
+        ServerErrorHandler.getInstance().removeShutdownListener(this);
+        PreferenceDialog.storeState(getApplicationContext());
+
+        if (UserDetails.getInstance().getNotificationValue()) {
+            Log.d(TAG, "In register with AM");
+            registerWithAlarmManager(true);
+        }
+
+        Bundle gameState = getParams(Navigator.QUESTION_VIEW);
+        if (gameState != null) {
+            String FIFTYUSED = "FIFTYUSED";
+            String FLIPUSED = "FLIPUSED";
+            String USERANSWERS = "USERANS";
+            String GAMEDETAILS = "GAMEDETAILS";
+
+            boolean fiftyUsed = gameState.getBoolean(FIFTYUSED);
+            boolean flipQuestionUsed = gameState.getBoolean(FLIPUSED);
+            ArrayList<UserAnswer> userAnswers  = gameState.getParcelableArrayList(USERANSWERS);
+            GameDetails gameDetails = (GameDetails) gameState.getSerializable(GAMEDETAILS);
+            if (gameDetails == null) {
+                return;
+            }
+            long gameStartTime = gameDetails.getStartTime();
+
+            boolean gameInProgress = false;
+            long currentTime = System.currentTimeMillis();
+            long gameEndTime = gameStartTime + 10 * 60 * 1000;
+            if ((currentTime >= gameStartTime) && (currentTime <= gameEndTime)) {
+                gameInProgress = true;
+            }
+            if (!gameInProgress) {
+                return;
+            }
+            SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putBoolean(Keys.QUESTION_VIEW_FIFTY_FIFTY, fiftyUsed);
+            editor.putBoolean(Keys.QUESTION_VIEW_FLIP_QUESTION, flipQuestionUsed);
+            int userAnsSize = userAnswers.size();
+            editor.putInt(Keys.QUESTION_VIEW_USER_ANS_LENGTH, userAnsSize);
+            editor.putLong(Keys.QUESTION_VIEW_GAME_START_TIME, gameStartTime);
+            for (int index = 0; index < userAnsSize; index ++) {
+                UserAnswer userAnswer = userAnswers.get(index);
+
+                String qNoKey = Keys.QUESTION_VIEW_USER_ANS_QNO_PREFIX + index + 1;
+                editor.putInt(qNoKey, userAnswer.getqNo());
+
+                String isCorrectKey = Keys.QUESTION_VIEW_USER_ANS_IS_CORRECT_PREFIX + index + 1;
+                editor.putBoolean(isCorrectKey, userAnswer.isCorrect());
+
+                String quesTimeKey = Keys.QUESTION_VIEW_USER_ANS_TIME_PREFIX + index + 1;
+                editor.putLong(quesTimeKey, userAnswer.getTimeTaken());
+            }
+            editor.apply();
+        }
+    }
+
+
+
+
+
+
+    public void startTheWinMoneyStatus(long gameStartTime) {
+        displayErrorAsToast("Winners money credited status: In-Progress");
+        int waitTime = 1 + (int)(Math.random() * (10 - 1));
+        queryMoneyCreditedStatus(gameStartTime, 1, waitTime);
+    }
+
+
+    @Override
     public void onClick(View view) {
         if (view.getId() == R.id.settings) {
             FragmentManager fragmentManager = this.getSupportFragmentManager();
@@ -444,11 +413,6 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.more_games) {
             launchView(Navigator.MORE_GAMES, params, false);
         } else if (id == R.id.logout) {
-            /*Utils.shutdown(getString(R.string.base_url));
-            Intent intent = new Intent(this, LoginActivity.class);
-            intent.putExtra(Keys.LOGIN_SCREEN_CALLED_FROM_LOGOUT, 1);
-            startActivity(intent);
-            finish();*/
             ServerErrorHandler.getInstance().shutDownApp(this);
         } else if (id == R.id.share) {
             Resources resources = getResources();
@@ -463,6 +427,16 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return false;
+    }
+
+
+    private void stopPollers() {
+        if (allGamesStatusPollerTask != null) {
+            allGamesStatusPollerTask.cancel(true);
+        }
+        if (chatMsgCountPollerTask != null) {
+            chatMsgCountPollerTask.cancel(true);
+        }
     }
 
     public void storeParams(String viewName, Bundle params) {
@@ -537,113 +511,6 @@ public class MainActivity extends AppCompatActivity
         };
         this.runOnUiThread(run);
     }
-
-    private Fragment getFragment(String viewId) {
-        System.out.println("viewId: " + viewId);
-        BaseFragment fragment = null;
-        switch (viewId) {
-            case Navigator.MIXED_GAMES_VIEW:
-            case Navigator.MIXED_ENROLLED_GAMES_VIEW:
-            case Navigator.CELEBRITY_GAMES_VIEW:
-            case Navigator.CELEBRITY_ENROLLED_GAMES_VIEW: {
-                stopped = false;
-                fragment = new ShowGames();
-                break;
-            }
-            case Navigator.QUESTION_VIEW: {
-                stopped = true;
-                fragment = new QuestionFragment();
-                break;
-            }
-            case Navigator.CURRENT_GAMES:
-            case Navigator.ENROLLED_GAMES: {
-                stopped = false;
-                fragment = new SelectGameTypeView();
-                break;
-            }
-            case Navigator.REFERRALS_VIEW: {
-                stopped = false;
-                fragment = new MyReferralsView();
-                break;
-            }
-            case Navigator.TRANSACTIONS_VIEW: {
-                stopped = true;
-                fragment = new TransactionsView();
-                break;
-            }
-            case Navigator.HISTORY_VIEW: {
-                stopped = false;
-                fragment = new HistoryView();
-                break;
-            }
-            case Navigator.WD_OTP: {
-                stopped = true;
-                fragment = new VerifyWDOTP();
-                break;
-            }
-            case Navigator.WITHDRAW_REQ_VIEW: {
-                stopped = false;
-                fragment = new WithdrawReqsView();
-                break;
-            } case Navigator.CHAT_VIEW: {
-                stopped = true;
-                fragment = new ChatView();
-                break;
-            }
-            case Navigator.PROFILE_VIEW: {
-                stopped = true;
-                fragment = new UpdateUserProfile();
-                break;
-            }
-            case Navigator.ADD_MONEY_VIEW: {
-                stopped = true;
-                fragment = new AddMoney();
-                break;
-            }
-            case Navigator.COIN_STORE_VIEW: {
-                stopped = true;
-                fragment = new CoinStore();
-                break;
-            }
-            case Navigator.NEW_WITHDRAW_REQUEST: {
-                stopped = true;
-                fragment = new NewWithdrawReq();
-                break;
-            }
-            case Navigator.CC_REQ_VIEW: {
-                stopped = true;
-                fragment = new CCTableView();
-                break;
-            }
-            case Navigator.NEW_CC_REQUEST: {
-                stopped = true;
-                fragment = new NewCCReq();
-                break;
-            }
-            case Navigator.KYC_VIEW: {
-                stopped = true;
-                fragment = new KYCView();
-                break;
-            }
-            case Navigator.FAQ: {
-                stopped = true;
-                fragment = new FAQView();
-                break;
-            }
-            case Navigator.MORE_GAMES: {
-                stopped = false;
-                fragment = new MoreGamesView();
-                break;
-            }
-        }
-        if (stopped) {
-            WinMsgHandler.getInstance().setListener(null);
-        } else {
-            WinMsgHandler.getInstance().setListener(this);
-        }
-        return fragment;
-    }
-
     @Override
     public void passData(int reqId, List<String> data) {
         if (reqId == WinMsgHandler.WIN_MSG_ID) {
@@ -658,20 +525,6 @@ public class MainActivity extends AppCompatActivity
             this.runOnUiThread(run);
         }
     }
-
-    private void registerWithAlarmManager(boolean register) {
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(this, AlertReceiver.class);
-        @SuppressLint("UnspecifiedImmutableFlag") PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-        if (register) {
-            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP,
-                    System.currentTimeMillis() + 1000, 5 * 60 * 1000, pendingIntent);
-        } else {
-            alarmManager.cancel(pendingIntent);
-        }
-    }
-
-
     public boolean handleServerError(boolean exceptionThrown, boolean isAPIException,
                                      final Object response) {
         if ((exceptionThrown) && (!isAPIException)) {
@@ -886,17 +739,6 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    public void onResume() {
-        Log.d(TAG, "onResume");
-        super.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        Log.d(TAG, "onPause");
-        super.onPause();
-    }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
@@ -924,6 +766,170 @@ public class MainActivity extends AppCompatActivity
         super.onActivityResult(requestCode, resultCode, data);
         System.out.println("In onActivityResult" + requestCode);
     }
+
+    public void fetchUpdateMoney() {
+        fetchUpdateMoney(false);
+    }
+
+    public void fetchUpdateMoney(boolean isGameOver) {
+        UserProfile userProfile = UserDetails.getInstance().getUserProfile();
+        GetTask<UserMoney> fetchMoney = Request.getMoneyTask(userProfile.getId());
+        fetchMoney.setCallbackResponse(this);
+        fetchMoney.setHelperObject(isGameOver);
+        Scheduler.getInstance().submit(fetchMoney);
+    }
+
+
+    private void queryCancelledGameMoneyStatus(long gameStartTime, int retryCount) {
+        MoneyStatusInput statusInput = new MoneyStatusInput();
+        statusInput.setGameSlotTime(gameStartTime);
+        statusInput.setUid(UserDetails.getInstance().getUserProfile().getId());
+        statusInput.setOperType(2);
+
+        PostTask<MoneyStatusInput, MoneyStatusOutput> getStatus = Request.getCancelGamesRefundMoneyStatusTask();
+        getStatus.setCallbackResponse(this);
+        getStatus.setPostObject(statusInput);
+        String details = gameStartTime + ":" + retryCount;
+        getStatus.setHelperObject(details);
+        Scheduler.getInstance().submit(getStatus,
+                30 * 1000, TimeUnit.MILLISECONDS);
+    }
+
+    private void queryMoneyCreditedStatus(long gameStartTime, int retryCount, int waitTime) {
+        MoneyStatusInput statusInput = new MoneyStatusInput();
+        statusInput.setGameSlotTime(gameStartTime);
+        statusInput.setUid(UserDetails.getInstance().getUserProfile().getId());
+        statusInput.setOperType(1);
+
+        PostTask<MoneyStatusInput, MoneyStatusOutput> getWinStatus = Request.getMoneyStatusTask();
+        getWinStatus.setPostObject(statusInput);
+        getWinStatus.setCallbackResponse(this);
+        String details = gameStartTime + ":" + retryCount;
+        getWinStatus.setHelperObject(details);
+        Scheduler.getInstance().submit(getWinStatus,
+                waitTime * 1000L, TimeUnit.MILLISECONDS);
+    }
+
+
+    private Fragment getFragment(String viewId) {
+        System.out.println("viewId: " + viewId);
+        BaseFragment fragment = null;
+        switch (viewId) {
+            case Navigator.MIXED_GAMES_VIEW:
+            case Navigator.MIXED_ENROLLED_GAMES_VIEW:
+            case Navigator.CELEBRITY_GAMES_VIEW:
+            case Navigator.CELEBRITY_ENROLLED_GAMES_VIEW: {
+                stopped = false;
+                fragment = new ShowGames();
+                break;
+            }
+            case Navigator.QUESTION_VIEW: {
+                stopped = true;
+                fragment = new QuestionFragment();
+                break;
+            }
+            case Navigator.CURRENT_GAMES:
+            case Navigator.ENROLLED_GAMES: {
+                stopped = false;
+                fragment = new SelectGameTypeView();
+                break;
+            }
+            case Navigator.REFERRALS_VIEW: {
+                stopped = false;
+                fragment = new MyReferralsView();
+                break;
+            }
+            case Navigator.TRANSACTIONS_VIEW: {
+                stopped = true;
+                fragment = new TransactionsView();
+                break;
+            }
+            case Navigator.HISTORY_VIEW: {
+                stopped = false;
+                fragment = new HistoryView();
+                break;
+            }
+            case Navigator.WD_OTP: {
+                stopped = true;
+                fragment = new VerifyWDOTP();
+                break;
+            }
+            case Navigator.WITHDRAW_REQ_VIEW: {
+                stopped = false;
+                fragment = new WithdrawReqsView();
+                break;
+            } case Navigator.CHAT_VIEW: {
+                stopped = true;
+                fragment = new ChatView();
+                break;
+            }
+            case Navigator.PROFILE_VIEW: {
+                stopped = true;
+                fragment = new UpdateUserProfile();
+                break;
+            }
+            case Navigator.ADD_MONEY_VIEW: {
+                stopped = true;
+                fragment = new AddMoney();
+                break;
+            }
+            case Navigator.COIN_STORE_VIEW: {
+                stopped = true;
+                fragment = new CoinStore();
+                break;
+            }
+            case Navigator.NEW_WITHDRAW_REQUEST: {
+                stopped = true;
+                fragment = new NewWithdrawReq();
+                break;
+            }
+            case Navigator.CC_REQ_VIEW: {
+                stopped = true;
+                fragment = new CCTableView();
+                break;
+            }
+            case Navigator.NEW_CC_REQUEST: {
+                stopped = true;
+                fragment = new NewCCReq();
+                break;
+            }
+            case Navigator.KYC_VIEW: {
+                stopped = true;
+                fragment = new KYCView();
+                break;
+            }
+            case Navigator.FAQ: {
+                stopped = true;
+                fragment = new FAQView();
+                break;
+            }
+            case Navigator.MORE_GAMES: {
+                stopped = false;
+                fragment = new MoreGamesView();
+                break;
+            }
+        }
+        if (stopped) {
+            WinMsgHandler.getInstance().setListener(null);
+        } else {
+            WinMsgHandler.getInstance().setListener(this);
+        }
+        return fragment;
+    }
+
+    private void registerWithAlarmManager(boolean register) {
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, AlertReceiver.class);
+        @SuppressLint("UnspecifiedImmutableFlag") PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        if (register) {
+            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP,
+                    System.currentTimeMillis() + 1000, 5 * 60 * 1000, pendingIntent);
+        } else {
+            alarmManager.cancel(pendingIntent);
+        }
+    }
+
+
 
 
     /*private void startAlarm(boolean enable) {

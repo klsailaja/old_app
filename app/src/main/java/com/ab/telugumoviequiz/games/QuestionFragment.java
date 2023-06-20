@@ -90,15 +90,6 @@ public class QuestionFragment extends BaseFragment
     private MediaPlayer answeredMP, timeoutMP;
     private AlertDialog getReadyMsg;
 
-    private Bundle saveState() {
-        Bundle saveState = new Bundle();
-        saveState.putBoolean(FIFTYUSED, fiftyUsed);
-        saveState.putBoolean(FLIPUSED, flipQuestionUsed);
-        saveState.putParcelableArrayList(USERANSWERS, userAnswers);
-        saveState.putSerializable(GAMEDETAILS, gameDetails);
-        return saveState;
-    }
-
     @Override
     public void onCreate (Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -172,122 +163,6 @@ public class QuestionFragment extends BaseFragment
         showActionBar(true);
     }
 
-    private void restoreState() {
-        MainActivity mainActivity = (MainActivity) getActivity();
-        Bundle savedState = null;
-
-        if (mainActivity != null) {
-            savedState = mainActivity.getParams(Navigator.QUESTION_VIEW);
-        }
-
-        GameDetails savedGameDetails = null;
-        if (savedState != null) {
-            System.out.println("Read from saved state");
-            fiftyUsed = savedState.getBoolean(FIFTYUSED);
-            flipQuestionUsed = savedState.getBoolean(FLIPUSED);
-            userAnswers = savedState.getParcelableArrayList(USERANSWERS);
-            savedGameDetails = (GameDetails) savedState.getSerializable(GAMEDETAILS);
-        }
-        Bundle bundle = getArguments();
-        if (bundle != null) {
-            gameDetails = (GameDetails) bundle.getSerializable("gd");
-            if (savedGameDetails != null) {
-                if (savedGameDetails.getGameId() != gameDetails.getGameId()) {
-                    fiftyUsed = false;
-                    flipQuestionUsed = false;
-                    userAnswers.clear();
-                    gamePrizeDetails.clear();
-                    gameLeaderBoardDetails.clear();
-                } else {
-                    gameDetails = savedGameDetails;
-                }
-            }
-        }
-        if (gameDetails != null) {
-            if (System.currentTimeMillis() >= (gameDetails.getStartTime() + 10 * 60 * 1000)) {
-                progressBar.setVisibility(View.GONE);
-                Utils.showMessage("Info", "Game Over", getContext(), this,
-                        GAME_OVER_CONFIRM, null);
-                return;
-            }
-        }
-        View root = getView();
-        if (root == null) {
-            return;
-        }
-
-        timerView = root.findViewById(R.id.timerView);
-        progressBar = root.findViewById(R.id.timerProgress);
-        questionView = root.findViewById(R.id.questionView);
-        questionPicIV = root.findViewById(R.id.image);
-
-        buttonsView[0] = root.findViewById(R.id.optionA);
-        buttonsView[1] = root.findViewById(R.id.optionB);
-        buttonsView[2] = root.findViewById(R.id.optionC);
-        buttonsView[3] = root.findViewById(R.id.optionD);
-
-        Resources resources = getResources();
-        String successMsg = resources.getString(R.string.game_join_success_msg);
-
-
-        long cTime = System.currentTimeMillis();
-        long timeToStart = gameDetails.getStartTime() - cTime - GAME_BEFORE_LOCK_PERIOD_IN_MILLIS - Constants.SCHEDULER_OFFSET_IN_MILLIS;
-        long timeDiff = gameDetails.getStartTime() - cTime;
-        UserDetails.getInstance().setLastPlayedGameTime(gameDetails.getStartTime());
-        UserDetails.getInstance().setLastPlayedGameId(gameDetails.getTempGameId());
-        if (timeToStart >= 0) {
-            displayErrorAsToast(successMsg);
-            gameLockedMode(root);
-            GetTask<GameStatus> pollStatusTask = Request.getSingleGameStatus(gameDetails.getGameId());
-            pollStatusTask.setCallbackResponse(this);
-            gameStatusPollerHandle = Scheduler.getInstance().submitRepeatedTask(pollStatusTask, 0, 10, TimeUnit.SECONDS);
-        } else if ((timeDiff > 0) && (timeDiff <= GAME_BEFORE_LOCK_PERIOD_IN_MILLIS)) {
-            displayErrorAsToast(successMsg);
-            scheduleAllQuestions();
-            gameStartedMode(root, false);
-        } else if (timeDiff < 0) {
-            AlertDialog alertDialog = Utils.getProgressDialog(getActivity(), "Rejoining. Please Wait");
-            alertDialog.show();
-            timeDiff = -1 * timeDiff;
-            timeDiff = timeDiff / 1000;
-            int mins = (int) (timeDiff / 60);
-            int secs = (int) timeDiff - (mins * 60);
-            if (secs > 0) {
-                String timeUp = resources.getString(R.string.timeup);
-                displayErrorAsToast(timeUp);
-                mins++;
-            }
-            int alreadyAnsweredCt = userAnswers.size();
-            mins = mins - alreadyAnsweredCt;
-            System.out.println("Missed minutes is " + mins);
-            // Missed minutes user answers are formed here for rejoin..
-            for (int index = 1; index <= mins; index ++) {
-                UserAnswer userAnswer = new UserAnswer(alreadyAnsweredCt + index, false, -1L);
-                userAnswers.add(userAnswer);
-            }
-            gameStartedMode(root, true);
-            scheduleAllQuestions();
-            GetTask<PrizeDetail[]> getPrizeDetailsReq = Request.getPrizeDetails(gameDetails.getGameId());
-            getPrizeDetailsReq.setCallbackResponse(this);
-            Scheduler.getInstance().submit(getPrizeDetailsReq);
-
-            timerView.setText("0");
-            progressBar.setVisibility(View.INVISIBLE);
-            quesShowing(false);
-            updateLifelines(false);
-            alertDialog.dismiss();
-        }
-    }
-
-    /*
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        outState.putInt(STARTING_QUESTION_POS, currentQuesPos);
-        super.onSaveInstanceState(outState);
-    }
-    */
-
-
     @Override
     public void onPause() {
         super.onPause();
@@ -313,6 +188,13 @@ public class QuestionFragment extends BaseFragment
         super.onStop();
     }
 
+    /*
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putInt(STARTING_QUESTION_POS, currentQuesPos);
+        super.onSaveInstanceState(outState);
+    }
+    */
     @Override
     public void doAction(int calledId, Object userObject) {
         if (calledId == LEAVE_CONFIRM) {
@@ -473,7 +355,7 @@ public class QuestionFragment extends BaseFragment
                 Question question = questions.get(currentQuesPos);
                 int correctOption = question.getCorrectOption();
                 int count = 0;
-                for (int index = 1; index <= 4; index ++) {
+                for (int index = 1; index < 5; index ++) {
                     if (index != correctOption) {
                         TextView optionButton = getViewCorrespondingToNumber(index);
                         if (optionButton != null) {
@@ -921,6 +803,21 @@ public class QuestionFragment extends BaseFragment
         questionPicIV.setVisibility(View.GONE);
     }
 
+    @Override
+    public void passData(int reqId, List<String> data) {
+        if (reqId != 1000) {
+            super.passData(reqId, data);
+            return;
+        }
+        if ((data != null) && (data.size() > 0)) {
+            String isGameOverStr = data.get(0);
+            if (isGameOverStr.equalsIgnoreCase("1")) {
+                displayErrorAsToast("Winning Money is updated for winners");
+            }
+        }
+    }
+
+
     private void closeAllViews() {
         closeAllViews(true);
     }
@@ -1260,6 +1157,123 @@ public class QuestionFragment extends BaseFragment
         }
         return super.onNavigationItemSelected(item);
     }
+
+    private Bundle saveState() {
+        Bundle saveState = new Bundle();
+        saveState.putBoolean(FIFTYUSED, fiftyUsed);
+        saveState.putBoolean(FLIPUSED, flipQuestionUsed);
+        saveState.putParcelableArrayList(USERANSWERS, userAnswers);
+        saveState.putSerializable(GAMEDETAILS, gameDetails);
+        return saveState;
+    }
+
+
+    private void restoreState() {
+        MainActivity mainActivity = (MainActivity) getActivity();
+        Bundle savedState = null;
+
+        if (mainActivity != null) {
+            savedState = mainActivity.getParams(Navigator.QUESTION_VIEW);
+        }
+
+        GameDetails savedGameDetails = null;
+        if (savedState != null) {
+            System.out.println("Read from saved state");
+            fiftyUsed = savedState.getBoolean(FIFTYUSED);
+            flipQuestionUsed = savedState.getBoolean(FLIPUSED);
+            userAnswers = savedState.getParcelableArrayList(USERANSWERS);
+            savedGameDetails = (GameDetails) savedState.getSerializable(GAMEDETAILS);
+        }
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            gameDetails = (GameDetails) bundle.getSerializable("gd");
+            if (savedGameDetails != null) {
+                if (savedGameDetails.getGameId() != gameDetails.getGameId()) {
+                    fiftyUsed = false;
+                    flipQuestionUsed = false;
+                    userAnswers.clear();
+                    gamePrizeDetails.clear();
+                    gameLeaderBoardDetails.clear();
+                } else {
+                    gameDetails = savedGameDetails;
+                }
+            }
+        }
+        if (gameDetails != null) {
+            if (System.currentTimeMillis() >= (gameDetails.getStartTime() + 10 * 60 * 1000)) {
+                progressBar.setVisibility(View.GONE);
+                Utils.showMessage("Info", "Game Over", getContext(), this,
+                        GAME_OVER_CONFIRM, null);
+                return;
+            }
+        }
+        View root = getView();
+        if (root == null) {
+            return;
+        }
+
+        timerView = root.findViewById(R.id.timerView);
+        progressBar = root.findViewById(R.id.timerProgress);
+        questionView = root.findViewById(R.id.questionView);
+        questionPicIV = root.findViewById(R.id.image);
+
+        buttonsView[0] = root.findViewById(R.id.optionA);
+        buttonsView[1] = root.findViewById(R.id.optionB);
+        buttonsView[2] = root.findViewById(R.id.optionC);
+        buttonsView[3] = root.findViewById(R.id.optionD);
+
+        Resources resources = getResources();
+        String successMsg = resources.getString(R.string.game_join_success_msg);
+
+
+        long cTime = System.currentTimeMillis();
+        long timeToStart = gameDetails.getStartTime() - cTime - GAME_BEFORE_LOCK_PERIOD_IN_MILLIS - Constants.SCHEDULER_OFFSET_IN_MILLIS;
+        long timeDiff = gameDetails.getStartTime() - cTime;
+        UserDetails.getInstance().setLastPlayedGameTime(gameDetails.getStartTime());
+        UserDetails.getInstance().setLastPlayedGameId(gameDetails.getTempGameId());
+        if (timeToStart >= 0) {
+            displayErrorAsToast(successMsg);
+            gameLockedMode(root);
+            GetTask<GameStatus> pollStatusTask = Request.getSingleGameStatus(gameDetails.getGameId());
+            pollStatusTask.setCallbackResponse(this);
+            gameStatusPollerHandle = Scheduler.getInstance().submitRepeatedTask(pollStatusTask, 0, 10, TimeUnit.SECONDS);
+        } else if ((timeDiff > 0) && (timeDiff <= GAME_BEFORE_LOCK_PERIOD_IN_MILLIS)) {
+            displayErrorAsToast(successMsg);
+            scheduleAllQuestions();
+            gameStartedMode(root, false);
+        } else if (timeDiff < 0) {
+            AlertDialog alertDialog = Utils.getProgressDialog(getActivity(), "Rejoining. Please Wait");
+            alertDialog.show();
+            timeDiff = -1 * timeDiff;
+            timeDiff = timeDiff / 1000;
+            int mins = (int) (timeDiff / 60);
+            int secs = (int) timeDiff - (mins * 60);
+            if (secs > 0) {
+                String timeUp = resources.getString(R.string.timeup);
+                displayErrorAsToast(timeUp);
+                mins++;
+            }
+            int alreadyAnsweredCt = userAnswers.size();
+            mins = mins - alreadyAnsweredCt;
+            System.out.println("Missed minutes is " + mins);
+            // Missed minutes user answers are formed here for rejoin..
+            for (int index = 1; index <= mins; index ++) {
+                UserAnswer userAnswer = new UserAnswer(alreadyAnsweredCt + index, false, -1L);
+                userAnswers.add(userAnswer);
+            }
+            gameStartedMode(root, true);
+            scheduleAllQuestions();
+            GetTask<PrizeDetail[]> getPrizeDetailsReq = Request.getPrizeDetails(gameDetails.getGameId());
+            getPrizeDetailsReq.setCallbackResponse(this);
+            Scheduler.getInstance().submit(getPrizeDetailsReq);
+
+            timerView.setText("0");
+            progressBar.setVisibility(View.INVISIBLE);
+            quesShowing(false);
+            updateLifelines(false);
+            alertDialog.dismiss();
+        }
+    }
     /*
     private void handleNetworkSpeed() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -1269,21 +1283,6 @@ public class QuestionFragment extends BaseFragment
         int downSpeed = nc.getLinkDownstreamBandwidthKbps();
         int upSpeed = nc.getLinkUpstreamBandwidthKbps();
     }*/
-
-    @Override
-    public void passData(int reqId, List<String> data) {
-        if (reqId != 1000) {
-            super.passData(reqId, data);
-            return;
-        }
-        if ((data != null) && (data.size() > 0)) {
-            String isGameOverStr = data.get(0);
-            if (isGameOverStr.equalsIgnoreCase("1")) {
-                displayErrorAsToast("Winning Money is updated for winners");
-            }
-        }
-    }
-
     private void showActionBar(boolean show) {
         Activity activity = getActivity();
         if (activity instanceof AppCompatActivity) {

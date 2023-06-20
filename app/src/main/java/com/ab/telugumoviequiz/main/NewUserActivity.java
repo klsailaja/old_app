@@ -138,7 +138,7 @@ public class NewUserActivity extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
-        initializeClickables();
+        initializeClickable();
     }
 
     // Completed.
@@ -355,7 +355,7 @@ public class NewUserActivity extends AppCompatActivity
         } else if (reqId == Request.SEND_OTP_CODE) {
             Runnable run = () -> {
                 String error = (String) response;
-                if (error.toLowerCase().equals("true")) {
+                if (error.equalsIgnoreCase("true")) {
                     TextView mailidTextView = findViewById(id.editTextEmail);
                     mailidTextView.setEnabled(false);
 
@@ -380,7 +380,7 @@ public class NewUserActivity extends AppCompatActivity
             Runnable run = () -> {
                 String error = (String) response;
                 String msg = "Verification Code mismatch. Please try again";
-                if (error.toLowerCase().equals("true")) {
+                if (error.equalsIgnoreCase("true")) {
                     msg = "Verification Code matched. Please configure password";
 
                     Button verifyCodeButton = findViewById(id.verifyCode);
@@ -704,7 +704,7 @@ public class NewUserActivity extends AppCompatActivity
     }
 
     // Completed.
-    private void initializeClickables() {
+    private void initializeClickable() {
         CheckBox terms1TV = findViewById(R.id.termsConditionsCheck1);
         String terms1 = getResources().getString(R.string.terms_conditions1);
         SpannableString ss = new SpannableString(terms1);
