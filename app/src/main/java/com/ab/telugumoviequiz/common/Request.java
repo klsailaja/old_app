@@ -106,6 +106,8 @@ public class Request {
                 null, null, Boolean.class);
     }
 
+    /* This method fetches the generic win/wd messages till user logs-in. Once login is done,
+       will fetch and display the closed group win/wd messages */
     public static GetTask<String[]> getWinWdMessages(long userProfileId, int maxUserCount) {
         String uri = baseUri + "/wd/messages/" + userProfileId + "/" + maxUserCount;
         return new GetTask<>(uri, WIN_WD_MSGS, null,

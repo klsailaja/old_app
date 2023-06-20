@@ -58,9 +58,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private PATextWatcher mailTextWatcher, passwordTextWatcher, captchaTextWatcher;
     private boolean passwordShowing;
 
+    /* This is Activity onCreate method */
     // Completed.
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG, "onCreate start");
         super.onCreate(savedInstanceState);
 
         Request.baseUri = getResources().getString(R.string.base_url);
@@ -70,7 +72,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
 
         setContentView(R.layout.activity_login);
-        Log.d(TAG, "In OnCreate:" + Request.baseUri);
+        Log.d(TAG, "In OnCreate: " + Request.baseUri);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -82,6 +84,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             mActionBar.setDisplayShowTitleEnabled(false);
             mActionBar.setDisplayShowCustomEnabled(true);
             mActionBar.setCustomView(mCustomView);
+            Log.d(TAG, "Action Bar created");
         }
 
         generateCaptcha();
@@ -90,39 +93,43 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         if (isCalledFromMain == 1) {
             showHelpWindow();
         }
+        Log.d(TAG, "onCreate end");
     }
 
+    /* This is Activity onStart method */
     // Completed.
     @Override
     public void onStart() {
+        Log.d(TAG, "onStart start");
         super.onStart();
-        initializeClickables();
+        initializeClickable();
+        Log.d(TAG, "onStart end");
     }
 
-    // Completed.
+    /* This is Activity onResume method. Here sets listeners for UI Components and gets the win/wd messages*/
+
     @Override
     public void onResume() {
+        Log.d(TAG, "onResume start");
         super.onResume();
         handleListeners(this);
         handleTouchListeners(this);
         handleTextWatchers(true);
         WinMsgHandler.getInstance().setListener(this);
         WinMsgHandler.getInstance().setUserProfileId(-1);
-        //Utils.showSuccessDialog(this);
-        //Utils.showErrorDialog(this);
-        //Utils.showWarningDialog(this);
+        Log.d(TAG, "onResume end");
     }
 
-    // Completed.
+    /* This method is Activity onPause(). Unsets listeners */
     @Override
     public void onPause() {
         super.onPause();
         handleListeners(null);
         handleTouchListeners(null);
         handleTextWatchers(false);
+        Log.d(TAG, "onPause done");
     }
 
-    // Completed.
     @Override
     public void onClick(View view) {
         int viewId = view.getId();
@@ -324,7 +331,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         return true;
     }
 
-    // Completed.
     private boolean validateData() {
         boolean result = validateMailId();
         if (!result) {
@@ -346,7 +352,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         return result;
     }
 
-    // Completed.
     private LoginData getFromUI() {
         boolean uiValidationRes = validateData();
         if (!uiValidationRes) {
@@ -394,6 +399,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
+    /* This method sets and unsets click listener */
     // Completed.
     private void handleListeners(View.OnClickListener listener) {
         Button loginButton = findViewById(R.id.loginBut);
@@ -404,9 +410,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         TextView forgotPassword = findViewById(R.id.forgotPasswordBut);
         forgotPassword.setOnClickListener(listener);
-
-        /*TextView termsConditions = findViewById(R.id.termsConditionsText1);
-        termsConditions.setOnClickListener(listener);*/
 
         ImageView reloadCaptcha = findViewById(R.id.reloadCaptcha);
         reloadCaptcha.setOnClickListener(listener);
@@ -452,11 +455,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         return true;
     }
 
-    // Completed.
     private boolean validatePasswd() {
         TextView passwdText = findViewById(R.id.editTextPassword);
         String str = passwdText.getText().toString().trim();
-        String result = Utils.fullValidate(str, "Password", false, 8, 32, false);
+        String result = Utils.fullValidate(str, "Password",
+                false, 8, 32, false);
         if (result != null) {
             passwdText.setError(result);
             passwdText.requestFocus();
@@ -465,11 +468,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         return true;
     }
 
-    // Completed.
     private boolean validateMailId() {
         TextView mailUI = findViewById(R.id.editTextEmail);
         String str = mailUI.getText().toString().trim();
-        String result = Utils.fullValidate(str, "Mail Id", false, -1, -1, false);
+        String result = Utils.fullValidate(str, "Mail Id",
+                false, -1, -1, false);
         boolean showErr;
         if (result != null) {
             showErr = false;
@@ -491,7 +494,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     // Completed.
-    private void initializeClickables() {
+    private void initializeClickable() {
         CheckBox terms1TV = findViewById(R.id.termsConditionsCheck1);
         String terms1 = getResources().getString(R.string.terms_conditions1);
         SpannableString ss = new SpannableString(terms1);

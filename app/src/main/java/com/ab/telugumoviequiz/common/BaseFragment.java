@@ -58,6 +58,14 @@ public abstract class BaseFragment extends Fragment implements MessageListener,
         }
     }
 
+    public void displayErrorWithTicket(String errMsg, DialogAction dialogAction, Object userObj) {
+        Activity parentActivity = getActivity();
+        if (parentActivity instanceof MainActivity) {
+            MainActivity mainActivity = (MainActivity) parentActivity;
+            mainActivity.displayErrorWithTicket(errMsg, dialogAction, userObj);
+        }
+    }
+
     public void displayMsg(final String title, final String msg, DialogAction dialogAction) {
         Activity parentActivity = getActivity();
         if (parentActivity instanceof MainActivity) {

@@ -17,7 +17,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 
@@ -110,63 +109,6 @@ public class Utils {
                 buttons.get(index).setOnClickListener(null);
             }
         }
-    }
-
-    public static void showConfirmationMessage(String title,String message, final Context context,
-                                               final DialogAction dialogAction, int id, Object userObject) {
-        final AlertDialog alertDialog = new AlertDialog.Builder(context).create();
-        alertDialog.setTitle(title);
-        alertDialog.setMessage(message);
-        alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Ok", (dialogInterface, i) -> {
-            alertDialog.hide();
-            alertDialog.dismiss();
-            alertDialog.cancel();
-            if (dialogAction != null) {
-                dialogAction.doAction(id, userObject);
-            }
-        });
-        alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", (dialogInterface, i) -> {
-            alertDialog.hide();
-            alertDialog.dismiss();
-            alertDialog.cancel();
-        });
-        alertDialog.show();
-
-    }
-    public static void showMessage(String title, String message, final Context context,
-                                   final DialogAction dialogAction, int id, Object userObject) {
-        final AlertDialog alertDialog = new AlertDialog.Builder(context).create();
-        alertDialog.setTitle(title);
-        alertDialog.setMessage(message);
-        alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Ok", (dialogInterface, i) -> {
-            alertDialog.hide();
-            alertDialog.dismiss();
-            alertDialog.cancel();
-            if (dialogAction != null) {
-                dialogAction.doAction(id, userObject);
-            }
-        });
-        alertDialog.show();
-    }
-
-    public static void showUserIssue(String title, String message, final Context context,
-                                   final DialogAction dialogAction, int id, Object userObject) {
-        final AlertDialog alertDialog = new AlertDialog.Builder(context).create();
-        alertDialog.setTitle(title);
-        alertDialog.setMessage(message);
-        alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Open Ticket", (dialogInterface, i) -> {
-            alertDialog.hide();
-            alertDialog.dismiss();
-            alertDialog.cancel();
-            if (dialogAction != null) {
-                dialogAction.doAction(id, userObject);
-            }
-        });
-        alertDialog.show();
-    }
-
-    public static void showMessage(String title, String message, final Context context, final DialogAction dialogAction) {
-        showMessage(title, message, context, dialogAction, -1, null);
     }
 
     public static String getPasswordHash(String password) {
@@ -377,85 +319,18 @@ public class Utils {
         }
         return msg;
     }
+    public static void showErrorDialog(String title, String message, final Context context,
+                                       final DialogAction dialogAction, int id, Object userObject,
+                                       boolean showTicket) {
 
-    public static void showSuccessDialog(Context context){
-        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.AlertDialogTheme);
-        View view = LayoutInflater.
-                from(context).inflate(
-                R.layout.layout_success_dailog,
-                null
-        );
-        builder.setView(view);
-        ((TextView) view.findViewById(R.id.textTitle)).setText("Success");
-        ((TextView) view.findViewById(R.id.textMessage)).setText("Msg");
-        ((Button) view.findViewById(R.id.buttonAction)).setText("Ok");
-        ((ImageView) view.findViewById(R.id.imageIcon)).setImageResource(R.drawable.done);
-
-        final AlertDialog alertDialog = builder.create();
-
-        view.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                alertDialog.dismiss();
-                Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        if (alertDialog.getWindow() != null){
-            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
-        }
-        alertDialog.show();
-    }
-    public static void showWarningDialog(Context context){
-        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.AlertDialogTheme);
-        View view = LayoutInflater.from(context).inflate(
-                R.layout.layout_warning_dailog,
-                null
-        );
-        builder.setView(view);
-        String WIN_MONEY_FREE_GAME_MSG = "No Win Money for free game. Win Money Credit result will be shown for paid games. \n"
-                + "If not credited for some reason, Customer Ticket is created automatically and \n"
-                + " resolved within 3-5 days";
-
-        ((TextView) view.findViewById(R.id.textTitle)).setText("Warning");
-        ((TextView) view.findViewById(R.id.textMessage)).setText(WIN_MONEY_FREE_GAME_MSG);
-        ((Button) view.findViewById(R.id.buttonYes)).setText("WarnYes");
-        ((Button) view.findViewById(R.id.buttonNo)).setText("WarnNo");
-        ((ImageView) view.findViewById(R.id.imageIcon)).setImageResource(R.drawable.warning);
-
-        final AlertDialog alertDialog = builder.create();
-
-        view.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                alertDialog.dismiss();
-                Toast.makeText(context, "Yes", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        view.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                alertDialog.dismiss();
-                Toast.makeText(context, "No", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        if (alertDialog.getWindow() != null){
-            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
-        }
-        alertDialog.show();
-    }
-
-    public static void showErrorDialog(Context context, boolean showTicket){
         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.AlertDialogTheme);
         View view = LayoutInflater.from(context).inflate(
                 R.layout.layout_error_dailog, null
         );
         builder.setView(view);
-        ((TextView) view.findViewById(R.id.textTitle)).setText("Error");
-        ((TextView) view.findViewById(R.id.textMessage)).setText("ErrText");
-        ((Button) view.findViewById(R.id.buttonYes)).setText("Ok");
+        ((TextView) view.findViewById(R.id.textTitle)).setText(title);
+        ((TextView) view.findViewById(R.id.textMessage)).setText(message);
+        ((Button) view.findViewById(R.id.buttonYes)).setText("OK");
         ((Button) view.findViewById(R.id.buttonNo)).setText("Open Ticket");
         if (!showTicket) {
             ((Button) view.findViewById(R.id.buttonNo)).setVisibility(View.GONE);
@@ -464,11 +339,53 @@ public class Utils {
 
         final AlertDialog alertDialog = builder.create();
 
+        view.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.hide();
+                alertDialog.dismiss();
+                alertDialog.cancel();
+            }
+        });
+        view.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.hide();
+                alertDialog.dismiss();
+                alertDialog.cancel();
+                if (dialogAction != null) {
+                    dialogAction.doAction(id, userObject);
+                }
+            }
+        });
+        if (alertDialog.getWindow() != null){
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        }
+        alertDialog.show();
+    }
+
+    public static void showSuccessDialog(String title, String message, final Context context,
+                                         final DialogAction dialogAction, int id, Object userObject) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.AlertDialogTheme);
+        View view = LayoutInflater.from(context).inflate(R.layout.layout_success_dailog,
+                        null);
+        builder.setView(view);
+        ((TextView) view.findViewById(R.id.textTitle)).setText(title);
+        ((TextView) view.findViewById(R.id.textMessage)).setText(message);
+        ((Button) view.findViewById(R.id.buttonAction)).setText("OK");
+        ((ImageView) view.findViewById(R.id.imageIcon)).setImageResource(R.drawable.done);
+
+        final AlertDialog alertDialog = builder.create();
+
         view.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                alertDialog.hide();
                 alertDialog.dismiss();
-                Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
+                alertDialog.cancel();
+                if (dialogAction != null) {
+                    dialogAction.doAction(id, userObject);
+                }
             }
         });
 
@@ -476,6 +393,65 @@ public class Utils {
             alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
         }
         alertDialog.show();
+    }
+    public static void showConfirmationMessage(String title, String message, final Context context,
+                                         final DialogAction dialogAction, int id, Object userObject) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.AlertDialogTheme);
+        View view = LayoutInflater.from(context).inflate(R.layout.layout_warning_dailog, null);
+        builder.setView(view);
+        ((TextView) view.findViewById(R.id.textTitle)).setText(title);
+        ((TextView) view.findViewById(R.id.textMessage)).setText(message);
+        ((Button) view.findViewById(R.id.buttonYes)).setText("Yes");
+        ((Button) view.findViewById(R.id.buttonNo)).setText("No");
+        ((ImageView) view.findViewById(R.id.imageIcon)).setImageResource(R.drawable.warning);
+
+        final AlertDialog alertDialog = builder.create();
+
+        view.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.hide();
+                alertDialog.dismiss();
+                alertDialog.cancel();
+                if (dialogAction != null) {
+                    dialogAction.doAction(id, userObject);
+                }
+            }
+        });
+
+        view.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.hide();
+                alertDialog.dismiss();
+                alertDialog.cancel();
+            }
+        });
+
+        if (alertDialog.getWindow() != null){
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        }
+        alertDialog.show();
+    }
+
+
+    public static void showMessage(String title, String message, final Context context,
+                                   final DialogAction dialogAction, int id, Object userObject) {
+        final AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+        alertDialog.setTitle(title);
+        alertDialog.setMessage(message);
+        alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Ok", (dialogInterface, i) -> {
+            alertDialog.hide();
+            alertDialog.dismiss();
+            alertDialog.cancel();
+            if (dialogAction != null) {
+                dialogAction.doAction(id, userObject);
+            }
+        });
+        alertDialog.show();
+    }
+    public static void showMessage(String title, String message, final Context context, final DialogAction dialogAction) {
+        showMessage(title, message, context, dialogAction, -1, null);
     }
 
 }

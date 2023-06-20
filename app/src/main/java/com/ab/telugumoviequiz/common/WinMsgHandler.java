@@ -30,12 +30,12 @@ public class WinMsgHandler implements CallbackResponse {
     public void start() {
         isStopped = false;
         count = 0;
-        fetchData(20);
+        fetchData(10);
     }
 
     public void setUserProfileId(long userProfileId1) {
         this.userProfileId = userProfileId1;
-        fetchData(10);
+        fetchData(5);
     }
 
     private void fetchData(int maxClosedGroupUserCount) {

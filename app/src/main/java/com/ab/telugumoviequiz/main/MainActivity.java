@@ -389,8 +389,6 @@ public class MainActivity extends AppCompatActivity
 
         ServerErrorHandler.getInstance().addShutdownListener(this);
 
-        Utils.showWarningDialog(this);
-
         // Notifications tuned off during the app runs
         registerWithAlarmManager(false);
     }
@@ -705,17 +703,14 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void displayError(String errMsg, DialogAction dialogAction) {
-        displayMsg("Error", errMsg, dialogAction);
-    }
-
-    public void showUserIssue(final String title, final String msg,
-                              int id, DialogAction dialogAction, Object userObject) {
-        Runnable run = () -> Utils.showUserIssue(title, msg, MainActivity.this, dialogAction, id, userObject);
+        Runnable run = () -> Utils.showErrorDialog("Error", errMsg,
+                MainActivity.this, dialogAction, 0, null, false);
         this.runOnUiThread(run);
     }
 
-    public void displayMsg(final String title, final String msg, DialogAction dialogAction) {
-        Runnable run = () -> Utils.showMessage(title, msg, MainActivity.this, dialogAction);
+    public void displayErrorWithTicket(String errMsg, DialogAction dialogAction, Object userObj) {
+        Runnable run = () -> Utils.showErrorDialog("Error", errMsg,
+                MainActivity.this, dialogAction, 0, userObj, true);
         this.runOnUiThread(run);
     }
 
@@ -734,6 +729,12 @@ public class MainActivity extends AppCompatActivity
         Runnable run = () -> Snackbar.make(view, errMsg, Snackbar.LENGTH_LONG).show();
         this.runOnUiThread(run);
     }
+
+    public void displayMsg(final String title, final String msg, DialogAction dialogAction) {
+        Runnable run = () -> Utils.showMessage(title, msg, MainActivity.this, dialogAction);
+        this.runOnUiThread(run);
+    }
+
 
     public void setUserMoneyFetchedListener(MessageListener userMoneyFetchedListener) {
         this.userMoneyFetchedListener = userMoneyFetchedListener;
