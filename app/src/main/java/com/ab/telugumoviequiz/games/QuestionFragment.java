@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -89,6 +90,7 @@ public class QuestionFragment extends BaseFragment
     private final String TAG = "QuestionFragment";
     private MediaPlayer answeredMP, timeoutMP;
     private AlertDialog getReadyMsg;
+    private CountDownTimer timer;
 
     @Override
     public void onCreate (Bundle savedInstanceState) {
@@ -150,6 +152,9 @@ public class QuestionFragment extends BaseFragment
         }
         if (timeoutMP != null) {
             timeoutMP.release();
+        }
+        if (timer != null) {
+            timer.cancel();
         }
         ServerErrorHandler.getInstance().removeShutdownListener(this);
         closeAllViews(false);
@@ -658,8 +663,14 @@ public class QuestionFragment extends BaseFragment
         if (root == null) {
             return;
         }
+        long remainingTime = gameDetails.getStartTime() - System.currentTimeMillis();
         TextView label = root.findViewById(R.id.game_starts_label);
         if (label != null) {
+            userCountTextLabel = root.findViewById(R.id.starts_user_ct_val);
+            TextView gameIdValLabel = root.findViewById(R.id.gameid_text_val_id);
+            if (gameIdValLabel != null) {
+                gameIdValLabel.setText(String.valueOf(gameDetails.getTempGameId()));
+            }
             Date date = new Date(gameDetails.getStartTime());
 
             @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
@@ -668,16 +679,31 @@ public class QuestionFragment extends BaseFragment
 
             simpleDateFormat.applyPattern(timePattern);
             String timeStr = simpleDateFormat.format(date);
-
             label.setText(timeStr);
-
-            userCountTextLabel = root.findViewById(R.id.starts_user_ct_val);
-
-            TextView gameIdValLabel = root.findViewById(R.id.gameid_text_val_id);
-            if (gameIdValLabel != null) {
-                gameIdValLabel.setText(String.valueOf(gameDetails.getTempGameId()));
-            }
         }
+         timer = new CountDownTimer(remainingTime, 1000) {
+            @Override
+            public void onTick(long l) {
+                int minutes = (int) l / 60000;
+                int seconds = (int) l % 60000 / 1000;
+                TextView displayRemainTime = root.findViewById(R.id.remain_time_label);
+
+                String timeLeftText = "";
+                if (minutes < 10) {
+                    timeLeftText += "0";
+                }
+                timeLeftText += minutes + ":";
+                if (seconds < 10) {
+                    timeLeftText += "0";
+                }
+                timeLeftText += seconds;
+                displayRemainTime.setText(timeLeftText);
+            }
+            @Override
+            public void onFinish() {
+                this.cancel();
+            }
+        }.start();
         Button leaveButton = root.findViewById(R.id.game_starts_leave_but);
         if (leaveButton != null) {
             leaveButton.setOnClickListener(this);
@@ -712,12 +738,13 @@ public class QuestionFragment extends BaseFragment
             progressBar.setVisibility(View.INVISIBLE);
         }
         //Toast.makeText(getContext(), joinMsg, Toast.LENGTH_SHORT).show();
-        //TextView gameIdLabel = root.findViewById(R.id.gameIdLabel);
         TextView gameIdValLabel = root.findViewById(R.id.gameid_text_val_id);
-        TextView startAtLabel = root.findViewById(R.id.startAtLabel);
+        ImageView startAtImg = root.findViewById(R.id.starttime_img);
         TextView startAtValLabel = root.findViewById(R.id.game_starts_label);
-        TextView usersAtLabel = root.findViewById(R.id.usersAtLabel);
+        ImageView usersImg = root.findViewById(R.id.enrolled_user_img);
         TextView userAtValLabel = root.findViewById(R.id.starts_user_ct_val);
+        ImageView displayRemainTimeImg = root.findViewById(R.id.remain_time);
+        TextView displayRemainTime = root.findViewById(R.id.remain_time_label);
         Button gameStartBut = root.findViewById(R.id.game_starts_leave_but);
         Button backButton = root.findViewById(R.id.back);
 
@@ -731,9 +758,13 @@ public class QuestionFragment extends BaseFragment
 
         //gameIdLabel.setVisibility(View.GONE);
         //gameIdValLabel.setVisibility(View.GONE);
-        startAtLabel.setVisibility(View.GONE);
+        //startAtLabel.setVisibility(View.GONE);
+        startAtImg.setVisibility(View.GONE);
         startAtValLabel.setVisibility(View.GONE);
-        usersAtLabel.setVisibility(View.GONE);
+        displayRemainTime.setVisibility(View.GONE);
+        displayRemainTimeImg.setVisibility(View.GONE);
+        //usersAtLabel.setVisibility(View.GONE);
+        usersImg.setVisibility(View.GONE);
         userAtValLabel.setVisibility(View.GONE);
         gameStartBut.setVisibility(View.GONE);
         backButton.setVisibility(View.GONE);
